@@ -1,89 +1,0 @@
-10
-
-dir
-322
-svn+ssh://couts2.ucsd.edu/svn/CalVR/trunk/src
-svn+ssh://couts2.ucsd.edu/svn
-
-
-
-2011-05-06T21:54:05.066766Z
-322
-aprudhom
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-5549ac8f-59e5-40e7-8354-9b73525f67f7
-
-input
-dir
-
-interface
-dir
-
-kernel
-dir
-
-main
-dir
-
-menu
-dir
-
-config
-dir
-
-osgcaveui
-dir
-
-collaborative
-dir
-
-util
-dir
-
-CMakeLists.txt
-file
-
-
-
-
-2011-05-06T22:19:54.000000Z
-2330fe766bde3b8a56d3947abb6d3660
-2011-02-08T11:23:36.035108Z
-163
-aprudhom
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-206
-
