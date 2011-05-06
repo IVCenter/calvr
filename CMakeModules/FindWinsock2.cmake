@@ -1,0 +1,23 @@
+FIND_LIBRARY(WINSOCK2_LIBRARY 
+  NAMES Winsock2
+  PATHS $ENV{WINSOCK2_HOME}
+    NO_DEFAULT_PATH
+    PATH_SUFFIXES lib64 lib
+)
+FIND_LIBRARY(WINSOCK2_LIBRARY 
+  NAMES Winsock2
+  PATHS
+    /usr/local
+    /usr
+    /sw
+    /opt/local
+    /opt/csw
+    /opt
+    /usr/freeware
+  PATH_SUFFIXES lib64 lib
+)
+
+SET(WINSOCK2_FOUND "NO")
+IF(WINSOCK2_LIBRARY)
+  SET(WINSOCK2_FOUND "YES")
+ENDIF(WINSOCK2_LIBRARY)

@@ -1,0 +1,17 @@
+Configurable Options: Type & Definitions
+
+Zones (category):
+ + maxColumns  (int): Maximum zone columns allowed.
+ + maxRows     (int): Maximum zone rows allowed.
+
+Orientation3d (bool): Default to using 3d vector angles for contribution checks, as opposed to 2d.
+
+FrameRate (category):
+ + autoAdjust (bool): Default to auto-adjustment mode for zone quantities (based on target & offset)
+ + target    (float): Default target Frames Per Second for auto-adjustment
+ + offset    (float): Default acceptable Frames Per Second offset for auto-adjustment
+
+Example:
+
+<FrameRate autoAdjust="on" target="23.0" offset="4.35" />
+<Zones maxColumns="10" maxRows="7" />

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<host>
+  <channel w="1920" h="1200" x="0.0" y="0.0" z="9.7" r="0" g="1" b="0"/>
+
+  <overlay w="1920" h="1200">
+    <frustum>
+      <corner name="BL" x="-1.768319" y="-1.134879" z="0.0"/>
+      <corner name="BR" x=" 1.768319" y="-1.134879" z="0.0"/>
+      <corner name="TL" x="-1.768319" y=" 1.134879" z="0.0"/>
+    </frustum>
+  </overlay>
+
+  <node name="host/alioscopy-24-2x3.xml" port="2827">
+
+    <client name="host/alioscopy-24-2x3-10.xml" addr="tile-0-0" disp=":0.0"/>
+    <client name="host/alioscopy-24-2x3-11.xml" addr="tile-0-0" disp=":0.1"/>
+    <client name="host/alioscopy-24-2x3-20.xml" addr="tile-0-1" disp=":0.0"/>
+    <client name="host/alioscopy-24-2x3-21.xml" addr="tile-0-1" disp=":0.1"/>
+    <client name="host/alioscopy-24-2x3-30.xml" addr="tile-0-2" disp=":0.0"/>
+    <client name="host/alioscopy-24-2x3-31.xml" addr="tile-0-2" disp=":0.1"/>
+
+    <window x="0" y="0" w="960" h="600"/>
+    <display index="-1" type="normal">
+      <viewport x="0" y="0" w="960" h="600"/>
+      <frustum>
+        <corner name="BL" x="-1.768319" y="-1.134879" z="0.0"/>
+        <corner name="BR" x=" 1.768319" y="-1.134879" z="0.0"/>
+        <corner name="TL" x="-1.768319" y=" 1.134879" z="0.0"/>
+      </frustum>
+    </display>
+  </node>
+
+</host>

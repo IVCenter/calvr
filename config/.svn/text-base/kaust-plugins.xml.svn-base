@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<Plugin>
+  <ModelLoader>
+    <ConfigDir value="/projects/ucsd/CalVR/data/ModelLoader/" />
+    <Files>
+      <se_building path="/projects/ucsd/CalVR/data/falko/se_building.obj" mask="1" />
+    </Files>
+  </ModelLoader>
+</Plugin>

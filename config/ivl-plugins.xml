@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<Plugin>
+  <ModelLoader>
+    <ConfigDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/ModelLoader" />
+    <Files>
+      <se_building path="/data/falko/se_building.obj" mask="1" />
+    </Files>
+  </ModelLoader>
+</Plugin>

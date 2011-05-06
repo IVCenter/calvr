@@ -1,0 +1,52 @@
+10
+
+dir
+322
+svn+ssh://couts2.ucsd.edu/svn/CalVR/trunk/include
+svn+ssh://couts2.ucsd.edu/svn
+
+
+
+2011-05-06T21:54:05.066766Z
+322
+aprudhom
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5549ac8f-59e5-40e7-8354-9b73525f67f7
+
+input
+dir
+
+interface
+dir
+
+kernel
+dir
+
+menu
+dir
+
+config
+dir
+
+osgcaveui
+dir
+
+collaborative
+dir
+
+util
+dir
+

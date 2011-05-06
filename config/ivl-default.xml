@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+  <CUI>
+   <ResourcesDirectory value="/home/calvr/CalVR/resources/" />
+  </CUI>
+
+   <Stencil value="true" />
+   <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
+   <SyncToVBlank value="On" />
+   <Near value="100"/>
+   <Far value="1000000" />
+
+   <ShowAxis value="off" />
+
+   <ConfigDebug value="false" />
+   <GeneralDebug value="true" />
+
+   <Input>  
+      <ButtonSystem value="NONE" />
+      <TrackingSystem value="NONE" />
+
+      <Threaded value="false" FPS="60.0" />
+      <ClickTimeout single="0.4" double="0.4" />
+
+      <NumHands value="1" />
+      <NumHeads value="1" />
+
+      <Hand1ButtonMask station1="0x0F" station2="0xFF" />
+      <Hand2ButtonMask station1="0xF0" station2="0x00" />
+
+      <HeadAddress value="1" />
+      <HandAddress value="0" />
+
+      <VRPN>
+        <Server value="DTrack@137.110.111.71" />
+        <NumBodies value="2" />
+	<NumButtons value="3" />
+	<NumValuators value="0" />
+      </VRPN>
+
+      <SHMEM>
+
+      </SHMEM>
+
+      <TrackingDebug value="false" button="true" body="true" station="0" />
+
+      <TrackingSystem>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+      </TrackingSystem>
+
+      <HeadDevice>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+      </HeadDevice>
+
+      <HandDevice>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+      </HandDevice>
+    </Input>
+
+
+   <MenuSystem type="BOARDMENU" useHints="false">
+       <PrimaryHand value="0" />
+           <BoardMenu>
+	        <!--<Position type="STATIC" alignment="FLAT" rotation="0" x="0" y="0" z="0" />-->
+		     <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
+		          <Position distance="3000" />
+			       <Scale value="1.0" />
+			            <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+				         <Trigger value="DOUBLECLICK" />
+					      <OpenThreshold value="0.5" />
+					          </BoardMenu>
+						     </MenuSystem>
+   <ViewerPosition x="0" y="-2957" z="0" />
+   <SceneSize value="1000" />
+
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+    <Pipe display="not needed any more" server="0" screen="0" name="0" />
+   </PipeConfig>
+
+   <ChannelConfig>
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
+   </ChannelConfig>
+   
+   <WindowConfig>
+    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" screen="0" />
+   </ScreenConfig>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+ <INCLUDE>kaust-plugins.xml</INCLUDE>
+
+ <INCLUDE>zone5.xml</INCLUDE>
+ <!--<INCLUDE>/home/covise/covise/config/cornea.xml</INCLUDE>-->
+ <INCLUDE>ds1.xml</INCLUDE>
+ <INCLUDE>REVE.xml</INCLUDE>
+ <!--<INCLUDE>/home/covise/covise/config/mpr.xml</INCLUDE>-->
+
+
