@@ -82,7 +82,7 @@
     </Menu>-->
 
     <SceneSize value="4000" />
-    <ViewerPosition x="0" y="1000" z="0" />
+    <ViewerPosition x="0" y="-1000" z="0" />
     <CoordAxis value="off" />
     <Freeze value="off" />
 

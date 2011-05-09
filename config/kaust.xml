@@ -2,7 +2,9 @@
 
  <INCLUDE>kaust-plugins.xml</INCLUDE>
 
+ <INCLUDE>desktop.xml</INCLUDE>
  <INCLUDE>zone5.xml</INCLUDE>
+ <INCLUDE>zone5_fromz2-fe-01.xml</INCLUDE>
  <!--<INCLUDE>/home/covise/covise/config/cornea.xml</INCLUDE>-->
  <INCLUDE>ds1.xml</INCLUDE>
  <INCLUDE>REVE.xml</INCLUDE>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
- <LOCAL host="z5-fe.z5.vis.kaust.edu.sa,z5-0-0.z5.vis.kaust.edu.sa,z5-0-1.z5.vis.kaust.edu.sa,z5-0-2.z5.vis.kaust.edu.sa,z5-1-0.z5.vis.kaust.edu.sa,z5-1-1.z5.vis.kaust.edu.sa,z5-1-2.z5.vis.kaust.edu.sa,z5-2-0.z5.vis.kaust.edu.sa,z5-2-1.z5.vis.kaust.edu.sa,z5-2-2.z5.vis.kaust.edu.sa,z5-3-0.z5.vis.kaust.edu.sa,z5-3-1.z5.vis.kaust.edu.sa">
+ <LOCAL host="z2-fe-01.z2.vis.kaust.edu.sa,z5-0-0.z5.vis.kaust.edu.sa,z5-0-1.z5.vis.kaust.edu.sa,z5-0-2.z5.vis.kaust.edu.sa,z5-1-0.z5.vis.kaust.edu.sa,z5-1-1.z5.vis.kaust.edu.sa,z5-1-2.z5.vis.kaust.edu.sa,z5-2-0.z5.vis.kaust.edu.sa,z5-2-1.z5.vis.kaust.edu.sa,z5-2-2.z5.vis.kaust.edu.sa,z5-3-0.z5.vis.kaust.edu.sa,z5-3-1.z5.vis.kaust.edu.sa">
 
 <!-- enable or display master rendering -->
       <RenderOnMaster value="true" />
@@ -101,7 +101,7 @@
     <Freeze value="off" />
 </LOCAL>
 
- <LOCAL host="z5-fe.z5.vis.kaust.edu.sa" >
+ <LOCAL host="z2-fe-01.z2.z5.vis.kaust.edu.sa" >
    <NumPipes value="1" />
    <NumScreens value="1" />
    <NumWindows value="1" />
