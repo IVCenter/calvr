@@ -773,6 +773,8 @@
       <TrackingSystem value="CAVELIB" />
 -->
 
+      <Threaded value="true" />
+
       <ButtonSystem value="NONE" />
       <TrackingSystem value="NONE" />
 
@@ -809,14 +811,24 @@
       <Size value="1" />
     </Menu>-->
 
-    <MenuSystem type="BOARDMENU" useHints="false">
+    <!--<MenuSystem type="BOARDMENU" useHints="false">
      <BoardMenu>
       <Position type="STATIC" alignment="FLAT" rotation="0" x="0" y="0" z="0" />
-	          <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
       <Scale value="1.0" />
       <Trigger value="BUTTON" buttonID="1" />
      </BoardMenu>
-    </MenuSystem>
+    </MenuSystem>-->
+
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <PrimaryHand value="0" />
+    <BoardMenu>
+     <Position distance="5300" />
+     <Scale value="1.0" />
+     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Trigger value="DOUBLECLICK" />
+     <OpenThreshold value="0.4" />
+    </BoardMenu>
+   </MenuSystem>
 
     <SceneSize value="2000" />
     <ViewerPosition x="0" y="-5308" z="0" />

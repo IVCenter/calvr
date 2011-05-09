@@ -86,12 +86,22 @@
 
     </Input>
  
-   <MenuSystem type="BOARDMENU" useHints="false">
+   <!--<MenuSystem type="BOARDMENU" useHints="false">
     <BoardMenu>
      <Position type="STATIC" alignment="FLAT" rotation="0" x="250" y="1000" z="0" />
-     <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
      <Scale value="1.0" />
      <Trigger value="BUTTON" buttonID="1" />
+    </BoardMenu>
+   </MenuSystem>-->
+
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <PrimaryHand value="0" />
+    <BoardMenu>
+     <Position distance="1500" />
+     <Scale value="1.3" />
+     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Trigger value="DOUBLECLICK" />
+     <OpenThreshold value="0.4" />
     </BoardMenu>
    </MenuSystem>
 
