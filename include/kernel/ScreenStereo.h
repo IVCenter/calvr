@@ -41,8 +41,6 @@ class ScreenStereo : public ScreenBase
 
         /**
          * @brief Create stereo screen for viewer
-         * @param viewer viewer to create screen for
-         * @param screenInfo parameters for screen
          * @param mode osg stereo mode to use from enum osg::DisplaySettings::StereoMode
          */
         virtual void init(int mode = 0);

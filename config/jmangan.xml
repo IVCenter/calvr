@@ -11,10 +11,10 @@
       <Plugin>
 
 
-        <MultiViewSimulator value="on">
+        <MVSim value="on">
           <Head0 value="off" x="0" y="-1000" z="0" rotate="60" />
           <Head1 value="off" x="-1000" y="-1000" z="0" rotate="0" sim="0" />
-        </MultiViewSimulator>
+        </MVSim>
 
 
         <PluginTest value="off" />

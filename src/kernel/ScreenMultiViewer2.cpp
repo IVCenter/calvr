@@ -19,7 +19,6 @@ using namespace cvr;
 #define MAX_ZONES_DEFAULT 16
 
 // Statics
-osg::Matrix * ScreenMultiViewer2::headMat[2];
 setContributionFunc ScreenMultiViewer2::setContribution;
 std::vector<setContributionFunc> ScreenMultiViewer2::setContributionFuncs;
 bool ScreenMultiViewer2::_orientation3d;
@@ -38,7 +37,7 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
 void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 /**************************************************/
 
-ScreenMultiViewer2::ScreenMultiViewer2() : ScreenBase()
+ScreenMultiViewer2::ScreenMultiViewer2() : ScreenMVSimulator()
 {
 }
 
@@ -439,27 +438,6 @@ void ScreenMultiViewer2::setupCameras()
             _camera[i]->setViewport(0,0,0,0);
         }
     }
-}
-
-osg::Matrix ScreenMultiViewer2::getCurrentHeadMatrix(int head)
-{
-    return headMat[head] != NULL ?
-            *headMat[head] :
-            ScreenBase::getCurrentHeadMatrix(head);
-}
-
-osg::Vec3 ScreenMultiViewer2::defaultLeftEye(int head)
-{
-    return headMat[head] != NULL ?
-            osg::Vec3d(-_separation * _eyeSepMult / 2.0,0.0,0.0) * getCurrentHeadMatrix(head) :
-            ScreenBase::defaultLeftEye(head);
-}
-
-osg::Vec3 ScreenMultiViewer2::defaultRightEye(int head)
-{
-    return headMat[head] != NULL ?
-            osg::Vec3d(_separation * _eyeSepMult / 2.0,0.0,0.0) * getCurrentHeadMatrix(head) :
-            ScreenBase::defaultRightEye(head);
 }
 
 void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::vector<osg::Vec3> &eyeRight)

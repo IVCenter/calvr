@@ -8,6 +8,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenLenticular.h
     ${HEADER_PATH}/ScreenMultiViewer.h
     ${HEADER_PATH}/MultiViewerCullVisitor.h
+    ${HEADER_PATH}/ScreenMVSimulator.h
     ${HEADER_PATH}/ScreenMultiViewer2.h
     ${HEADER_PATH}/MultiViewScreen.h
     ${HEADER_PATH}/ComController.h
@@ -41,6 +42,7 @@ ADD_LIBRARY(${LIB_NAME}
     ScreenStereo.cpp
     ScreenMultiViewer.cpp
     MultiViewerCullVisitor.cpp
+    ScreenMVSimulator.cpp
     ScreenMultiViewer2.cpp
     MultiViewScreen.cpp
     ComController.cpp

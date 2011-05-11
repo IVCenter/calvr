@@ -29,8 +29,6 @@ class ScreenBase
 
         /**
          * @brief create a screen and add all cameras to the viewer
-         * @param viewer viewer to add screen to
-         * @param screenInfo screen parameters
          * @param mode optional specifier used by some screens, ie \c ScreenStereo used it
          *        to specify the osg stereo mode
          */
