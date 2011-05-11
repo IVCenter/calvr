@@ -395,6 +395,7 @@ void main(void)
 
     if(outputTriangle)
     {
+	color0 = vec3(1.0,0.0,0.0);
 	gl_Position = t0p0;
 	EmitVertex();
 	gl_Position = t0p1;
@@ -547,6 +548,7 @@ void main(void)
 
     if(outputTriangle)
     {
+	color0 = vec3(0.0,0.0,1.0);
 	gl_Position = t1p0;
 	EmitVertex();
 	gl_Position = t1p1;
@@ -568,6 +570,8 @@ void main(void)
     {
 	return;
     }
+
+    color0 = vec3(0.0,1.0,0.0);
 
     vec3 norm0,norm1;
     seg0.xy = quad[0].xy - quad[1].xy;

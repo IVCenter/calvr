@@ -39,8 +39,9 @@ uniform float maxRatio;
 
 void main(void)
 {
-    //gl_FragColor.xyz = color0;
-    //gl_FragColor.w = 1.0;
+    gl_FragColor.xyz = color0;
+    gl_FragColor.w = 1.0;
+    gl_FragDepth = 1.0;
     //return;
 
     // get fragment world space position
@@ -62,7 +63,8 @@ void main(void)
 
     if(weight.x + weight.y <= 0)
     {
-	discard;
+	//discard;
+	return;
     }
 
     float p = weight.y / (weight.x + weight.y);
@@ -122,16 +124,16 @@ void main(void)
     if(result.x < 0.0 || result.x > 1.0)
     {
 	//gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-	//return;
-	discard;
+	return;
+	//discard;
     }
 
     // intersection point not within triangle
     if(result.y < 0 || result.z < 0 || result.y + result.z > 1.0)
     {
 	//gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-	//return;
-    	discard;
+	return;
+    	//discard;
     }
 
     // find intersection point
@@ -151,7 +153,8 @@ void main(void)
 
     // set weighted frag color
     //gl_FragColor.rgb = bcoord0 * color0 + result.y * color1 + result.z * color2;
-    gl_FragColor.rgb = bcoord0 * d0 * color0 + result.y * d1 * color1 + result.z * d2 * color2;
+    //gl_FragColor.rgb = bcoord0 * d0 * color0 + result.y * d1 * color1 + result.z * d2 * color2;
+    gl_FragColor = vec4(1.0,1.0,1.0,1.0);
     gl_FragColor.a = 1.0;
 
     //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
