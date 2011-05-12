@@ -30,10 +30,11 @@ int ScreenMultiViewer2::_setZoneColumns;
 int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
+float ScreenMultiViewer2::_contributionVar = 90;
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
-
+void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 /**************************************************/
 
@@ -79,8 +80,9 @@ void ScreenMultiViewer2::init(int mode)
     _clearColor = osg::Vec4(0,0,0,0);
 
     /*** Setup setContributionFuncs Vector ***/
-    setContribution = gaussian;
+    setContribution = cosine;
     setContributionFuncs.push_back(linear);
+    setContributionFuncs.push_back(cosine);
     setContributionFuncs.push_back(gaussian);
     /*** Done setting up setContributionFuncs Vector ***/
 
@@ -502,9 +504,28 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
 
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
-        // contribution factors for each user - in radians
-        contribution0 = MAX(M_PI/2*0.01, acos(toZone0 * orientation0));
-        contribution1 = MAX(M_PI/2*0.01, acos(toZone1 * orientation1));
+        // contribution factors for each user
+        float var = ScreenMultiViewer2::getContributionVar();
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var*M_PI/180)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = 1 - angle/var;
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var*M_PI/180)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = 1 - angle/var;
+        }
+std::cerr<<var<<"\t"<<contribution0<<"\t\t"<<contribution1<<"\n";
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
 
         float cTotal = contribution0 + contribution1;
 
@@ -512,16 +533,71 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         contribution1 /= cTotal;
 }
 
-void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
+void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
         // contribution factors for each user
-        contribution0 = MAX(0.01, toZone0 * orientation0);
-        contribution1 = MAX(0.01, toZone1 * orientation1);
+        float var = ScreenMultiViewer2::getContributionVar();
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var*M_PI/180)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = cos(angle*90/var);
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var*M_PI/180)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = cos(angle*90/var);
+        }
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
 
         float cTotal = contribution0 + contribution1;
 
         contribution0 /= cTotal;
+        contribution1 /= cTotal;
+}
 
+float phi(float z)
+{
+    static const float E = 2.71828182845904523536;
+    return pow(E,-z*z/2)/sqrt(2*M_PI);
+}
+
+void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
+{
+        // contribution factors for each user
+        float var = ScreenMultiViewer2::getContributionVar();
+        float sigma = var/3;
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var*M_PI/180)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = phi(angle/sigma)/sigma;
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var*M_PI/180)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = phi(angle/sigma)/sigma;
+        }
+std::cerr<<contribution0<<"\t\t"<<contribution1<<"\n";
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
+
+        float cTotal = contribution0 + contribution1;
+
+        contribution0 /= cTotal;
         contribution1 /= cTotal;
 }
 
@@ -631,4 +707,14 @@ void ScreenMultiViewer2::setMultipleUsers(bool multipleUsers)
 bool ScreenMultiViewer2::getMultipleUsers()
 {
     return _multipleUsers;
+}
+
+void ScreenMultiViewer2::setContributionVar(float var)
+{
+    _contributionVar = var;
+}
+
+float ScreenMultiViewer2::getContributionVar()
+{
+    return _contributionVar;
 }

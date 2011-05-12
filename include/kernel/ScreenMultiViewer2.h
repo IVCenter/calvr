@@ -156,6 +156,15 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @return true = multi-user mode, false = single-user mode
          */
         static bool getMultipleUsers();
+        /**
+         * @brief Sets the contribution variable for setContributionFuncs to use
+         */
+        static void setContributionVar(float var);
+        /**
+         * @brief Gets the contribution variable for setContributionFuncs to use
+         * @return the contribution variable for determining offsets
+         */
+        static float getContributionVar();
 
     protected:
         static bool _multipleUsers; ///< flags whether the screen is running in multi-user mode or single-user mode
@@ -215,6 +224,7 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          */
         static setContributionFunc setContribution;
         static std::vector<setContributionFunc> setContributionFuncs; ///< vector of the allowed zone contribution functions
+        static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs.
        
 };
 }
