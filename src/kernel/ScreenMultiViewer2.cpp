@@ -30,7 +30,7 @@ int ScreenMultiViewer2::_setZoneColumns;
 int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
-float ScreenMultiViewer2::_contributionVar = 90;
+float ScreenMultiViewer2::_contributionVar = 180;
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
@@ -508,7 +508,7 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         float var = ScreenMultiViewer2::getContributionVar();
 
         float angle = acos(toZone0 * orientation0);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution0 = 0;
         else
         {
@@ -516,13 +516,12 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         }
 
         angle = acos(toZone1 * orientation1);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution1 = 0;
         else
         {
             contribution1 = 1 - angle/var;
         }
-std::cerr<<var<<"\t"<<contribution0<<"\t\t"<<contribution1<<"\n";
 
         contribution0 = MAX(0.001, contribution0);
         contribution1 = MAX(0.001, contribution1);
@@ -539,19 +538,19 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         float var = ScreenMultiViewer2::getContributionVar();
 
         float angle = acos(toZone0 * orientation0);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution0 = 0;
         else
         {
-            contribution0 = cos(angle*90/var);
+            contribution0 = cos(angle*M_PI/2/var);
         }
 
         angle = acos(toZone1 * orientation1);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution1 = 0;
         else
         {
-            contribution1 = cos(angle*90/var);
+            contribution1 = cos(angle*M_PI/2/var);
         }
 
         contribution0 = MAX(0.001, contribution0);
@@ -563,10 +562,10 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         contribution1 /= cTotal;
 }
 
-float phi(float z)
+// Returns the value to the right of z in a standardized normal/gaussian distribution
+float cdfGaussian(float z)
 {
-    static const float E = 2.71828182845904523536;
-    return pow(E,-z*z/2)/sqrt(2*M_PI);
+    return 1-(1+erf(z/sqrt(2)))/2;
 }
 
 void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
@@ -576,21 +575,20 @@ void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, o
         float sigma = var/3;
 
         float angle = acos(toZone0 * orientation0);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution0 = 0;
         else
         {
-            contribution0 = phi(angle/sigma)/sigma;
+            contribution0 = cdfGaussian(angle/sigma);
         }
 
         angle = acos(toZone1 * orientation1);
-        if (angle >= var*M_PI/180)
+        if (angle >= var)
             contribution1 = 0;
         else
         {
-            contribution1 = phi(angle/sigma)/sigma;
+            contribution1 = cdfGaussian(angle/sigma);
         }
-std::cerr<<contribution0<<"\t\t"<<contribution1<<"\n";
 
         contribution0 = MAX(0.001, contribution0);
         contribution1 = MAX(0.001, contribution1);
