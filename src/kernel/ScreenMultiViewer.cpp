@@ -727,7 +727,7 @@ void ScreenMultiViewer::updateCamera()
 	geode->addDrawable(sd);
 	SceneManager::instance()->getObjectsRoot()->addChild(geode);*/
 		
-	//addTestGeometry();
+	addTestGeometry();
 	_testGeoAdded = true;
     }
     else if(!_testGeoAdded)
@@ -991,6 +991,57 @@ void ScreenMultiViewer::addTestGeometry()
 {
     osg::Geometry * geo = new osg::Geometry();
     osg::Vec3Array* verts = new osg::Vec3Array();
+    verts->push_back(osg::Vec3(75,0,-75));
+    verts->push_back(osg::Vec3(0,0,75));
+    verts->push_back(osg::Vec3(-75,0,-75));
+    verts->push_back(osg::Vec3(500,0,0));
+    verts->push_back(osg::Vec3(650,0,0));
+    verts->push_back(osg::Vec3(500,0,75));
+    verts->push_back(osg::Vec3(-500,0,75));
+    verts->push_back(osg::Vec3(-575,0,75));
+    verts->push_back(osg::Vec3(-575,0,-75));
+
+    geo->setVertexArray(verts);
+
+    osg::DrawElementsUInt * ele =
+            new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
+
+    ele->push_back(0);
+    ele->push_back(1);
+    ele->push_back(2);
+
+    ele->push_back(3);
+    ele->push_back(4);
+    ele->push_back(5);
+
+    ele->push_back(6);
+    ele->push_back(7);
+    ele->push_back(8);
+
+    geo->addPrimitiveSet(ele);
+
+    osg::Vec4Array* colors = new osg::Vec4Array;
+    colors->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
+
+    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4>
+            *colorIndexArray;
+    colorIndexArray = new osg::TemplateIndexArray<unsigned int,
+            osg::Array::UIntArrayType,4,4>;
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+    colorIndexArray->push_back(0);
+
+    geo->setColorArray(colors);
+    geo->setColorIndices(colorIndexArray);
+    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    /*osg::Vec3Array* verts = new osg::Vec3Array();
     verts->push_back(osg::Vec3(10000,10000,10000));
     verts->push_back(osg::Vec3(10000,10000,-10000));
     verts->push_back(osg::Vec3(-10000,10000,-10000));
@@ -1055,12 +1106,12 @@ void ScreenMultiViewer::addTestGeometry()
 
     geo->setColorArray(colors);
     geo->setColorIndices(colorIndexArray);
-    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);*/
 
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(geo);
 
-    SceneManager::instance()->getScene()->addChild(geode);
+    SceneManager::instance()->getObjectsRoot()->addChild(geode);
 }
 
 void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
