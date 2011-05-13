@@ -1,4 +1,23 @@
 <?xml version="1.0"?>
+ <GLOBAL>
+  <Input> 
+   <NumHeads value="2" />
+  </Input>
+  <MultiThreaded value="CullDrawThreadPerContext" />
+  <Freeze value="off" />
+  <FrameRate autoAdjust="on" target="20.0" offset="4.0" />
+  <Zones maxColumns="12" maxRows="8" />
+  <NumPipes value="2" />
+  <NumScreens value="2" />
+  <NumWindows value="2" />
+  <Plugin>
+   <MVSim value="on">
+    <Head0 value="off" x="0" y="-1000" z="1000" rotate="60"/>
+    <Head1 value="off" x="-1000" y="-1000" z="0" rotate="0" sim="1" />
+   </MVSim>
+   <SMV2Settings value="on"/>
+  </Plugin>
+ </GLOBAL>
 
  <LOCAL host="tile-0-0.local" >
    <NumPipes value="2" />

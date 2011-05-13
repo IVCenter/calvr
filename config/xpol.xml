@@ -20,8 +20,8 @@
       <MultiThreaded value="SingleThreaded" />
       <SyncToVBlank value="on" device="DFP-1" />
       <FloorHeight value="-1663" />
-      <Near value="1000" />
-      <Far value="10000000000" />
+      <Near value="100" />
+      <Far value="10000000" />
 
       <ConfigDebug value="false" />
 
@@ -31,9 +31,10 @@
  <!-- Standard Cover plugins, should always be on: -->
         <ClipPlane value="off" />
         <Vrml97 value="off" />
+        <Site value="off" />
 <!-- Demoable plugins: -->
         <VisualAcuity value="off" />
-        <OssimPlanet value="on" />
+        <OssimPlanet value="off" />
         <Volume value="off" />
         <Molecules value="off" />
         <CAMERAVis value="off" />
@@ -66,7 +67,7 @@
 	<!-- run opencover ~/data/JacobsHospital/JacobsHospitalRemodel.WRL -->
 
 <!-- Plugins not ready for demos: -->
-	<AudioAssetManagerCtrl value="off" /> <!-- Keep it OFF -->
+      	<AudioAssetManagerCtrl value="off" /> <!-- Keep it OFF -->
         <TelePresence value="off" />
         <Hand2 value="off" />
         <Argus value="off" />
@@ -128,8 +129,8 @@
         <SoundTest value="off" />
 	<Kaust value="off" />
         <SGDump value="off" />
-        <PathRecorder value="on" />
-	<OsgPathRecorder value="on" />
+        <PathRecorder value="off" />
+	<OsgPathRecorder value="off" />
 
 
         <SoundServer>
@@ -294,6 +295,12 @@
           </Site>
           <Tessellation value=".2" />
         </ArtifactVis>
+
+	<Site>
+	  <ShaderPath value="/home/covise/CalVR/plugins/calit2/Site/shaders" />
+	  <ColorTable value="/home/covise/data/CalVRdata/Site/colortable.rgb" />
+
+	</Site>
 
         <Point>
           <DataDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/Point/earthquakes.xyz" />
@@ -899,7 +906,7 @@
       <Hand2ButtonMask station1="0x38" station2="0x00" />
 
       <HeadAddress value="0" />
-      <Head2Address value="2" />
+      <Head2Address value="3" />
       <HandAddress value="1" />
       <Hand2Address value="2" />
      
@@ -1118,5 +1125,8 @@
  <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter.xml</INCLUDE>-->
  <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-sbs.xml</INCLUDE>-->
  <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-new.xml</INCLUDE>-->
+
 <INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile.xml</INCLUDE>
+<!--INCLUDE global="1" configname="xpolinter">xpol-john.xml</INCLUDE-->
+
 <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile-multi.xml</INCLUDE>-->

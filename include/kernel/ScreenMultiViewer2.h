@@ -8,9 +8,8 @@
 
 #include <vector>
 #include <kernel/ScreenBase.h>
+#include <kernel/ScreenMVSimulator.h>
 #include <osgViewer/Renderer>
-#include <menu/MenuCheckbox.h>
-#include <menu/MenuItem.h>
 
 namespace cvr
 {
@@ -19,7 +18,7 @@ typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0, f
 /**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
  */
-class ScreenMultiViewer2 : public ScreenBase
+class ScreenMultiViewer2 : public ScreenMVSimulator
 {
     public:
         ScreenMultiViewer2();
@@ -50,7 +49,7 @@ class ScreenMultiViewer2 : public ScreenBase
          */
         virtual void init(int mode = 0);
 
-        /**public cvr::MenuCallback
+        /**
          * @brief Recompute the view and projection matrices for screen
          */
         virtual void computeViewProj();
@@ -158,8 +157,6 @@ class ScreenMultiViewer2 : public ScreenBase
          */
         static bool getMultipleUsers();
 
-        static osg::Matrix * headMat[2]; ///< Can be used to simulate head matrices.
-
     protected:
         static bool _multipleUsers; ///< flags whether the screen is running in multi-user mode or single-user mode
         static bool _orientation3d; ///< flags whether the zone contribution is based upon 3d or 2d vector angles
@@ -218,10 +215,7 @@ class ScreenMultiViewer2 : public ScreenBase
          */
         static setContributionFunc setContribution;
         static std::vector<setContributionFunc> setContributionFuncs; ///< vector of the allowed zone contribution functions
-        
-        osg::Matrix getCurrentHeadMatrix(int head=0); ///< Overriden to use static headMat[head] if non-NULL. Useful for simulating head tracking.
-        osg::Vec3 defaultLeftEye(int head=0); ///< Overriden to use static headMat[head] if non-NULL. Useful for simulating head tracking.
-        osg::Vec3 defaultRightEye(int head=0); ///< Overriden to use static headMat[head] if non-NULL. Useful for simulating head tracking.
+       
 };
 }
 
