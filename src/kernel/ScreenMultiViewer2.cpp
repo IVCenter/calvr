@@ -30,7 +30,7 @@ int ScreenMultiViewer2::_setZoneColumns;
 int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
-float ScreenMultiViewer2::_contributionVar = 180;
+float ScreenMultiViewer2::_contributionVar = M_PI;
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
@@ -551,6 +551,7 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         else
         {
             contribution1 = cos(angle*M_PI/2/var);
+std::cerr<<angle<<"\t"<<var<<"\t"<<contribution1<<"\n";
         }
 
         contribution0 = MAX(0.001, contribution0);
