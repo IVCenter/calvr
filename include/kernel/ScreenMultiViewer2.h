@@ -157,6 +157,16 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          */
         static bool getMultipleUsers();
         /**
+         * @brief Sets whether or not the zones should be colored based on contributions from users
+         * @param zoneColoring bool representing whether to run in zone coloring mode or not
+         */
+        static void setZoneColoring(bool zoneColoring);
+        /**
+         * @brief Gets whether or not the zones should be colored based on contributions from users
+         * @return true = color, false = default (black)
+         */
+        static bool getZoneColoring();
+        /*
          * @brief Sets the contribution variable for setContributionFuncs to use
          */
         static void setContributionVar(float var);
@@ -167,9 +177,11 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
         static float getContributionVar();
 
     protected:
+        bool _colorZones; ///< Flags whether or not to color zones via user contribution values
+        static bool _zoneColoring; ///< Flags what colorZones shoulds be set to
         static bool _multipleUsers; ///< flags whether the screen is running in multi-user mode or single-user mode
         static bool _orientation3d; ///< flags whether the zone contribution is based upon 3d or 2d vector angles
-        osg::Vec4 _clearColor; ///< The clear color for the screen
+        static osg::Vec4 _clearColor; ///< The clear color for the screen
         static bool _autoAdjust; ///< flags that the screen should auto-adjust the zone quantity to match the target FPS
         static float _autoAdjustTarget; ///< the auto-adjustment's target FPS
         static float _autoAdjustOffset; ///< the auto-adjustment's acceptable FPS offset
