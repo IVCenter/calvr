@@ -4,13 +4,13 @@
 
       <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
 
-      <FrameRate target="25" offset="4" autoAdjust="on" />
-      <Zones maxRows="7" maxColumns="10" />
+      <FrameRate target="25" offset="4" autoAdjust="off" />
+      <Zones maxRows="10" maxColumns="10" />
       <Orientation3d value="on" />
 
       <Plugin>
 
-
+        <SMV2Settings value="on" />
         <MVSim value="on">
           <Head0 value="off" x="0" y="-1000" z="0" rotate="60" />
           <Head1 value="off" x="-1000" y="-1000" z="0" rotate="0" sim="0" />
@@ -84,9 +84,11 @@
       </Plugin>
 
  <Input>
-   <NumHands value="1" />
    <NumHeads value="2" />
- </Input>
+   <NumHands value="1" />
+   <HeadAddress value="2" />
+   <Head2Address value="3" />
+</Input>
 
  </GLOBAL>
 
