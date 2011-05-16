@@ -24,12 +24,14 @@ std::vector<setContributionFunc> ScreenMultiViewer2::setContributionFuncs;
 bool ScreenMultiViewer2::_orientation3d;
 bool ScreenMultiViewer2::_autoAdjust;
 bool ScreenMultiViewer2::_multipleUsers;
+bool ScreenMultiViewer2::_zoneColoring;
 float ScreenMultiViewer2::_autoAdjustTarget;
 float ScreenMultiViewer2::_autoAdjustOffset;
 int ScreenMultiViewer2::_setZoneColumns;
 int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
+osg::Vec4 ScreenMultiViewer2::_clearColor = osg::Vec4(0,0,0,0);
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
@@ -76,7 +78,7 @@ void ScreenMultiViewer2::init(int mode)
     setAutoAdjustTarget(ConfigManager::getFloat("target","FrameRate",20));
     setAutoAdjustOffset(ConfigManager::getFloat("offset","FrameRate",4));
     
-    _clearColor = osg::Vec4(0,0,0,0);
+    _colorZones = false;
 
     /*** Setup setContributionFuncs Vector ***/
     setContribution = gaussian;
@@ -121,6 +123,14 @@ void ScreenMultiViewer2::computeViewProj()
         // Setup cameras (recompute view matrices)
         setupCameras();        
     }
+
+    // Handle zone coloring toggling
+    if (_colorZones && !_zoneColoring)
+    {
+        // We just turned off zone coloring
+        setClearColor(_clearColor);
+    }
+    _colorZones = _zoneColoring;
 
     // Find eye interpolated locations based on contributions from users
     std::vector<osg::Vec3> eyeLeft;
@@ -497,6 +507,12 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
         // set default values for the eyes for this camera
         eyeLeft.push_back( eyeLeft0 * contribution0 + eyeLeft1 * contribution1 );
         eyeRight.push_back( eyeRight0 * contribution0 + eyeRight1 * contribution1 );
+
+        // set this camera's "clear color" based on contributions as neccessary
+        if (_colorZones)
+        {
+            _camera[i]->setClearColor(osg::Vec4(contribution0,0,contribution1,0));
+        }
     }
 }
 
@@ -631,4 +647,14 @@ void ScreenMultiViewer2::setMultipleUsers(bool multipleUsers)
 bool ScreenMultiViewer2::getMultipleUsers()
 {
     return _multipleUsers;
+}
+
+void ScreenMultiViewer2::setZoneColoring(bool zoneColoring)
+{
+    _zoneColoring = zoneColoring;
+}
+
+bool ScreenMultiViewer2::getZoneColoring()
+{
+    return _zoneColoring;
 }
