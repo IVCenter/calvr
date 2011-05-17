@@ -513,7 +513,7 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
         // set this camera's "clear color" based on contributions as neccessary
         if (_colorZones)
         {
-            _camera[i]->setClearColor(osg::Vec4(0,0,contribution1,0));
+            _camera[i]->setClearColor(osg::Vec4(contribution0,contribution1,0,0));
         }
     }
 }
