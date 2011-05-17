@@ -409,22 +409,17 @@ void ScreenMultiViewer2::setupZones()
         _zoneCenter.push_back(osg::Vec3());
     }
 
-    float left = _myInfo->myChannel->left;
-    float bottom = _myInfo->myChannel->bottom;
+    float negWidth_2 = -_myInfo->myChannel->width/2;
+    float negHeight_2 = -_myInfo->myChannel->height/2;
     float zoneWidth = _myInfo->myChannel->width / _zoneColumns;
     float zoneHeight = _myInfo->myChannel->height / _zoneRows;
-
-    osg::Matrix transMat = _myInfo->transform;
-    osg::Vec3 pos = transMat.getTrans();
-    transMat.setTrans(pos.x()-_myInfo->myChannel->width/2,pos.y()-_myInfo->myChannel->height/2,pos.z());
 
     for (int r = 0; r < _zoneRows; r++)
     {
         for (int c = 0; c < _zoneColumns; c++)
         {
-            osg::Vec4 zc = osg::Vec4(left + (c+.5)*zoneWidth, bottom + (r+.5)*zoneHeight,0,1) * transMat;
+            osg::Vec4 zc = osg::Vec4(negWidth_2 + (c+.5)*zoneWidth, 0, negHeight_2 + (r+.5)*zoneHeight,1) * _myInfo->transform;
             _zoneCenter[r*_zoneColumns+c] = osg::Vec3(zc.x(),zc.y(),zc.z());
-
         }
     }
 }
@@ -444,7 +439,7 @@ void ScreenMultiViewer2::setupCameras()
             int r = i / _zoneColumns;
             int c = i % _zoneColumns;
 
-            // "extra" calculation do to float->int rounding
+            // "extra" calculation handles float->int rounding
             _camera[i]->setViewport((int)(left + c*zoneWidth),
                                (int)(bottom + r*zoneHeight),
                                (int)(left+(c+1)*zoneWidth)-(int)(left+c*zoneWidth),
@@ -485,16 +480,16 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
 
     if (_orientation3d)
     {
-       o0 = osg::Vec3(u0op.x(),u0op.y(),u0op.z());
-       o1 = osg::Vec3(u1op.x(),u1op.y(),u1op.z());
+        o0 = osg::Vec3(u0op.x(),u0op.y(),u0op.z());
+        o1 = osg::Vec3(u1op.x(),u1op.y(),u1op.z());
     }
     else
     {
-       o0 = osg::Vec3(u0op.x(),u0op.y(),0);
-       o1 = osg::Vec3(u1op.x(),u1op.y(),0);
-       o0.normalize();
-       o1.normalize();
+        o0 = osg::Vec3(u0op.x(),u0op.y(),0);
+        o1 = osg::Vec3(u1op.x(),u1op.y(),0);
     }
+    o0.normalize();
+    o1.normalize();
 
     // compute contributions and set eye locations
     for (int i = 0; i < _zones; i++)
