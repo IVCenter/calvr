@@ -414,12 +414,17 @@ void ScreenMultiViewer2::setupZones()
     float zoneWidth = _myInfo->myChannel->width / _zoneColumns;
     float zoneHeight = _myInfo->myChannel->height / _zoneRows;
 
+    osg::Matrix transMat = _myInfo->transform;
+    osg::Vec3 pos = transMat.getTrans();
+    transMat.setTrans(pos.x()-_myInfo->myChannel->width/2,pos.y()-_myInfo->myChannel->height/2,pos.z());
+
     for (int r = 0; r < _zoneRows; r++)
     {
         for (int c = 0; c < _zoneColumns; c++)
         {
-            osg::Vec4 zc = osg::Vec4(left + (c+.5)*zoneWidth, bottom + (r+.5)*zoneHeight,0,1) * _myInfo->transform;
-            _zoneCenter[r*_zoneColumns + c] = osg::Vec3(zc.x(),zc.y(),zc.z());
+            osg::Vec4 zc = osg::Vec4(left + (c+.5)*zoneWidth, bottom + (r+.5)*zoneHeight,0,1) * transMat;
+            _zoneCenter[r*_zoneColumns+c] = osg::Vec3(zc.x(),zc.y(),zc.z());
+
         }
     }
 }
@@ -513,7 +518,7 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
         // set this camera's "clear color" based on contributions as neccessary
         if (_colorZones)
         {
-            _camera[i]->setClearColor(osg::Vec4(contribution0,0,contribution1,0));
+            _camera[i]->setClearColor(osg::Vec4(0,0,contribution1,0));
         }
     }
 }
@@ -567,7 +572,6 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         else
         {
             contribution1 = cos(angle*M_PI/2/var);
-std::cerr<<angle<<"\t"<<var<<"\t"<<contribution1<<"\n";
         }
 
         contribution0 = MAX(0.001, contribution0);
