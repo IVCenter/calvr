@@ -13,6 +13,9 @@ ComController * ComController::_myPtr = NULL;
 
 ComController::ComController()
 {
+    _listenSocket = NULL;
+    _masterSocket = NULL;
+    _CCError = false;
 }
 
 ComController::~ComController()
@@ -79,34 +82,64 @@ bool ComController::init(osg::ArgumentParser * ap)
     }
 }
 
-void ComController::sendSlaves(void * data, int size)
+bool ComController::sendSlaves(void * data, int size)
 {
-    if(!_isMaster || !data || !size)
+    if(!_isMaster || !data)
     {
-        return;
+        return false;
     }
-    for(int i = 0; i < _slaveSockets.size(); i++)
+
+    if(!size)
     {
-        _slaveSockets[i]->send(data, size);
+	return true;
     }
+
+    bool ret = true;
+    for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
+    {
+        if(!it->second->send(data, size))
+	{
+	    std::cerr << "ComController Error: send failure, sendSlaves, to node " << it->first << std::endl;
+	    ret = false;
+	}
+    }
+
+    return ret;
 }
 
-void ComController::readMaster(void * data, int size)
+bool ComController::readMaster(void * data, int size)
 {
-    if(_isMaster || !data || !size)
+    if(_isMaster || !data)
     {
-        return;
+        return false;
     }
 
-    _masterSocket->recv(data, size);
+    if(!size)
+    {
+	return true;
+    }
+
+    if(!_masterSocket->recv(data, size))
+    {
+	std::cerr << "ComController Error: recv failure, readMaster." << std::endl;
+	return false;
+    }
+    return true;
 }
 
-void ComController::readSlaves(void * data, int size)
+bool ComController::readSlaves(void * data, int size)
 {
-    if(!_isMaster && !size)
+    if(!_isMaster)
     {
-        return;
+        return false;
     }
+
+    if(!size)
+    {
+	return true;
+    }
+
+    bool ret = true;
 
     char * recBuf;
     if(data)
@@ -118,28 +151,45 @@ void ComController::readSlaves(void * data, int size)
         recBuf = new char[size * _numSlaves];
     }
 
-    for(int i = 0; i < _slaveSockets.size(); i++)
+    char * tmpPtr = recBuf;
+    for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
     {
-        _slaveSockets[i]->recv(recBuf, size);
-        recBuf += size;
+        if(!it->second->recv(tmpPtr, size))
+	{
+	    std::cerr << "ComController Error: recv failure, readSlaves, node " << it->first << std::endl;
+	    ret = false;
+	}
+        tmpPtr += size;
     }
     if(!data)
     {
         delete[] recBuf;
     }
+
+    return ret;
 }
 
-void ComController::sendMaster(void * data, int size)
+bool ComController::sendMaster(void * data, int size)
 {
-    if(_isMaster || !data || !size)
+    if(_isMaster || !data)
     {
-        return;
+        return false;
     }
 
-    _masterSocket->send(data, size);
+    if(!size)
+    {
+	return true;
+    }
+
+    if(!_masterSocket->send(data, size))
+    {
+	std::cerr << "ComController Error: send failure, sendMaster." << std::endl;
+	return false;
+    }
+    return true;
 }
 
-void ComController::sync()
+bool ComController::sync()
 {
     //std::cerr << "In Sync." << std::endl;
     char msg = 'n';
@@ -148,8 +198,10 @@ void ComController::sync()
         if(_numSlaves > 0)
         {
             char * resp = new char[_numSlaves];
-            readSlaves(resp, sizeof(char));
-            sendSlaves(&msg, sizeof(char));
+            if(!readSlaves(resp, sizeof(char)) || !sendSlaves(&msg, sizeof(char)))
+	    {
+		_CCError = true;
+	    }
             delete[] resp;
         }
 
@@ -157,9 +209,12 @@ void ComController::sync()
     else
     {
         msg = (char)_slaveNum;
-        sendMaster(&msg, sizeof(char));
-        readMaster(&msg, sizeof(char));
+        if(!sendMaster(&msg, sizeof(char)) || !readMaster(&msg, sizeof(char)))
+	{
+	    _CCError = true;
+	}
     }
+    return _CCError;
     //std::cerr << "Done Sync." << std::endl;
 }
 
@@ -175,101 +230,110 @@ int ComController::getNumSlaves()
 
 bool ComController::setupConnections(std::string & fileArg)
 {
-    int baseport = 11000;
+    int baseport = ConfigManager::getInt("port","MultiPC.MasterInterface",11000);
 
-    std::vector<std::string> startupList;
     bool found;
-    for(int i = 0; i < _numSlaves; i++)
+    int nodecount = 0;
+
+    if(_numSlaves)
     {
-        std::stringstream ss;
-        ss << "MultiPC.Startup:" << i;
-        startupList.push_back(ConfigManager::getEntry(ss.str(), "", &found));
-        if(!found)
-        {
-            std::cerr << "No Startup entry for node " << i << std::endl;
-            return false;
-        }
+	for(int i = 0; i < 99; i++)
+	{
+	    std::stringstream ss;
+	    ss << "MultiPC.Startup:" << i;
+	    std::string startup = ConfigManager::getEntry(ss.str(), "", &found);
+	    if(found)
+	    {
+		_startupMap[i] = startup;
+		nodecount++;
+		if(nodecount == _numSlaves)
+		{
+		    break;
+		}
+	    }
+	}
     }
 
-    for(int i = 0; i < _numSlaves; i++)
+    if(_startupMap.size() != _numSlaves)
+    {
+	std::cerr << "ComController Error: NumSlaves set to " << _numSlaves << ", but only " << _startupMap.size() << " Startup entries found." << std::endl;
+	return false;
+    }
+
+    for(std::map<int,std::string>::iterator it = _startupMap.begin(); it != _startupMap.end(); it++)
     {
         std::stringstream ss;
-        ss << "CalVR -s " << i << " -h " << _masterInterface << " -p "
-                << baseport + 2 * i << " " << fileArg;
-        size_t location = startupList[i].find("CalVR");
+        ss << "CalVR -s " << it->first << " -h " << _masterInterface << " -p "
+                << baseport << " " << fileArg;
+        size_t location = it->second.find("CalVR");
         if(location != std::string::npos)
         {
-            startupList[i].replace(location, 5, ss.str());
+            it->second.replace(location, 5, ss.str());
             continue;
         }
-        location = startupList[i].find("opencover");
+        location = it->second.find("opencover");
         if(location != std::string::npos)
         {
-            startupList[i].replace(location, 9, ss.str());
+            it->second.replace(location, 9, ss.str());
             continue;
         }
-        std::cerr << "No CalVR found in startup value." << std::endl;
+        std::cerr << "No CalVR found in startup value for node " << it->first << std::endl;
+	std::cerr << "Startup line: " << it->second << std::endl;
         return false;
     }
 
-    for(int i = 0; i < _numSlaves; i++)
+    bool ok = true;
+
+    if(_numSlaves > 0)
     {
-        std::cerr << startupList[i] << std::endl;
-        system((startupList[i] + " &").c_str());
+	_listenSocket = new MultiListenSocket(baseport, _numSlaves);
+	if(!_listenSocket->setup())
+	{
+	    std::cerr << "ComController Error setting up MultiListen Socket." << std::endl;
+	    delete _listenSocket;
+	    _listenSocket = NULL;
+	    return false;
+	}
     }
 
-    bool ok = true;
-    for(int i = 0; i < _numSlaves; i++)
+    for(std::map<int,std::string>::iterator it = _startupMap.begin(); it != _startupMap.end(); it++)
+    {
+        std::cerr << it->second << std::endl;
+        system((it->second + " &").c_str());
+    }
+
+    int retryCount = 15;
+
+    while(_slaveSockets.size() < _numSlaves)
     {
         CVRSocket * sock;
 
-        sock = new CVRSocket(LISTEN, _masterInterface, baseport + 2 * i);
+	while((sock = _listenSocket->accept()))
+	{
+	    sock->setNoDelay(true);
 
-        if(!sock->valid())
-        {
-            ok = false;
-            continue;
-        }
+	    int nodeNum;
+	    if(!sock->recv(&nodeNum,sizeof(int)))
+	    {
+		std::cerr << "ComController Error durring socket setup, recv failure." << std::endl;
+		ok = false;
+		delete sock;
+		break;
+	    }
 
-        sock->setReuseAddress(true);
-        sock->setNoDelay(true);
+	    _slaveSockets[nodeNum] = sock;
 
-        int bufferSize = 1024;
-        if(sock->setsockopt(SOL_SOCKET, SO_SNDBUF, &bufferSize, sizeof(int))
-                == -1)
-        {
-            perror("SO_SNDBUF");
-        }
+	    std::cerr << "Connected to Node: " << nodeNum << std::endl;
+	}
 
-        if(sock->setsockopt(SOL_SOCKET, SO_RCVBUF, &bufferSize, sizeof(int))
-                == -1)
-        {
-            perror("SO_RCVBUF");
-        }
-
-        if(!sock->bind())
-        {
-            ok = false;
-            continue;
-        }
-
-        if(!sock->listen())
-        {
-            ok = false;
-            continue;
-        }
-
-        if(!sock->accept())
-        {
-            ok = false;
-            continue;
-        }
-
-        sock->setNoDelay(true);
-
-        _slaveSockets.push_back(sock);
-
-        std::cerr << "Connected to Node: " << i << std::endl;
+	sleep(1);
+	retryCount--;
+	if(!retryCount)
+	{
+	    std::cerr << "ComController Error: Only got connections from " << _slaveSockets.size() << " nodes, " << _numSlaves << " expected." << std::endl;
+	    ok = false;
+	    break;
+	}
     }
 
     struct InitMsg im;
@@ -303,11 +367,16 @@ bool ComController::connectMaster()
         perror("SO_RCVBUF");
     }
 
-    int count = 0;
-
-    if(!sock->connect(60))
+    if(!sock->connect(30))
     {
+	std::cerr << "ComController Error: Unable to connect to master." << std::endl;
         return false;
+    }
+
+    if(!sock->send(&_slaveNum,sizeof(int)))
+    {
+	std::cerr << "ComController Error: Unable to send node number to master." << std::endl;
+	return false;
     }
 
     _masterSocket = sock;
