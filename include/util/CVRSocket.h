@@ -66,6 +66,8 @@ class CVRSocket
         int _port;
         struct addrinfo * _res;
 
+        fd_set _connectTest;
+        bool _blockingState;
         bool _printErrors;
 };
 

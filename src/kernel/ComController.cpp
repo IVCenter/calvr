@@ -1,6 +1,8 @@
 #include <kernel/ComController.h>
 #include <config/ConfigManager.h>
 
+#include <osg/Timer>
+
 #include <iostream>
 #include <sstream>
 #include <cstring>
@@ -18,6 +20,7 @@ ComController::ComController()
     _masterSocket = NULL;
     _CCError = false;
 
+    _maxSocketFD = -1;
     signal(SIGPIPE, SIG_IGN);
 }
 
@@ -156,7 +159,42 @@ bool ComController::readSlaves(void * data, int size)
         recBuf = new char[size * _numSlaves];
     }
 
-    char * tmpPtr = recBuf;
+    int nodesRead = 0;
+    std::map<int,bool> readMap;
+    while(nodesRead < _numSlaves)
+    {
+	FD_ZERO(&_sockets);
+	for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
+	{
+	    FD_SET(it->second->getSocketFD(),&_sockets);
+	}
+
+	struct timeval tv;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	select(_maxSocketFD+1,&_sockets,NULL,NULL,&tv);
+
+	char * tmpPtr = recBuf;
+	for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
+	{
+	    if(!readMap[it->first] && FD_ISSET(it->second->getSocketFD(),&_sockets))
+	    {
+		if(!it->second->recv(tmpPtr, size))
+		{
+		    std::cerr << "ComController Error: recv failure, readSlaves, node " << it->first << std::endl;
+		    _CCError = true;
+		    ret = false;
+		    break;
+		}
+		readMap[it->first] = true;
+		nodesRead++;
+	    }
+	    tmpPtr += size;
+	}
+    }
+
+    /*char * tmpPtr = recBuf;
     for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
     {
         if(!it->second->recv(tmpPtr, size))
@@ -166,7 +204,7 @@ bool ComController::readSlaves(void * data, int size)
 	    ret = false;
 	}
         tmpPtr += size;
-    }
+    }*/
     if(!data)
     {
         delete[] recBuf;
@@ -202,6 +240,10 @@ bool ComController::sync()
     {
 	return false;
     }
+
+    osg::Timer_t start, end;
+    start = osg::Timer::instance()->tick();
+
     //std::cerr << "In Sync." << std::endl;
     char msg = 'n';
     if(_isMaster)
@@ -225,6 +267,11 @@ bool ComController::sync()
 	    _CCError = true;
 	}
     }
+
+    end = osg::Timer::instance()->tick();
+
+    std::cerr << "Sync time: " << osg::Timer::instance()->delta_m(start,end) << std::endl;
+
     return _CCError;
     //std::cerr << "Done Sync." << std::endl;
 }
@@ -333,6 +380,11 @@ bool ComController::setupConnections(std::string & fileArg)
 	    }
 
 	    _slaveSockets[nodeNum] = sock;
+
+	    if(sock->getSocketFD() > _maxSocketFD)
+	    {
+		_maxSocketFD = sock->getSocketFD();
+	    }
 
 	    std::cerr << "Connected to Node: " << nodeNum << std::endl;
 	}

@@ -116,6 +116,8 @@ class ComController
         int _slaveNum; ///< my number, if i am a slave node
         int _port; ///< port to connect to the master node
         int _numSlaves; ///< number of slave nodes in the cluster
+        int _maxSocketFD;
+        fd_set _sockets;
 
         cvr::CVRSocket * _masterSocket; ///< socket to talk to master with
         std::map<int,cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets

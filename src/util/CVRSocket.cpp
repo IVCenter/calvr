@@ -20,6 +20,7 @@ CVRSocket::CVRSocket(int socket)
     _socket = socket;
     _type = CONNECT;
     _printErrors = false;
+    _blockingState = true;
 }
 
 CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
@@ -30,6 +31,7 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     _sockType = sockType;
     _host = host;
     _port = port;
+    _blockingState = true;
 
     _socket = -1;
 
@@ -171,18 +173,47 @@ bool CVRSocket::connect(int timeout)
         return false;
     }
 
-    int count = 0;
-
-    while(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
+    bool resetBlocking = false;
+    if(timeout > 0)
     {
-        if(count >= timeout)
+	if(_blockingState)
+	{
+	    setBlocking(false);
+	    resetBlocking = true;
+	}
+    }
+
+    if(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
+    {
+        if(timeout == 0)
         {
             std::cerr << "Error: Unable to connect to host: " << _host
                     << " on port: " << _port << std::endl;
             return false;
         }
-        sleep(1);
-        count++;
+	else
+	{
+	    FD_ZERO(&_connectTest);
+
+	    FD_SET(_socket, &_connectTest);
+
+	    struct timeval tv;
+	    tv.tv_sec = timeout;
+	    tv.tv_usec = 0;
+
+	    select(_socket+1,NULL,&_connectTest,NULL,&tv);
+	    if(!FD_ISSET(_socket,&_connectTest))
+	    {
+		std::cerr << "Error: Unable to connect to host: " << _host
+                    << " on port: " << _port << std::endl;
+		return false;
+	    }
+
+	    if(resetBlocking)
+	    {
+		setBlocking(true);
+	    }
+	}
     }
 
     return true;
@@ -265,6 +296,10 @@ void CVRSocket::setBlocking(bool b)
     if(res < 0)
     {
         std::cerr << "Error setting socket blocking." << std::endl;
+    }
+    else
+    {
+	_blockingState = b;
     }
 }
 
