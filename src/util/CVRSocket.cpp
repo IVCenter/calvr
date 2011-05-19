@@ -19,6 +19,7 @@ CVRSocket::CVRSocket(int socket)
 {
     _socket = socket;
     _type = CONNECT;
+    _printErrors = false;
 }
 
 CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
@@ -46,7 +47,7 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     if((_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
             == -1)
     {
-        perror("socket");
+	perror("socket");
     }
 }
 
@@ -78,7 +79,10 @@ bool CVRSocket::bind()
 
     if(::bind(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
     {
-        perror("bind");
+	if(_printErrors)
+	{
+	    perror("bind");
+	}
         return false;
     }
 
@@ -101,7 +105,10 @@ bool CVRSocket::listen(int backlog)
 
     if(::listen(_socket, backlog) == -1)
     {
-        perror("listen");
+	if(_printErrors)
+	{
+	    perror("listen");
+	}
         return false;
     }
 
@@ -129,7 +136,10 @@ bool CVRSocket::accept()
     if((tmpSock = ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
             == -1)
     {
-        perror("accept");
+	if(_printErrors)
+	{
+	    perror("accept");
+	}
 #ifdef WIN32
         closesocket(_socket);
 #else
@@ -280,8 +290,11 @@ bool CVRSocket::send(void * buf, size_t len, int flags)
         if((sent = ::send(_socket, (const char *)data, bytesToSend, flags))
                 <= 0)
         {
-            std::cerr << "Error sending data." << std::endl;
-            perror("send");
+	    if(_printErrors)
+	    {
+		std::cerr << "Error sending data." << std::endl;
+		perror("send");
+	    }
             break;
         }
         bytesToSend -= sent;
@@ -318,8 +331,11 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
         {
             //if(errno != EAGAIN)
             //{
-            std::cerr << "Error on recv." << std::endl;
-            perror("recv");
+	    if(_printErrors)
+	    {
+		std::cerr << "Error on recv." << std::endl;
+		perror("recv");
+	    }
             break;
             //}
             //std::cerr << "EAGAIN error" << std::endl;

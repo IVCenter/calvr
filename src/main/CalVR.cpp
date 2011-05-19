@@ -167,6 +167,12 @@ int main(int argc, char **argv)
         viewer->updateTraversal();
         viewer->renderingTraversals();
 
+	if(communication->getIsSyncError())
+	{
+	    std::cerr << "Sync Error Exit." << std::endl;
+	    break;
+	}
+
         plugins->postFrame();
 
         frameNum++;

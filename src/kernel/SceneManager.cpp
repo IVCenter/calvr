@@ -3,6 +3,7 @@
 #include <config/ConfigManager.h>
 #include <kernel/NodeMask.h>
 #include <kernel/CVRViewer.h>
+#include <kernel/ComController.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
@@ -73,6 +74,11 @@ bool SceneManager::init()
 
 void SceneManager::update()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms[i]->setMatrix(

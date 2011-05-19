@@ -65,6 +65,10 @@ bool InteractionManager::init()
 
 void InteractionManager::update()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
     //processMouse();
 
     handleEvents();

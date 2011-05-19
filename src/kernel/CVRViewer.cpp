@@ -191,6 +191,11 @@ CVRViewer::~CVRViewer()
 
 void CVRViewer::updateTraversal()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(std::list<UpdateTraversal*>::iterator it = _updateList.begin(); it != _updateList.end(); it++)
     {
 	(*it)->update();
@@ -316,7 +321,7 @@ void CVRViewer::defaultUpdateTraversal()
 
 void CVRViewer::eventTraversal()
 {
-    if(_done)
+    if(_done || ComController::instance()->getIsSyncError())
         return;
 
     double beginEventTraversal =
@@ -711,6 +716,11 @@ void CVRViewer::eventTraversal()
 
 void CVRViewer::renderingTraversals()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     //std::cerr << "render start." << std::endl;
     bool _outputMasterCameraLocation = false;
     if(_outputMasterCameraLocation)
@@ -1405,6 +1415,11 @@ void CVRViewer::startThreading()
 
 void CVRViewer::frameStart()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     FrameUpdate frameUp;
     if(ComController::instance()->isMaster())
     {

@@ -65,6 +65,8 @@ class CVRSocket
         std::string _host;
         int _port;
         struct addrinfo * _res;
+
+        bool _printErrors;
 };
 
 }

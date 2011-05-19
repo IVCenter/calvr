@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <csignal>
 #include <vector>
 #include <string>
 
@@ -16,6 +17,8 @@ ComController::ComController()
     _listenSocket = NULL;
     _masterSocket = NULL;
     _CCError = false;
+
+    signal(SIGPIPE, SIG_IGN);
 }
 
 ComController::~ComController()
@@ -84,7 +87,7 @@ bool ComController::init(osg::ArgumentParser * ap)
 
 bool ComController::sendSlaves(void * data, int size)
 {
-    if(!_isMaster || !data)
+    if(!_isMaster || !data || _CCError)
     {
         return false;
     }
@@ -100,6 +103,7 @@ bool ComController::sendSlaves(void * data, int size)
         if(!it->second->send(data, size))
 	{
 	    std::cerr << "ComController Error: send failure, sendSlaves, to node " << it->first << std::endl;
+	    _CCError = true;
 	    ret = false;
 	}
     }
@@ -109,7 +113,7 @@ bool ComController::sendSlaves(void * data, int size)
 
 bool ComController::readMaster(void * data, int size)
 {
-    if(_isMaster || !data)
+    if(_isMaster || !data || _CCError)
     {
         return false;
     }
@@ -122,6 +126,7 @@ bool ComController::readMaster(void * data, int size)
     if(!_masterSocket->recv(data, size))
     {
 	std::cerr << "ComController Error: recv failure, readMaster." << std::endl;
+	_CCError = true;
 	return false;
     }
     return true;
@@ -129,7 +134,7 @@ bool ComController::readMaster(void * data, int size)
 
 bool ComController::readSlaves(void * data, int size)
 {
-    if(!_isMaster)
+    if(!_isMaster || _CCError)
     {
         return false;
     }
@@ -157,6 +162,7 @@ bool ComController::readSlaves(void * data, int size)
         if(!it->second->recv(tmpPtr, size))
 	{
 	    std::cerr << "ComController Error: recv failure, readSlaves, node " << it->first << std::endl;
+	    _CCError = true;
 	    ret = false;
 	}
         tmpPtr += size;
@@ -171,7 +177,7 @@ bool ComController::readSlaves(void * data, int size)
 
 bool ComController::sendMaster(void * data, int size)
 {
-    if(_isMaster || !data)
+    if(_isMaster || !data || _CCError)
     {
         return false;
     }
@@ -184,6 +190,7 @@ bool ComController::sendMaster(void * data, int size)
     if(!_masterSocket->send(data, size))
     {
 	std::cerr << "ComController Error: send failure, sendMaster." << std::endl;
+	_CCError = true;
 	return false;
     }
     return true;
@@ -191,6 +198,10 @@ bool ComController::sendMaster(void * data, int size)
 
 bool ComController::sync()
 {
+    if(_CCError)
+    {
+	return false;
+    }
     //std::cerr << "In Sync." << std::endl;
     char msg = 'n';
     if(_isMaster)

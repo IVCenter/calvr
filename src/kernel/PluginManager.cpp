@@ -1,5 +1,6 @@
 #include <kernel/PluginManager.h>
 #include <kernel/InteractionManager.h>
+#include <kernel/ComController.h>
 #include <config/ConfigManager.h>
 
 #include <iostream>
@@ -104,6 +105,11 @@ bool PluginManager::init()
 
 void PluginManager::preFrame()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
         _loadedPluginList[i]->ptr->preFrame();
@@ -112,6 +118,11 @@ void PluginManager::preFrame()
 
 void PluginManager::postFrame()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
         _loadedPluginList[i]->ptr->postFrame();
