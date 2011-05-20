@@ -17,14 +17,25 @@ MultiListenSocket::MultiListenSocket(int port, int queue)
 {
     _port = port;
     _queue = queue;
+    _valid = false;
 }
 
 MultiListenSocket::~MultiListenSocket()
 {
+    if(_valid)
+    {
+	close(_socket);
+    }
 }
 
 bool MultiListenSocket::setup()
 {
+    if(_valid)
+    {
+	close(_socket);
+	_valid = false;
+    }
+
     _socket = socket(AF_INET, SOCK_STREAM, 0);
 
     if(_socket == -1)
@@ -65,11 +76,18 @@ bool MultiListenSocket::setup()
         return false;
     }
 
+    _valid = true;
+
     return true;
 }
 
 CVRSocket * MultiListenSocket::accept()
 {
+    if(!_valid)
+    {
+	return NULL;
+    }
+
     sockaddr_in addr;
     int length;
     int val = ::accept(_socket, (sockaddr *)&addr, (socklen_t *)&length);

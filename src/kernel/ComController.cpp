@@ -456,6 +456,9 @@ bool ComController::setupConnections(std::string & fileArg)
 	}
     }
 
+    delete _listenSocket;
+    _listenSocket = NULL;
+
     struct InitMsg im;
     im.ok = ok;
     sendSlaves(&im, sizeof(struct InitMsg));

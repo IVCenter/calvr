@@ -187,13 +187,18 @@ bool CVRSocket::connect(int timeout)
 
     while(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
     {
+	//perror("connect");
         if(timeout == 0)
         {
             std::cerr << "Error: Unable to connect to host: " << _host
                     << " on port: " << _port << std::endl;
             return false;
         }
-	else if(errno == EINPROGRESS)
+	/*else if(errno == EINPROGRESS)
+	{
+	    continue;
+	}
+	else if(errno == EAGAIN || errno == EALREADY)
 	{
 	    FD_ZERO(&_connectTest);
 
@@ -211,7 +216,7 @@ bool CVRSocket::connect(int timeout)
 		return false;
 	    }
 	    break;
-	}
+	}*/
 	else
 	{
 	    if(currentTimeout <= 0)
