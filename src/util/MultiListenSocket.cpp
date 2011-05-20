@@ -55,6 +55,7 @@ bool MultiListenSocket::setup()
     if(bind(_socket, (struct sockaddr *)&addr, sizeof(addr)) == -1)
     {
         std::cerr << "Error on socket bind." << std::endl;
+	perror("bind");
         return false;
     }
 

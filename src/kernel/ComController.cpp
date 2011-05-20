@@ -159,7 +159,7 @@ bool ComController::readSlaves(void * data, int size)
         recBuf = new char[size * _numSlaves];
     }
 
-    int nodesRead = 0;
+    /*int nodesRead = 0;
     std::map<int,bool> readMap;
     while(nodesRead < _numSlaves)
     {
@@ -192,9 +192,9 @@ bool ComController::readSlaves(void * data, int size)
 	    }
 	    tmpPtr += size;
 	}
-    }
+    }*/
 
-    /*char * tmpPtr = recBuf;
+    char * tmpPtr = recBuf;
     for(std::map<int,CVRSocket *>::iterator it = _slaveSockets.begin(); it != _slaveSockets.end(); it++)
     {
         if(!it->second->recv(tmpPtr, size))
@@ -204,7 +204,7 @@ bool ComController::readSlaves(void * data, int size)
 	    ret = false;
 	}
         tmpPtr += size;
-    }*/
+    }
     if(!data)
     {
         delete[] recBuf;
@@ -241,8 +241,8 @@ bool ComController::sync()
 	return false;
     }
 
-    osg::Timer_t start, end;
-    start = osg::Timer::instance()->tick();
+    //osg::Timer_t start, end;
+    //start = osg::Timer::instance()->tick();
 
     //std::cerr << "In Sync." << std::endl;
     char msg = 'n';
@@ -268,9 +268,9 @@ bool ComController::sync()
 	}
     }
 
-    end = osg::Timer::instance()->tick();
+    //end = osg::Timer::instance()->tick();
 
-    std::cerr << "Sync time: " << osg::Timer::instance()->delta_m(start,end) << std::endl;
+    //std::cerr << "Sync time: " << osg::Timer::instance()->delta_m(start,end) << std::endl;
 
     return _CCError;
     //std::cerr << "Done Sync." << std::endl;
@@ -359,7 +359,7 @@ bool ComController::setupConnections(std::string & fileArg)
         std::cerr << it->second << std::endl;
         system((it->second + " &").c_str());
     }
-
+    
     int retryCount = 15;
 
     while(_slaveSockets.size() < _numSlaves)

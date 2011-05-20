@@ -208,12 +208,12 @@ bool CVRSocket::connect(int timeout)
                     << " on port: " << _port << std::endl;
 		return false;
 	    }
-
-	    if(resetBlocking)
-	    {
-		setBlocking(true);
-	    }
 	}
+    }
+
+    if(resetBlocking)
+    {
+	setBlocking(true);
     }
 
     return true;
