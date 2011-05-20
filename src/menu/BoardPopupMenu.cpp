@@ -72,7 +72,7 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 		    if(tie->hand == _primaryHand && tie->button == _primaryButton)
 		    {
 			BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-			if(smg)
+			if(smg && smg->isMenuHead())
 			{
 			    updateMovement(event);
 			}
@@ -94,7 +94,7 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
                     if(mie->button == _primaryMouseButton)
                     {
 			BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-			if(smg)
+			if(smg && smg->isMenuHead())
 			{
 			    updateMovement(event);
 			}
@@ -130,7 +130,7 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
             if(_activeItem)
             {
 		BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-		if(smg)
+		if(smg && smg->isMenuHead())
 		{
 		    osg::Vec3 ray;
 		    if(_activeInteractor == MOUSE)
@@ -144,6 +144,17 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 		    _moveDistance = ray.length();
 		    _menuPoint = _currentPoint * osg::Matrix::inverse(_menuRoot->getMatrix());
 		    updateMovement(event);
+		}
+		else if(smg && !smg->isMenuHead())
+		{
+		    if(smg->isMenuOpen())
+		    {
+			closeMenu((SubMenu*)smg->getMenuItem());
+		    }
+		    else
+		    {
+			openMenu(smg);
+		    }
 		}
                 _activeItem->processEvent(event);
                 _clickActive = true;
