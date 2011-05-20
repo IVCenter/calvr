@@ -183,7 +183,9 @@ bool CVRSocket::connect(int timeout)
 	}
     }
 
-    if(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
+    int currentTimeout = timeout;
+
+    while(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
     {
         if(timeout == 0)
         {
@@ -191,14 +193,14 @@ bool CVRSocket::connect(int timeout)
                     << " on port: " << _port << std::endl;
             return false;
         }
-	else
+	else if(errno == EINPROGRESS)
 	{
 	    FD_ZERO(&_connectTest);
 
 	    FD_SET(_socket, &_connectTest);
 
 	    struct timeval tv;
-	    tv.tv_sec = timeout;
+	    tv.tv_sec = currentTimeout;
 	    tv.tv_usec = 0;
 
 	    select(_socket+1,NULL,&_connectTest,NULL,&tv);
@@ -208,6 +210,18 @@ bool CVRSocket::connect(int timeout)
                     << " on port: " << _port << std::endl;
 		return false;
 	    }
+	    break;
+	}
+	else
+	{
+	    if(currentTimeout <= 0)
+	    {
+		std::cerr << "Error: Unable to connect to host: " << _host
+                    << " on port: " << _port << std::endl;
+		return false;
+	    }
+	    sleep(1);
+	    currentTimeout--;
 	}
     }
 

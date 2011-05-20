@@ -318,6 +318,66 @@ bool ComController::setupConnections(std::string & fileArg)
 	return false;
     }
 
+    if(_numSlaves > 0)
+    {
+	_listenSocket = new MultiListenSocket(baseport, _numSlaves);
+	if(!_listenSocket->setup())
+	{
+	    delete _listenSocket;
+	    _listenSocket = NULL;
+	    std::cerr << "ComController Error setting up MultiListen Socket." << std::endl;
+	    std::cerr << "Warning: may be CalVR processes running on slave nodes." << std::endl;
+	    std::string cleanup;
+	    cleanup = ConfigManager::getEntry("value","MultiPC.CleanupScript","NONE");
+	    if(cleanup == "NONE")
+	    {
+		std::cerr << "No MultiPC.CleanupScript entry found." << std::endl;
+	    }
+	    else
+	    {
+		std::cerr << "Running Cleanup Script: " << cleanup << std::endl;
+		system(cleanup.c_str());
+		_listenSocket = new MultiListenSocket(baseport, _numSlaves);
+		if(!_listenSocket->setup())
+		{
+		    delete _listenSocket;
+		    _listenSocket = NULL;
+		}
+	    }
+
+	    if(!_listenSocket)
+	    {
+		int rcount = 0;
+		while(rcount < 10)
+		{
+		    baseport += 2;
+		    std::cerr << "Trying port: " << baseport << std::endl;
+
+		    _listenSocket = new MultiListenSocket(baseport, _numSlaves);
+		    if(!_listenSocket->setup())
+		    {
+			delete _listenSocket;
+			_listenSocket = NULL;
+		    }
+		    else
+		    {
+			break;
+		    }
+
+		    rcount++;
+		}
+
+		if(!_listenSocket)
+		{
+		    std::cerr << "ComController Failure setting up MultiListen Socket." << std::endl;
+		    delete _listenSocket;
+		    _listenSocket = NULL;
+		    return false;
+		}
+	    }
+	}
+    }
+
     for(std::map<int,std::string>::iterator it = _startupMap.begin(); it != _startupMap.end(); it++)
     {
         std::stringstream ss;
@@ -338,21 +398,7 @@ bool ComController::setupConnections(std::string & fileArg)
         std::cerr << "No CalVR found in startup value for node " << it->first << std::endl;
 	std::cerr << "Startup line: " << it->second << std::endl;
         return false;
-    }
-
-    bool ok = true;
-
-    if(_numSlaves > 0)
-    {
-	_listenSocket = new MultiListenSocket(baseport, _numSlaves);
-	if(!_listenSocket->setup())
-	{
-	    std::cerr << "ComController Error setting up MultiListen Socket." << std::endl;
-	    delete _listenSocket;
-	    _listenSocket = NULL;
-	    return false;
-	}
-    }
+    }  
 
     for(std::map<int,std::string>::iterator it = _startupMap.begin(); it != _startupMap.end(); it++)
     {
@@ -360,7 +406,9 @@ bool ComController::setupConnections(std::string & fileArg)
         system((it->second + " &").c_str());
     }
     
-    int retryCount = 15;
+    bool ok = true;
+    int retryCount = 20;
+    std::map<int,bool> connectedMap;
 
     while(_slaveSockets.size() < _numSlaves)
     {
@@ -380,6 +428,7 @@ bool ComController::setupConnections(std::string & fileArg)
 	    }
 
 	    _slaveSockets[nodeNum] = sock;
+	    connectedMap[nodeNum] = true;
 
 	    if(sock->getSocketFD() > _maxSocketFD)
 	    {
@@ -394,6 +443,14 @@ bool ComController::setupConnections(std::string & fileArg)
 	if(!retryCount)
 	{
 	    std::cerr << "ComController Error: Only got connections from " << _slaveSockets.size() << " nodes, " << _numSlaves << " expected." << std::endl;
+
+	    for(std::map<int,std::string>::iterator it = _startupMap.begin(); it != _startupMap.end(); it++)
+	    {
+		if(!connectedMap[it->first])
+		{
+		    std::cerr << "Node: " << it->first << " startup: " << it->second << std::endl;
+		}
+	    }
 	    ok = false;
 	    break;
 	}
