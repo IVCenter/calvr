@@ -35,7 +35,7 @@ BoardMenu::BoardMenu()
                                       "MenuSystem.BoardMenu.Position", 2000.0);
 
     s = ConfigManager::getEntry("value", "MenuSystem.BoardMenu.Trigger",
-                                "UPCLICK");
+                                "DOUBLECLICK");
 
     if(s == "DOUBLECLICK")
     {
@@ -296,11 +296,24 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
             // do click
             if(_activeItem)
-            {
-                _activeItem->processEvent(event);
-                _clickActive = true;
-                return true;
-            }
+	    {
+		BoardMenuSubMenuGeometry * smg =
+		    dynamic_cast<BoardMenuSubMenuGeometry *> (_activeItem);
+		if(smg && !smg->isMenuHead())
+		{
+		    if(smg->isMenuOpen())
+		    {
+			closeMenu((SubMenu*)smg->getMenuItem());
+		    }
+		    else
+		    {
+			openMenu(smg);
+		    }
+		}
+		_activeItem->processEvent(event);
+		_clickActive = true;
+		return true;
+	    }
 
             return false;
         }
@@ -818,19 +831,19 @@ void BoardMenu::selectItem(BoardMenuGeometry * mg)
 	if(mg)
 	{
 	    mg->selectItem(true);
-	    BoardMenuSubMenuGeometry * smg =
+	    /*BoardMenuSubMenuGeometry * smg =
 		dynamic_cast<BoardMenuSubMenuGeometry *> (mg);
 	    if(smg && !smg->isMenuHead())
 	    {
 		//openMenu(smg);
 		_openingElapse = 0.0;
 		//_openingMenu = smg;
-	    }
+	    }*/
 	}
 
 	_activeItem = mg;
     }
-    else if(_activeItem)
+    /*else if(_activeItem)
     {
 	BoardMenuSubMenuGeometry * smg =
 		dynamic_cast<BoardMenuSubMenuGeometry *> (mg);
@@ -852,7 +865,7 @@ void BoardMenu::selectItem(BoardMenuGeometry * mg)
 		}
 	    }
 	}
-    }
+    }*/
 }
 
 void BoardMenu::openMenu(BoardMenuSubMenuGeometry * smg)

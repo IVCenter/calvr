@@ -4,6 +4,7 @@
 #include <kernel/ScreenMultiViewer.h>
 #include <kernel/ScreenMultiViewer2.h>
 #include <kernel/MultiViewScreen.h>
+#include <kernel/ComController.h>
 #include <config/ConfigManager.h>
 
 #include <iostream>
@@ -95,6 +96,11 @@ bool ScreenConfig::init()
 
 void ScreenConfig::computeViewProj()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(int i = 0; i < _screenList.size(); i++)
     {
         _screenList[i]->computeViewProj();
@@ -103,6 +109,11 @@ void ScreenConfig::computeViewProj()
 
 void ScreenConfig::updateCamera()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     for(int i = 0; i < _screenList.size(); i++)
     {
         _screenList[i]->updateCamera();

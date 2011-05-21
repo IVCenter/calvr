@@ -65,6 +65,10 @@ class CVRSocket
         std::string _host;
         int _port;
         struct addrinfo * _res;
+
+        fd_set _connectTest;
+        bool _blockingState;
+        bool _printErrors;
 };
 
 }

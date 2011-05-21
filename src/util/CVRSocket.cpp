@@ -19,6 +19,8 @@ CVRSocket::CVRSocket(int socket)
 {
     _socket = socket;
     _type = CONNECT;
+    _printErrors = false;
+    _blockingState = true;
 }
 
 CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
@@ -29,6 +31,7 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     _sockType = sockType;
     _host = host;
     _port = port;
+    _blockingState = true;
 
     _socket = -1;
 
@@ -46,7 +49,7 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     if((_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
             == -1)
     {
-        perror("socket");
+	perror("socket");
     }
 }
 
@@ -78,7 +81,10 @@ bool CVRSocket::bind()
 
     if(::bind(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
     {
-        perror("bind");
+	if(_printErrors)
+	{
+	    perror("bind");
+	}
         return false;
     }
 
@@ -101,7 +107,10 @@ bool CVRSocket::listen(int backlog)
 
     if(::listen(_socket, backlog) == -1)
     {
-        perror("listen");
+	if(_printErrors)
+	{
+	    perror("listen");
+	}
         return false;
     }
 
@@ -129,7 +138,10 @@ bool CVRSocket::accept()
     if((tmpSock = ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
             == -1)
     {
-        perror("accept");
+	if(_printErrors)
+	{
+	    perror("accept");
+	}
 #ifdef WIN32
         closesocket(_socket);
 #else
@@ -161,18 +173,66 @@ bool CVRSocket::connect(int timeout)
         return false;
     }
 
-    int count = 0;
+    bool resetBlocking = false;
+    if(timeout > 0)
+    {
+	if(_blockingState)
+	{
+	    setBlocking(false);
+	    resetBlocking = true;
+	}
+    }
+
+    int currentTimeout = timeout;
 
     while(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
     {
-        if(count >= timeout)
+	//perror("connect");
+        if(timeout == 0)
         {
             std::cerr << "Error: Unable to connect to host: " << _host
                     << " on port: " << _port << std::endl;
             return false;
         }
-        sleep(1);
-        count++;
+	/*else if(errno == EINPROGRESS)
+	{
+	    continue;
+	}
+	else if(errno == EAGAIN || errno == EALREADY)
+	{
+	    FD_ZERO(&_connectTest);
+
+	    FD_SET(_socket, &_connectTest);
+
+	    struct timeval tv;
+	    tv.tv_sec = currentTimeout;
+	    tv.tv_usec = 0;
+
+	    select(_socket+1,NULL,&_connectTest,NULL,&tv);
+	    if(!FD_ISSET(_socket,&_connectTest))
+	    {
+		std::cerr << "Error: Unable to connect to host: " << _host
+                    << " on port: " << _port << std::endl;
+		return false;
+	    }
+	    break;
+	}*/
+	else
+	{
+	    if(currentTimeout <= 0)
+	    {
+		std::cerr << "Error: Unable to connect to host: " << _host
+                    << " on port: " << _port << std::endl;
+		return false;
+	    }
+	    sleep(1);
+	    currentTimeout--;
+	}
+    }
+
+    if(resetBlocking)
+    {
+	setBlocking(true);
     }
 
     return true;
@@ -256,6 +316,10 @@ void CVRSocket::setBlocking(bool b)
     {
         std::cerr << "Error setting socket blocking." << std::endl;
     }
+    else
+    {
+	_blockingState = b;
+    }
 }
 
 bool CVRSocket::send(void * buf, size_t len, int flags)
@@ -280,8 +344,11 @@ bool CVRSocket::send(void * buf, size_t len, int flags)
         if((sent = ::send(_socket, (const char *)data, bytesToSend, flags))
                 <= 0)
         {
-            std::cerr << "Error sending data." << std::endl;
-            perror("send");
+	    if(_printErrors)
+	    {
+		std::cerr << "Error sending data." << std::endl;
+		perror("send");
+	    }
             break;
         }
         bytesToSend -= sent;
@@ -318,8 +385,11 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
         {
             //if(errno != EAGAIN)
             //{
-            std::cerr << "Error on recv." << std::endl;
-            perror("recv");
+	    if(_printErrors)
+	    {
+		std::cerr << "Error on recv." << std::endl;
+		perror("recv");
+	    }
             break;
             //}
             //std::cerr << "EAGAIN error" << std::endl;

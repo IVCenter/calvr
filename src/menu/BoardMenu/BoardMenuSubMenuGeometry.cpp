@@ -34,6 +34,21 @@ void BoardMenuSubMenuGeometry::selectItem(bool on)
             _node->addChild(_geode);
         }
     }
+    else if(!_open)
+    {
+	if(on)
+        {
+            _node->removeChild(_geode);
+            _node->removeChild(_geodeSelected);
+            _node->addChild(_geodeSelected);
+        }
+        else
+        {
+            _node->removeChild(_geode);
+            _node->removeChild(_geodeSelected);
+            _node->addChild(_geode);
+        }
+    }
 }
 
 void BoardMenuSubMenuGeometry::openMenu(bool open)

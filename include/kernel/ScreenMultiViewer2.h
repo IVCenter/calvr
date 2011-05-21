@@ -166,6 +166,15 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @return true = color, false = default (black)
          */
         static bool getZoneColoring();
+        /*
+         * @brief Sets the contribution variable for setContributionFuncs to use
+         */
+        static void setContributionVar(float var);
+        /**
+         * @brief Gets the contribution variable for setContributionFuncs to use
+         * @return the contribution variable for determining offsets
+         */
+        static float getContributionVar();
 
     protected:
         bool _colorZones; ///< Flags whether or not to color zones via user contribution values
@@ -227,6 +236,7 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          */
         static setContributionFunc setContribution;
         static std::vector<setContributionFunc> setContributionFuncs; ///< vector of the allowed zone contribution functions
+        static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs.
        
 };
 }

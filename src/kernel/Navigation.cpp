@@ -1,6 +1,7 @@
 #include <kernel/Navigation.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
+#include <kernel/ComController.h>
 
 #include <iostream>
 #include <cmath>
@@ -71,6 +72,11 @@ float Navigation::getScale()
 
 void Navigation::update()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     if(_eventActive && !TrackingManager::instance()->isThreaded())
     {
         //processNav(_eventMode,TrackingManager::instance()->getHandMat(_activeHand));

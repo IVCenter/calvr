@@ -32,10 +32,11 @@ int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
 osg::Vec4 ScreenMultiViewer2::_clearColor = osg::Vec4(0,0,0,0);
+float ScreenMultiViewer2::_contributionVar = M_PI;
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
-
+void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 /**************************************************/
 
@@ -81,8 +82,9 @@ void ScreenMultiViewer2::init(int mode)
     _colorZones = false;
 
     /*** Setup setContributionFuncs Vector ***/
-    setContribution = gaussian;
+    setContribution = cosine;
     setContributionFuncs.push_back(linear);
+    setContributionFuncs.push_back(cosine);
     setContributionFuncs.push_back(gaussian);
     /*** Done setting up setContributionFuncs Vector ***/
 
@@ -407,8 +409,8 @@ void ScreenMultiViewer2::setupZones()
         _zoneCenter.push_back(osg::Vec3());
     }
 
-    float left = _myInfo->myChannel->left;
-    float bottom = _myInfo->myChannel->bottom;
+    float negWidth_2 = -_myInfo->myChannel->width/2;
+    float negHeight_2 = -_myInfo->myChannel->height/2;
     float zoneWidth = _myInfo->myChannel->width / _zoneColumns;
     float zoneHeight = _myInfo->myChannel->height / _zoneRows;
 
@@ -416,8 +418,8 @@ void ScreenMultiViewer2::setupZones()
     {
         for (int c = 0; c < _zoneColumns; c++)
         {
-            osg::Vec4 zc = osg::Vec4(left + (c+.5)*zoneWidth, bottom + (r+.5)*zoneHeight,0,1) * _myInfo->transform;
-            _zoneCenter[r*_zoneColumns + c] = osg::Vec3(zc.x(),zc.y(),zc.z());
+            osg::Vec4 zc = osg::Vec4(negWidth_2 + (c+.5)*zoneWidth, 0, negHeight_2 + (r+.5)*zoneHeight,1) * _myInfo->transform;
+            _zoneCenter[r*_zoneColumns+c] = osg::Vec3(zc.x(),zc.y(),zc.z());
         }
     }
 }
@@ -437,7 +439,7 @@ void ScreenMultiViewer2::setupCameras()
             int r = i / _zoneColumns;
             int c = i % _zoneColumns;
 
-            // "extra" calculation do to float->int rounding
+            // "extra" calculation handles float->int rounding
             _camera[i]->setViewport((int)(left + c*zoneWidth),
                                (int)(bottom + r*zoneHeight),
                                (int)(left+(c+1)*zoneWidth)-(int)(left+c*zoneWidth),
@@ -478,16 +480,16 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
 
     if (_orientation3d)
     {
-       o0 = osg::Vec3(u0op.x(),u0op.y(),u0op.z());
-       o1 = osg::Vec3(u1op.x(),u1op.y(),u1op.z());
+        o0 = osg::Vec3(u0op.x(),u0op.y(),u0op.z());
+        o1 = osg::Vec3(u1op.x(),u1op.y(),u1op.z());
     }
     else
     {
-       o0 = osg::Vec3(u0op.x(),u0op.y(),0);
-       o1 = osg::Vec3(u1op.x(),u1op.y(),0);
-       o0.normalize();
-       o1.normalize();
+        o0 = osg::Vec3(u0op.x(),u0op.y(),0);
+        o1 = osg::Vec3(u1op.x(),u1op.y(),0);
     }
+    o0.normalize();
+    o1.normalize();
 
     // compute contributions and set eye locations
     for (int i = 0; i < _zones; i++)
@@ -511,16 +513,34 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
         // set this camera's "clear color" based on contributions as neccessary
         if (_colorZones)
         {
-            _camera[i]->setClearColor(osg::Vec4(contribution0,0,contribution1,0));
+            _camera[i]->setClearColor(osg::Vec4(contribution0,contribution1,0,0));
         }
     }
 }
 
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
-        // contribution factors for each user - in radians
-        contribution0 = MAX(M_PI/2*0.01, acos(toZone0 * orientation0));
-        contribution1 = MAX(M_PI/2*0.01, acos(toZone1 * orientation1));
+        // contribution factors for each user
+        float var = ScreenMultiViewer2::getContributionVar();
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = 1 - angle/var;
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = 1 - angle/var;
+        }
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
 
         float cTotal = contribution0 + contribution1;
 
@@ -528,16 +548,70 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         contribution1 /= cTotal;
 }
 
-void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
+void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
         // contribution factors for each user
-        contribution0 = MAX(0.01, toZone0 * orientation0);
-        contribution1 = MAX(0.01, toZone1 * orientation1);
+        float var = ScreenMultiViewer2::getContributionVar();
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = cos(angle*M_PI/2/var);
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = cos(angle*M_PI/2/var);
+        }
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
 
         float cTotal = contribution0 + contribution1;
 
         contribution0 /= cTotal;
+        contribution1 /= cTotal;
+}
 
+// Returns the value to the right of z in a standardized normal/gaussian distribution
+float cdfGaussian(float z)
+{
+    return 1-(1+erf(z/sqrt(2)))/2;
+}
+
+void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
+{
+        // contribution factors for each user
+        float var = ScreenMultiViewer2::getContributionVar();
+        float sigma = var/3;
+
+        float angle = acos(toZone0 * orientation0);
+        if (angle >= var)
+            contribution0 = 0;
+        else
+        {
+            contribution0 = cdfGaussian(angle/sigma);
+        }
+
+        angle = acos(toZone1 * orientation1);
+        if (angle >= var)
+            contribution1 = 0;
+        else
+        {
+            contribution1 = cdfGaussian(angle/sigma);
+        }
+
+        contribution0 = MAX(0.001, contribution0);
+        contribution1 = MAX(0.001, contribution1);
+
+        float cTotal = contribution0 + contribution1;
+
+        contribution0 /= cTotal;
         contribution1 /= cTotal;
 }
 
@@ -657,4 +731,14 @@ void ScreenMultiViewer2::setZoneColoring(bool zoneColoring)
 bool ScreenMultiViewer2::getZoneColoring()
 {
     return _zoneColoring;
+}
+
+void ScreenMultiViewer2::setContributionVar(float var)
+{
+    _contributionVar = var;
+}
+
+float ScreenMultiViewer2::getContributionVar()
+{
+    return _contributionVar;
 }

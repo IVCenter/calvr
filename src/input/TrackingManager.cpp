@@ -633,6 +633,11 @@ bool TrackingManager::init()
 
 void TrackingManager::update()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     _updateLock.lock();
 
     //std::cerr << "Update Called." << std::endl;

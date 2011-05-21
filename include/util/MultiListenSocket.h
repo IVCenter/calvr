@@ -29,6 +29,7 @@ class MultiListenSocket
         int _queue;
 
         int _socket;
+        bool _valid;
 };
 
 }

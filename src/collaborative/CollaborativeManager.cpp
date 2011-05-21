@@ -265,7 +265,7 @@ void CollaborativeManager::startUpdate()
 
 void CollaborativeManager::update()
 {
-    if(!_connected)
+    if(!_connected || ComController::instance()->getIsSyncError())
     {
 	return;
     }

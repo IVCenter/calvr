@@ -2,6 +2,7 @@
 #include <config/ConfigManager.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
+#include <kernel/ComController.h>
 
 using namespace cvr;
 
@@ -40,6 +41,11 @@ bool MenuManager::init()
 
 void MenuManager::update()
 {
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
     // call update on all menus
     //_mainMenu->updateStart();
     for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)

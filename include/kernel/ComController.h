@@ -6,11 +6,13 @@
 #define CALVR_COM_CONTROLLER_H
 
 #include <util/CVRSocket.h>
+#include <util/MultiListenSocket.h>
 
 #include <osg/ArgumentParser>
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace cvr
 {
@@ -38,7 +40,7 @@ class ComController
          *
          * Only valid if called by master node
          */
-        void sendSlaves(void * data, int size);
+        bool sendSlaves(void * data, int size);
 
         /**
          * @brief Read a block of data from the master node
@@ -47,7 +49,7 @@ class ComController
          *
          * Only valid if called by slave node
          */
-        void readMaster(void * data, int size);
+        bool readMaster(void * data, int size);
 
         /**
          * @brief Read data from all slave nodes
@@ -57,7 +59,7 @@ class ComController
          *
          * Only valid when called by master node
          */
-        void readSlaves(void * data, int size);
+        bool readSlaves(void * data, int size);
 
         /**
          * @brief Send data to the master node
@@ -66,14 +68,14 @@ class ComController
          *
          * Only valid when called by slave node
          */
-        void sendMaster(void * data, int size);
+        bool sendMaster(void * data, int size);
 
         /**
          * @brief Sync the cluster to this call
          *
          * Function does not complete until all nodes in the clust call it
          */
-        void sync();
+        bool sync();
 
         /**
          * @brief Returns true if this node is the master node
@@ -84,6 +86,11 @@ class ComController
          * @brief Get the number of slave nodes in the cluster
          */
         int getNumSlaves();
+
+        bool getIsSyncError() 
+        {
+            return _CCError;
+        }
 
         /**
          * @brief Returns a pointer to the instance of this class
@@ -109,11 +116,17 @@ class ComController
         int _slaveNum; ///< my number, if i am a slave node
         int _port; ///< port to connect to the master node
         int _numSlaves; ///< number of slave nodes in the cluster
+        int _maxSocketFD;
+        fd_set _sockets;
 
         cvr::CVRSocket * _masterSocket; ///< socket to talk to master with
-        std::vector<cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets
+        std::map<int,cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets
+        cvr::MultiListenSocket * _listenSocket;
+        std::map<int,std::string> _startupMap;
 
         static ComController * _myPtr; ///< static self pointer
+
+        bool _CCError;
 };
 
 }
