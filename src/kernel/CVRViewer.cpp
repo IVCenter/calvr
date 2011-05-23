@@ -16,6 +16,13 @@
 #include <vector>
 #include <iostream>
 
+#ifdef WIN32
+#pragma comment(lib, "config.lib")
+#pragma comment(lib, "util.lib")
+#pragma comment(lib, "menu.lib")
+#pragma comment(lib, "input.lib")
+#endif
+
 using namespace cvr;
 
 CVRViewer * CVRViewer::_myPtr = NULL;
@@ -244,7 +251,8 @@ void CVRViewer::defaultUpdateTraversal()
     {
         _updateOperations->runOperations(this);
     }
-#else
+
+#elif (OPENSCENEGRAPH_MAJOR_VERSION == 2) && (OPENSCENEGRAPH_MINOR_VERSION == 9) && (OPENSCENEGRAPH_PATCH_VERSION <= 11)
     _scene->updateSceneGraph(*_updateVisitor);
 
     // if we have a shared state manager prune any unused entries
@@ -267,6 +275,28 @@ void CVRViewer::defaultUpdateTraversal()
         _incrementalCompileOperation->mergeCompiledSubgraphs();
     }
 
+#else
+	_scene->updateSceneGraph(*_updateVisitor);
+
+    // if we have a shared state manager prune any unused entries
+    if(osgDB::Registry::instance()->getSharedStateManager())
+    osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(
+            *getFrameStamp());
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(*getFrameStamp());
+
+    if(_updateOperations.valid())
+    {
+        _updateOperations->runOperations(this);
+    }
+
+    if(_incrementalCompileOperation.valid())
+    {
+        // merge subgraphs that have been compiled by the incremental compiler operation.
+        _incrementalCompileOperation->mergeCompiledSubgraphs(getFrameStamp());
+    }
 #endif
 
     {

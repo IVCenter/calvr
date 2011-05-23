@@ -5,6 +5,7 @@
 #ifndef CALVR_FILE_HANDLER_H
 #define CALVR_FILE_HANDLER_H
 
+#include <kernel/Export.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -12,7 +13,7 @@
 namespace cvr
 {
 
-class FileLoadCallback;
+class CVRKERNEL_EXPORT FileLoadCallback;
 
 // TODO: add unload function call
 

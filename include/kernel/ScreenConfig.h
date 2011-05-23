@@ -5,6 +5,8 @@
 #ifndef CALVR_SCREEN_CONFIG_H
 #define CALVR_SCREEN_CONFIG_H
 
+#include <kernel/Export.h>
+
 #include <osg/Vec3>
 #include <osg/Camera>
 #include <osg/Matrix>
@@ -78,7 +80,7 @@ struct ScreenInfo
  * @brief Reads screen information from config file and creates the needed \c ScreenBase
  *        instances
  */
-class ScreenConfig
+class CVRKERNEL_EXPORT ScreenConfig
 {
     public:
         ScreenConfig();

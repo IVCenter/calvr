@@ -12,6 +12,10 @@
 #include <iostream>
 using namespace cvr;
 
+float MultiViewScreen::EPSILON = 0.00001;
+float MultiViewScreen::T_MAX = 1.0;
+float MultiViewScreen::T_MIN = -1.0;
+
 MultiViewScreen::MultiViewScreen() : ScreenBase()
 {
 }

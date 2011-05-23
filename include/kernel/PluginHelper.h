@@ -5,6 +5,7 @@
 #ifndef PLUGIN_HELPER_H
 #define PLUGIN_HELPER_H
 
+#include <kernel/Export.h>
 #include <kernel/SceneManager.h>
 #include <input/TrackingManager.h>
 #include <menu/MenuSystem.h>
@@ -28,7 +29,7 @@ namespace cvr
  * functions into a single place.  The functions themselves simply pass the 
  * call along to the correct class.
  */
-class PluginHelper
+class CVRKERNEL_EXPORT PluginHelper
 {
     public:
         PluginHelper();

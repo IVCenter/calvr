@@ -47,12 +47,12 @@ void PluginHelper::setObjectScale(float scale)
 
 const osg::Matrix & PluginHelper::getWorldToObjectTransform()
 {
-    SceneManager::instance()->getWorldToObjectTransform();
+    return SceneManager::instance()->getWorldToObjectTransform();
 }
 
 const osg::Matrix & PluginHelper::getObjectToWorldTransform()
 {
-    SceneManager::instance()->getObjectToWorldTransform();
+    return SceneManager::instance()->getObjectToWorldTransform();
 }
 
 int PluginHelper::getNumHands()

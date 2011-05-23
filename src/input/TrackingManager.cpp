@@ -18,10 +18,15 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
-#include <sys/time.h>
-
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
+#include <WinBase.h>
+#include <util/TimeOfDay.h>
+#pragma comment(lib, "kernel.lib")
+#pragma comment(lib, "config.lib")
+#pragma comment(lib, "util.lib")
+#else
+#include <sys/time.h>
 #endif
 
 using namespace cvr;
@@ -885,12 +890,19 @@ void TrackingManager::run()
                 - start.tv_usec) / 1000000.0);
         if(interval < target)
         {
+#ifndef WIN32
             timespec ts;
             interval = target - interval;
             ts.tv_sec = (int)interval;
             interval -= ((float)((int)interval));
             ts.tv_nsec = (long int)(interval * 1000000000.0 * 0.95);
             nanosleep(&ts, NULL);
+#else
+			//TODO: do this sub-milisecond
+			interval = target - interval;
+			DWORD sleeptime = (DWORD)(interval * 1000.0 * 0.95);
+			Sleep(sleeptime);
+#endif
         }
         readings++;
         gettimeofday(&printEnd, NULL);

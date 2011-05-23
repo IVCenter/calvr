@@ -5,6 +5,7 @@
 #ifndef CALVR_COM_CONTROLLER_H
 #define CALVR_COM_CONTROLLER_H
 
+#include <kernel/Export.h>
 #include <util/CVRSocket.h>
 #include <util/MultiListenSocket.h>
 
@@ -22,7 +23,7 @@ namespace cvr
  *
  * Allows for multinode communication and synchronization
  */
-class ComController
+class CVRKERNEL_EXPORT ComController
 {
     public:
         virtual ~ComController();

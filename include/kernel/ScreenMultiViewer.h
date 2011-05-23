@@ -42,7 +42,7 @@ class ScreenMultiViewer : public ScreenBase
 
         void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos);
 
-        struct PreDrawCallback : public osg::Camera::Camera::DrawCallback
+        struct PreDrawCallback : public osg::Camera::DrawCallback
         {
             enum IndexState
             {
@@ -59,7 +59,7 @@ class ScreenMultiViewer : public ScreenBase
             mutable GLuint _query;
         };
 
-        struct PostDrawCallback : public osg::Camera::Camera::DrawCallback
+        struct PostDrawCallback : public osg::Camera::DrawCallback
         {
             virtual void operator()(osg::RenderInfo & ri) const;
             PreDrawCallback * _pdc;

@@ -5,6 +5,7 @@
 #ifndef CALVR_PLUGIN_MANAGER_H
 #define CALVR_PLUGIN_MANAGER_H
 
+#include <kernel/Export.h>
 #include <kernel/CVRPlugin.h>
 
 #include <string>
@@ -29,7 +30,7 @@ struct InteractionEvent;
 /**
  * @brief Loads and manager CalVR plugins
  */
-class PluginManager
+class CVRKERNEL_EXPORT PluginManager
 {
     public:
         ~PluginManager();

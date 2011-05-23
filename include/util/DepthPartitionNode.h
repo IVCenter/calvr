@@ -21,6 +21,7 @@
 #ifndef _OF_DEPTHPARTITIONNODE_
 #define _OF_DEPTHPARTITIONNODE_
 
+#include <util/Export.h>
 #include <util/DistanceAccumulator.h>
 #include <osg/Camera>
 
@@ -33,7 +34,7 @@
  * is small enough in the z-direction to avoid depth buffer problems
  * for very large scenes.
 **********************************************************/
-class CURRENT_CLASS : public osg::Group
+class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 {
   public:
 	CURRENT_CLASS();

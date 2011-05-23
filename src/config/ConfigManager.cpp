@@ -11,6 +11,7 @@
 #ifdef WIN32
 #include <Winsock2.h>
 #include <stdlib.h>
+#pragma comment(lib, "wsock32.lib")
 #endif
 
 using namespace cvr;

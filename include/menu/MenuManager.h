@@ -1,6 +1,7 @@
 #ifndef MENU_MANAGER_H
 #define MENU_MANAGER_H
 
+#include <menu/Export.h>
 #include <kernel/InteractionManager.h>
 #include <menu/MenuSystem.h>
 
@@ -9,7 +10,7 @@
 namespace cvr
 {
 
-class MenuManager
+class CVRMENU_EXPORT MenuManager
 {
     friend class MenuItem;
     public:

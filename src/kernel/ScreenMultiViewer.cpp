@@ -1,3 +1,9 @@
+#ifdef WIN32
+#include <GL/glew.h>
+#define M_PI 3.141592653589793238462643
+#pragma comment(lib, "Opengl32.lib")
+#endif
+
 #include <kernel/ScreenMultiViewer.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/SceneManager.h>

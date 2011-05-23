@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #else
 #include <winsock2.h>
+#include <stdlib.h>
+#pragma comment(lib, "Ws2_32.lib")
 #endif
 
 using namespace cvr;
@@ -46,7 +48,7 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
 
     getaddrinfo(_host.c_str(), ss.str().c_str(), &hints, &_res);
 
-    if((_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
+    if((_socket = (int) socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
             == -1)
     {
 	perror("socket");
@@ -135,7 +137,7 @@ bool CVRSocket::accept()
     socklen_t addr_size;
     addr_size = sizeof(node_addr);
     int tmpSock;
-    if((tmpSock = ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
+    if((tmpSock = (int) ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
             == -1)
     {
 	if(_printErrors)
@@ -225,7 +227,11 @@ bool CVRSocket::connect(int timeout)
                     << " on port: " << _port << std::endl;
 		return false;
 	    }
+#ifndef WIN32
 	    sleep(1);
+#else
+		Sleep(1000);
+#endif
 	    currentTimeout--;
 	}
     }
@@ -302,6 +308,8 @@ void CVRSocket::setBlocking(bool b)
     }
 
     int res;
+
+#ifndef WIN32
     int flags = fcntl(_socket, F_GETFL, 0);
     if(b)
     {
@@ -311,6 +319,18 @@ void CVRSocket::setBlocking(bool b)
     {
         res = fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
     }
+#else
+	u_long val;
+	if(b)
+	{
+		val = 0;
+	}
+	else
+	{
+		val = 1;
+	}
+	res = ioctlsocket(_socket, FIONBIO, &val);
+#endif
 
     if(res < 0)
     {
@@ -336,7 +356,7 @@ bool CVRSocket::send(void * buf, size_t len, int flags)
         return false;
     }
 
-    int bytesToSend = len;
+    int bytesToSend = (int) len;
     int sent;
     char * data = (char *)buf;
     while(bytesToSend > 0)
@@ -376,7 +396,7 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
         return false;
     }
 
-    int bytesToRead = len;
+    int bytesToRead = (int) len;
     int read;
     char * data = (char *)buf;
     while(bytesToRead > 0)

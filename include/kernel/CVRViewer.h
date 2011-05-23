@@ -5,6 +5,7 @@
 #ifndef CALVR_VIEWER_H
 #define CALVR_VIEWER_H
 
+#include <kernel/Export.h>
 #include <osgViewer/Viewer>
 
 #include <list>
@@ -18,7 +19,7 @@ struct DefaultUpdate;
 /**
  * @brief Main viewer for the system, does rendering traversal, distributes window events
  */
-class CVRViewer : public osgViewer::Viewer
+class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 {
     friend struct DefaultUpdate;
     public:
@@ -198,7 +199,7 @@ class CVRViewer : public osgViewer::Viewer
  *
  * Added to the viewer by default
  */
-struct DefaultUpdate : public CVRViewer::UpdateTraversal
+struct CVRKERNEL_EXPORT DefaultUpdate : public CVRViewer::UpdateTraversal
 {
     public:
         void update();

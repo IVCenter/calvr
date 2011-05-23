@@ -5,6 +5,7 @@
 #ifndef CALVR_NAVIGATION_H
 #define CALVR_NAVIGATION_H
 
+#include <kernel/Export.h>
 #include <kernel/InteractionManager.h>
 
 #include <osg/Matrix>
@@ -31,7 +32,7 @@ enum NavMode
 /**
  * @brief Uses tracking events to interact with object space
  */
-class Navigation
+class CVRKERNEL_EXPORT Navigation
 {
     public:
         ~Navigation();

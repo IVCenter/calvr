@@ -4,6 +4,7 @@
 #ifndef CALVR_INTERACTION_MANAGER_H
 #define CALVR_INTERACTION_MANAGER_H
 
+#include <kernel/Export.h>
 #include <kernel/CVRViewer.h>
 
 #include <osg/Vec3>
@@ -87,12 +88,12 @@ struct KeyboardInteractionEvent : public InteractionEvent
         int mod; ///< modifier for keypress
 };
 
-osg::Matrix tie2mat(TrackingInteractionEvent * tie);
+CVRKERNEL_EXPORT osg::Matrix tie2mat(TrackingInteractionEvent * tie);
 
 /**
  * @brief Directs events through interaction pipeline, manages event queue
  */
-class InteractionManager
+class CVRKERNEL_EXPORT InteractionManager
 {
         friend class CVRViewer;
     public:

@@ -10,6 +10,10 @@
 #include <vector>
 #include <string>
 
+#ifdef WIN32
+#pragma comment(lib, "wsock32.lib")
+#endif
+
 using namespace cvr;
 
 ComController * ComController::_myPtr = NULL;
@@ -21,7 +25,9 @@ ComController::ComController()
     _CCError = false;
 
     _maxSocketFD = -1;
+#ifndef WIN32
     signal(SIGPIPE, SIG_IGN);
+#endif
 }
 
 ComController::~ComController()
@@ -438,7 +444,11 @@ bool ComController::setupConnections(std::string & fileArg)
 	    std::cerr << "Connected to Node: " << nodeNum << std::endl;
 	}
 
+#ifndef WIN32
 	sleep(1);
+#else
+	Sleep(1000);
+#endif
 	retryCount--;
 	if(!retryCount)
 	{
