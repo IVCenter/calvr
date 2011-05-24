@@ -684,6 +684,46 @@ void BoardMenu::updateMenus()
         _menuMap[foundList[i]]->addChild(scaleMT);
         foundList[i]->setDirty(false);
     }
+
+    std::stack<SubMenu*> revMenuStack;
+    while(_openMenus.size())
+    {
+	bool found = false;
+	for(int i = 0; i < foundList.size(); i++)
+	{
+	    if(foundList[i] == _openMenus.top())
+	    {
+		revMenuStack.push(_openMenus.top());
+		found = true;
+	    }
+	}
+
+	if(!found)
+	{
+	    closeMenu(_openMenus.top());
+	}
+
+	_openMenus.pop();
+    }
+
+    float offset = 0;
+    osg::Matrix m;
+    m.makeTranslate(osg::Vec3(-offset,0,0));
+    if(revMenuStack.size())
+    {
+	_menuMap[revMenuStack.top()]->setMatrix(m);
+	_openMenus.push(revMenuStack.top());
+	revMenuStack.pop();
+    }
+
+    while(revMenuStack.size())
+    {
+	offset += _widthMap[revMenuStack.top()];
+	m.makeTranslate(osg::Vec3(-offset,0,0));
+	_menuMap[revMenuStack.top()]->setMatrix(m);
+	_openMenus.push(revMenuStack.top());
+	revMenuStack.pop();
+    }
 }
 
 /*BoardMenuGeometry * BoardMenu::createGeometry(MenuItem * item, bool head)
