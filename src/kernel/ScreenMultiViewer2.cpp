@@ -76,7 +76,7 @@ void ScreenMultiViewer2::init(int mode)
     _maxZoneColumns = ConfigManager::getInt("maxColumns","Zones",MAX_ZONES_DEFAULT);
     _maxZoneRows = ConfigManager::getInt("maxRows","Zones",4);
     _orientation3d = ConfigManager::getBool("Orientation3d",true);
-    _autoAdjust = ConfigManager::getBool("FrameRate.autoAdjust",true);
+    _autoAdjust = ConfigManager::getBool("autoAdjust","FrameRate",true);
     setAutoAdjustTarget(ConfigManager::getFloat("target","FrameRate",20));
     setAutoAdjustOffset(ConfigManager::getFloat("offset","FrameRate",4));
     
