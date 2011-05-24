@@ -492,7 +492,7 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
     o0.normalize();
     o1.normalize();
 
-    // auto-set contribution variable if needed
+    // auto-set contribution variable if needed (minimum of 90 degrees)
     if (_autoContributionVar)
         setContributionVar(MAX(M_PI/2,acos(o0*o1)));
 
