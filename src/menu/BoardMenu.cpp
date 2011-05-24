@@ -339,6 +339,49 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 void BoardMenu::itemDelete(MenuItem * item)
 {
     //std::cerr << "Removing item" << std::endl;
+    
+    std::vector<SubMenu*> searchList;
+    searchList.push_back(_myMenu);
+    std::vector<std::pair<SubMenu*,MenuItem*> > removeList;
+
+    while(searchList.size())
+    {
+        for(std::vector<MenuItem*>::iterator it =
+                searchList[0]->getChildren().begin(); it
+                != searchList[0]->getChildren().end(); it++)
+        {
+            if((*it)->isSubMenu())
+            {
+		if((*it) == item)
+		{
+		     //it = searchList[0]->getChildren().erase(it);
+		     removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+		     continue;
+		}
+		else
+		{
+		    SubMenu * sm = dynamic_cast<SubMenu*> (*it);
+		    searchList.push_back(sm);
+		}
+            }
+	    else if((*it) == item)
+	    {
+		//it = searchList[0]->getChildren().erase(it);
+		removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+		continue;
+	    }
+	    //it++;
+        }
+        searchList.erase(searchList.begin());
+    }
+
+    for(int i = 0; i < removeList.size(); i++)
+    {
+	removeList[i].first->removeItem(removeList[i].second);
+    }
+
+    updateMenus();
+
     bool removedItem;
     do
     {
@@ -395,7 +438,7 @@ void BoardMenu::itemDelete(MenuItem * item)
 	_myMenu = NULL;
     }
 
-    if(!_myMenu)
+    /*if(!_myMenu)
     {
 	return;
     }
@@ -403,7 +446,6 @@ void BoardMenu::itemDelete(MenuItem * item)
     std::vector<SubMenu*> searchList;
     searchList.push_back(_myMenu);
 
-    // search through menu tree, make list of all submenus, dirty all submenus with a dirty child
     while(searchList.size())
     {
         for(std::vector<MenuItem*>::iterator it =
@@ -432,7 +474,7 @@ void BoardMenu::itemDelete(MenuItem * item)
         }
         searchList.erase(searchList.begin());
     }
-    updateMenus();
+    updateMenus();*/
 }
 
 void BoardMenu::clear()
@@ -686,6 +728,8 @@ void BoardMenu::updateMenus()
     }
 
     std::stack<SubMenu*> revMenuStack;
+    //std::cerr << "OpenMenus: " << _openMenus.size() << std::endl;
+    //std::cerr << "MenuNum: " << _menuRoot->getNumChildren() << std::endl;
     while(_openMenus.size())
     {
 	bool found = false;
@@ -701,6 +745,11 @@ void BoardMenu::updateMenus()
 	if(!found)
 	{
 	    closeMenu(_openMenus.top());
+	    //std::cerr << "Removing open menu." << std::endl;
+	}
+	else
+	{
+	    //std::cerr << "Not removing open menu." << std::endl;
 	}
 
 	_openMenus.pop();
