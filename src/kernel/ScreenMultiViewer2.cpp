@@ -32,6 +32,7 @@ int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
 osg::Vec4 ScreenMultiViewer2::_clearColor = osg::Vec4(0,0,0,0);
+bool ScreenMultiViewer2::_autoContributionVar = true;
 float ScreenMultiViewer2::_contributionVar = M_PI;
 
 /*** Declarations for setContribution functions ***/
@@ -491,6 +492,10 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
     o0.normalize();
     o1.normalize();
 
+    // auto-set contribution variable if needed
+    if (_autoContributionVar)
+        setContributionVar(MAX(M_PI/2,acos(o0*o1)));
+
     // compute contributions and set eye locations
     for (int i = 0; i < _zones; i++)
     {
@@ -766,4 +771,14 @@ void ScreenMultiViewer2::setContributionVar(float var)
 float ScreenMultiViewer2::getContributionVar()
 {
     return _contributionVar;
+}
+
+void ScreenMultiViewer2::setAutoContributionVar(bool autoCV)
+{
+    _autoContributionVar = autoCV;
+}
+
+bool ScreenMultiViewer2::getAutoContributionVar()
+{
+    return _autoContributionVar;
 }
