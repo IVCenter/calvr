@@ -102,7 +102,7 @@ void main(void)
 
     if(diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0)
     {
-	return;
+	//return;
     }
 
     diffuseV0P0 = max(0.0, diffuseV0P0);

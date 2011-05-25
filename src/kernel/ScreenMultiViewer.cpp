@@ -21,7 +21,9 @@
 #include <string>
 #include <cmath>
 
-#define FRAGMENT_QUERY
+//#define FRAGMENT_QUERY
+
+//TODO: add glewInit call for windows
 
 using namespace cvr;
 
@@ -733,7 +735,7 @@ void ScreenMultiViewer::updateCamera()
 	geode->addDrawable(sd);
 	SceneManager::instance()->getObjectsRoot()->addChild(geode);*/
 		
-	addTestGeometry();
+	//addTestGeometry();
 	_testGeoAdded = true;
     }
     else if(!_testGeoAdded)
@@ -995,16 +997,22 @@ void ScreenMultiViewer::algtest()
 
 void ScreenMultiViewer::addTestGeometry()
 {
+    static bool geoadded = false;
+    if(geoadded)
+    {
+	return;
+    }
+    geoadded = true;
     osg::Geometry * geo = new osg::Geometry();
     osg::Vec3Array* verts = new osg::Vec3Array();
-    verts->push_back(osg::Vec3(75,0,-75));
-    verts->push_back(osg::Vec3(0,0,75));
-    verts->push_back(osg::Vec3(-75,0,-75));
-    verts->push_back(osg::Vec3(500,0,0));
-    verts->push_back(osg::Vec3(650,0,0));
-    verts->push_back(osg::Vec3(500,0,75));
-    verts->push_back(osg::Vec3(-500,0,75));
-    verts->push_back(osg::Vec3(-575,0,75));
+    verts->push_back(osg::Vec3(75,1500,-75));
+    verts->push_back(osg::Vec3(0,1500,75));
+    verts->push_back(osg::Vec3(-75,1500,-75));
+    verts->push_back(osg::Vec3(500,1500,0));
+    verts->push_back(osg::Vec3(650,1500,0));
+    verts->push_back(osg::Vec3(500,1500,75));
+    verts->push_back(osg::Vec3(-500,1500,75));
+    verts->push_back(osg::Vec3(-575,1500,75));
     verts->push_back(osg::Vec3(-575,0,-75));
 
     geo->setVertexArray(verts);
@@ -1117,6 +1125,7 @@ void ScreenMultiViewer::addTestGeometry()
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(geo);
 
+    std::cerr << "Adding test geometry." << std::endl;
     SceneManager::instance()->getObjectsRoot()->addChild(geode);
 }
 
