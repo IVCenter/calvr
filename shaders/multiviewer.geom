@@ -299,7 +299,7 @@ void main(void)
     seg2.z = 0;
     seg2 = normalize(seg2);
 
-    if(dot(seg0,seg1) >= 0.0)
+    if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
     {
 	outputTriangle = true;
     }
@@ -342,7 +342,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0|| dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -386,7 +386,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -452,7 +452,7 @@ void main(void)
     seg2.z = 0;
     seg2 = normalize(seg2);
 
-    if(dot(seg0,seg1) >= 0.0)
+    if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
     {
 	outputTriangle = true;
     }
@@ -495,7 +495,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -539,7 +539,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
