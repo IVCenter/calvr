@@ -163,6 +163,12 @@ void main(void)
 	t1p0 = gl_TextureMatrix[7] * t1p0;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p0;
+	t0p0 = t1p0;
+	t1p0 = tmp;
+    }
 
     distance0 = t0p1.z;
     distance1 = t1p1.z;
@@ -196,6 +202,12 @@ void main(void)
 	t1p1 = gl_TextureMatrix[7] * t1p1;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p1;
+	t0p1 = t1p1;
+	t1p1 = tmp;
+    }
     
     distance0 = t0p2.z;
     distance1 = t1p2.z;
@@ -229,6 +241,12 @@ void main(void)
 	t1p2 = gl_TextureMatrix[7] * t1p2;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p2;
+	t0p2 = t1p2;
+	t1p2 = tmp;
+    }
 
     /*t0p0 = gl_TextureMatrix[5] * t0p0;
     t0p1 = gl_TextureMatrix[5] * t0p1;
