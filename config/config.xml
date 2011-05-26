@@ -90,10 +90,10 @@
      <PBOs value="off" />
      <DrawLines value="false" />
     </MultiGPURender>
-    <SpaceTraveler value="off" >
-     <TransMult value="2.0" />
-     <RotMult value="1.4" />
-    </SpaceTraveler>
+    <SpaceNavigator value="on" >
+     <TransMult value="1.0" />
+     <RotMult value="1.0" />
+    </SpaceNavigator>
     <PluginUtil value="off" />
 
     <CudaTest value="off" />
