@@ -27,7 +27,7 @@
 
 using namespace cvr;
 
-ScreenMultiViewer::ScreenMultiViewer() : ScreenBase()
+ScreenMultiViewer::ScreenMultiViewer() : ScreenMVSimulator()
 {
     std::cerr << "Using Multi Viewer Screen" << std::endl;
     _testGeoAdded = false;
@@ -317,7 +317,7 @@ void ScreenMultiViewer::computeViewProj()
 
 	_viewer0Dir->set(viewerdir);
 
-	if(TrackingManager::instance()->getNumHeads() >= 2)
+	if(TrackingManager::instance()->getNumHeads() >= 2 || isSimulatedHeadMatrix(1))
 	{
 	    viewerdir = osg::Vec3(0.0,1.0,0.0);
 	    viewerdir = viewerdir * getCurrentHeadMatrix(1);

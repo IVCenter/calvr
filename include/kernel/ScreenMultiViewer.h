@@ -3,7 +3,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-#include <kernel/ScreenBase.h>
+#include <kernel/ScreenMVSimulator.h>
 
 #include <osg/Program>
 #include <osg/Shader>
@@ -14,7 +14,7 @@
 namespace cvr
 {
 
-class ScreenMultiViewer : public ScreenBase
+class ScreenMultiViewer : public ScreenMVSimulator
 {
     public:
         ScreenMultiViewer();
