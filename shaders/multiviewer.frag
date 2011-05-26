@@ -39,11 +39,11 @@ uniform float maxRatio;
 
 void main(void)
 {
-    gl_FragColor.xyz = color0;
+    //gl_FragColor.xyz = color0;
     //gl_FragColor = vec4(1.0,1.0,1.0,1.0);
-    gl_FragColor.w = 1.0;
+    //gl_FragColor.w = 1.0;
     //gl_FragDepth = 0.9;
-    return;
+    //return;
 
     // get fragment world space position
     vec3 fragpos = screenCorner + gl_FragCoord.x * rightPerPixel + gl_FragCoord.y * upPerPixel;

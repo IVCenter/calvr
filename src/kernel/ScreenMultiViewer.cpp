@@ -131,7 +131,7 @@ void ScreenMultiViewer::init(int mode)
 
     _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "multiviewer.vert"));
     _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "multiviewer.frag"));
-    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom"));
+    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom.7"));
 
     _program = new osg::Program;
     _program->addShader(_vert);
