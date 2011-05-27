@@ -59,15 +59,17 @@ void MultiViewScreen::computeScreenInfoXZ() {
 }
 
 void MultiViewScreen::createCameras(unsigned int quantity) {
-    std::string shaderDir;
+    /*std::string shaderDir;
     char * cvrHome = getenv("CALVR_HOME");
     if(cvrHome) {
 	shaderDir = cvrHome;
 	shaderDir = shaderDir + "/";
     }
-    shaderDir = shaderDir + "shaders/";
+    shaderDir = shaderDir + "shaders/";*/
     for(unsigned int i = 0; i < quantity; ++i) {
 	osg::Camera * cam = new osg::Camera;
+	osg::DisplaySettings * ds = new osg::DisplaySettings();
+	cam->setDisplaySettings(ds);
 	_cameras.push_back(cam);
         CVRViewer::instance()->addSlave(cam, osg::Matrix(), osg::Matrix());
 	defaultCameraInit(cam);
@@ -78,8 +80,8 @@ void MultiViewScreen::createCameras(unsigned int quantity) {
 	PreDrawCallback * pdc = new PreDrawCallback;
 	pdc->screen = this;
 	pdc->render_state = i;
-	pdc->vertShader = shaderDir + "interleaver.vert";
-	pdc->fragShader = shaderDir + "interleaver.frag";
+	//pdc->vertShader = shaderDir + "interleaver.vert";
+	//pdc->fragShader = shaderDir + "interleaver.frag";
 	pdc->cameraList = &_cameras;
 	pdc->scList = &_stereoCallbacks;
 	_preCallbacks.push_back(pdc);
@@ -87,7 +89,7 @@ void MultiViewScreen::createCameras(unsigned int quantity) {
 
         osgViewer::Renderer * renderer = dynamic_cast<osgViewer::Renderer*> (cam->getRenderer());
 	//both scene 0 and 1 will be the same function
-	osg::DisplaySettings * ds = renderer->getSceneView(0)->getDisplaySettings();
+	ds = renderer->getSceneView(0)->getDisplaySettings();
 	//set to false for StarCave.  When false, the StereoBallback does
 	//not matter.  True is for NexCave.
 	ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);

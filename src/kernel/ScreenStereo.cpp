@@ -21,6 +21,9 @@ void ScreenStereo::init(int mode)
 
     _camera = new osg::Camera();
 
+    osg::DisplaySettings * ds = new osg::DisplaySettings();
+    _camera->setDisplaySettings(ds);
+
     CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
     defaultCameraInit(_camera.get());
 
@@ -97,4 +100,26 @@ ScreenInfo * ScreenStereo::findScreenInfo(osg::Camera * c)
         return _myInfo;
     }
     return NULL;
+}
+
+void ScreenStereo::adjustViewportCoords(int & x, int & y)
+{
+    if(_stereoMode == osg::DisplaySettings::HORIZONTAL_SPLIT)
+    {
+	if(x > (_myInfo->myChannel->width / 2.0))
+	{
+	    x = (int)( ((float)x) - (_myInfo->myChannel->width / 2.0) );
+	}
+	x *= 2;
+    }
+    else if(_stereoMode == osg::DisplaySettings::VERTICAL_SPLIT)
+    {
+	if(y > (_myInfo->myChannel->height / 2.0))
+	{
+	    y = (int)(((float)y) - (_myInfo->myChannel->height / 2.0));
+	}
+	y *= 2;
+    }
+
+    return;
 }

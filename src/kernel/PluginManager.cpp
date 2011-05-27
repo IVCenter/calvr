@@ -39,15 +39,13 @@ PluginManager * PluginManager::instance()
 
 bool PluginManager::init()
 {
-    char * pluginDir = getenv("CALVR_HOME");
-    if(!pluginDir)
-    {
-        std::cerr << "CALVR_HOME not set." << std::endl;
-        return false;
-    }
+    _pluginLibDir = CalVR::instance()->getHomeDir();
 
-    _pluginLibDir = pluginDir;
+#ifdef WIN32
+    _pluginLibDir += "/bin/plugins/";
+#else
     _pluginLibDir += "/lib/plugins/";
+#endif
 
     std::vector<std::string> plugins;
     ConfigManager::getChildren("Plugin", plugins);

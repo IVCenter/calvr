@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     osg::ArgumentParser args(&argc, argv);
     if(!calvr->init(args,cvrDir))
     {
-	return 1;
+	return 0;
     }
 
     calvr->run();

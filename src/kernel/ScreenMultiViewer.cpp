@@ -43,6 +43,10 @@ void ScreenMultiViewer::init(int mode)
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
 
     _camera = new osg::Camera();
+
+    osg::DisplaySettings * ds = new osg::DisplaySettings();
+    _camera->setDisplaySettings(ds);
+
     CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
     defaultCameraInit(_camera.get());
 
@@ -119,15 +123,7 @@ void ScreenMultiViewer::init(int mode)
 #endif
 
     std::string shaderdir;
-
-    char * cvrHome = getenv("CALVR_HOME");
-    if(cvrHome)
-    {
-	shaderdir = cvrHome;
-	shaderdir = shaderdir + "/";
-    }
-
-    shaderdir = shaderdir + "shaders/";
+    shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
     _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "multiviewer.vert"));
     _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "multiviewer.frag"));

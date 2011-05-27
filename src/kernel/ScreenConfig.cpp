@@ -149,6 +149,28 @@ ScreenInfo * ScreenConfig::getScreenInfo(int screen)
     return _screenList[screen]->getScreenInfo();
 }
 
+ScreenInfo * ScreenConfig::getMasterScreenInfo(int screen)
+{
+    if(ComController::instance()->isMaster())
+    {
+	if(screen < 0 || screen >= _screenInfoList.size())
+	{
+	    return NULL;
+	}
+
+	return _screenInfoList[screen];
+    }
+    else
+    {
+	if(screen < 0 || screen >= _masterScreenInfoList.size())
+	{
+	    return NULL;
+	}
+
+	return _masterScreenInfoList[screen];
+    }
+}
+
 void ScreenConfig::setEyeSeparationMultiplier(float mult)
 {
     ScreenBase::_eyeSepMult = mult;
@@ -588,4 +610,112 @@ void ScreenConfig::findScreenInfo(osg::Camera * c, osg::Vec3 & center,
     center = si->xyz;
     width = si->width;
     height = si->height;
+}
+
+int ScreenConfig::findScreenNumber(osg::Camera * c)
+{
+    for(int i = 0; i < _screenList.size(); i++)
+    {
+	if(_screenList[i]->findScreenInfo(c))
+	{
+	    return i;
+	}
+    }
+    return -1;
+}
+
+void ScreenConfig::syncMasterScreens()
+{
+    if(ComController::instance()->isMaster())
+    {
+	int num = _pipeInfoList.size();
+	ComController::instance()->sendSlaves(&num,sizeof(int));
+
+	for(int i = 0; i < num; i++)
+	{
+	    ComController::instance()->sendSlaves(_pipeInfoList[i],sizeof(struct PipeInfo));
+	}
+
+	num = _windowInfoList.size();
+	ComController::instance()->sendSlaves(&num,sizeof(int));
+
+	for(int i = 0; i < num; i++)
+	{
+	    ComController::instance()->sendSlaves(_windowInfoList[i],sizeof(struct WindowInfo));
+	}
+
+	num = _channelInfoList.size();
+	ComController::instance()->sendSlaves(&num,sizeof(int));
+
+	for(int i = 0; i < num; i++)
+	{
+	    ComController::instance()->sendSlaves(_channelInfoList[i],sizeof(struct ChannelInfo));
+	    int stringsize = _channelInfoList[i]->stereoMode.size()+1;
+	    char end = '\0';
+	    ComController::instance()->sendSlaves(&stringsize,sizeof(int));
+	    ComController::instance()->sendSlaves((void*)_channelInfoList[i]->stereoMode.c_str(),_channelInfoList[i]->stereoMode.size());
+	    ComController::instance()->sendSlaves(&end,sizeof(char));
+	}
+
+	num = _screenInfoList.size();
+	ComController::instance()->sendSlaves(&num,sizeof(int));
+
+	for(int i = 0; i < num; i++)
+	{
+	    ComController::instance()->sendSlaves(_screenInfoList[i],sizeof(struct ScreenInfo));
+	}
+    }
+    else
+    {
+	int num;
+	ComController::instance()->readMaster(&num,sizeof(int));
+
+	struct PipeInfo * pi;
+	for(int i = 0; i < num; i++)
+	{
+	    pi = new struct PipeInfo;
+	    ComController::instance()->readMaster(pi,sizeof(struct PipeInfo));
+	    _masterPipeInfoList.push_back(pi);
+	}
+
+	ComController::instance()->readMaster(&num,sizeof(int));
+
+	struct WindowInfo * wi;
+	for(int i = 0; i < num; i++)
+	{
+	    wi = new struct WindowInfo;
+	    ComController::instance()->readMaster(wi,sizeof(struct WindowInfo));
+	    wi->myPipe = _masterPipeInfoList[wi->pipeIndex];
+	    wi->gc = NULL; // I would hope no one ever tries to use this
+	    _masterWindowInfoList.push_back(wi);
+	}
+
+	ComController::instance()->readMaster(&num,sizeof(int));
+
+	struct ChannelInfo * ci;
+	for(int i = 0; i < num; i++)
+	{
+	    ci = new struct ChannelInfo;
+	    ComController::instance()->readMaster(ci,sizeof(struct ChannelInfo));
+	    int stringsize;
+	    ComController::instance()->readMaster(&stringsize,sizeof(int));
+	    char * stereomode = new char[stringsize];
+	    ComController::instance()->readMaster(stereomode,stringsize);
+	    ci->stereoMode = stereomode;
+	    ci->myWindow = _masterWindowInfoList[ci->windowIndex];
+	    delete[] stereomode;
+	    _masterChannelInfoList.push_back(ci);
+	}
+
+	ComController::instance()->readMaster(&num,sizeof(int));
+
+	struct ScreenInfo * si;
+	for(int i = 0; i < num; i++)
+	{
+	    si = new struct ScreenInfo;
+	    ComController::instance()->readMaster(si,sizeof(struct ScreenInfo));
+	    si->myChannel = _masterChannelInfoList[si->channelIndex];
+	    _masterScreenInfoList.push_back(si);
+	}
+    }
 }

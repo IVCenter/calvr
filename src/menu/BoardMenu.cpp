@@ -101,17 +101,9 @@ BoardMenu::BoardMenu()
 
     std::string fontfile;
 
-    char * iconDir = getenv("CALVR_HOME");
-    if(iconDir)
-    {
-        _iconDir = iconDir;
-        BoardMenuGeometry::_iconDir = iconDir;
-	fontfile = iconDir;
-    }
-    else
-    {
-        std::cerr << "Warning: CALVR_HOME not set." << std::endl;
-    }
+    _iconDir = CalVR::instance()->getHomeDir();
+    BoardMenuGeometry::_iconDir = _iconDir;
+    fontfile = _iconDir;
 
     fontfile = fontfile + "/resources/ArenaCondensed.ttf";
 

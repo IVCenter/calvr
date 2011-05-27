@@ -132,6 +132,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         return false;
     }
 
+    _screens->syncMasterScreens();
+
     _scene = cvr::SceneManager::instance();
     if(!_scene->init())
     {
@@ -185,6 +187,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     {
         cvr::FileHandler::instance()->loadFile(commandLineFile);
     }
+
+    return true;
 }
 
 void CalVR::run()
