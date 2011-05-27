@@ -6,6 +6,8 @@
 #define CALVR_VIEWER_H
 
 #include <kernel/Export.h>
+#include <kernel/CalVR.h>
+
 #include <osgViewer/Viewer>
 
 #include <list>
@@ -21,6 +23,7 @@ struct DefaultUpdate;
  */
 class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 {
+    friend class CalVR;
     friend struct DefaultUpdate;
     public:
         CVRViewer();
@@ -45,8 +48,6 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          * @brief Get pointer to static instance of class
          */
         static CVRViewer * instance();
-
-        virtual ~CVRViewer();
 
         /**
          * @brief Processes all update operations added to the update list
@@ -135,6 +136,7 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          */
         double getProgramStartTime();
     protected:
+        virtual ~CVRViewer();
 
         /**
          * @brief Default osg update traversal operation

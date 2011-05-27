@@ -98,6 +98,11 @@ bool TrackingManager::init()
 	    _numHeads = 1;
 	}
 
+	if(bodySystem == "NONE")
+	{
+	    _numHands = 0;
+	}
+
 	// TODO: I think the handButtonStation and handButtonOffsets are not used anymore, check and remove
         if(_numHands > 0)
         {

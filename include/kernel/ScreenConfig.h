@@ -6,6 +6,7 @@
 #define CALVR_SCREEN_CONFIG_H
 
 #include <kernel/Export.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Vec3>
 #include <osg/Camera>
@@ -82,6 +83,7 @@ struct ScreenInfo
  */
 class CVRKERNEL_EXPORT ScreenConfig
 {
+    friend class CalVR;
     public:
         ScreenConfig();
 

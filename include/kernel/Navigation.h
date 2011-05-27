@@ -7,6 +7,7 @@
 
 #include <kernel/Export.h>
 #include <kernel/InteractionManager.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Matrix>
 #include <osg/Vec3>
@@ -34,8 +35,8 @@ enum NavMode
  */
 class CVRKERNEL_EXPORT Navigation
 {
+    friend class CalVR;
     public:
-        ~Navigation();
 
         /**
          * @brief Get static self pointer
@@ -78,6 +79,7 @@ class CVRKERNEL_EXPORT Navigation
 
     protected:
         Navigation();
+        virtual ~Navigation();
         void processNav(NavMode nm, osg::Matrix & mat);
         void processMouseNav(NavMode nm);
 

@@ -6,6 +6,7 @@
 
 #include <kernel/Export.h>
 #include <kernel/CVRViewer.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Vec3>
 #include <osg/Matrix>
@@ -96,8 +97,8 @@ CVRKERNEL_EXPORT osg::Matrix tie2mat(TrackingInteractionEvent * tie);
 class CVRKERNEL_EXPORT InteractionManager
 {
         friend class CVRViewer;
+        friend class CalVR;
     public:
-        virtual ~InteractionManager();
 
         /**
          * @brief Get a static pointer to the instance of the class
@@ -173,6 +174,7 @@ class CVRKERNEL_EXPORT InteractionManager
 
     protected:
         InteractionManager();
+        virtual ~InteractionManager();
 
         /// queue for events, flushed every frame
         std::queue<InteractionEvent *,std::list<InteractionEvent *> >

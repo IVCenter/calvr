@@ -9,6 +9,7 @@ ENDIF(WIN32)
 SET(LIB_NAME kernel)
 SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/CalVR.h
     ${HEADER_PATH}/ScreenConfig.h
     ${HEADER_PATH}/ScreenBase.h
     ${HEADER_PATH}/ScreenMono.h
@@ -54,6 +55,7 @@ ENDIF(INTERLEAVER_FOUND)
 
 SET(LIB_SRC_FILES
     ${EXTRA_SOURCE}
+    CalVR.cpp
     ScreenConfig.cpp
     ScreenBase.cpp
     ScreenMono.cpp

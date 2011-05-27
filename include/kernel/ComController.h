@@ -6,6 +6,7 @@
 #define CALVR_COM_CONTROLLER_H
 
 #include <kernel/Export.h>
+#include <kernel/CalVR.h>
 #include <util/CVRSocket.h>
 #include <util/MultiListenSocket.h>
 
@@ -25,8 +26,8 @@ namespace cvr
  */
 class CVRKERNEL_EXPORT ComController
 {
+    friend class CalVR;
     public:
-        virtual ~ComController();
 
         /**
          * @brief Sets up node sockets based on command line arguments
@@ -100,6 +101,8 @@ class CVRKERNEL_EXPORT ComController
 
     protected:
         ComController();
+        virtual ~ComController();
+
 
         bool setupConnections(std::string & fileArgs);
         bool connectMaster();

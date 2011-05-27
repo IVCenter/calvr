@@ -10,6 +10,7 @@
 
 #include <input/Export.h>
 #include <input/TrackerBase.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Matrix>
 #include <osg/Vec3>
@@ -43,8 +44,8 @@ class GenComplexTrackingEvents;
 class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 {
         friend class GenComplexTrackingEvents;
+        friend class CalVR;
     public:
-        virtual ~TrackingManager();
 
         /**
          * @brief Returns static pointer to class object
@@ -153,6 +154,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 
     protected:
         TrackingManager();
+        virtual ~TrackingManager();
 
         /**
          * @brief Generate the hand button masks from the raw button mask(s)
