@@ -651,6 +651,7 @@ void ScreenConfig::syncMasterScreens()
 	{
 	    ComController::instance()->sendSlaves(_channelInfoList[i],sizeof(struct ChannelInfo));
 	    int stringsize = _channelInfoList[i]->stereoMode.size()+1;
+	    //std::cerr << "Stringsize: " << stringsize << std::endl;
 	    char end = '\0';
 	    ComController::instance()->sendSlaves(&stringsize,sizeof(int));
 	    ComController::instance()->sendSlaves((void*)_channelInfoList[i]->stereoMode.c_str(),_channelInfoList[i]->stereoMode.size());
@@ -701,6 +702,8 @@ void ScreenConfig::syncMasterScreens()
 	    ComController::instance()->readMaster(&stringsize,sizeof(int));
 	    char * stereomode = new char[stringsize];
 	    ComController::instance()->readMaster(stereomode,stringsize);
+	    std::string tsm;
+	    memcpy(&ci->stereoMode, &tsm, sizeof(std::string));
 	    ci->stereoMode = stereomode;
 	    ci->myWindow = _masterWindowInfoList[ci->windowIndex];
 	    delete[] stereomode;

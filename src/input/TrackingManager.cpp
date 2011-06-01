@@ -43,6 +43,11 @@ TrackingManager::TrackingManager()
 
 TrackingManager::~TrackingManager()
 {
+    if(ComController::instance()->isMaster() && isThreaded())
+    {
+	quitThread();
+	join();
+    }
 }
 
 TrackingManager * TrackingManager::instance()
