@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+ <GLOBAL>
+   <Stereo separation="64.0" />
+ </GLOBAL>
+
+ <GLOBAL>
+   <NumPipes value="3" />
+   <NumScreens value="3" />
+   <NumWindows value="3" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1920" comment="MAIN" window="2" pipeIndex="2" height="1080" left="0" bottom="0" name="2" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+    <Channel channel="2" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="2" name="2" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="0.0" height="573" p="-15.0"   originX="0"  comment="S_A" originY="1060"  r="0.0" name="0" originZ="-545"    screen="0" />
+    <Screen width="1018" h="0.0" height="573" p="0.0"   originX="0"  comment="S_A" originY="1220"  r="0.0" name="1" originZ="0"    screen="1" />
+    <Screen width="1018" h="0.0" height="573" p="15.0"   originX="0"  comment="S_A" originY="1200"  r="0.0" name="2" originZ="604"    screen="2" />
+   </ScreenConfig>
+ </GLOBAL>
