@@ -3,6 +3,7 @@
 #include <kernel/ScreenStereo.h>
 #include <kernel/ScreenMultiViewer.h>
 #include <kernel/ScreenMultiViewer2.h>
+#include <kernel/ScreenMVMaster.h>
 #include <kernel/MultiViewScreen.h>
 #include <kernel/ComController.h>
 #include <config/ConfigManager.h>
@@ -532,6 +533,12 @@ bool ScreenConfig::makeScreens()
             screen = new ScreenMultiViewer2();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::HORIZONTAL_INTERLACE);
+        }
+        else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_MASTER")
+        {
+            screen = new ScreenMVMaster();
+            screen->_myInfo = _screenInfoList[i];
+            screen->init();
         }
 #ifdef WITH_INTERLEAVER
         else if(_screenInfoList[i]->myChannel->stereoMode == "LENTICULAR")
