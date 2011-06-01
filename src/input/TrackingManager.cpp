@@ -43,6 +43,11 @@ TrackingManager::TrackingManager()
 
 TrackingManager::~TrackingManager()
 {
+    if(ComController::instance()->isMaster() && isThreaded())
+    {
+	quitThread();
+	join();
+    }
 }
 
 TrackingManager * TrackingManager::instance()
@@ -96,6 +101,11 @@ bool TrackingManager::init()
 	{
 	    _numHands = 1;
 	    _numHeads = 1;
+	}
+
+	if(bodySystem == "NONE")
+	{
+	    _numHands = 0;
 	}
 
 	// TODO: I think the handButtonStation and handButtonOffsets are not used anymore, check and remove

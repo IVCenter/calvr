@@ -19,6 +19,9 @@ void ScreenMono::init(int mode)
 
     _camera = new osg::Camera();
 
+    osg::DisplaySettings * ds = new osg::DisplaySettings();
+    _camera->setDisplaySettings(ds);
+
     CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
     defaultCameraInit(_camera.get());
 }

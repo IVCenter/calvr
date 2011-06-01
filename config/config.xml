@@ -90,10 +90,10 @@
      <PBOs value="off" />
      <DrawLines value="false" />
     </MultiGPURender>
-    <SpaceTraveler value="off" >
-     <TransMult value="2.0" />
-     <RotMult value="1.4" />
-    </SpaceTraveler>
+    <SpaceNavigator value="on" >
+     <TransMult value="1.0" />
+     <RotMult value="1.0" />
+    </SpaceNavigator>
     <PluginUtil value="off" />
 
     <CudaTest value="off" />
@@ -121,10 +121,15 @@
     </StructView>
 
     <PluginTest value="off" />
-    <Collaborative value="on">
+    <Collaborative value="off">
       <Server value="127.0.0.1" />
       <Port value="11050" />
     </Collaborative>
+
+    <MVSim value="off">
+        <Head0 value="off" x="0" y="0" z="0" rotate="0" />
+        <Head1 value="on" x="0" y="-100" z="0" rotate="90" sim="0" />
+    </MVSim>
 
     <OsgPathRecorder value="on">
       <DataDir value="/home/aprudhom/data/OsgPathRecorder" />
@@ -194,7 +199,7 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MULTI_VIEWER_AP_LEFT"  windowIndex="0"  name="0"  />
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  />
     <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="1" stereoMode="MONO"  windowIndex="1"  name="1">
       <ThumbConfigFile value="/home/aprudhom/CalVR/config/thumb/host/alioscopy-40-1x1.xml" />
       <Viewer eyes="8" ipd="0.208" distance="9.7" />

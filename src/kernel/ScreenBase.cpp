@@ -58,7 +58,9 @@ void ScreenBase::defaultCameraInit(osg::Camera * cam)
                                                                                   false);
         renderer->getSceneView(1)->getDisplaySettings()->setSerializeDrawDispatch(
                                                                                   false);
-
+	//renderer->getSceneView(0)->getDisplaySettings()->setStereo(false);
+	//renderer->getSceneView(1)->getDisplaySettings()->setStereo(false);
+	
 	if(cmode == "CALVR")
 	{
 	    renderer->getSceneView(0)->setCullVisitor(new CVRCullVisitor());

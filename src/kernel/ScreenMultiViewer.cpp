@@ -21,11 +21,13 @@
 #include <string>
 #include <cmath>
 
-#define FRAGMENT_QUERY
+//#define FRAGMENT_QUERY
+
+//TODO: add glewInit call for windows
 
 using namespace cvr;
 
-ScreenMultiViewer::ScreenMultiViewer() : ScreenBase()
+ScreenMultiViewer::ScreenMultiViewer() : ScreenMVSimulator()
 {
     std::cerr << "Using Multi Viewer Screen" << std::endl;
     _testGeoAdded = false;
@@ -41,6 +43,10 @@ void ScreenMultiViewer::init(int mode)
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
 
     _camera = new osg::Camera();
+
+    osg::DisplaySettings * ds = new osg::DisplaySettings();
+    _camera->setDisplaySettings(ds);
+
     CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
     defaultCameraInit(_camera.get());
 
@@ -117,19 +123,11 @@ void ScreenMultiViewer::init(int mode)
 #endif
 
     std::string shaderdir;
-
-    char * cvrHome = getenv("CALVR_HOME");
-    if(cvrHome)
-    {
-	shaderdir = cvrHome;
-	shaderdir = shaderdir + "/";
-    }
-
-    shaderdir = shaderdir + "shaders/";
+    shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
     _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "multiviewer.vert"));
     _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "multiviewer.frag"));
-    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom"));
+    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom.7"));
 
     _program = new osg::Program;
     _program->addShader(_vert);
@@ -315,7 +313,7 @@ void ScreenMultiViewer::computeViewProj()
 
 	_viewer0Dir->set(viewerdir);
 
-	if(TrackingManager::instance()->getNumHeads() >= 2)
+	if(TrackingManager::instance()->getNumHeads() >= 2 || isSimulatedHeadMatrix(1))
 	{
 	    viewerdir = osg::Vec3(0.0,1.0,0.0);
 	    viewerdir = viewerdir * getCurrentHeadMatrix(1);
@@ -733,7 +731,7 @@ void ScreenMultiViewer::updateCamera()
 	geode->addDrawable(sd);
 	SceneManager::instance()->getObjectsRoot()->addChild(geode);*/
 		
-	addTestGeometry();
+	//addTestGeometry();
 	_testGeoAdded = true;
     }
     else if(!_testGeoAdded)
@@ -995,16 +993,22 @@ void ScreenMultiViewer::algtest()
 
 void ScreenMultiViewer::addTestGeometry()
 {
+    static bool geoadded = false;
+    if(geoadded)
+    {
+	return;
+    }
+    geoadded = true;
     osg::Geometry * geo = new osg::Geometry();
     osg::Vec3Array* verts = new osg::Vec3Array();
-    verts->push_back(osg::Vec3(75,0,-75));
-    verts->push_back(osg::Vec3(0,0,75));
-    verts->push_back(osg::Vec3(-75,0,-75));
-    verts->push_back(osg::Vec3(500,0,0));
-    verts->push_back(osg::Vec3(650,0,0));
-    verts->push_back(osg::Vec3(500,0,75));
-    verts->push_back(osg::Vec3(-500,0,75));
-    verts->push_back(osg::Vec3(-575,0,75));
+    verts->push_back(osg::Vec3(75,1500,-75));
+    verts->push_back(osg::Vec3(0,1500,75));
+    verts->push_back(osg::Vec3(-75,1500,-75));
+    verts->push_back(osg::Vec3(500,1500,0));
+    verts->push_back(osg::Vec3(650,1500,0));
+    verts->push_back(osg::Vec3(500,1500,75));
+    verts->push_back(osg::Vec3(-500,1500,75));
+    verts->push_back(osg::Vec3(-575,1500,75));
     verts->push_back(osg::Vec3(-575,0,-75));
 
     geo->setVertexArray(verts);
@@ -1117,6 +1121,7 @@ void ScreenMultiViewer::addTestGeometry()
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(geo);
 
+    std::cerr << "Adding test geometry." << std::endl;
     SceneManager::instance()->getObjectsRoot()->addChild(geode);
 }
 

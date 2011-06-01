@@ -39,9 +39,10 @@ uniform float maxRatio;
 
 void main(void)
 {
-    gl_FragColor.xyz = color0;
-    gl_FragColor.w = 1.0;
-    gl_FragDepth = 1.0;
+    //gl_FragColor.xyz = color0;
+    //gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+    //gl_FragColor.w = 1.0;
+    //gl_FragDepth = 0.9;
     //return;
 
     // get fragment world space position
@@ -63,8 +64,16 @@ void main(void)
 
     if(weight.x + weight.y <= 0)
     {
-	//discard;
-	return;
+	discard;
+        if(gl_FragDepth > 0.85)
+        {
+           gl_FragDepth = 0.9;
+	   return;
+        }
+        else
+        {
+           discard;
+        }
     }
 
     float p = weight.y / (weight.x + weight.y);
@@ -124,16 +133,34 @@ void main(void)
     if(result.x < 0.0 || result.x > 1.0)
     {
 	//gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-	return;
-	//discard;
+	//return;
+        discard;
+        if(gl_FragDepth > 0.85)
+        {
+           gl_FragDepth = 0.9;
+	   return;
+        }
+        else
+        {
+           discard;
+        }
     }
 
     // intersection point not within triangle
     if(result.y < 0 || result.z < 0 || result.y + result.z > 1.0)
     {
 	//gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-	return;
-    	//discard;
+	//return;
+    	discard;
+        if(gl_FragDepth > 0.85)
+        {
+           gl_FragDepth = 0.9;
+	   return;
+        }
+        else
+        {
+           discard;
+        }
     }
 
     // find intersection point
@@ -141,6 +168,13 @@ void main(void)
 
     // set depth for fragment
     linepoint1 = ((1-p) * gl_TextureMatrix[5] + p * gl_TextureMatrix[7]) * ((1-p) * gl_TextureMatrix[4] + p * gl_TextureMatrix[6]) * linepoint1;
+    
+    /*float depth = ((linepoint1.z / linepoint1.w) + 1.0) / 2.0;
+    if(depth > gl_FragDepth && gl_FragDepth != 0.5)
+    {
+        discard;
+    }
+    gl_FragDepth = depth;*/
     gl_FragDepth = ((linepoint1.z / linepoint1.w) + 1.0) / 2.0;
 
     // calculate final barycentric coord
@@ -153,8 +187,8 @@ void main(void)
 
     // set weighted frag color
     //gl_FragColor.rgb = bcoord0 * color0 + result.y * color1 + result.z * color2;
-    //gl_FragColor.rgb = bcoord0 * d0 * color0 + result.y * d1 * color1 + result.z * d2 * color2;
-    gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+    gl_FragColor.rgb = bcoord0 * d0 * color0 + result.y * d1 * color1 + result.z * d2 * color2;
+    //gl_FragColor = vec4(1.0,1.0,1.0,1.0);
     gl_FragColor.a = 1.0;
 
     //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
