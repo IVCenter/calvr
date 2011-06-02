@@ -40,7 +40,7 @@ class ScreenMultiViewer : public ScreenMVSimulator
             osg::Vec3 farBR;
         };
 
-        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos);
+        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal);
 
         struct PreDrawCallback : public osg::Camera::DrawCallback
         {
@@ -138,6 +138,10 @@ class ScreenMultiViewer : public ScreenMVSimulator
         osg::Uniform * _viewer0Dist;
         osg::Uniform * _viewer1Dist;
 
+        osg::Uniform * _nearPoint;
+        osg::Uniform * _farPoint;
+        osg::Uniform * _nfNormal;
+
         float _viewer0DistLocal[2];
         float _viewer1DistLocal[2];
 
@@ -148,6 +152,10 @@ class ScreenMultiViewer : public ScreenMVSimulator
         osg::Matrix _viewer0Proj[2];
         osg::Matrix _viewer1View[2];
         osg::Matrix _viewer1Proj[2];
+
+        osg::Vec3 _nearPointLocal[2];
+        osg::Vec3 _farPointLocal[2];
+        osg::Vec3 _nfNormalLocal[2];
 };
 
 }
