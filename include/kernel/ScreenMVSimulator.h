@@ -62,7 +62,6 @@ class ScreenMVSimulator : public ScreenBase
         osg::Vec3 defaultRightEye(int head=0);
 
     protected:
-
         static std::map<int,osg::Matrix *> headMat; ///< Stores simulated head matrices (used instead of TrackingManager values).
 };
 }

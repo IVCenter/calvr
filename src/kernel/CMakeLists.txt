@@ -17,6 +17,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenLenticular.h
     ${HEADER_PATH}/ScreenMultiViewer.h
     ${HEADER_PATH}/MultiViewerCullVisitor.h
+    ${HEADER_PATH}/ScreenMVMaster.h
     ${HEADER_PATH}/ScreenMVSimulator.h
     ${HEADER_PATH}/ScreenMultiViewer2.h
     ${HEADER_PATH}/MultiViewScreen.h
@@ -61,6 +62,7 @@ SET(LIB_SRC_FILES
     ScreenMono.cpp
     ScreenStereo.cpp
     MultiViewerCullVisitor.cpp
+    ScreenMVMaster.cpp
     ScreenMVSimulator.cpp
     ScreenMultiViewer2.cpp
     MultiViewScreen.cpp
