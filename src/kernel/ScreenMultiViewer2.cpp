@@ -288,8 +288,8 @@ void ScreenMultiViewer2::createCameras()
     for (int i = 0; i < quantity; i++)
     {
         osg::ref_ptr<osg::Camera> cam = new osg::Camera();
-	osg::DisplaySettings * ds = new osg::DisplaySettings();
-	cam->setDisplaySettings(ds);
+	//osg::DisplaySettings * ds = new osg::DisplaySettings();
+	//cam->setDisplaySettings(ds);
         _camera.push_back(cam);
         cam->setGraphicsContext(gc);
 
