@@ -166,8 +166,9 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @return true = color, false = default (black)
          */
         static bool getZoneColoring();
-        /*
+        /**
          * @brief Sets the contribution variable for setContributionFuncs to use
+         * @param var float value to set the contribution variable to
          */
         static void setContributionVar(float var);
         /**
@@ -175,8 +176,9 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @return the contribution variable for determining offsets
          */
         static float getContributionVar();
-        /*
+        /**
          * @brief Sets whether or not to auto-adjust the contribution variable for setContributionFuncs to use
+         * @param autoCV bool representing whether the contribution variable shoudl auto-adjust
          */
         static void setAutoContributionVar(bool autoCV);
         /**
