@@ -44,6 +44,14 @@ class ScreenMVMaster : public ScreenMVSimulator
          * @brief See if this screen created the given osg::Camera
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c);
+
+        /**
+         * @brief Callback for mouse interaction with the viewport
+         * @param x Integer value of the x coordinate
+         * @param x Integer value of the y coordinate
+         */
+        virtual void adjustViewportCoords(int &x, int&y);
+
         /**
           * @brief Set diagram as shown or not
           * @param show Whether or not to show the diagram
@@ -54,6 +62,8 @@ class ScreenMVMaster : public ScreenMVSimulator
         osg::ref_ptr<osg::Camera> _cameraDiagram;  ///< camera created for diagram
         osg::Matrix _view;                  ///< view matrix
         osg::Matrix _proj;                  ///< projection matrix
+
+        float viewProjRatio; ///< Ratio used to adjust XY mouse coordinates while viewing the diagram camera.
         /**
           * @brief Instantiates a camera and scene to display a diagram of the users' head positions within the cave. This must be called in the init() call of the master node's screen, if the diagram is to be used
           */

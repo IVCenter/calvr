@@ -63,11 +63,21 @@ ScreenInfo * ScreenMVMaster::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
+void ScreenMVMaster::adjustViewportCoords(int &x, int &y)
+{
+    if (_cameraDiagram->getNodeMask() != 0)
+    {
+        float w_2 = _myInfo->myChannel->width/2;
+        float h_2 = _myInfo->myChannel->height/2;
+        x = (int)((x - w_2) * viewProjRatio + w_2);
+        y = (int)((y - h_2) * viewProjRatio + h_2);
+    }
+}
+
 void ScreenMVMaster::setupDiagramCam()
 {
 
     // setup camera to show objects in the x,y plane (z = 0)
-
     _cameraDiagram->setViewport(0,0,(int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
 
     float width = _myInfo->width;
@@ -91,6 +101,8 @@ void ScreenMVMaster::setupDiagramCam()
         osg::Vec3(0,0,1));
 
     _cameraDiagram->setProjectionMatrixAsOrtho(-width/2,width/2,-height/2,height/2,1,10000);
+
+    viewProjRatio = width/_myInfo->myChannel->width;
 }
 
 void ScreenMVMaster::showDiagram(bool show)
