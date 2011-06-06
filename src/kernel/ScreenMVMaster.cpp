@@ -67,11 +67,12 @@ void ScreenMVMaster::setupDiagramCam()
 {
 
     // setup camera to show objects in the x,y plane (z = 0)
+
+    _cameraDiagram->setViewport(0,0,_myInfo->myChannel->width,_myInfo->myChannel->height);
+
     float width = _myInfo->width;
     float height = _myInfo->height;
     const int CAVE_RAD = 1468;
-
-    _cameraDiagram->setViewport(0,0,(int)width,(int)height);
 
     if (width > height)
     {
