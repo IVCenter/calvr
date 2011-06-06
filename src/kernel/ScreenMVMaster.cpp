@@ -68,7 +68,7 @@ void ScreenMVMaster::setupDiagramCam()
 
     // setup camera to show objects in the x,y plane (z = 0)
 
-    _cameraDiagram->setViewport(0,0,_myInfo->myChannel->width,_myInfo->myChannel->height);
+    _cameraDiagram->setViewport(0,0,(int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
 
     float width = _myInfo->width;
     float height = _myInfo->height;
