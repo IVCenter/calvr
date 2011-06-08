@@ -166,15 +166,26 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @return true = color, false = default (black)
          */
         static bool getZoneColoring();
-        /*
+        /**
          * @brief Sets the contribution variable for setContributionFuncs to use
+         * @param var float value to set the contribution variable to
          */
         static void setContributionVar(float var);
         /**
-         * @brief Gets the contribution variable for setContributionFuncs to use
+         * @brief Gets the contribution variable for setContributionFuncs to use.
          * @return the contribution variable for determining offsets
          */
         static float getContributionVar();
+        /**
+         * @brief Sets whether or not to auto-adjust the contribution variable for setContributionFuncs to use
+         * @param autoCV bool representing whether the contribution variable shoudl auto-adjust
+         */
+        static void setAutoContributionVar(bool autoCV);
+        /**
+         * @brief Gets whether or not the contribution variable is automatically adjusted
+         * @return whether or not the contribution variable is toggled for automatic adjustment
+         */
+        static bool getAutoContributionVar();
 
     protected:
         bool _colorZones; ///< Flags whether or not to color zones via user contribution values
@@ -231,13 +242,10 @@ class ScreenMultiViewer2 : public ScreenMVSimulator
          * @param eyeRight empty vector of osg Vec3's to be populated
          */
         void setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::vector<osg::Vec3> &eyeRight);
-        /**
-         * @brief Sets which contribution function to use for zone contribution calculations
-         */
-        static setContributionFunc setContribution;
+        static setContributionFunc setContribution; ///< Sets which contribution function to use for zone contribution calculations
         static std::vector<setContributionFunc> setContributionFuncs; ///< vector of the allowed zone contribution functions
-        static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs.
-       
+        static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs. (0 implies automatic)
+        static bool _autoContributionVar; ///< determines whether or not to auto-set the _contributionVar
 };
 }
 

@@ -1,6 +1,7 @@
 #ifndef CALVR_MULTI_LISTEN_SOCKET_H
 #define CALVR_MULTI_LISTEN_SOCKET_H
 
+#include <util/Export.h>
 #include <util/CVRSocket.h>
 
 #ifndef WIN32
@@ -14,7 +15,7 @@
 namespace cvr
 {
 
-class MultiListenSocket
+class CVRUTIL_EXPORT MultiListenSocket
 {
     public:
         MultiListenSocket(int port, int queue = 5);

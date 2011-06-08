@@ -8,7 +8,9 @@
 #ifndef CALVR_TRACKING_MANAGER_H
 #define CALVR_TRACKING_MANAGER_H
 
+#include <input/Export.h>
 #include <input/TrackerBase.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Matrix>
 #include <osg/Vec3>
@@ -39,11 +41,11 @@ class GenComplexTrackingEvents;
  *  Generates button interaction events.
  *  Can poll tracking values in a thread.
  */
-class TrackingManager : public OpenThreads::Thread
+class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 {
         friend class GenComplexTrackingEvents;
+        friend class CalVR;
     public:
-        virtual ~TrackingManager();
 
         /**
          * @brief Returns static pointer to class object
@@ -152,6 +154,7 @@ class TrackingManager : public OpenThreads::Thread
 
     protected:
         TrackingManager();
+        virtual ~TrackingManager();
 
         /**
          * @brief Generate the hand button masks from the raw button mask(s)
@@ -250,7 +253,7 @@ class TrackingManager : public OpenThreads::Thread
 /**
  * @brief Takes in tracking events and outputs complex events(ie doubleclick) as needed
  */
-class GenComplexTrackingEvents
+class CVRINPUT_EXPORT GenComplexTrackingEvents
 {
     public:
         GenComplexTrackingEvents();

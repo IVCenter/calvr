@@ -11,6 +11,7 @@
 #ifdef WIN32
 #include <Winsock2.h>
 #include <stdlib.h>
+#pragma comment(lib, "wsock32.lib")
 #endif
 
 using namespace cvr;
@@ -182,6 +183,8 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
         }
     }
 
+    _configRootList.push_back(tree);
+
     while((xmlNode = mxmlFindElement(tree, tree, "INCLUDE", NULL, NULL,
                                      MXML_DESCEND)))
     {
@@ -210,8 +213,6 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
             return false;
         }
     }
-
-    _configRootList.push_back(tree);
 
     return true;
 
@@ -257,17 +258,8 @@ bool ConfigManager::init()
     }
     else
     {
-        char * cvrHome = getenv("CALVR_HOME");
-        if(cvrHome)
-        {
-            _configDir = cvrHome;
-            _configDir = _configDir + "/config";
-        }
-        else
-        {
-            std::cerr << "Error: CALVR_HOME not set." << std::endl;
-            return false;
-        }
+        _configDir = CalVR::instance()->getHomeDir();
+        _configDir = _configDir + "/config";
     }
 
     //std::string file = "config.xml";

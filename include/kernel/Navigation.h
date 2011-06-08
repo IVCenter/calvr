@@ -5,7 +5,9 @@
 #ifndef CALVR_NAVIGATION_H
 #define CALVR_NAVIGATION_H
 
+#include <kernel/Export.h>
 #include <kernel/InteractionManager.h>
+#include <kernel/CalVR.h>
 
 #include <osg/Matrix>
 #include <osg/Vec3>
@@ -31,10 +33,10 @@ enum NavMode
 /**
  * @brief Uses tracking events to interact with object space
  */
-class Navigation
+class CVRKERNEL_EXPORT Navigation
 {
+    friend class CalVR;
     public:
-        ~Navigation();
 
         /**
          * @brief Get static self pointer
@@ -77,6 +79,7 @@ class Navigation
 
     protected:
         Navigation();
+        virtual ~Navigation();
         void processNav(NavMode nm, osg::Matrix & mat);
         void processMouseNav(NavMode nm);
 

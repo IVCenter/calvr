@@ -1,4 +1,5 @@
 #include <menu/SubMenu.h>
+#include <menu/MenuSystem.h>
 
 using namespace cvr;
 
@@ -41,6 +42,7 @@ void SubMenu::removeItem(MenuItem * item)
         if((*it) == item)
         {
             _children.erase(it);
+	    _dirty = true;
             return;
         }
     }

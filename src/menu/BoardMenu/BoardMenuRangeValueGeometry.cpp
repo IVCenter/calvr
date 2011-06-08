@@ -3,6 +3,10 @@
 
 #include <osg/Geometry>
 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
+
 using namespace cvr;
 
 BoardMenuRangeValueGeometry::BoardMenuRangeValueGeometry() :

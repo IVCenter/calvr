@@ -60,6 +60,8 @@ class ScreenBase
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c) = 0;
 
+        virtual void adjustViewportCoords(int & x, int & y) { return; }
+
         // TODO make these pure virtual, or maybe move values into base class
         static void setNear(float near) { _near = near; }
         static void setFar(float far) { _far = far; }

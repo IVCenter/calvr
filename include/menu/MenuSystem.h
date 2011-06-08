@@ -1,6 +1,7 @@
 #ifndef CALVR_MENU_SYSTEM_H
 #define CALVR_MENU_SYSTEM_H
 
+#include <menu/Export.h>
 #include <menu/MenuSystemBase.h>
 #include <menu/SubMenu.h>
 #include <menu/MenuBase.h>
@@ -10,7 +11,7 @@
 namespace cvr
 {
 
-class MenuSystem : public MenuSystemBase
+class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
 {
     public:
         virtual ~MenuSystem();

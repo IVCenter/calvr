@@ -6,6 +6,7 @@
 #include <kernel/PreCullVisitor.h>
 #include <kernel/PostCullVisitor.h>
 #include <kernel/NodeMask.h>
+#include <kernel/ScreenBase.h>
 #include <config/ConfigManager.h>
 
 #include <osg/Version>
@@ -15,6 +16,13 @@
 
 #include <vector>
 #include <iostream>
+
+#ifdef WIN32
+#pragma comment(lib, "config.lib")
+#pragma comment(lib, "util.lib")
+#pragma comment(lib, "menu.lib")
+#pragma comment(lib, "input.lib")
+#endif
 
 using namespace cvr;
 
@@ -166,18 +174,21 @@ CVRViewer::CVRViewer() :
     _updateList.push_back(new DefaultUpdate);
 
     _myPtr = this;
+    _activeMasterScreen = -1;
 }
 
 CVRViewer::CVRViewer(osg::ArgumentParser& arguments) :
     osgViewer::Viewer(arguments)
 {
     _myPtr = this;
+    _activeMasterScreen = -1;
 }
 
 CVRViewer::CVRViewer(const CVRViewer& viewer, const osg::CopyOp& copyop) :
     osgViewer::Viewer(viewer, copyop)
 {
     _myPtr = this;
+    _activeMasterScreen = -1;
 }
 
 CVRViewer * CVRViewer::instance()
@@ -244,7 +255,8 @@ void CVRViewer::defaultUpdateTraversal()
     {
         _updateOperations->runOperations(this);
     }
-#else
+
+#elif (OPENSCENEGRAPH_MAJOR_VERSION == 2) && (OPENSCENEGRAPH_MINOR_VERSION == 9) && (OPENSCENEGRAPH_PATCH_VERSION <= 11)
     _scene->updateSceneGraph(*_updateVisitor);
 
     // if we have a shared state manager prune any unused entries
@@ -267,6 +279,28 @@ void CVRViewer::defaultUpdateTraversal()
         _incrementalCompileOperation->mergeCompiledSubgraphs();
     }
 
+#else
+	_scene->updateSceneGraph(*_updateVisitor);
+
+    // if we have a shared state manager prune any unused entries
+    if(osgDB::Registry::instance()->getSharedStateManager())
+    osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(
+            *getFrameStamp());
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(*getFrameStamp());
+
+    if(_updateOperations.valid())
+    {
+        _updateOperations->runOperations(this);
+    }
+
+    if(_incrementalCompileOperation.valid())
+    {
+        // merge subgraphs that have been compiled by the incremental compiler operation.
+        _incrementalCompileOperation->mergeCompiledSubgraphs(getFrameStamp());
+    }
 #endif
 
     {
@@ -394,7 +428,15 @@ void CVRViewer::eventTraversal()
                                                 && y <= (viewport->y()
                                                         + viewport->height()))
                                         {
-                                            ei.viewportX
+					    int screenNum = ScreenConfig::instance()->findScreenNumber(camera);
+					    if(screenNum != _activeMasterScreen)
+					    {
+						struct event ams;
+						ams.eventType = UPDATE_ACTIVE_SCREEN;
+						ams.param1 = screenNum;
+						eventList.push_back(ams);
+					    }
+                                            /*ei.viewportX
                                                     = (int)viewport->width();
                                             ei.viewportY
                                                     = (int)viewport->height();
@@ -406,7 +448,7 @@ void CVRViewer::eventTraversal()
                                                                                      ei.height);
                                             ei.x = center.x();
                                             ei.y = center.y();
-                                            ei.z = center.z();
+                                            ei.z = center.z();*/
 
                                         }
                                     }
@@ -451,12 +493,27 @@ void CVRViewer::eventTraversal()
                             break;
                         case (osgGA::GUIEventAdapter::DRAG):
                         case (osgGA::GUIEventAdapter::MOVE):
-                            evnt.param1 = (int)(event->getX()
+			{
+			    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(_activeMasterScreen);
+			    if(!si)
+			    {
+				break;
+			    }
+			    evnt.param1 = (int)(event->getX()
+                                    - si->myChannel->left);
+                            evnt.param2 = (int)(event->getY()
+                                    - si->myChannel->bottom);
+			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
+			    {
+				ScreenConfig::instance()->getScreen(_activeMasterScreen)->adjustViewportCoords(evnt.param1,evnt.param2);
+			    }
+                            /*evnt.param1 = (int)(event->getX()
                                     - event->getXmin());
                             evnt.param2 = (int)(event->getY()
-                                    - event->getYmin());
+                                    - event->getYmin());*/
                             eventList.push_back(evnt);
                             break;
+			}
                         case (osgGA::GUIEventAdapter::KEYDOWN):
                         case (osgGA::GUIEventAdapter::KEYUP):
                             evnt.param1 = event->getKey();
@@ -466,6 +523,48 @@ void CVRViewer::eventTraversal()
                         case (osgGA::GUIEventAdapter::QUIT_APPLICATION):
                         case (osgGA::GUIEventAdapter::CLOSE_WINDOW):
                             eventList.push_back(evnt);
+			    break;
+			case (osgGA::GUIEventAdapter::RESIZE):
+			    {
+				osg::GraphicsContext::Cameras& cameras =
+				    gw->getCameras();
+				for(osg::GraphicsContext::Cameras::iterator
+					citr = cameras.begin(); citr
+					!= cameras.end(); ++citr)
+				{
+				    osg::Camera* camera = *citr;
+				    if(camera->getView() == this
+					    && camera->getAllowEventFocus()
+					    && camera->getRenderTargetImplementation()
+					    == osg::Camera::FRAME_BUFFER)
+				    {
+					osg::Viewport* viewport =
+					    camera ? camera->getViewport()
+					    : 0;
+					if(viewport)
+					{
+					    //std::cerr << "Cam viewport x: " << viewport->x() << " y: " << viewport->y() << " width: " << viewport->width() << " height: " << viewport->height() << std::endl;
+					    int screenNum = ScreenConfig::instance()->findScreenNumber(camera);
+					    if(screenNum != -1)
+					    {
+						struct event vpevent;
+						vpevent.eventType = UPDATE_VIEWPORT;
+						vpevent.param1 = screenNum;
+						eventList.push_back(vpevent);
+
+						vpevent.param1 = (int)viewport->x();
+						vpevent.param2 = (int)viewport->y();
+						eventList.push_back(vpevent);
+
+						vpevent.param1 = (int)viewport->width();
+						vpevent.param2 = (int)viewport->height();
+						eventList.push_back(vpevent);
+					    }
+					}
+				    }
+				}
+				break;
+			    }
                         default:
                             break;
                     }
@@ -613,15 +712,24 @@ void CVRViewer::eventTraversal()
             }
             case (osgGA::GUIEventAdapter::MOVE):
             {
-                MouseInfo mi;
-                mi.screenCenter = osg::Vec3(ei.x, ei.y, ei.z);
-                mi.screenWidth = ei.width;
-                mi.screenHeight = ei.height;
-                mi.viewportX = ei.viewportX;
-                mi.viewportY = ei.viewportY;
-                mi.x = events[i].param1;
-                mi.y = events[i].param2;
-                InteractionManager::instance()->setMouseInfo(mi);
+		ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(_activeMasterScreen);
+		if(si)
+		{
+		    MouseInfo mi;
+		    /*mi.screenCenter = osg::Vec3(ei.x, ei.y, ei.z);
+		      mi.screenWidth = ei.width;
+		      mi.screenHeight = ei.height;
+		      mi.viewportX = ei.viewportX;
+		      mi.viewportY = ei.viewportY;*/
+		    mi.screenCenter = si->xyz;
+		    mi.screenWidth = si->width;
+		    mi.screenHeight = si->height;
+		    mi.viewportX = (int)si->myChannel->width;
+		    mi.viewportY = (int)si->myChannel->height;
+		    mi.x = events[i].param1;
+		    mi.y = events[i].param2;
+		    InteractionManager::instance()->setMouseInfo(mi);
+		}
                 break;
             }
             case (osgGA::GUIEventAdapter::KEYDOWN):
@@ -652,6 +760,39 @@ void CVRViewer::eventTraversal()
                  ea->unref();*/
                 break;
             }
+	    case (UPDATE_ACTIVE_SCREEN):
+		_activeMasterScreen = events[i].param1;
+		//std::cerr << "New active screen: " << events[i].param1 << std::endl;
+		break;
+	    case (UPDATE_VIEWPORT):
+	    {
+		struct ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(events[i].param1);
+		i++;
+		if(i >= ei.numEvents)
+		{
+		    break;
+		}
+
+		if(si)
+		{
+		    si->myChannel->left = events[i].param1;
+		    si->myChannel->bottom = events[i].param2;
+		}
+
+		i++;
+		if(i >= ei.numEvents)
+		{
+		    break;
+		}
+
+		if(si)
+		{
+		    si->myChannel->width = events[i].param1;
+		    si->myChannel->height = events[i].param2;
+		}
+
+		break;
+	    }
             default:
                 break;
         }

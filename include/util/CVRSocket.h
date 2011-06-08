@@ -5,6 +5,8 @@
 #ifndef CVR_SOCKET_H
 #define CVR_SOCKET_H
 
+#include <util/Export.h>
+
 #include <string>
 
 #ifndef WIN32
@@ -30,7 +32,7 @@ enum SocketType
 /**
  * @brief Cross platform (windows not yet tested) socket class
  */
-class CVRSocket
+class CVRUTIL_EXPORT CVRSocket
 {
     public:
         CVRSocket(int socket);

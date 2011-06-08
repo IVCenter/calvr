@@ -5,6 +5,9 @@
 #ifndef CALVR_VIEWER_H
 #define CALVR_VIEWER_H
 
+#include <kernel/Export.h>
+#include <kernel/CalVR.h>
+
 #include <osgViewer/Viewer>
 
 #include <list>
@@ -18,8 +21,9 @@ struct DefaultUpdate;
 /**
  * @brief Main viewer for the system, does rendering traversal, distributes window events
  */
-class CVRViewer : public osgViewer::Viewer
+class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 {
+    friend class CalVR;
     friend struct DefaultUpdate;
     public:
         CVRViewer();
@@ -44,8 +48,6 @@ class CVRViewer : public osgViewer::Viewer
          * @brief Get pointer to static instance of class
          */
         static CVRViewer * instance();
-
-        virtual ~CVRViewer();
 
         /**
          * @brief Processes all update operations added to the update list
@@ -133,7 +135,10 @@ class CVRViewer : public osgViewer::Viewer
          * @return The number of second between Jan 1 1970 and the program start
          */
         double getProgramStartTime();
+
+        int getActiveMasterScreen() { return _activeMasterScreen; }
     protected:
+        virtual ~CVRViewer();
 
         /**
          * @brief Default osg update traversal operation
@@ -166,6 +171,12 @@ class CVRViewer : public osgViewer::Viewer
                 int param2;
         };
 
+        enum CustomViewerEventType
+        {
+            UPDATE_ACTIVE_SCREEN = 1<<24,
+            UPDATE_VIEWPORT = 1<<25
+        };
+
         /**
          * @brief information synchronized between nodes at the start of a frame
          */
@@ -191,6 +202,8 @@ class CVRViewer : public osgViewer::Viewer
         osg::ref_ptr<osg::BarrierOperation> _cullDrawBarrier; ///< used for threaded rendering
 
         CullMode _cullMode; ///< viewer culling mode
+
+        int _activeMasterScreen;
 };
 
 /**
@@ -198,7 +211,7 @@ class CVRViewer : public osgViewer::Viewer
  *
  * Added to the viewer by default
  */
-struct DefaultUpdate : public CVRViewer::UpdateTraversal
+struct CVRKERNEL_EXPORT DefaultUpdate : public CVRViewer::UpdateTraversal
 {
     public:
         void update();

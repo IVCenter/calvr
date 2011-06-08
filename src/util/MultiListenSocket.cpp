@@ -24,7 +24,11 @@ MultiListenSocket::~MultiListenSocket()
 {
     if(_valid)
     {
+#ifndef WIN32
 	close(_socket);
+#else
+		closesocket(_socket);
+#endif
     }
 }
 
@@ -32,11 +36,15 @@ bool MultiListenSocket::setup()
 {
     if(_valid)
     {
+#ifndef WIN32
 	close(_socket);
+#else
+		closesocket(_socket);
+#endif
 	_valid = false;
     }
 
-    _socket = socket(AF_INET, SOCK_STREAM, 0);
+    _socket = (int) socket(AF_INET, SOCK_STREAM, 0);
 
     if(_socket == -1)
     {
@@ -53,8 +61,13 @@ bool MultiListenSocket::setup()
         return false;
     }
 
+#ifndef WIN32
     int flags = fcntl(_socket, F_GETFL, 0);
     fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+#else
+	u_long val = 1;
+	ioctlsocket(_socket, FIONBIO, &val);
+#endif
 
     sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -90,7 +103,7 @@ CVRSocket * MultiListenSocket::accept()
 
     sockaddr_in addr;
     int length;
-    int val = ::accept(_socket, (sockaddr *)&addr, (socklen_t *)&length);
+    int val = (int) ::accept(_socket, (sockaddr *)&addr, (socklen_t *)&length);
     if(val == -1)
     {
         if(errno != EWOULDBLOCK)

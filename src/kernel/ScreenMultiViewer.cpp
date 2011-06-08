@@ -1,3 +1,9 @@
+#ifdef WIN32
+#include <GL/glew.h>
+#define M_PI 3.141592653589793238462643
+#pragma comment(lib, "Opengl32.lib")
+#endif
+
 #include <kernel/ScreenMultiViewer.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/SceneManager.h>
@@ -15,11 +21,13 @@
 #include <string>
 #include <cmath>
 
-#define FRAGMENT_QUERY
+//#define FRAGMENT_QUERY
+
+//TODO: add glewInit call for windows
 
 using namespace cvr;
 
-ScreenMultiViewer::ScreenMultiViewer() : ScreenBase()
+ScreenMultiViewer::ScreenMultiViewer() : ScreenMVSimulator()
 {
     std::cerr << "Using Multi Viewer Screen" << std::endl;
     _testGeoAdded = false;
@@ -35,6 +43,10 @@ void ScreenMultiViewer::init(int mode)
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
 
     _camera = new osg::Camera();
+
+    osg::DisplaySettings * ds = new osg::DisplaySettings();
+    _camera->setDisplaySettings(ds);
+
     CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
     defaultCameraInit(_camera.get());
 
@@ -111,19 +123,11 @@ void ScreenMultiViewer::init(int mode)
 #endif
 
     std::string shaderdir;
-
-    char * cvrHome = getenv("CALVR_HOME");
-    if(cvrHome)
-    {
-	shaderdir = cvrHome;
-	shaderdir = shaderdir + "/";
-    }
-
-    shaderdir = shaderdir + "shaders/";
+    shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
     _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "multiviewer.vert"));
     _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "multiviewer.frag"));
-    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom"));
+    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom.7"));
 
     _program = new osg::Program;
     _program->addShader(_vert);
@@ -251,6 +255,21 @@ void ScreenMultiViewer::init(int mode)
     _minRatio->setType(osg::Uniform::FLOAT);
     _minRatio->set(0.0f);
     _camera->getOrCreateStateSet()->addUniform(_minRatio);
+
+    _nearPoint = new osg::Uniform();
+    _nearPoint->setName("nearPoint");
+    _nearPoint->setType(osg::Uniform::FLOAT_VEC3);
+    _camera->getOrCreateStateSet()->addUniform(_nearPoint);
+
+    _farPoint = new osg::Uniform();
+    _farPoint->setName("farPoint");
+    _farPoint->setType(osg::Uniform::FLOAT_VEC3);
+    _camera->getOrCreateStateSet()->addUniform(_farPoint);
+
+    _nfNormal = new osg::Uniform();
+    _nfNormal->setName("nfNormal");
+    _nfNormal->setType(osg::Uniform::FLOAT_VEC3);
+    _camera->getOrCreateStateSet()->addUniform(_nfNormal);
 }
 
 void ScreenMultiViewer::computeViewProj()
@@ -309,7 +328,7 @@ void ScreenMultiViewer::computeViewProj()
 
 	_viewer0Dir->set(viewerdir);
 
-	if(TrackingManager::instance()->getNumHeads() >= 2)
+	if(TrackingManager::instance()->getNumHeads() >= 2 || isSimulatedHeadMatrix(1))
 	{
 	    viewerdir = osg::Vec3(0.0,1.0,0.0);
 	    viewerdir = viewerdir * getCurrentHeadMatrix(1);
@@ -358,8 +377,22 @@ void ScreenMultiViewer::computeViewProj()
 
     for(int i = 0; i < 2; i++)
     {
-	computeDefaultViewProj(viewer0BoundEyePos[i],_viewer0View[i],_viewer0Proj[i],_viewer0DistLocal[i],_viewer0Frustum[i],_viewer0ScreenPos[i]);
-	computeDefaultViewProj(viewer1BoundEyePos[i],_viewer1View[i],_viewer1Proj[i],_viewer1DistLocal[i],_viewer1Frustum[i],_viewer1ScreenPos[i]);
+	osg::Vec3 nearPoint0, nearPoint1, farPoint0, farPoint1;
+	computeDefaultViewProj(viewer0BoundEyePos[i],_viewer0View[i],_viewer0Proj[i],_viewer0DistLocal[i],_viewer0Frustum[i],_viewer0ScreenPos[i],nearPoint0,farPoint0,_nfNormalLocal[i]);
+	computeDefaultViewProj(viewer1BoundEyePos[i],_viewer1View[i],_viewer1Proj[i],_viewer1DistLocal[i],_viewer1Frustum[i],_viewer1ScreenPos[i],nearPoint1,farPoint1,_nfNormalLocal[i]);
+
+	//std::cerr << "Viewer0Dist: " << _viewer0DistLocal[i] << " Viewer1Dist: " << _viewer1DistLocal[i] << std::endl;
+	if(_viewer0DistLocal[i] < _viewer1DistLocal[i])
+	{
+	    //std::cerr << "Using viewer 0." << std::endl;
+	    _nearPointLocal[i] = nearPoint0;
+	    _farPointLocal[i] = farPoint0;
+	}
+	else
+	{
+	    _nearPointLocal[i] = nearPoint1;
+	    _farPointLocal[i] = farPoint1;
+	}
 
 	if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
 	{
@@ -727,7 +760,7 @@ void ScreenMultiViewer::updateCamera()
 	geode->addDrawable(sd);
 	SceneManager::instance()->getObjectsRoot()->addChild(geode);*/
 		
-	addTestGeometry();
+	//addTestGeometry();
 	_testGeoAdded = true;
     }
     else if(!_testGeoAdded)
@@ -820,7 +853,7 @@ ScreenInfo * ScreenMultiViewer::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
-void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos)
+void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal)
 {
     //translate screen to origin
     osg::Matrix screenTrans;
@@ -878,6 +911,19 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
     view = screenTrans * screenRot * cameraTrans
 	* osg::Matrix::lookAt(osg::Vec3(0, 0, 0), osg::Vec3(0, 1, 0),
 		osg::Vec3(0, 0, 1));
+
+    osg::Matrix invView = osg::Matrix::inverse(view);
+    osg::Vec3 point;
+    point = osg::Vec3(0.0,0.0,-_near);
+    point = point * invView;
+    nearPoint = point;
+
+    nfNormal = nearPoint - eyePos;
+    nfNormal.normalize();
+
+    point = osg::Vec3(0.0,0.0,-_far);
+    point = point * invView;
+    farPoint = point;
 }
 
 void ScreenMultiViewer::algtest()
@@ -989,16 +1035,22 @@ void ScreenMultiViewer::algtest()
 
 void ScreenMultiViewer::addTestGeometry()
 {
+    static bool geoadded = false;
+    if(geoadded)
+    {
+	return;
+    }
+    geoadded = true;
     osg::Geometry * geo = new osg::Geometry();
     osg::Vec3Array* verts = new osg::Vec3Array();
-    verts->push_back(osg::Vec3(75,0,-75));
-    verts->push_back(osg::Vec3(0,0,75));
-    verts->push_back(osg::Vec3(-75,0,-75));
-    verts->push_back(osg::Vec3(500,0,0));
-    verts->push_back(osg::Vec3(650,0,0));
-    verts->push_back(osg::Vec3(500,0,75));
-    verts->push_back(osg::Vec3(-500,0,75));
-    verts->push_back(osg::Vec3(-575,0,75));
+    verts->push_back(osg::Vec3(75,1500,-75));
+    verts->push_back(osg::Vec3(0,1500,75));
+    verts->push_back(osg::Vec3(-75,1500,-75));
+    verts->push_back(osg::Vec3(500,1500,0));
+    verts->push_back(osg::Vec3(650,1500,0));
+    verts->push_back(osg::Vec3(500,1500,75));
+    verts->push_back(osg::Vec3(-500,1500,75));
+    verts->push_back(osg::Vec3(-575,1500,75));
     verts->push_back(osg::Vec3(-575,0,-75));
 
     geo->setVertexArray(verts);
@@ -1111,6 +1163,7 @@ void ScreenMultiViewer::addTestGeometry()
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(geo);
 
+    std::cerr << "Adding test geometry." << std::endl;
     SceneManager::instance()->getObjectsRoot()->addChild(geode);
 }
 
@@ -1122,6 +1175,13 @@ void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
     _screen->_viewer1Dist->set(_screen->_viewer1DistLocal[_index]);
     _screen->_minRatio->set(_screen->_minRatioLocal[_index]);
     _screen->_maxRatio->set(_screen->_maxRatioLocal[_index]);
+    _screen->_nearPoint->set(_screen->_nearPointLocal[_index]);
+    _screen->_farPoint->set(_screen->_farPointLocal[_index]);
+    _screen->_nfNormal->set(_screen->_nfNormalLocal[_index]);
+
+    //std::cerr << "nearPoint: " << _screen->_nearPointLocal[_index].x() << " " << _screen->_nearPointLocal[_index].y() << " " << _screen->_nearPointLocal[_index].z() << std::endl;
+    //std::cerr << "farPoint: " << _screen->_farPointLocal[_index].x() << " " << _screen->_farPointLocal[_index].y() << " " << _screen->_farPointLocal[_index].z() << std::endl;
+    //std::cerr << "nfNormal: " << _screen->_nfNormalLocal[_index].x() << " " << _screen->_nfNormalLocal[_index].y() << " " << _screen->_nfNormalLocal[_index].z() << std::endl;
 
     /*osg::Matrix v0v, v1v, v0p, v1p;
     for(int i = 0; i < 16; i++)

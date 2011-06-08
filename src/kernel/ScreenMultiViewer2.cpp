@@ -32,6 +32,7 @@ int ScreenMultiViewer2::_setZoneRows;
 int ScreenMultiViewer2::_maxZoneColumns;
 int ScreenMultiViewer2::_maxZoneRows;
 osg::Vec4 ScreenMultiViewer2::_clearColor = osg::Vec4(0,0,0,0);
+bool ScreenMultiViewer2::_autoContributionVar = true;
 float ScreenMultiViewer2::_contributionVar = M_PI;
 
 /*** Declarations for setContribution functions ***/
@@ -75,7 +76,7 @@ void ScreenMultiViewer2::init(int mode)
     _maxZoneColumns = ConfigManager::getInt("maxColumns","Zones",MAX_ZONES_DEFAULT);
     _maxZoneRows = ConfigManager::getInt("maxRows","Zones",4);
     _orientation3d = ConfigManager::getBool("Orientation3d",true);
-    _autoAdjust = ConfigManager::getBool("FrameRate.autoAdjust",true);
+    _autoAdjust = ConfigManager::getBool("autoAdjust","FrameRate",true);
     setAutoAdjustTarget(ConfigManager::getFloat("target","FrameRate",20));
     setAutoAdjustOffset(ConfigManager::getFloat("offset","FrameRate",4));
     
@@ -287,6 +288,8 @@ void ScreenMultiViewer2::createCameras()
     for (int i = 0; i < quantity; i++)
     {
         osg::ref_ptr<osg::Camera> cam = new osg::Camera();
+	//osg::DisplaySettings * ds = new osg::DisplaySettings();
+	//cam->setDisplaySettings(ds);
         _camera.push_back(cam);
         cam->setGraphicsContext(gc);
 
@@ -491,6 +494,10 @@ void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::ve
     o0.normalize();
     o1.normalize();
 
+    // auto-set contribution variable if needed (minimum of 90 degrees)
+    if (_autoContributionVar)
+        setContributionVar(MAX(M_PI/2,acos(o0*o1)));
+
     // compute contributions and set eye locations
     for (int i = 0; i < _zones; i++)
     {
@@ -578,10 +585,35 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg
         contribution1 /= cTotal;
 }
 
+#ifdef WIN32
+double erf(double x)
+{
+    // constants
+    double a1 =  0.254829592;
+    double a2 = -0.284496736;
+    double a3 =  1.421413741;
+    double a4 = -1.453152027;
+    double a5 =  1.061405429;
+    double p  =  0.3275911;
+
+    // Save the sign of x
+    int sign = 1;
+    if (x < 0)
+        sign = -1;
+    x = fabs(x);
+
+    // A&S formula 7.1.26
+    double t = 1.0/(1.0 + p*x);
+    double y = 1.0 - (((((a5*t + a4)*t) + a3)*t + a2)*t + a1)*t*exp(-x*x);
+
+    return sign*y;
+}
+#endif
+
 // Returns the value to the right of z in a standardized normal/gaussian distribution
 float cdfGaussian(float z)
 {
-    return 1-(1+erf(z/sqrt(2)))/2;
+    return 1-(1+erf(z/sqrt((float)2)))/2;
 }
 
 void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
@@ -741,4 +773,14 @@ void ScreenMultiViewer2::setContributionVar(float var)
 float ScreenMultiViewer2::getContributionVar()
 {
     return _contributionVar;
+}
+
+void ScreenMultiViewer2::setAutoContributionVar(bool autoCV)
+{
+    _autoContributionVar = autoCV;
+}
+
+bool ScreenMultiViewer2::getAutoContributionVar()
+{
+    return _autoContributionVar;
 }

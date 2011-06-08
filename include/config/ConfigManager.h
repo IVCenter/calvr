@@ -6,6 +6,7 @@
 #define CALVR_CONFIG_MANAGER_H
 
 #include <config/Export.h>
+#include <kernel/CalVR.h>
 
 #include <string>
 #include <map>
@@ -48,9 +49,9 @@ namespace cvr
  */
 class CVRCONFIG_EXPORT ConfigManager
 {
+    friend class CalVR;
     public:
         ConfigManager();
-        virtual ~ConfigManager();
 
         /**
          * @brief Load a given config file
@@ -172,6 +173,8 @@ class CVRCONFIG_EXPORT ConfigManager
                                 std::vector<std::string> & destList);
 
     protected:
+        virtual ~ConfigManager();
+
         static std::vector<mxml_node_t *> _configRootList; ///< List of the roots of all loaded xml files
         std::string _configDir; ///< CalVR config file directory
 

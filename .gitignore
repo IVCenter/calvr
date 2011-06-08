@@ -3,3 +3,5 @@ Makefile
 cmake_install.cmake
 doc
 CMakeCache.txt
+*vcxproj*
+*~

@@ -4,6 +4,13 @@
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
 
+#ifdef WIN32
+#pragma comment(lib, "config.lib")
+#pragma comment(lib, "kernel.lib")
+#pragma comment(lib, "input.lib")
+#pragma comment(lib, "util.lib")
+#endif
+
 using namespace cvr;
 
 MenuManager * MenuManager::_myPtr = NULL;
@@ -55,23 +62,26 @@ void MenuManager::update()
 
 
     // process intersection
-    osg::Vec3 pointerStart =
-            TrackingManager::instance()->getHandMat(_primaryHand).getTrans(),
-            pointerEnd;
-    pointerEnd.set(0.0f, 10000.0f, 0.0f);
-    pointerEnd = pointerEnd
-            * TrackingManager::instance()->getHandMat(_primaryHand);
+    osg::Vec3 pointerStart, pointerEnd;
+    std::vector<IsectInfo> isecvec;
 
-    std::vector<IsectInfo> isecvec =
-            getObjectIntersection(SceneManager::instance()->getMenuRoot(),
-                                  pointerStart, pointerEnd);
-
-    for(int i = 0; i < isecvec.size(); i++)
+    if(TrackingManager::instance()->getNumHands())
     {
-	if(processWithOrder(isecvec[i],false))
+	pointerStart = TrackingManager::instance()->getHandMat(_primaryHand).getTrans();
+	pointerEnd.set(0.0f, 10000.0f, 0.0f);
+	pointerEnd = pointerEnd
+	    * TrackingManager::instance()->getHandMat(_primaryHand);
+
+	isecvec = getObjectIntersection(SceneManager::instance()->getMenuRoot(),
+		pointerStart, pointerEnd);
+
+	for(int i = 0; i < isecvec.size(); i++)
 	{
-	    updateEnd();
-	    return;
+	    if(processWithOrder(isecvec[i],false))
+	    {
+		updateEnd();
+		return;
+	    }
 	}
     }
 

@@ -5,6 +5,7 @@
 #ifndef CALVR_SCENE_MANAGER_H
 #define CALVR_SCENE_MANAGER_H
 
+#include <kernel/Export.h>
 #include <osg/ClipNode>
 #include <osg/MatrixTransform>
 #include <util/DepthPartitionNode.h>
@@ -19,7 +20,7 @@ class CVRViewer;
 /**
  * @brief Creates and manages the main scenegraph
  */
-class SceneManager
+class CVRKERNEL_EXPORT SceneManager
 {
     friend class CVRViewer;
     public:

@@ -102,7 +102,7 @@ void main(void)
 
     if(diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0)
     {
-	return;
+	//return;
     }
 
     diffuseV0P0 = max(0.0, diffuseV0P0);
@@ -163,6 +163,12 @@ void main(void)
 	t1p0 = gl_TextureMatrix[7] * t1p0;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p0;
+	t0p0 = t1p0;
+	t1p0 = tmp;
+    }
 
     distance0 = t0p1.z;
     distance1 = t1p1.z;
@@ -196,6 +202,12 @@ void main(void)
 	t1p1 = gl_TextureMatrix[7] * t1p1;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p1;
+	t0p1 = t1p1;
+	t1p1 = tmp;
+    }
     
     distance0 = t0p2.z;
     distance1 = t1p2.z;
@@ -229,6 +241,12 @@ void main(void)
 	t1p2 = gl_TextureMatrix[7] * t1p2;
     }
 
+    if(distance0 < viewer0Dist)
+    {
+	vec4 tmp = t0p2;
+	t0p2 = t1p2;
+	t1p2 = tmp;
+    }
 
     /*t0p0 = gl_TextureMatrix[5] * t0p0;
     t0p1 = gl_TextureMatrix[5] * t0p1;
@@ -281,7 +299,7 @@ void main(void)
     seg2.z = 0;
     seg2 = normalize(seg2);
 
-    if(dot(seg0,seg1) >= 0.0)
+    if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
     {
 	outputTriangle = true;
     }
@@ -324,7 +342,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0|| dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -368,7 +386,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -395,7 +413,7 @@ void main(void)
 
     if(outputTriangle)
     {
-	color0 = vec3(1.0,0.0,0.0);
+	//color0 = vec3(1.0,0.0,0.0);
 	gl_Position = t0p0;
 	EmitVertex();
 	gl_Position = t0p1;
@@ -434,7 +452,7 @@ void main(void)
     seg2.z = 0;
     seg2 = normalize(seg2);
 
-    if(dot(seg0,seg1) >= 0.0)
+    if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
     {
 	outputTriangle = true;
     }
@@ -477,7 +495,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -521,7 +539,7 @@ void main(void)
 	seg2.z = 0;
 	seg2 = normalize(seg2);
 
-	if(dot(seg0,seg1) >= 0.0)
+	if(dot(seg0,seg1) >= 0.0 || dot(seg0,seg2) >= 0.0)
 	{
 	    outputTriangle = true;
 	}
@@ -548,7 +566,7 @@ void main(void)
 
     if(outputTriangle)
     {
-	color0 = vec3(0.0,0.0,1.0);
+	//color0 = vec3(0.0,0.0,1.0);
 	gl_Position = t1p0;
 	EmitVertex();
 	gl_Position = t1p1;
@@ -571,7 +589,7 @@ void main(void)
 	return;
     }
 
-    color0 = vec3(0.0,1.0,0.0);
+    //color0 = vec3(0.0,1.0,0.0);
 
     vec3 norm0,norm1;
     seg0.xy = quad[0].xy - quad[1].xy;

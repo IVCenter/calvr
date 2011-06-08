@@ -461,7 +461,11 @@ void Navigation::processMouseNav(NavMode nm)
         case MOVE_WORLD:
         {
             MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
+#ifndef WIN32
             float vwidth = std::min(mi->viewportX, mi->viewportY);
+#else
+			float vwidth = min(mi->viewportX, mi->viewportY);
+#endif
 
             float widthOffset = (mi->viewportX - vwidth) / 2.0;
             float heightOffset = (mi->viewportY - vwidth) / 2.0;

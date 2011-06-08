@@ -65,6 +65,8 @@ class ScreenStereo : public ScreenBase
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c);
 
+        virtual void adjustViewportCoords(int & x, int & y);
+
     protected:
         osg::DisplaySettings::StereoMode _stereoMode; ///< osg stereo mode for this screen
         osg::Matrix _viewLeft; ///< left eye view matrix

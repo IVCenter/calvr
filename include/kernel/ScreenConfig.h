@@ -5,6 +5,9 @@
 #ifndef CALVR_SCREEN_CONFIG_H
 #define CALVR_SCREEN_CONFIG_H
 
+#include <kernel/Export.h>
+#include <kernel/CalVR.h>
+
 #include <osg/Vec3>
 #include <osg/Camera>
 #include <osg/Matrix>
@@ -78,8 +81,9 @@ struct ScreenInfo
  * @brief Reads screen information from config file and creates the needed \c ScreenBase
  *        instances
  */
-class ScreenConfig
+class CVRKERNEL_EXPORT ScreenConfig
 {
+    friend class CalVR;
     public:
         ScreenConfig();
 
@@ -118,6 +122,8 @@ class ScreenConfig
         void findScreenInfo(osg::Camera * c, osg::Vec3 & center, float & width,
                             float & height);
 
+        int findScreenNumber(osg::Camera * c);
+
         /**
          * @brief Get the number of screens(viewports) created on this node
          */
@@ -125,11 +131,14 @@ class ScreenConfig
 
         ScreenBase * getScreen(int screen);
 
+
         /**
          * @brief Get the parameters for a given screen number
          * @return returns NULL if number out of range
          */
         ScreenInfo * getScreenInfo(int screen);
+
+        ScreenInfo * getMasterScreenInfo(int screen);
 
         /**
          * @brief Set a multiplier to used when generating the screen matrices
@@ -156,6 +165,8 @@ class ScreenConfig
         bool makeWindows();
         bool makeScreens();
 
+        void syncMasterScreens();
+
         std::vector<PipeInfo *> _pipeInfoList;      ///< list of pipe params from config file
         std::vector<WindowInfo *> _windowInfoList;  ///< list of window params from config file
         std::vector<ChannelInfo *> _channelInfoList;///< list of channel params from config file
@@ -164,6 +175,11 @@ class ScreenConfig
         std::vector<osg::Matrix> _screenTransformList;  ///< list of matrix transform for created screens
 
         std::vector<ScreenBase *> _screenList;      ///< list of all created screens
+
+        std::vector<PipeInfo *> _masterPipeInfoList;      ///< list of pipe params for master node
+        std::vector<WindowInfo *> _masterWindowInfoList;  ///< list of window params for master node
+        std::vector<ChannelInfo *> _masterChannelInfoList;///< list of channel params for master node
+        std::vector<ScreenInfo *> _masterScreenInfoList;  ///< list of screen params for master node
 };
 
 }
