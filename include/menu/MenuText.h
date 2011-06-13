@@ -24,7 +24,7 @@ class MenuText : public MenuItem
          * @brief Constructor
          * @param text initial text
          */
-        MenuText(std::string text);
+        MenuText(std::string text, float sizeScale = 1.0, bool indent = true, float maxWidth = 0.0);
         virtual ~MenuText();
 
         /**
@@ -34,12 +34,24 @@ class MenuText : public MenuItem
 
         void setText(std::string text);
 
+        bool getIndent() { return _indent; }
+        void setIndent(bool ind);
+
+        float getMaxWidth() { return _maxWidth; }
+        void setMaxWidth(float width);
+
+        float getSizeScale() { return _sizeScale; }
+        void setSizeScale(float sizeScale);
+
         /**
          * @brief Returns TEXT as this item's type
          */
         virtual MenuItemType getType();
     protected:
         std::string _text; ///< item's text label
+        bool _indent;
+        float _maxWidth;
+        float _sizeScale;
 };
 
 }

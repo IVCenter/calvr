@@ -28,6 +28,8 @@ BoardMenu::BoardMenu()
 
     _activeInteractor = NONE;
 
+    _primaryIntersectHand = ConfigManager::getInt("MenuSystem.PrimaryHand",0);
+
     std::string s;
 
     _distance
@@ -150,6 +152,22 @@ void BoardMenu::updateEnd()
 	{
 	    _activeInteractor = NONE;
 	    selectItem(NULL);
+	}
+	else if(_activeItem)
+	{
+	    osg::Vec3 pStart(0,0,0);
+	    osg::Vec3 pEnd(0,10000,0);
+	    if(_activeInteractor == MOUSE)
+	    {
+		pStart = pStart * InteractionManager::instance()->getMouseMat();
+		pEnd = pEnd * InteractionManager::instance()->getMouseMat();
+	    }
+	    else if(_activeInteractor == HAND)
+	    {
+		pStart = pStart * TrackingManager::instance()->getHandMat(_primaryIntersectHand);
+		pEnd = pEnd * TrackingManager::instance()->getHandMat(_primaryIntersectHand);
+	    }
+	    _activeItem->update(pStart,pEnd);
 	}
     }
 }

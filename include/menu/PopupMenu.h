@@ -27,11 +27,10 @@ class PopupMenu : public MenuSystemBase
         virtual ~PopupMenu();
 
         void addMenuItem(MenuItem * item);
+        void removeMenuItem(MenuItem * item);
 
         void setVisible(bool b);
         bool isVisible();
-
-        
 
     protected:
         virtual bool init();

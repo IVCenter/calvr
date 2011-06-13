@@ -32,6 +32,7 @@ class BoardMenuGeometry
         virtual void processEvent(InteractionEvent * event) = 0;
 
         virtual void resetIntersect(float width);
+        virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd) {}
 
         MenuItem * getMenuItem();
         osg::Geode * getIntersect();
