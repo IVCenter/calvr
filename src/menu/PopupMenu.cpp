@@ -32,6 +32,11 @@ void PopupMenu::addMenuItem(MenuItem * item)
     _rootMenu->addItem(item);
 }
 
+void PopupMenu::removeMenuItem(MenuItem * item)
+{
+    _rootMenu->removeItem(item);
+}
+
 void PopupMenu::setVisible(bool b)
 {
     _menu->setVisible(b);

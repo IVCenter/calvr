@@ -20,6 +20,7 @@ enum MenuItemType
     SUBMENU,
     RANGEVALUE,
     TEXT,
+    TEXTBUTTONSET,
     OTHER
 };
 

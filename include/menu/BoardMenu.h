@@ -80,6 +80,8 @@ class BoardMenu : public MenuBase
         int _primaryMouseButton;
         int _secondaryMouseButton;
 
+        int _primaryIntersectHand;
+
         float _boarder;
         float _rootMenuWidth;
 
