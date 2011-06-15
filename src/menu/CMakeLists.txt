@@ -23,6 +23,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuSystem.h
     ${HEADER_PATH}/MenuManager.h
     ${HEADER_PATH}/PopupMenu.h
+    ${HEADER_PATH}/DialogPanel.h
     ${HEADER_PATH}/TabbedDialogPanel.h
     ${HEADER_PATH}/BoardPopupMenu.h
     ${HEADER_PATH}/BoardMenu/BoardMenuGeometry.h
@@ -49,6 +50,7 @@ SET(LIB_SRC_FILES
     BoardMenu.cpp
     MenuManager.cpp
     PopupMenu.cpp
+    DialogPanel.cpp
     TabbedDialogPanel.cpp
     BoardPopupMenu.cpp
     BoardMenu/BoardMenuGeometry.cpp
