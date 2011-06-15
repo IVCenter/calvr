@@ -125,6 +125,15 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     geo->setTexCoordArray(0, texcoords);
     _geodeBackIcon->addDrawable(geo);
 
+    _backIcon = loadIcon("less.rgb");
+
+    if(_backIcon)
+    {
+	osg::StateSet * stateset = _geodeBackIcon->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, _backIcon,
+                                              osg::StateAttribute::ON);
+    }
+
     width2 += _iconHeight + _boarder;
 
     snprintf(buffer, 7, printstr, mrv->getValue());
@@ -147,6 +156,15 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     texcoords->push_back(osg::Vec2(0, 1));
     geo->setTexCoordArray(0, texcoords);
     _geodeForwardIcon->addDrawable(geo);
+
+    _forwardIcon = loadIcon("greater.rgb");
+
+    if(_forwardIcon)
+    {
+	osg::StateSet * stateset = _geodeForwardIcon->getOrCreateStateSet();
+	stateset->setTextureAttributeAndModes(0, _forwardIcon,
+                                              osg::StateAttribute::ON);
+    }
 
     width2 += _iconHeight + _boarder;
 
