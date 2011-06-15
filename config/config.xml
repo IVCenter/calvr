@@ -143,9 +143,10 @@
             <!--Scale value="1" /-->
           </Site>
           <Tessellation value=".2" />
+	  <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
         </ArtifactVis>
 
-    <PluginTest value="on" />
+    <PluginTest value="off" />
     <Collaborative value="off">
       <Server value="127.0.0.1" />
       <Port value="11050" />

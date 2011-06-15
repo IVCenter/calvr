@@ -23,11 +23,21 @@ class PopupMenu : public MenuSystemBase
 {
     friend class MenuManager;
     public:
-        PopupMenu(std::string title, std::string configName = "");
+        PopupMenu(std::string title, std::string configTag = "");
         virtual ~PopupMenu();
 
         void addMenuItem(MenuItem * item);
         void removeMenuItem(MenuItem * item);
+
+        void setPosition(osg::Vec3 pos);
+        osg::Vec3 getPosition();
+        void setRotation(osg::Quat rot);
+        osg::Quat getRotation();
+        void setTransform(osg::Matrix m);
+        osg::Matrix getTransform();
+
+        void setScale(float scale);
+        float getScale();
 
         void setVisible(bool b);
         bool isVisible();

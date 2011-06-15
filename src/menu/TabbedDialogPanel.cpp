@@ -1,21 +1,21 @@
 #include <menu/TabbedDialogPanel.h>
 #include <menu/MenuText.h>
+#include <menu/MenuImage.h>
 
 using namespace cvr;
 
-TabbedDialogPanel::TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow, std::string title, std::string configName)
+TabbedDialogPanel::TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow, std::string title, std::string configTag) : PopupMenu(title,configTag)
 {
     _menuWidth = menuWidth;
     _title = title;
-    _configName = configName;
+    _configName = configTag;
 
-    _popupMenu = new PopupMenu(title, configName);
-    _popupMenu->setVisible(false);
+    setVisible(false);
 
     _textButtonSet = new MenuTextButtonSet(true, _menuWidth, rowHeight, buttonsPerRow);
     _textButtonSet->setCallback(this);
 
-    _popupMenu->addMenuItem(_textButtonSet);
+    addMenuItem(_textButtonSet);
 
     _activeTab = "";
 }
@@ -40,10 +40,34 @@ void TabbedDialogPanel::addTextTab(std::string name, std::string text)
 
 void TabbedDialogPanel::addTextureTab(std::string name, std::string file)
 {
+    if(name.empty())
+    {
+	return;
+    }
+
+    if(!_menuItemMap[name])
+    {
+	MenuImage * mi = new MenuImage(file);
+	_menuItemMap[name] = mi;
+	float ratio = _menuWidth / mi->getWidth();
+	mi->setWidth(_menuWidth);
+	mi->setHeight(mi->getHeight() * ratio);
+	_textButtonSet->addButton(name);
+    }
 }
 
-void TabbedDialogPanel::addTextureTab(std::string name, osg::Texture2D & texture)
+void TabbedDialogPanel::addTextureTab(std::string name, osg::Texture2D * texture, float aspectRatio)
 {
+    if(name.empty())
+    {
+	return;
+    }
+
+    if(!_menuItemMap[name])
+    {
+	_menuItemMap[name] = new MenuImage(texture, _menuWidth, _menuWidth * (1.0 / aspectRatio));
+	_textButtonSet->addButton(name);
+    }
 }
 
 void TabbedDialogPanel::updateTabWithText(std::string name, std::string text)
@@ -57,17 +81,80 @@ void TabbedDialogPanel::updateTabWithText(std::string name, std::string text)
 	}
 	else
 	{
-	    //change to text tab
+	    if(name == _activeTab)
+	    {
+		removeMenuItem(_menuItemMap[name]);
+	    }
+	    delete _menuItemMap[name];
+	    _menuItemMap[name] = new MenuText(text, 1.0, false, _menuWidth);
+
+	    if(name == _activeTab)
+	    {
+		addMenuItem(_menuItemMap[name]);
+	    }
 	}
     }
 }
 
 void TabbedDialogPanel::updateTabWithTexture(std::string name, std::string file)
 {
+    if(_menuItemMap.find(name) != _menuItemMap.end())
+    {
+	MenuImage * mi = dynamic_cast<MenuImage*>(_menuItemMap[name]);
+	if(mi)
+	{
+	    mi->setImage(file);
+	    float ratio = _menuWidth / mi->getWidth();
+	    mi->setWidth(_menuWidth);
+	    mi->setHeight(mi->getHeight() * ratio);
+	}
+	else
+	{
+	    if(name == _activeTab)
+	    {
+		removeMenuItem(_menuItemMap[name]);
+	    }
+	    delete _menuItemMap[name];
+	    
+	    MenuImage * memimg = new MenuImage(file);
+	    _menuItemMap[name] = memimg;
+	    float ratio = _menuWidth / memimg->getWidth();
+	    memimg->setWidth(_menuWidth);
+	    memimg->setHeight(memimg->getHeight() * ratio);   
+
+	    if(name == _activeTab)
+	    {
+		addMenuItem(_menuItemMap[name]);
+	    }
+	}
+    }
 }
 
-void TabbedDialogPanel::updateTabWithTexture(std::string name, osg::Texture2D & texture)
+void TabbedDialogPanel::updateTabWithTexture(std::string name, osg::Texture2D * texture, float aspectRatio)
 {
+    if(_menuItemMap.find(name) != _menuItemMap.end())
+    {
+	MenuImage * mi = dynamic_cast<MenuImage*>(_menuItemMap[name]);
+	if(mi)
+	{
+	    mi->setImage(texture, _menuWidth, _menuWidth * (1.0 / aspectRatio));
+	}
+	else
+	{
+	    if(name == _activeTab)
+	    {
+		removeMenuItem(_menuItemMap[name]);
+	    }
+	    delete _menuItemMap[name];
+	    
+	    _menuItemMap[name] = new MenuImage(texture, _menuWidth, _menuWidth * (1.0 / aspectRatio));
+
+	    if(name == _activeTab)
+	    {
+		addMenuItem(_menuItemMap[name]);
+	    }
+	}
+    }
 }
 
 void TabbedDialogPanel::removeTab(std::string name)
@@ -81,7 +168,7 @@ void TabbedDialogPanel::removeTab(std::string name)
 	    {
 		if(_textButtonSet->getValue(i))
 		{
-		    _popupMenu->removeMenuItem(it->second);
+		    removeMenuItem(it->second);
 		}
 
 		_textButtonSet->removeButton(i);
@@ -110,23 +197,13 @@ std::string TabbedDialogPanel::getTabName(int tab)
     return _textButtonSet->getButton(tab);
 }
 
-void TabbedDialogPanel::setVisible(bool v)
-{
-    _popupMenu->setVisible(v);
-}
-
-bool TabbedDialogPanel::isVisible()
-{
-    return _popupMenu->isVisible();
-}
-
 void TabbedDialogPanel::clear()
 {
     for(int i = 0; i < _textButtonSet->getNumButtons(); i++)
     {
 	if(_textButtonSet->getValue(i))
 	{
-	    _popupMenu->removeMenuItem(_menuItemMap[_textButtonSet->getButton(i)]);
+	    removeMenuItem(_menuItemMap[_textButtonSet->getButton(i)]);
 	    break;
 	}
     }
@@ -151,7 +228,7 @@ void TabbedDialogPanel::menuCallback(MenuItem * item)
 	{
 	    if(_menuItemMap.find(_activeTab) != _menuItemMap.end())
 	    {
-		_popupMenu->removeMenuItem(_menuItemMap[_activeTab]);
+		removeMenuItem(_menuItemMap[_activeTab]);
 	    }
 	    _activeTab = "";
 	}
@@ -161,7 +238,7 @@ void TabbedDialogPanel::menuCallback(MenuItem * item)
 	if(atab >= 0)
 	{
 	    _activeTab = _textButtonSet->getButton(atab);
-	    _popupMenu->addMenuItem(_menuItemMap[_activeTab]);
+	    addMenuItem(_menuItemMap[_activeTab]);
 	}
     }
 }

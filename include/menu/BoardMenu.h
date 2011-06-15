@@ -46,6 +46,9 @@ class BoardMenu : public MenuBase
         virtual void clear();
         virtual void close();
 
+        virtual void setScale(float scale);
+        virtual float getScale();
+
     protected:
         void updateMenus();
         //BoardMenuGeometry * createGeometry(MenuItem * item, bool head = false);
@@ -59,6 +62,7 @@ class BoardMenu : public MenuBase
 
         SubMenu * _myMenu;
         osg::ref_ptr<osg::MatrixTransform> _menuRoot;
+        osg::ref_ptr<osg::MatrixTransform> _menuScale;
 
         MenuTrigger _trigger;
 

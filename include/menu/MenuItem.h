@@ -21,6 +21,7 @@ enum MenuItemType
     RANGEVALUE,
     TEXT,
     TEXTBUTTONSET,
+    IMAGE,
     OTHER
 };
 

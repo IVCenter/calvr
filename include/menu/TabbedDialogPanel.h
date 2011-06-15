@@ -15,34 +15,32 @@
 namespace cvr
 {
 
-class TabbedDialogPanel : public MenuCallback
+class TabbedDialogPanel : public PopupMenu, public MenuCallback
 {
     public:
-        TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow, std::string title, std::string configName = "");
+        TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow, std::string title, std::string configTag = "");
         virtual ~TabbedDialogPanel();
 
         void addTextTab(std::string name, std::string text);
         void addTextureTab(std::string name, std::string file);
-        void addTextureTab(std::string name, osg::Texture2D & texture);
+        void addTextureTab(std::string name, osg::Texture2D * texture, float aspectRatio);
 
         void updateTabWithText(std::string name, std::string text);
         void updateTabWithTexture(std::string name, std::string file);
-        void updateTabWithTexture(std::string name, osg::Texture2D & texture);
+        void updateTabWithTexture(std::string name, osg::Texture2D * texture, float aspectRatio);
 
         void removeTab(std::string name);
 
         int getNumTabs();
         std::string getTabName(int tab);
 
-        void setVisible(bool v);
-        bool isVisible();
+        //void setVisible(bool v);
+        //bool isVisible();
 
         void clear();
 
     protected:
         void menuCallback(MenuItem * item);
-
-        PopupMenu * _popupMenu;
 
         MenuTextButtonSet * _textButtonSet;
 

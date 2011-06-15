@@ -4,6 +4,7 @@
 #include <menu/BoardMenu/BoardMenuRangeValueGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextButtonSetGeometry.h>
+#include <menu/BoardMenu/BoardMenuImageGeometry.h>
 #include <menu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <menu/MenuButton.h>
 #include <menu/MenuCheckbox.h>
@@ -75,6 +76,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
 	case TEXTBUTTONSET:
 	{
 	    BoardMenuGeometry * mg = new BoardMenuTextButtonSetGeometry();
+	    mg->createGeometry(item);
+
+	    return mg;
+	    break;
+	}
+	case IMAGE:
+	{
+	    BoardMenuGeometry * mg = new BoardMenuImageGeometry();
 	    mg->createGeometry(item);
 
 	    return mg;

@@ -26,6 +26,9 @@ class MenuBase
         virtual void itemDelete(MenuItem * item) = 0;
         virtual void clear() = 0;
         virtual void close() = 0;
+
+        virtual void setScale(float scale) = 0;
+        virtual float getScale() = 0;
 };
 
 }

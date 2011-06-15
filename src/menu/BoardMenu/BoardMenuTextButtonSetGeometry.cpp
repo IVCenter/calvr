@@ -4,6 +4,9 @@
 #include <util/LocalToWorldVisitor.h>
 #include <util/Intersection.h>
 
+#include <kernel/SceneManager.h>
+#include <kernel/NodeMask.h>
+
 #include <osg/Geometry>
 
 #include <iostream>
@@ -150,16 +153,30 @@ void BoardMenuTextButtonSetGeometry::updateGeometry()
 
 void BoardMenuTextButtonSetGeometry::update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd)
 {
-    osg::Matrix l2w = getLocalToWorldMatrix(_node) * osg::Matrix::inverse(_node->getMatrix());
-    osg::Matrix w2l = osg::Matrix::inverse(l2w);
-
     MenuTextButtonSet * mb = dynamic_cast<MenuTextButtonSet*> (_item);
+    //std::cerr << "pointer start x: " << pointerStart.x() << " y: " << pointerStart.y() << " z: " << pointerStart.z() << std::endl;
+    //std::cerr << "pointer end x: " << pointerEnd.x() << " y: " << pointerEnd.y() << " z: " << pointerEnd.z() << std::endl;
+    /*osg::Matrix l2w = getLocalToWorldMatrix(_node) * osg::Matrix::inverse(_node->getMatrix());
+    osg::Matrix w2l = osg::Matrix::inverse(l2w);
 
     std::vector<IsectInfo> isecvec;
 
     pointerStart = pointerStart * w2l;
     pointerEnd = pointerEnd * w2l;
-    isecvec = getObjectIntersection(_node,pointerStart, pointerEnd);
+
+    //std::cerr << "button space pointer start x: " << pointerStart.x() << " y: " << pointerStart.y() << " z: " << pointerStart.z() << std::endl;
+    //std::cerr << "button space pointer end x: " << pointerEnd.x() << " y: " << pointerEnd.y() << " z: " << pointerEnd.z() << std::endl;
+
+    osg::Vec3 norm = pointerEnd - pointerStart;
+    norm.normalize();
+    float t = -pointerStart.y() / norm.y();
+    osg::Vec3 screenpoint = pointerStart + (norm * t);
+    std::cerr << "Screen Point x: " << screenpoint.x() << " y: " << screenpoint.y() << " z: " << screenpoint.z() << std::endl;
+
+    isecvec = getObjectIntersection(_node,pointerStart, pointerEnd);*/
+    std::vector<IsectInfo> isecvec;
+    isecvec = getObjectIntersection(SceneManager::instance()->getMenuRoot(),pointerStart, pointerEnd);
+    //std::cerr << "isec size: " << isecvec.size() << std::endl;
     for(int i = 0; i < isecvec.size(); i++)
     {
 	for(std::map<std::string,TextButtonGeometry*>::iterator it = _buttonMap.begin(); it != _buttonMap.end(); it++)
@@ -217,6 +234,8 @@ BoardMenuTextButtonSetGeometry::TextButtonGeometry * BoardMenuTextButtonSetGeome
     tbg->textSelected = new osg::Geode();
 
     tbg->root->addChild(tbg->textTransform);
+
+    tbg->textTransform->setNodeMask(tbg->textTransform->getNodeMask() & ~(INTERSECT_MASK));
 
     osgText::Text * textd = makeText(text, _textSize, osg::Vec3(0,0,0), _textColor, osgText::Text::CENTER_CENTER);
     tbg->text->addDrawable(textd);

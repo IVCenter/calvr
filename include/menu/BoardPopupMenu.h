@@ -26,6 +26,9 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         virtual void clear();
         virtual void close();
 
+        virtual void setScale(float scale);
+        virtual float getScale();
+
         virtual void setPosition(osg::Vec3 pos);
         virtual osg::Vec3 getPosition();
         virtual void setRotation(osg::Quat rot);
