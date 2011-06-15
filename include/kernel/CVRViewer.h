@@ -136,6 +136,9 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          */
         double getProgramStartTime();
 
+        /**
+         * @brief Get the screen on the master node where the mouse is currently active
+         */
         int getActiveMasterScreen() { return _activeMasterScreen; }
     protected:
         virtual ~CVRViewer();
@@ -171,6 +174,9 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
                 int param2;
         };
 
+        /**
+         * @brief Custom events to be handled during the viewer event traversal
+         */
         enum CustomViewerEventType
         {
             UPDATE_ACTIVE_SCREEN = 1<<24,
@@ -203,7 +209,7 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 
         CullMode _cullMode; ///< viewer culling mode
 
-        int _activeMasterScreen;
+        int _activeMasterScreen; ///< screen the mouse is in on the master node
 };
 
 /**

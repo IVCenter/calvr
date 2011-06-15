@@ -34,9 +34,6 @@ class TabbedDialogPanel : public PopupMenu, public MenuCallback
         int getNumTabs();
         std::string getTabName(int tab);
 
-        //void setVisible(bool v);
-        //bool isVisible();
-
         void clear();
 
     protected:

@@ -1,9 +1,15 @@
+/**
+ * @file NodeMask.h
+ */
 #ifndef CALVR_NODE_MASKS_H
 #define CALVR_NODE_MASKS_H
 
 namespace cvr
 {
 
+/**
+ * @brief Custom scenegraph node mask bits used by CalVR
+ */
 enum CVRNodeMask
 {
     INTERSECT_MASK = 0x0002,
