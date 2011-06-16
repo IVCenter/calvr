@@ -139,6 +139,10 @@ void ScreenMultiViewer::init(int mode)
 
     _camera->getOrCreateStateSet()->setAttribute(_program);
 
+    _a = ConfigManager::getFloat("a","MultiViewerFunction",0);
+    _b = ConfigManager::getFloat("b","MultiViewerFunction",0);
+    _c = ConfigManager::getFloat("c","MultiViewerFunction",1.0);
+
     float hwidth = _myInfo->width / 2.0;
     float hheight = _myInfo->height / 2.0;
 
@@ -270,6 +274,24 @@ void ScreenMultiViewer::init(int mode)
     _nfNormal->setName("nfNormal");
     _nfNormal->setType(osg::Uniform::FLOAT_VEC3);
     _camera->getOrCreateStateSet()->addUniform(_nfNormal);
+
+    _aUni = new osg::Uniform();
+    _aUni->setName("a");
+    _aUni->setType(osg::Uniform::FLOAT);
+    _aUni->set(_a);
+    _camera->getOrCreateStateSet()->addUniform(_aUni);
+
+    _bUni = new osg::Uniform();
+    _bUni->setName("b");
+    _bUni->setType(osg::Uniform::FLOAT);
+    _bUni->set(_b);
+    _camera->getOrCreateStateSet()->addUniform(_bUni);
+
+    _cUni = new osg::Uniform();
+    _cUni->setName("c");
+    _cUni->setType(osg::Uniform::FLOAT);
+    _cUni->set(_c);
+    _camera->getOrCreateStateSet()->addUniform(_cUni);
 }
 
 void ScreenMultiViewer::computeViewProj()
@@ -1442,8 +1464,8 @@ float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
     dir.normalize();
 
     weight.y() = acos(dir * _dir1);
-    weight.x() = weight.x() * weight.x() * -0.1823784 + weight.x() * -0.095493 + 1.0;
-    weight.y() = weight.y() * weight.y() * -0.1823784 + weight.y() * -0.095493 + 1.0;
+    weight.x() = weight.x() * weight.x() * _a + weight.x() * _b + _c;
+    weight.y() = weight.y() * weight.y() * _a + weight.y() * _b + _c;
 
     weight.x() = std::max(weight.x(),0.0f);
     weight.y() = std::max(weight.y(),0.0f);

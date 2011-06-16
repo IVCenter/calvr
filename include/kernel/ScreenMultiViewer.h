@@ -142,6 +142,12 @@ class ScreenMultiViewer : public ScreenMVSimulator
         osg::Uniform * _farPoint;
         osg::Uniform * _nfNormal;
 
+        osg::Uniform * _aUni;
+        osg::Uniform * _bUni;
+        osg::Uniform * _cUni;
+
+        float _a,_b,_c;
+
         float _viewer0DistLocal[2];
         float _viewer1DistLocal[2];
 

@@ -41,6 +41,10 @@ uniform vec3 nearPoint;
 uniform vec3 farPoint;
 uniform vec3 nfNormal;
 
+uniform float a;
+uniform float b;
+uniform float c;
+
 void main(void)
 {
     // get fragment world space position
@@ -57,7 +61,8 @@ void main(void)
 
     weight.y = acos(dot(direction, viewer1Dir));
     
-    weight = weight * weight * -0.1823784 + weight * -0.095493 + 1.0;
+    //weight = weight * weight * -0.1823784 + weight * -0.095493 + 1.0;
+    weight = weight * weight * a + weight * b + c;
     weight = max(weight, 0.0);
 
     if(weight.x + weight.y <= 0)
