@@ -1384,7 +1384,7 @@ void ScreenMultiViewer::calcScreenMinMaxRatio()
 
 	_minRatioLocal[i] = currentRatio;
 
-	std::cerr << "Min Ratio: " << _minRatioLocal[i] << " Max Ratio: " << _maxRatioLocal[i] << " Range: " << _maxRatioLocal[i] - _minRatioLocal[i] << std::endl;
+	//std::cerr << "Min Ratio: " << _minRatioLocal[i] << " Max Ratio: " << _maxRatioLocal[i] << " Range: " << _maxRatioLocal[i] - _minRatioLocal[i] << std::endl;
 
 #if 0
 	//compare result to brute force
