@@ -92,11 +92,18 @@ class CVRKERNEL_EXPORT SceneManager
         void setAxis(bool on);
 
         /**
-         * @brief Get a pointer to the DepthPartitionNode
+         * @brief Get a pointer to the DepthPartitionNode for the left eye rendering
          *
          * This node is located above the sceen root but does nothing if not set to active
          */
-        DepthPartitionNode * getDepthPartitionNode();
+        DepthPartitionNode * getDepthPartitionNodeLeft();
+
+        /**
+         * @brief Get a pointer to the DepthPartitionNode for the right eye rendering
+         *
+         * This node is located above the sceen root but does nothing if not set to active
+         */
+        DepthPartitionNode * getDepthPartitionNodeRight();
 
         /**
          * @brief Set if depth partitioning is used or not
@@ -126,7 +133,9 @@ class CVRKERNEL_EXPORT SceneManager
         bool _showAxis;     ///< should debug axis be shown
 
         osg::ref_ptr<osg::MatrixTransform> _sceneRoot;      ///< root node of the scene
-        osg::ref_ptr<DepthPartitionNode> _depthPartition;   ///< partitions availible depth, good for large scenes
+        osg::ref_ptr<osg::Group> _actualRoot; ///< node assigned as viewer root
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionLeft;   ///< partitions availible depth, good for large scenes, left eye
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionRight;  ///< partitions availible depth, good for large scenes, right eye
         osg::ref_ptr<osg::MatrixTransform> _menuRoot;       ///< root node for menu implementation
         osg::ref_ptr<osg::ClipNode> _objectRoot;            ///< root of object space
         osg::ref_ptr<osg::MatrixTransform> _objectTransform;///< object space translation/rotation

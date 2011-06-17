@@ -142,7 +142,6 @@ CVRViewer::CVRViewer() :
     }
 
     _renderOnMaster = ConfigManager::getBool("RenderOnMaster", true);
-    _stopHeadTracking = ConfigManager::getBool("Freeze", false);
 
     if(ComController::instance()->isMaster())
     {
@@ -1600,10 +1599,10 @@ void CVRViewer::removeUpdateTraversal(UpdateTraversal * ut)
     }
 }
 
-void CVRViewer::setStopHeadTracking(bool b)
+/*void CVRViewer::setStopHeadTracking(bool b)
 {
     _stopHeadTracking = b;
-}
+}*/
 
 bool CVRViewer::processEvent(InteractionEvent * event)
 {
@@ -1644,10 +1643,10 @@ bool CVRViewer::getRenderOnMaster()
     return _renderOnMaster;
 }
 
-bool CVRViewer::getStopHeadTracking()
+/*bool CVRViewer::getStopHeadTracking()
 {
     return _stopHeadTracking;
-}
+}*/
 
 double CVRViewer::getLastFrameDuration()
 {

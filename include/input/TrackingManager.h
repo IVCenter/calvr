@@ -116,6 +116,14 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         osg::Matrix & getHeadMat(int head = 0);
 
         /**
+         * @brief Get the trasform for a given head body, continues to 
+         * update even if head tracking is frozen
+         * @param head Head number
+         * @return Matrix trasform from world space to head space
+         */
+        osg::Matrix & getUnfrozenHeadMat(int head = 0);
+
+        /**
          * @brief Returns number of button stations provided by the button tracker
          */
         int getNumButtonStations();
@@ -149,6 +157,16 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          * @brief Returns the value of the valuator in a given station with a given index
          */
         float getValuator(int station, int index);
+
+        /**
+         * @brief Set if head matrix should be updated
+         */
+        void setUpdateHeadTracking(bool b);
+
+        /**
+         * @brief Get if head matrix is being updated
+         */
+        bool getUpdateHeadTracking();
 
         bool getUsingMouseTracker();
 
@@ -219,6 +237,9 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
 
+        bool _updateHeadTracking;
+        std::vector<osg::Matrix> _lastUpdatedHeadMatList; ///< used to hold the frozen head positition when head tracking is stopped
+
         int _numHands; ///< number of hands in system
         int _numHeads; ///< number of heads in system
         bool _showWand; ///< should wand graphic be visible
@@ -228,8 +249,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         TrackerBase * _buttonTracker; ///< tracking system that provides the button information
         TrackerBase * _bodyTracker; ///< tracking system that provides the body tracking information
 
-        trackedBody * _defaultHead; ///< default value for head orientation
-        trackedBody * _defaultHand; ///< default value for hand orientation
+        //trackedBody * _defaultHead; ///< default value for head orientation
+        //trackedBody * _defaultHand; ///< default value for hand orientation
 
         osg::Matrix _systemTransform; ///< transform for the entire tracking system
         std::vector<osg::Matrix> _handTransformsRot;

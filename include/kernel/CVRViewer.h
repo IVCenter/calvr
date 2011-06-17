@@ -92,11 +92,6 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         void removeUpdateTraversal(UpdateTraversal * ut);
 
         /**
-         * @brief Set if the viewer information should be updated
-         */
-        void setStopHeadTracking(bool b);
-
-        /**
          * @brief Process interaction events for viewer related actions
          */
         bool processEvent(InteractionEvent * event);
@@ -105,11 +100,6 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          * @brief Get if graphics are being rendered on the master node
          */
         bool getRenderOnMaster();
-
-        /**
-         * @brief Get if head tracking is being used
-         */
-        bool getStopHeadTracking();
 
         /**
          * @brief Get the time spent for the last frame loop
@@ -196,7 +186,6 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         std::list<UpdateTraversal*> _updateList; ///< list of all update operations for viewer
 
         bool _renderOnMaster; ///< should the master render graphics
-        bool _stopHeadTracking; ///< should we use head tracking
 
         osg::Timer_t _programStartTime; ///< time the program started running (distributed)
         osg::Timer_t _lastFrameStartTime; ///< time the last frame started (distributed)

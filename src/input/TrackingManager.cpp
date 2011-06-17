@@ -68,6 +68,8 @@ bool TrackingManager::init()
     std::string buttonSystem =
                 ConfigManager::getEntry("value", "Input.ButtonSystem", "NONE");
 
+    _updateHeadTracking = !ConfigManager::getBool("Freeze", false);
+
     if(bodySystem == "MOUSE" || buttonSystem == "MOUSE")
     {
 	bodySystem = "MOUSE";
@@ -534,16 +536,54 @@ bool TrackingManager::init()
     for(int i = 0; i < _numHeads; i++)
     {
         _headMatList.push_back(osg::Matrix());
+	_lastUpdatedHeadMatList.push_back(osg::Matrix());
     }
 
-    float vx, vy, vz;
-    vx = ConfigManager::getFloat("x", "ViewerPosition", 0);
-    vy = ConfigManager::getFloat("y", "ViewerPosition", 0);
-    vz = ConfigManager::getFloat("z", "ViewerPosition", 0);
+    
+
+    float vx, vy, vz, vh, vp, vr;
+    osg::Matrix vTrans, vRot;
+    if(_numHeads)
+    {
+	vx = ConfigManager::getFloat("x", "ViewerPosition", 0);
+	vy = ConfigManager::getFloat("y", "ViewerPosition", 0);
+	vz = ConfigManager::getFloat("z", "ViewerPosition", 0);
+
+	vh = ConfigManager::getFloat("h", "ViewerPosition", 0);
+	vp = ConfigManager::getFloat("p", "ViewerPosition", 0);
+	vr = ConfigManager::getFloat("r", "ViewerPosition", 0);
+
+	vTrans.makeTranslate(vx, vy, vz);
+	vRot.makeRotate(vr,osg::Vec3(0,1,0),vp,osg::Vec3(1,0,0),vh,osg::Vec3(0,0,1));
+
+	_headMatList[0] = vRot * vTrans;
+	_lastUpdatedHeadMatList[0] = _headMatList[0];
+
+    }
+
+    for(int i = 1; i < _numHeads; i++)
+    {
+	std::stringstream vTag;
+	vTag << "Viewer" << i+1 << "Position";
+
+	vx = ConfigManager::getFloat("x", vTag.str(), 0);
+	vy = ConfigManager::getFloat("y", vTag.str(), 0);
+	vz = ConfigManager::getFloat("z", vTag.str(), 0);
+
+	vh = ConfigManager::getFloat("h", vTag.str(), 0);
+	vp = ConfigManager::getFloat("p", vTag.str(), 0);
+	vr = ConfigManager::getFloat("r", vTag.str(), 0);
+
+	vTrans.makeTranslate(vx, vy, vz);
+	vRot.makeRotate(vr,osg::Vec3(0,1,0),vp,osg::Vec3(1,0,0),vh,osg::Vec3(0,0,1));
+
+	_headMatList[i] = vRot * vTrans;
+	_lastUpdatedHeadMatList[i] = _headMatList[i];
+    }
 
     //_headMat.setTrans(vx,vy,vz);
 
-    _defaultHead = new trackedBody;
+    /*_defaultHead = new trackedBody;
     _defaultHead->x = vx;
     _defaultHead->y = vy;
     _defaultHead->z = vz;
@@ -552,7 +592,7 @@ bool TrackingManager::init()
 
     _defaultHand = new trackedBody;
     _defaultHand->x = _defaultHand->y = _defaultHand->z = _defaultHand->qx
-            = _defaultHand->qy = _defaultHand->qz = _defaultHand->qw = 0.0;
+            = _defaultHand->qy = _defaultHand->qz = _defaultHand->qw = 0.0;*/
 
     if(_numHands > 0)
     {
@@ -793,15 +833,20 @@ void TrackingManager::update()
                 _headMatList[i] = _headTransformsRot[i] * rot
                         * osg::Matrix::translate(pos) * _systemTransform
                         * osg::Matrix::translate(_headTransformsTrans[i]);
+			
+		if(_updateHeadTracking)
+		{
+		    _lastUpdatedHeadMatList[i] = _headMatList[i];
+		}
             }
         }
-        else
+        /*else
         {
             //std::cerr << "Setting Head Position to x: " << _defaultHead->x << " y: " << _defaultHead->y << " z: " << _defaultHead->z << std::endl;
             _headMatList[i].setTrans(_defaultHead->x, _defaultHead->y,
                                      _defaultHead->z);
             //_headMat =  _headTransformRot * osg::Matrix::translate(osg::Vec3(_defaultHead->x,_defaultHead->y,_defaultHead->z)) * _systemTransform * osg::Matrix::translate(_headTransformTrans);
-        }
+        }*/
     }
 
     for(int i = 0; i < _numHands; i++)
@@ -810,10 +855,10 @@ void TrackingManager::update()
         {
             tb = _bodyTracker->getBody(_handStations[i]);
         }
-        else
+        /*else
         {
             tb = _defaultHand;
-        }
+        }*/
 
         if(tb)
         {
@@ -964,6 +1009,16 @@ osg::Matrix & TrackingManager::getHandMat(int hand)
 
 osg::Matrix & TrackingManager::getHeadMat(int head)
 {
+    if(head < 0 || head >= _lastUpdatedHeadMatList.size())
+    {
+        static osg::Matrix m;
+        return m;
+    }
+    return _lastUpdatedHeadMatList[head];
+}
+
+osg::Matrix & TrackingManager::getUnfrozenHeadMat(int head)
+{
     if(head < 0 || head >= _headMatList.size())
     {
         static osg::Matrix m;
@@ -1035,6 +1090,16 @@ float TrackingManager::getValuator(int station, int index)
         return _valuatorList[station][index];
     }
     return 0.0;
+}
+
+void TrackingManager::setUpdateHeadTracking(bool b)
+{
+    _updateHeadTracking = b;
+}
+
+bool TrackingManager::getUpdateHeadTracking()
+{
+    return _updateHeadTracking;
 }
 
 bool TrackingManager::getUsingMouseTracker()
@@ -1291,13 +1356,13 @@ void TrackingManager::updateThreadMats()
                         * osg::Matrix::translate(_headTransformsTrans[i]);
             }
         }
-        else
+        /*else
         {
             //std::cerr << "Setting Head Position to x: " << _defaultHead->x << " y: " << _defaultHead->y << " z: " << _defaultHead->z << std::endl;
             _threadHeadMatList[i].setTrans(_defaultHead->x, _defaultHead->y,
                                            _defaultHead->z);
             //_headMat =  _headTransformRot * osg::Matrix::translate(osg::Vec3(_defaultHead->x,_defaultHead->y,_defaultHead->z)) * _systemTransform * osg::Matrix::translate(_headTransformTrans);
-        }
+        }*/
     }
 
     for(int i = 0; i < _numHands; i++)
@@ -1306,10 +1371,10 @@ void TrackingManager::updateThreadMats()
         {
             tb = _bodyTracker->getBody(_handStations[i]);
         }
-        else
+        /*else
         {
             tb = _defaultHand;
-        }
+        }*/
 
         if(tb)
         {
