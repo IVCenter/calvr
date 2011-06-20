@@ -1,3 +1,6 @@
+/**
+ * @file ScreenMultiViewer.h
+ */
 #ifndef SCREEN_MULTI_VIEWER_H
 #define SCREEN_MULTI_VIEWER_H
 
@@ -14,6 +17,10 @@
 namespace cvr
 {
 
+/**
+ * @brief Screen for rendering with two tracked users using shaders
+ * to blend perspective
+ */
 class ScreenMultiViewer : public ScreenMVSimulator
 {
     public:
@@ -141,6 +148,12 @@ class ScreenMultiViewer : public ScreenMVSimulator
         osg::Uniform * _nearPoint;
         osg::Uniform * _farPoint;
         osg::Uniform * _nfNormal;
+
+        osg::Uniform * _aUni;
+        osg::Uniform * _bUni;
+        osg::Uniform * _cUni;
+
+        float _a,_b,_c;
 
         float _viewer0DistLocal[2];
         float _viewer1DistLocal[2];

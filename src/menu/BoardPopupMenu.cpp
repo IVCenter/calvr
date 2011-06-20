@@ -182,6 +182,16 @@ void BoardPopupMenu::close()
     setVisible(false);
 }
 
+void BoardPopupMenu::setScale(float scale)
+{
+    BoardMenu::setScale(scale);
+}
+
+float BoardPopupMenu::getScale()
+{
+    return BoardMenu::getScale();
+}
+
 void BoardPopupMenu::setPosition(osg::Vec3 pos)
 {
     osg::Matrix m = _menuRoot->getMatrix();

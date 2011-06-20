@@ -177,8 +177,8 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
         _geodeSelected->addDrawable(textNode);
 
-        _openIcon = loadIcon("arrow.rgb");
-        _closedIcon = loadIcon("arrow.rgb");
+        _openIcon = loadIcon("arrow-left-highlighted.rgb");
+        _closedIcon = loadIcon("arrow-left.rgb");
 
         if(_closedIcon)
         {

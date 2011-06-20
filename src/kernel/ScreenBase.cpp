@@ -75,7 +75,7 @@ void ScreenBase::defaultCameraInit(osg::Camera * cam)
 
 osg::Matrix & ScreenBase::getCurrentHeadMatrix(int head)
 {
-    if(!_headMatListInit)
+    /*if(!_headMatListInit)
     {
 	for(int i = 0; i < TrackingManager::instance()->getNumHeads(); i++)
 	{
@@ -89,7 +89,8 @@ osg::Matrix & ScreenBase::getCurrentHeadMatrix(int head)
 	_currentHeadMatList[head] = TrackingManager::instance()->getHeadMat(head);
     }
 
-    return _currentHeadMatList[head];
+    return _currentHeadMatList[head];*/
+    return TrackingManager::instance()->getHeadMat(head);
 }
 
 osg::Vec3d ScreenBase::defaultLeftEye(int head)

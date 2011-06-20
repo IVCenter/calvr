@@ -53,6 +53,11 @@ void MenuSystem::addMenuItem(MenuItem * item)
     _rootMenu->addItem(item);
 }
 
+void MenuSystem::removeMenuItem(MenuItem * item)
+{
+    _rootMenu->removeItem(item);
+}
+
 void MenuSystem::updateStart()
 {
     if(_menu)

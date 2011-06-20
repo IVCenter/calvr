@@ -1,3 +1,7 @@
+/**
+ * @file CalVR.h
+ */
+
 #ifndef CALVR_MAIN_H
 #define CALVR_MAIN_H
 
@@ -21,24 +25,40 @@ class MenuManager;
 class FileHandler;
 class PluginManager;
 
+/**
+ * @brief Main class for the CalVR framework.  Sets up all other core classes 
+ * and contains the main run loop.
+ */
 class CalVR
 {
     public:
         CalVR();
-        ~CalVR();
+        virtual ~CalVR();
 
+        /**
+         * @brief get static self pointer
+         */
         static CalVR * instance();
 
+        /**
+         * @brief does main framework init
+         */
         bool init(osg::ArgumentParser & args, std::string home);
 
+        /**
+         * @brief main run loop, does not return util quit is signaled
+         */
         void run();
 
+        /**
+         * @brief returns the set home directory for the CalVR install
+         */
         std::string & getHomeDir() { return _home; }
 
     protected:
-        static CalVR * _myPtr;
+        static CalVR * _myPtr; ///< static self pointer
 
-        std::string _home;
+        std::string _home; ///< CalVR home directory
 
         ConfigManager * _config;
         ComController * _communication;

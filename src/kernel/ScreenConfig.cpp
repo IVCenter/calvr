@@ -6,7 +6,10 @@
 #include <kernel/ScreenMVMaster.h>
 #include <kernel/MultiViewScreen.h>
 #include <kernel/ComController.h>
+#include <kernel/CVRViewer.h>
 #include <config/ConfigManager.h>
+
+#include <osgViewer/GraphicsWindow>
 
 #include <iostream>
 #include <sstream>
@@ -421,6 +424,17 @@ bool ScreenConfig::makeWindows()
 	{
 	    std::cerr << "Error: failed to create graphics context for window: " << i << std::endl;
 	    return false;
+	}
+
+	osgViewer::GraphicsWindow * gw = dynamic_cast<osgViewer::GraphicsWindow*>(_windowInfoList[i]->gc);
+	if(gw)
+	{
+	    //std::cerr << "className: " << gw->className() << std::endl;
+	    std::string name = gw->className();
+	    if(name == "GraphicsWindowCarbon")
+	    {
+		CVRViewer::instance()->setInvertMouseY(true);
+	    }
 	}
     }
 
