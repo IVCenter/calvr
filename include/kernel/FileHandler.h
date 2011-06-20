@@ -77,7 +77,7 @@ class FileLoadCallback
     public:
         /**
          * @brief Constructor
-         * @param ext comma separated list extensions to register to this callback class
+         * @param exts comma separated list extensions to register to this callback class
          */
         FileLoadCallback(std::string exts);
 

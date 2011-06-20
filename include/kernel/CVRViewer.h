@@ -130,6 +130,10 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          * @brief Get the screen on the master node where the mouse is currently active
          */
         int getActiveMasterScreen() { return _activeMasterScreen; }
+
+        void setInvertMouseY(bool inv) { _invertMouseY = inv; }
+
+        bool getInvertMouseY() { return _invertMouseY; }
     protected:
         virtual ~CVRViewer();
 
@@ -199,6 +203,8 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         CullMode _cullMode; ///< viewer culling mode
 
         int _activeMasterScreen; ///< screen the mouse is in on the master node
+
+        bool _invertMouseY;
 };
 
 /**

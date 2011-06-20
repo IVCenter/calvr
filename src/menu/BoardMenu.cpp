@@ -94,9 +94,9 @@ BoardMenu::BoardMenu()
     _menuActive = false;
     _activeItem = NULL;
     //_openingMenu = NULL;
-    _openingElapse = 0.0;
+    //_openingElapse = 0.0;
 
-    _openingThreshold = ConfigManager::getFloat("MenuSystem.BoardMenu.OpenThreshold", 0.5);
+    //_openingThreshold = ConfigManager::getFloat("MenuSystem.BoardMenu.OpenThreshold", 0.5);
 
     _clickActive = false;
 
@@ -883,7 +883,7 @@ bool BoardMenu::processIsect(IsectInfo & isect, bool mouse)
     return false;
 }
 
-void BoardMenu::checkIntersection()
+/*void BoardMenu::checkIntersection()
 {
     osg::Vec3 pointerStart =
             TrackingManager::instance()->getHandMat(_primaryHand).getTrans(),
@@ -940,7 +940,7 @@ void BoardMenu::checkIntersection()
     }
 
     selectItem(intersect);
-}
+}*/
 
 void BoardMenu::selectItem(BoardMenuGeometry * mg)
 {

@@ -197,6 +197,11 @@ std::string TabbedDialogPanel::getTabName(int tab)
     return _textButtonSet->getButton(tab);
 }
 
+int TabbedDialogPanel::getTabNum(std::string name)
+{
+    return _textButtonSet->getButtonNumber(name);
+}
+
 void TabbedDialogPanel::clear()
 {
     for(int i = 0; i < _textButtonSet->getNumButtons(); i++)
@@ -218,6 +223,46 @@ void TabbedDialogPanel::clear()
     _menuItemMap.clear();
 
     _activeTab = "";
+}
+
+void TabbedDialogPanel::setActiveTab(std::string name)
+{
+    setActiveTabNum(getTabNum(name));
+}
+
+void TabbedDialogPanel::setActiveTabNum(int index)
+{
+    if(_textButtonSet->firstNumOn() == index)
+    {
+	return;
+    }
+
+    for(int i = 0; i < _textButtonSet->getNumButtons(); i++)
+    {
+	_textButtonSet->setValue(i,false);
+    }
+
+    if(index >= 0 && index < _textButtonSet->getNumButtons())
+    {
+	_textButtonSet->setValue(index,true);
+	_activeTab = _textButtonSet->getButton(index);
+    }
+    else
+    {
+	_activeTab = "";
+    }
+
+    menuCallback(_textButtonSet);
+}
+
+std::string TabbedDialogPanel::getActiveTab()
+{
+    return _activeTab;
+}
+
+int TabbedDialogPanel::getActiveTabNum()
+{
+    return getTabNum(_activeTab);
 }
 
 void TabbedDialogPanel::menuCallback(MenuItem * item)

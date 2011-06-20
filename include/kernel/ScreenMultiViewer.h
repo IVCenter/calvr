@@ -1,3 +1,6 @@
+/**
+ * @file ScreenMultiViewer.h
+ */
 #ifndef SCREEN_MULTI_VIEWER_H
 #define SCREEN_MULTI_VIEWER_H
 
@@ -14,6 +17,10 @@
 namespace cvr
 {
 
+/**
+ * @brief Screen for rendering with two tracked users using shaders
+ * to blend perspective
+ */
 class ScreenMultiViewer : public ScreenMVSimulator
 {
     public:
