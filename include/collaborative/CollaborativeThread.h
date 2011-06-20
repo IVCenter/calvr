@@ -5,6 +5,10 @@
 #include <collaborative/CollaborativeManager.h>
 #include <util/CVRSocket.h>
 
+#ifdef __APPLE__
+#define MSG_NOSIGNAL SO_NOSIGPIPE
+#endif
+
 namespace cvr
 {
 

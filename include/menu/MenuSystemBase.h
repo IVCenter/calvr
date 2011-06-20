@@ -46,6 +46,7 @@ class MenuSystemBase
 
         /**
          * @brief Check the IsectInfo to see if it hit this menu
+         * @param isect geometry intersection to process
          * @param mouse is this a mouse intersection
          * @return return true if this menu claims the intersect
          */

@@ -33,7 +33,7 @@ class MenuTextButtonSet : public MenuItem
          * @param width sets the width of the button set in the menu
          * @param rowHeight sets the height of each row of buttons in the menu
          * @param buttonsPerRow the number of buttons put into each row before moving to the next one
-         * @buttons list of buttons to add to the item, states default to false
+         * @param buttons list of buttons to add to the item, states default to false
          */
         MenuTextButtonSet(bool radioButtons, float width, float rowHeight, int buttonsPerRow, std::vector<std::string> & buttons);
         virtual ~MenuTextButtonSet();

@@ -172,6 +172,8 @@ CVRViewer::CVRViewer() :
 
     _updateList.push_back(new DefaultUpdate);
 
+    _invertMouseY = false;
+
     _myPtr = this;
     _activeMasterScreen = -1;
 }
@@ -500,8 +502,13 @@ void CVRViewer::eventTraversal()
 			    }
 			    evnt.param1 = (int)(event->getX()
                                     - si->myChannel->left);
-                            evnt.param2 = (int)(event->getY()
+				evnt.param2 = (int)(event->getY()
                                     - si->myChannel->bottom);
+
+			    if(_invertMouseY)
+			    {
+				evnt.param2 = -evnt.param2 + event->getWindowHeight();
+			    }
 			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
 			    {
 				ScreenConfig::instance()->getScreen(_activeMasterScreen)->adjustViewportCoords(evnt.param1,evnt.param2);
