@@ -429,9 +429,9 @@ bool ScreenConfig::makeWindows()
 	osgViewer::GraphicsWindow * gw = dynamic_cast<osgViewer::GraphicsWindow*>(_windowInfoList[i]->gc);
 	if(gw)
 	{
-	    //std::cerr << "className: " << gw->className() << std::endl;
+        //std::cerr << "className: " << gw->className() << std::endl;
 	    std::string name = gw->className();
-	    if(name == "GraphicsWindowCarbon")
+	    if(name == "GraphicsWindowCarbon" || name == "GraphicsWindowCocoa")
 	    {
 		CVRViewer::instance()->setInvertMouseY(true);
 	    }
