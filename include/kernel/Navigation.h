@@ -74,7 +74,14 @@ class CVRKERNEL_EXPORT Navigation
          */
         NavMode getPrimaryButtonMode();
 
+        /**
+         * @brief Set a scale value for the translational movement in the nav modes
+         */
         void setScale(float scale);
+
+        /**
+         * @brief Get the scale value for the translational movement in the nav modes
+         */
         float getScale();
 
     protected:
@@ -100,7 +107,7 @@ class CVRKERNEL_EXPORT Navigation
         int _eventX;            ///< mouse viewport x coord at start of event
         int _eventY;            ///< mouse viewport y coord at start of event
 
-        float _scale;
+        float _scale;           ///< nav movement scale
 };
 
 }

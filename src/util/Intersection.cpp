@@ -1,5 +1,7 @@
 #include "util/Intersection.h"
 
+#include <kernel/NodeMask.h>
+
 std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
                                              osg::Vec3& wPointerStart,
                                              osg::Vec3& wPointerEnd)
@@ -9,7 +11,7 @@ std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
     osg::ref_ptr<osg::LineSegment> testSegment = new osg::LineSegment();
     testSegment->set(wPointerStart, wPointerEnd);
     iv.addLineSegment(testSegment.get());
-    iv.setTraversalMask(2);
+    iv.setTraversalMask(cvr::INTERSECT_MASK);
     std::vector<IsectInfo> isecvec;
 
     // Traverse the whole scenegraph.

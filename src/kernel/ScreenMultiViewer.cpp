@@ -139,6 +139,10 @@ void ScreenMultiViewer::init(int mode)
 
     _camera->getOrCreateStateSet()->setAttribute(_program);
 
+    _a = ConfigManager::getFloat("a","MultiViewerFunction",0);
+    _b = ConfigManager::getFloat("b","MultiViewerFunction",0);
+    _c = ConfigManager::getFloat("c","MultiViewerFunction",1.0);
+
     float hwidth = _myInfo->width / 2.0;
     float hheight = _myInfo->height / 2.0;
 
@@ -270,6 +274,24 @@ void ScreenMultiViewer::init(int mode)
     _nfNormal->setName("nfNormal");
     _nfNormal->setType(osg::Uniform::FLOAT_VEC3);
     _camera->getOrCreateStateSet()->addUniform(_nfNormal);
+
+    _aUni = new osg::Uniform();
+    _aUni->setName("a");
+    _aUni->setType(osg::Uniform::FLOAT);
+    _aUni->set(_a);
+    _camera->getOrCreateStateSet()->addUniform(_aUni);
+
+    _bUni = new osg::Uniform();
+    _bUni->setName("b");
+    _bUni->setType(osg::Uniform::FLOAT);
+    _bUni->set(_b);
+    _camera->getOrCreateStateSet()->addUniform(_bUni);
+
+    _cUni = new osg::Uniform();
+    _cUni->setName("c");
+    _cUni->setType(osg::Uniform::FLOAT);
+    _cUni->set(_c);
+    _camera->getOrCreateStateSet()->addUniform(_cUni);
 }
 
 void ScreenMultiViewer::computeViewProj()
@@ -754,12 +776,6 @@ void ScreenMultiViewer::updateCamera()
     //std::cerr << "Frame" << std::endl;
     if(!_testGeoAdded && _frameDelay > 0)
     {
-	/*osg::Sphere * sphere = new osg::Sphere(osg::Vec3(0,0,0),100);
-	osg::ShapeDrawable * sd = new osg::ShapeDrawable(sphere);
-	osg::Geode * geode = new osg::Geode();
-	geode->addDrawable(sd);
-	SceneManager::instance()->getObjectsRoot()->addChild(geode);*/
-		
 	//addTestGeometry();
 	_testGeoAdded = true;
     }
@@ -770,73 +786,6 @@ void ScreenMultiViewer::updateCamera()
 
     _camera->setViewMatrix(_view);
     _camera->setProjectionMatrix(_proj);
-
-    /*osg::Vec3d eyePos;
-
-    switch(_stereoMode)
-    {
-	case osg::DisplaySettings::LEFT_EYE:
-	    eyePos = defaultLeftEye(0);
-	    _viewer0PosLocal[0] = eyePos;
-	    break;
-	case osg::DisplaySettings::RIGHT_EYE:
-	    eyePos = defaultRightEye(0);
-	    _viewer0PosLocal[0] = eyePos;
-	    break;
-	case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-	    _viewer0PosLocal[0] = defaultLeftEye(0);
-	    _viewer0PosLocal[1] = defaultRightEye(0);
-	    break;
-	default:
-	    eyePos = eyePos * getCurrentHeadMatrix(0);
-	    _viewer0PosLocal[0] = eyePos;
-	    break;
-    }
-
-    //_viewer0Pos->set(eyePos);
-
-    switch(_stereoMode)
-    {
-	case osg::DisplaySettings::LEFT_EYE:
-	    eyePos = defaultLeftEye(1);
-	    _viewer1PosLocal[0] = eyePos;
-	    break;
-	case osg::DisplaySettings::RIGHT_EYE:
-	    eyePos = defaultRightEye(1);
-	    _viewer1PosLocal[0] = eyePos;
-	    break;
-	case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-	    _viewer1PosLocal[0] = defaultLeftEye(1);
-	    _viewer1PosLocal[1] = defaultRightEye(1);
-	    break;
-	default:
-	    eyePos = osg::Vec3d(0,0,0) * getCurrentHeadMatrix(1);
-	    _viewer1PosLocal[0] = eyePos;
-	    break;
-    }
-
-    //_viewer1Pos->set(eyePos);
-
-    osg::Vec3 viewerdir(0.0,1.0,0.0);
-    viewerdir = viewerdir * getCurrentHeadMatrix(0);
-    viewerdir = viewerdir - getCurrentHeadMatrix(0).getTrans();
-    viewerdir.normalize();
-
-    _viewer0Dir->set(viewerdir);
-
-    if(TrackingManager::instance()->getNumHeads() >= 2)
-    {
-	viewerdir = osg::Vec3(0.0,1.0,0.0);
-	viewerdir = viewerdir * getCurrentHeadMatrix(1);
-	viewerdir = viewerdir - getCurrentHeadMatrix(1).getTrans();
-	viewerdir.normalize();
-
-	_viewer1Dir->set(viewerdir);
-    }
-    else
-    {
-	_viewer1Dir->set(viewerdir);
-    }*/
 }
 
 void ScreenMultiViewer::setClearColor(osg::Vec4 color)
@@ -1457,6 +1406,8 @@ void ScreenMultiViewer::calcScreenMinMaxRatio()
 
 	_minRatioLocal[i] = currentRatio;
 
+	//std::cerr << "Min Ratio: " << _minRatioLocal[i] << " Max Ratio: " << _maxRatioLocal[i] << " Range: " << _maxRatioLocal[i] - _minRatioLocal[i] << std::endl;
+
 #if 0
 	//compare result to brute force
 	
@@ -1513,8 +1464,8 @@ float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
     dir.normalize();
 
     weight.y() = acos(dir * _dir1);
-    weight.x() = weight.x() * weight.x() * -0.1823784 + weight.x() * -0.095493 + 1.0;
-    weight.y() = weight.y() * weight.y() * -0.1823784 + weight.y() * -0.095493 + 1.0;
+    weight.x() = weight.x() * weight.x() * _a + weight.x() * _b + _c;
+    weight.y() = weight.y() * weight.y() * _a + weight.y() * _b + _c;
 
     weight.x() = std::max(weight.x(),0.0f);
     weight.y() = std::max(weight.y(),0.0f);

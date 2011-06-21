@@ -8,7 +8,7 @@
 
 #include <osg/Vec3>
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
 #include <sys/shm.h>
 #endif
 

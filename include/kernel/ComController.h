@@ -89,6 +89,10 @@ class CVRKERNEL_EXPORT ComController
          */
         int getNumSlaves();
 
+        /**
+         * @brief Returns true if there has been a communication error, the program will exit 
+         * at the end of this frame
+         */
         bool getIsSyncError() 
         {
             return _CCError;
@@ -120,17 +124,17 @@ class CVRKERNEL_EXPORT ComController
         int _slaveNum; ///< my number, if i am a slave node
         int _port; ///< port to connect to the master node
         int _numSlaves; ///< number of slave nodes in the cluster
-        int _maxSocketFD;
-        fd_set _sockets;
+        int _maxSocketFD; ///< max socket file descriptor, used for select polls
+        fd_set _sockets; ///< used for select poll
 
         cvr::CVRSocket * _masterSocket; ///< socket to talk to master with
         std::map<int,cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets
-        cvr::MultiListenSocket * _listenSocket;
-        std::map<int,std::string> _startupMap;
+        cvr::MultiListenSocket * _listenSocket; ///< sock that listens for slave node connections
+        std::map<int,std::string> _startupMap; ///< startup commands indexed by node number
 
         static ComController * _myPtr; ///< static self pointer
 
-        bool _CCError;
+        bool _CCError; ///< error state of ComController
 };
 
 }
