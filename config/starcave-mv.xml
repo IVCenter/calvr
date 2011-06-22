@@ -22,8 +22,8 @@
       
       <!-- Enable/disable plugins here -->
       <Plugin>
-        <PluginTest value="on" />
-        <MultiHandInteraction value="on" />
+        <PluginTest value="off" />
+        <MultiHandInteraction value="off" />
 	<TelePresence value="off" />
          <Scatter value="off">
         	<FilePath value="/home/covise/srotkin/Scatter/" />
@@ -545,7 +545,7 @@
       
    <MultiPC>
      <SyncMode value="TCP" />
-     <NumSlaves value="17" />   <!-- use 17 for all Cave machines -->
+     <NumSlaves value="16" />   <!-- use 17 for all Cave machines -->
 <!--
      <MasterInterface value="starcave.calit2.optiputer.net" />
      <Startup arch="x11" value="ssh ${USER}@starcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
@@ -568,7 +568,8 @@
 -->
 
      <MasterInterface value="calit2-vis06.ucsd.edu" />
-     <Startup arch="x11" value="ssh ${USER}@tile-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
+     <CleanupScript value="tentakel killall -9 CalVR" />
+     <!--Startup arch="x11" value="ssh ${USER}@tile-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" /-->
      <Startup arch="x11" value="ssh ${USER}@tile-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
      <Startup arch="x11" value="ssh ${USER}@tile-3-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
@@ -938,3 +939,4 @@
    </ScreenConfig>
  </LOCAL>
 
+ <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />
