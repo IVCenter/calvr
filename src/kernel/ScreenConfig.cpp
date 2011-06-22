@@ -5,6 +5,7 @@
 #include <kernel/ScreenMultiViewer2.h>
 #include <kernel/ScreenMVMaster.h>
 #include <kernel/MultiViewScreen.h>
+#include <kernel/ScreenFixedViewer.h>
 #include <kernel/ComController.h>
 #include <kernel/CVRViewer.h>
 #include <config/ConfigManager.h>
@@ -576,6 +577,12 @@ bool ScreenConfig::makeScreens()
             screen->_myInfo = _screenInfoList[i];
             screen->init();
         }
+	else if(_screenInfoList[i]->myChannel->stereoMode == "FIXED_VIEWER")
+	{
+	    screen = new ScreenFixedViewer();
+	    screen->_myInfo = _screenInfoList[i];
+	    screen->init();
+	}
 #ifdef WITH_INTERLEAVER
         else if(_screenInfoList[i]->myChannel->stereoMode == "LENTICULAR")
         {
