@@ -72,6 +72,7 @@ bool SceneManager::init()
 
     _scale = 1.0;
     _showAxis = false;
+    _hidePointer = false;
 
     initPointers();
     initLights();
@@ -81,6 +82,9 @@ bool SceneManager::init()
     bool b = ConfigManager::getBool("ShowAxis", false);
 
     setAxis(b);
+
+    b = ConfigManager::getBool("HidePointer", false);
+    setHidePointer(b);
 
     return true;
 }
@@ -208,6 +212,31 @@ void SceneManager::setAxis(bool on)
     }
 }
 
+void SceneManager::setHidePointer(bool b)
+{
+    if(b == _hidePointer)
+    {
+	return;
+    }
+
+    if(b)
+    {
+	for(int i = 0; i < _handTransforms.size(); i++)
+	{
+	    _sceneRoot->removeChild(_handTransforms[i]);
+	}
+    }
+    else
+    {
+	for(int i = 0; i < _handTransforms.size(); i++)
+	{
+	    _sceneRoot->addChild(_handTransforms[i]);
+	}
+    }
+
+    _hidePointer = b;
+}
+
 DepthPartitionNode * SceneManager::getDepthPartitionNodeLeft()
 {
     return _depthPartitionLeft.get();
@@ -239,7 +268,6 @@ void SceneManager::initPointers()
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms.push_back(new osg::MatrixTransform());
-	_sceneRoot->addChild(_handTransforms[i]);
 	_sceneRoot->addChild(_handTransforms[i]);
         _handTransforms[i]->setMatrix(
                                       TrackingManager::instance()->getHandMat(i));

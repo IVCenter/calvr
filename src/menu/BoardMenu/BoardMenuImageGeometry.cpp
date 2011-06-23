@@ -73,6 +73,8 @@ void BoardMenuImageGeometry::updateImage()
 	scale = osg::Vec3(_mi->getWidth(),1.0,_mi->getHeight());
 	_width = _mi->getWidth();
 	_height = _mi->getHeight();
+
+	_geode->setNodeMask(~0);
     }
     else
     {

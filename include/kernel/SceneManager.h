@@ -91,6 +91,9 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void setAxis(bool on);
 
+        void setHidePointer(bool b);
+        bool getHidePointer() { return _hidePointer; }
+
         /**
          * @brief Get a pointer to the DepthPartitionNode for the left eye rendering
          *
@@ -131,6 +134,7 @@ class CVRKERNEL_EXPORT SceneManager
         static SceneManager * _myPtr;   ///< static self pointer
 
         bool _showAxis;     ///< should debug axis be shown
+        bool _hidePointer;
 
         osg::ref_ptr<osg::MatrixTransform> _sceneRoot;      ///< root node of the scene
         osg::ref_ptr<osg::Group> _actualRoot; ///< node assigned as viewer root
