@@ -173,6 +173,10 @@
      <Affinity value="1" />
     </ThreadedLoader>
 
+    <OssimPlanet>
+     <ConfigFile value="/home/aprudhom/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
+    </OssimPlanet>
+
     <TourCave>
      <BackgroundAudio name="BGAudio" loop="true" />
      <Mode0>
@@ -225,8 +229,11 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  />
-    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" channel="1" stereoMode="VERTICAL_SPLIT"  windowIndex="0"  name="1">
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  >
+     <ViewerPosition x="0.0" y="-3000" z="0.0" />
+    </Channel>
+    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" channel="1" stereoMode="FIXED_VIEWER"  windowIndex="0"  name="1">
+      <ViewerPosition x="0" y="3000" z="0" />
       <ThumbConfigFile value="/home/aprudhom/CalVR/config/thumb/host/alioscopy-40-1x1.xml" />
       <Viewer eyes="8" ipd="0.208" distance="9.7" />
       <BL x="-0.851653" y="-0.532283" z="0.0" />
@@ -251,7 +258,7 @@
 
    <ScreenConfig>
    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" screen="0" />
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
+   <Screen width="2000" comment="FRONT" h="180.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
    </ScreenConfig>
 
    <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />

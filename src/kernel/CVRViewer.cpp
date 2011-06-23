@@ -727,6 +727,19 @@ void CVRViewer::eventTraversal()
 		      mi.screenHeight = ei.height;
 		      mi.viewportX = ei.viewportX;
 		      mi.viewportY = ei.viewportY;*/
+
+		    if(si->myChannel->stereoMode == "LEFT")
+		    {
+			mi.eyeOffset = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+		    }
+		    else if(si->myChannel->stereoMode == "RIGHT")
+		    {
+			mi.eyeOffset = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+		    }
+		    else
+		    {
+			mi.eyeOffset = osg::Vec3(0,0,0);
+		    }
 		    mi.screenCenter = si->xyz;
 		    mi.screenWidth = si->width;
 		    mi.screenHeight = si->height;

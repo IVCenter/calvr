@@ -78,6 +78,10 @@ class ScreenBase
          */
         static void setFar(float far) { _far = far; }
 
+        static double getEyeSeparation() { return _separation; }
+
+        static double getEyeSeparationMultiplier() { return _eyeSepMult; }
+
         void defaultCameraInit(osg::Camera * cam);
 
         osg::Matrix & getCurrentHeadMatrix(int head = 0);
