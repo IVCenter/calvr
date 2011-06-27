@@ -22,6 +22,14 @@ void print(osg::Vec3f & v) {
 	"Z: " << v.z() << std::endl;
     std::cout << LINE_SEP;
 }
+void print(const osg::Vec3f & v) {
+    std::cout << LINE_SEP;
+    std::cout << "X: " << v.x() << std::endl <<
+	"Y: " << v.y() << std::endl <<
+	"Z: " << v.z() << std::endl;
+    std::cout << LINE_SEP;
+}
+
 void print(osg::Vec4f & v) {
     std::cout << LINE_SEP;
     std::cout << "X: " << v.x() << std::endl <<
