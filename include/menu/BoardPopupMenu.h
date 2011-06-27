@@ -1,3 +1,6 @@
+/**
+ * @file BoardPopupMenu.h
+ */
 #ifndef BOARD_POPUP_MENU_H
 #define BOARD_POPUP_MENU_H
 
@@ -11,6 +14,9 @@
 namespace cvr
 {
 
+/**
+ * @brief A mobile PopupMenu implementation based on BoardMenu
+ */
 class BoardPopupMenu : public PopupMenuBase, public BoardMenu
 {
     public:
@@ -26,6 +32,9 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         virtual void clear();
         virtual void close();
 
+        virtual void setScale(float scale);
+        virtual float getScale();
+
         virtual void setPosition(osg::Vec3 pos);
         virtual osg::Vec3 getPosition();
         virtual void setRotation(osg::Quat rot);
@@ -37,6 +46,9 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         virtual bool isVisible();
 
     protected:
+        /**
+         * @brief Move menu based on an interaction
+         */
         void updateMovement(InteractionEvent * event);
 
         float _moveDistance;

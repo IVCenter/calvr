@@ -42,6 +42,7 @@ enum InteractionType
 struct MouseInfo
 {
         osg::Vec3 screenCenter; ///< center of the screen the mouse intersects
+        osg::Vec3 eyeOffset;
         float screenWidth; ///< width of screen (worldspace)
         float screenHeight; ///< height of screen (worldspace)
         int viewportX; ///< width of viewport

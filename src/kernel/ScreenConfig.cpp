@@ -5,8 +5,12 @@
 #include <kernel/ScreenMultiViewer2.h>
 #include <kernel/ScreenMVMaster.h>
 #include <kernel/MultiViewScreen.h>
+#include <kernel/ScreenFixedViewer.h>
 #include <kernel/ComController.h>
+#include <kernel/CVRViewer.h>
 #include <config/ConfigManager.h>
+
+#include <osgViewer/GraphicsWindow>
 
 #include <iostream>
 #include <sstream>
@@ -422,6 +426,17 @@ bool ScreenConfig::makeWindows()
 	    std::cerr << "Error: failed to create graphics context for window: " << i << std::endl;
 	    return false;
 	}
+
+	osgViewer::GraphicsWindow * gw = dynamic_cast<osgViewer::GraphicsWindow*>(_windowInfoList[i]->gc);
+	if(gw)
+	{
+        //std::cerr << "className: " << gw->className() << std::endl;
+	    std::string name = gw->className();
+	    if(name == "GraphicsWindowCarbon" || name == "GraphicsWindowCocoa")
+	    {
+		CVRViewer::instance()->setInvertMouseY(true);
+	    }
+	}
     }
 
     return true;
@@ -562,6 +577,12 @@ bool ScreenConfig::makeScreens()
             screen->_myInfo = _screenInfoList[i];
             screen->init();
         }
+	else if(_screenInfoList[i]->myChannel->stereoMode == "FIXED_VIEWER")
+	{
+	    screen = new ScreenFixedViewer();
+	    screen->_myInfo = _screenInfoList[i];
+	    screen->init();
+	}
 #ifdef WITH_INTERLEAVER
         else if(_screenInfoList[i]->myChannel->stereoMode == "LENTICULAR")
         {

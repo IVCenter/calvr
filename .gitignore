@@ -5,3 +5,5 @@ doc
 CMakeCache.txt
 *vcxproj*
 *~
+lib
+bin

@@ -15,19 +15,25 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuCheckbox.h
     ${HEADER_PATH}/MenuRangeValue.h
     ${HEADER_PATH}/MenuText.h
+    ${HEADER_PATH}/MenuTextButtonSet.h
+    ${HEADER_PATH}/MenuImage.h
     ${HEADER_PATH}/MenuBase.h
     ${HEADER_PATH}/PopupMenuBase.h
     ${HEADER_PATH}/BoardMenu.h
     ${HEADER_PATH}/MenuSystem.h
     ${HEADER_PATH}/MenuManager.h
     ${HEADER_PATH}/PopupMenu.h
+    ${HEADER_PATH}/DialogPanel.h
+    ${HEADER_PATH}/TabbedDialogPanel.h
     ${HEADER_PATH}/BoardPopupMenu.h
     ${HEADER_PATH}/BoardMenu/BoardMenuGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuButtonGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuCheckboxGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuRangeValueGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuTextGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuTextButtonSetGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -38,16 +44,22 @@ SET(LIB_SRC_FILES
     MenuCheckbox.cpp
     MenuRangeValue.cpp
     MenuText.cpp
+    MenuTextButtonSet.cpp
+    MenuImage.cpp
     MenuSystem.cpp
     BoardMenu.cpp
     MenuManager.cpp
     PopupMenu.cpp
+    DialogPanel.cpp
+    TabbedDialogPanel.cpp
     BoardPopupMenu.cpp
     BoardMenu/BoardMenuGeometry.cpp
     BoardMenu/BoardMenuButtonGeometry.cpp
     BoardMenu/BoardMenuCheckboxGeometry.cpp
     BoardMenu/BoardMenuRangeValueGeometry.cpp
     BoardMenu/BoardMenuTextGeometry.cpp
+    BoardMenu/BoardMenuTextButtonSetGeometry.cpp
+    BoardMenu/BoardMenuImageGeometry.cpp
     BoardMenu/BoardMenuSubMenuGeometry.cpp
 )
 

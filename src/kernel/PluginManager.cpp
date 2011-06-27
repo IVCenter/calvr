@@ -211,7 +211,11 @@ bool PluginManager::loadPlugin(std::string plugin)
 #ifndef WIN32
     char * error;
     void * libHandle;
+#ifdef __APPLE__
+    std::string libPath = _pluginLibDir + "lib" + plugin + ".dylib";
+#else
     std::string libPath = _pluginLibDir + "lib" + plugin + ".so";
+#endif
     libHandle = dlopen(libPath.c_str(), RTLD_LAZY);
     if(!libHandle)
     {

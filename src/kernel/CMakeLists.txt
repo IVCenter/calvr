@@ -20,6 +20,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenMVMaster.h
     ${HEADER_PATH}/ScreenMVSimulator.h
     ${HEADER_PATH}/ScreenMultiViewer2.h
+    ${HEADER_PATH}/ScreenFixedViewer.h
     ${HEADER_PATH}/MultiViewScreen.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
@@ -33,7 +34,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CVRCullVisitor.h
     ${HEADER_PATH}/PreCullVisitor.h
     ${HEADER_PATH}/PostCullVisitor.h
-	${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/Export.h
 )
 
 SET(EXTRA_SOURCE)
@@ -65,6 +66,7 @@ SET(LIB_SRC_FILES
     ScreenMVMaster.cpp
     ScreenMVSimulator.cpp
     ScreenMultiViewer2.cpp
+    ScreenFixedViewer.cpp
     MultiViewScreen.cpp
     ComController.cpp
     CVRViewer.cpp

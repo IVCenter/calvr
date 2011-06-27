@@ -23,15 +23,75 @@ class PopupMenu : public MenuSystemBase
 {
     friend class MenuManager;
     public:
-        PopupMenu(std::string title, std::string configName = "");
+        /**
+         * @brief Constructor
+         * @param title title for this popup menu
+         * @param configTag config location when position/orientation/scale values can be found
+         *
+         * Looks for attibutes x,y,z,h,p,r,scale in configTag
+         */
+        PopupMenu(std::string title, std::string configTag = "");
         virtual ~PopupMenu();
 
+        /**
+         * @brief Add an item to the PopupMenu
+         */
         void addMenuItem(MenuItem * item);
 
-        void setVisible(bool b);
-        bool isVisible();
+        /**
+         * @brief Remove an item from the PopupMenu
+         */
+        void removeMenuItem(MenuItem * item);
 
-        
+        /**
+         * @brief Set the menu position
+         */
+        void setPosition(osg::Vec3 pos);
+
+        /**
+         * @brief Get the menu position
+         */
+        osg::Vec3 getPosition();
+
+        /**
+         * @brief Set the menu rotation
+         */
+        void setRotation(osg::Quat rot);
+
+        /**
+         * @brief Get the menu rotation
+         */
+        osg::Quat getRotation();
+
+        /**
+         * @brief Set the full menu transform matrix
+         */
+        void setTransform(osg::Matrix m);
+
+        /**
+         * @brief Get the full menu transform matrix
+         */
+        osg::Matrix getTransform();
+
+        /**
+         * @brief Set the menu scale
+         */
+        void setScale(float scale);
+
+        /**
+         * @brief Get the menu scale
+         */
+        float getScale();
+
+        /**
+         * @brief Set if the menu is visible
+         */
+        void setVisible(bool b);
+
+        /**
+         * @brief Get if the menu is visible
+         */
+        bool isVisible();
 
     protected:
         virtual bool init();
@@ -41,11 +101,11 @@ class PopupMenu : public MenuSystemBase
         virtual void updateEnd();
         virtual void itemDelete(MenuItem * item);
 
-        SubMenu * _rootMenu;
-        MenuType _type;
-        PopupMenuBase * _menu;
-        std::string _title;
-        std::string _configName;
+        SubMenu * _rootMenu; ///< root menu item of PopupMenu
+        MenuType _type; ///< type value for the internal menu geometry implementation
+        PopupMenuBase * _menu; ///< PopupMenu geometry implementation
+        std::string _title; ///< menu title
+        std::string _configName; ///< config tag with init values
 };
 
 }

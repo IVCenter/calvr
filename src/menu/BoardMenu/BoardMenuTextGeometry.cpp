@@ -27,7 +27,13 @@ void BoardMenuTextGeometry::createGeometry(MenuItem * item)
 
     MenuText * mb = dynamic_cast<MenuText*> (item);
 
-    _text = makeText(mb->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
+    float xoffset = 0;
+    if(mb->getIndent())
+    {
+	xoffset = _iconHeight + _boarder;
+    }
+
+    _text = makeText(mb->getText(), _textSize * mb->getSizeScale(), osg::Vec3(xoffset, -2,0), _textColor, osgText::Text::LEFT_TOP);
     /*osgText::Text * textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
@@ -38,10 +44,16 @@ void BoardMenuTextGeometry::createGeometry(MenuItem * item)
     textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
     textNode->setText(mb->getText());*/
 
+    _text->setMaximumWidth(mb->getMaxWidth());
+
     osg::BoundingBox bb = _text->getBound();
-    _width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
-    //mg->height = bb.zMax() - bb.zMin();
-    _height = _iconHeight;
+    _width = bb.xMax() - bb.xMin(); // + _iconHeight + _boarder;
+    if(mb->getIndent())
+    {
+	_width += _iconHeight + _boarder;
+    }
+    _height = bb.zMax() - bb.zMin();
+    //_height = _iconHeight;
 
     _geode->addDrawable(_text);
 }
@@ -57,7 +69,29 @@ void BoardMenuTextGeometry::updateGeometry()
     {
 	_text->setText(mb->getText());
 
-	 osg::BoundingBox bb = _text->getBound();
-	_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+	_text->setMaximumWidth(mb->getMaxWidth());
+
+	_text->setCharacterSize(_textSize * mb->getSizeScale());
+
+	osg::Vec3 pos = _text->getPosition();
+	if(mb->getIndent())
+	{
+	    pos.x() = _iconHeight + _boarder;
+	}
+	else
+	{
+	    pos.x() = 0;
+	}
+	_text->setPosition(pos);
+
+	osg::BoundingBox bb = _text->getBound();
+	_width = bb.xMax() - bb.xMin();// + _iconHeight + _boarder;
+
+	if(mb->getIndent())
+	{
+	    _width += _iconHeight + _boarder;
+	}
+
+	_height = bb.zMax() - bb.zMin();
     }
 }

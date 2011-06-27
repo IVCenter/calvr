@@ -139,7 +139,7 @@ void InteractionManager::setMouseInfo(MouseInfo & mi)
 
     osg::Vec3 mousePos = _mouseInfo->screenCenter + osg::Vec3(worldxOffset, 0,
                                                               worldyOffset);
-    osg::Vec3 headPos = TrackingManager::instance()->getHeadMat().getTrans();
+    osg::Vec3 headPos = _mouseInfo->eyeOffset * TrackingManager::instance()->getHeadMat();
 
     osg::Vec3 v = mousePos - headPos;
     v.normalize();

@@ -21,8 +21,8 @@ class MenuCheckbox : public MenuItem
 
         /**
          * @brief Constructor
-         * @text text label
-         * @value value initial state of checkbox
+         * @param text text label
+         * @param value value initial state of checkbox
          */
         MenuCheckbox(std::string text, bool value);
         virtual ~MenuCheckbox();

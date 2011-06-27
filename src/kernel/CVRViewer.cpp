@@ -142,7 +142,6 @@ CVRViewer::CVRViewer() :
     }
 
     _renderOnMaster = ConfigManager::getBool("RenderOnMaster", true);
-    _stopHeadTracking = ConfigManager::getBool("Freeze", false);
 
     if(ComController::instance()->isMaster())
     {
@@ -172,6 +171,8 @@ CVRViewer::CVRViewer() :
     _doubleClickTimeout = 0.4;
 
     _updateList.push_back(new DefaultUpdate);
+
+    _invertMouseY = false;
 
     _myPtr = this;
     _activeMasterScreen = -1;
@@ -501,8 +502,13 @@ void CVRViewer::eventTraversal()
 			    }
 			    evnt.param1 = (int)(event->getX()
                                     - si->myChannel->left);
-                            evnt.param2 = (int)(event->getY()
+				evnt.param2 = (int)(event->getY()
                                     - si->myChannel->bottom);
+
+			    if(_invertMouseY)
+			    {
+				evnt.param2 = -evnt.param2 + event->getWindowHeight();
+			    }
 			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
 			    {
 				ScreenConfig::instance()->getScreen(_activeMasterScreen)->adjustViewportCoords(evnt.param1,evnt.param2);
@@ -721,6 +727,19 @@ void CVRViewer::eventTraversal()
 		      mi.screenHeight = ei.height;
 		      mi.viewportX = ei.viewportX;
 		      mi.viewportY = ei.viewportY;*/
+
+		    if(si->myChannel->stereoMode == "LEFT")
+		    {
+			mi.eyeOffset = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+		    }
+		    else if(si->myChannel->stereoMode == "RIGHT")
+		    {
+			mi.eyeOffset = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+		    }
+		    else
+		    {
+			mi.eyeOffset = osg::Vec3(0,0,0);
+		    }
 		    mi.screenCenter = si->xyz;
 		    mi.screenWidth = si->width;
 		    mi.screenHeight = si->height;
@@ -1600,10 +1619,10 @@ void CVRViewer::removeUpdateTraversal(UpdateTraversal * ut)
     }
 }
 
-void CVRViewer::setStopHeadTracking(bool b)
+/*void CVRViewer::setStopHeadTracking(bool b)
 {
     _stopHeadTracking = b;
-}
+}*/
 
 bool CVRViewer::processEvent(InteractionEvent * event)
 {
@@ -1644,10 +1663,10 @@ bool CVRViewer::getRenderOnMaster()
     return _renderOnMaster;
 }
 
-bool CVRViewer::getStopHeadTracking()
+/*bool CVRViewer::getStopHeadTracking()
 {
     return _stopHeadTracking;
-}
+}*/
 
 double CVRViewer::getLastFrameDuration()
 {

@@ -90,6 +90,9 @@
      <PBOs value="off" />
      <DrawLines value="false" />
     </MultiGPURender>
+
+    <ArtifactVis value="on" />
+
     <SpaceNavigator value="on" >
      <TransMult value="1.0" />
      <RotMult value="1.0" />
@@ -120,6 +123,29 @@
       <Layer11File value="/home/aprudhom/data/baybridge/Tower-all.wrl" />
     </StructView>
 
+        <ArtifactVis>
+          <Database value="/home/aprudhom/data/ArtifactVis/artifactslist.txt" />
+	  <TopoFile value="/home/aprudhom/data/kyle/3d-model/Ken3dv3.wrl" />
+	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+	  <DCInfoFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
+	  <LociFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+          <MaxVisibleRange value="1000000000.0" />
+          <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+	  <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
+        </ArtifactVis>
+
     <PluginTest value="off" />
     <Collaborative value="off">
       <Server value="127.0.0.1" />
@@ -146,6 +172,10 @@
     <ThreadedLoader value="off" >
      <Affinity value="1" />
     </ThreadedLoader>
+
+    <OssimPlanet>
+     <ConfigFile value="/home/aprudhom/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
+    </OssimPlanet>
 
     <TourCave>
      <BackgroundAudio name="BGAudio" loop="true" />
@@ -199,8 +229,11 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  />
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="1" stereoMode="MONO"  windowIndex="1"  name="1">
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  >
+     <ViewerPosition x="0.0" y="-3000" z="0.0" />
+    </Channel>
+    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" channel="1" stereoMode="FIXED_VIEWER"  windowIndex="0"  name="1">
+      <ViewerPosition x="0" y="3000" z="0" />
       <ThumbConfigFile value="/home/aprudhom/CalVR/config/thumb/host/alioscopy-40-1x1.xml" />
       <Viewer eyes="8" ipd="0.208" distance="9.7" />
       <BL x="-0.851653" y="-0.532283" z="0.0" />
@@ -225,7 +258,9 @@
 
    <ScreenConfig>
    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" screen="0" />
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
+   <Screen width="2000" comment="FRONT" h="180.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
    </ScreenConfig>
+
+   <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />
 
  </GLOBAL>

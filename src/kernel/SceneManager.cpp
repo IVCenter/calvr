@@ -40,25 +40,39 @@ SceneManager * SceneManager::instance()
 
 bool SceneManager::init()
 {
+    _actualRoot = new osg::Group();
     _sceneRoot = new osg::MatrixTransform();
-    _depthPartition = new DepthPartitionNode();
-    _depthPartition->setClearColorBuffer(false);
+
+    _depthPartitionLeft = new DepthPartitionNode();
+    _depthPartitionLeft->setClearColorBuffer(false);
+    _depthPartitionRight = new DepthPartitionNode();
+    _depthPartitionRight->setClearColorBuffer(false);
+
     _objectTransform = new osg::MatrixTransform();
     _objectScale = new osg::MatrixTransform();
     _objectRoot = new osg::ClipNode();
     _menuRoot = new osg::MatrixTransform();
 
-    _depthPartition->addChild(_sceneRoot);
+    _actualRoot->addChild(_depthPartitionLeft);
+    _actualRoot->addChild(_depthPartitionRight);
+    _depthPartitionLeft->addChild(_sceneRoot);
+    _depthPartitionRight->addChild(_sceneRoot);
     _sceneRoot->addChild(_objectTransform);
     _sceneRoot->addChild(_menuRoot);
     _objectTransform->addChild(_objectScale);
     _objectScale->addChild(_objectRoot);
 
     bool dpart = ConfigManager::getBool("value",std::string("UseDepthPartition"),false);
-    _depthPartition->setActive(dpart);
+    _depthPartitionLeft->setActive(dpart);
+    _depthPartitionRight->setActive(dpart);
+
+    _depthPartitionLeft->setNodeMask(_depthPartitionLeft->getNodeMask() & ~(CULL_MASK_RIGHT));
+    _depthPartitionRight->setNodeMask(_depthPartitionRight->getNodeMask() & ~(CULL_MASK_LEFT));
+    _depthPartitionRight->setNodeMask(_depthPartitionRight->getNodeMask() & ~(CULL_MASK));
 
     _scale = 1.0;
     _showAxis = false;
+    _hidePointer = false;
 
     initPointers();
     initLights();
@@ -68,6 +82,9 @@ bool SceneManager::init()
     bool b = ConfigManager::getBool("ShowAxis", false);
 
     setAxis(b);
+
+    b = ConfigManager::getBool("HidePointer", false);
+    setHidePointer(b);
 
     return true;
 }
@@ -90,7 +107,7 @@ void SceneManager::update()
         for(int i = 0; i < _headAxisTransforms.size(); i++)
         {
             _headAxisTransforms[i]->setMatrix(
-                                              TrackingManager::instance()->getHeadMat(
+                                              TrackingManager::instance()->getUnfrozenHeadMat(
                                                                                       i));
         }
     }
@@ -195,24 +212,55 @@ void SceneManager::setAxis(bool on)
     }
 }
 
-DepthPartitionNode * SceneManager::getDepthPartitionNode()
+void SceneManager::setHidePointer(bool b)
 {
-    return _depthPartition.get();
+    if(b == _hidePointer)
+    {
+	return;
+    }
+
+    if(b)
+    {
+	for(int i = 0; i < _handTransforms.size(); i++)
+	{
+	    _sceneRoot->removeChild(_handTransforms[i]);
+	}
+    }
+    else
+    {
+	for(int i = 0; i < _handTransforms.size(); i++)
+	{
+	    _sceneRoot->addChild(_handTransforms[i]);
+	}
+    }
+
+    _hidePointer = b;
+}
+
+DepthPartitionNode * SceneManager::getDepthPartitionNodeLeft()
+{
+    return _depthPartitionLeft.get();
+}
+
+DepthPartitionNode * SceneManager::getDepthPartitionNodeRight()
+{
+    return _depthPartitionRight.get();
 }
 
 void SceneManager::setDepthPartitionActive(bool active)
 {
-    _depthPartition->setActive(active);
+    _depthPartitionLeft->setActive(active);
+    _depthPartitionRight->setActive(active);
 }
 
 bool SceneManager::getDepthPartitionActive()
 {
-    return _depthPartition->getActive();
+    return _depthPartitionLeft->getActive();
 }
 
 void SceneManager::setViewerScene(CVRViewer * cvrviewer)
 {
-    cvrviewer->setSceneData(_depthPartition);
+    cvrviewer->setSceneData(_actualRoot);
 }
 
 void SceneManager::initPointers()
@@ -220,7 +268,6 @@ void SceneManager::initPointers()
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms.push_back(new osg::MatrixTransform());
-	_sceneRoot->addChild(_handTransforms[i]);
 	_sceneRoot->addChild(_handTransforms[i]);
         _handTransforms[i]->setMatrix(
                                       TrackingManager::instance()->getHandMat(i));

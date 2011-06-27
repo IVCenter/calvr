@@ -60,11 +60,27 @@ class ScreenBase
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c) = 0;
 
+        /**
+         * @brief Allows screens a chance to modify the viewport coords
+         * for an intersection
+         * @param x x coord in range 0 to width
+         * @param y y coord in range 0 to height
+         */
         virtual void adjustViewportCoords(int & x, int & y) { return; }
 
-        // TODO make these pure virtual, or maybe move values into base class
+        /**
+         * @brief Set near plane value for all screens
+         */
         static void setNear(float near) { _near = near; }
+
+        /**
+         * @brief Set far plane value for all screens
+         */
         static void setFar(float far) { _far = far; }
+
+        static double getEyeSeparation() { return _separation; }
+
+        static double getEyeSeparationMultiplier() { return _eyeSepMult; }
 
         void defaultCameraInit(osg::Camera * cam);
 
