@@ -110,6 +110,13 @@ bool CollaborativeManager::connect(std::string host, int port)
     int id;
     int numUsers;
     ClientInitInfo * ciiList;
+    _clientInitMap.clear();
+
+    ClientInitInfo cii;
+    gethostname(cii.name, 254);
+    cii.numHeads = TrackingManager::instance()->getNumHeads();
+    cii.numHands = TrackingManager::instance()->getNumHands();
+
     if(ComController::instance()->isMaster())
     {
 	if(_thread->isRunning())
@@ -152,11 +159,6 @@ bool CollaborativeManager::connect(std::string host, int port)
 		res = false;
 	    }*/
 
-	    ClientInitInfo cii;
-	    gethostname(cii.name, 254);
-	    cii.numHeads = TrackingManager::instance()->getNumHeads();
-	    cii.numHands = TrackingManager::instance()->getNumHands();
-
 	    _socket->setBlocking(true);
 
 	    std::cerr << "Sending hostname: " << cii.name << " NumHeads: " << cii.numHeads << " NumHands: " << cii.numHands << std::endl;
@@ -174,8 +176,6 @@ bool CollaborativeManager::connect(std::string host, int port)
 
 	    std::cerr << "There are " << sii.numUsers << " users connected to collab server." << std::endl;
 	    numUsers = sii.numUsers;
-
-	    _clientInitMap.clear();
 
 	    if(res && sii.numUsers)
 	    {
@@ -227,6 +227,8 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    }
 	}
 	_id = id;
+
+	_clientInitMap[_id] = cii;
 
 	std::cerr << "Init with " << numUsers << " users." << std::endl;
 
