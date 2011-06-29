@@ -181,7 +181,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    {
 		std::cerr << "Getting cii from " << sii.numUsers << " users." << std::endl;
 		ciiList = new ClientInitInfo[sii.numUsers];
-		if(_socket->recv(ciiList,sizeof(struct ClientInitInfo)*sii.numUsers))
+		if(!_socket->recv(ciiList,sizeof(struct ClientInitInfo)*sii.numUsers))
 		{
 		    res = false;
 		}
