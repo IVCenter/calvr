@@ -37,6 +37,8 @@ class CollaborativeThread : public OpenThreads::Thread
                        cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** & messageData);
 
     protected:
+        void processMessage(CollaborativeMessageHeader & cmh, char * data);
+
         bool _connected;
         bool _updating;
         bool _updateDone;
