@@ -145,7 +145,9 @@ void CollaborativeThread::run()
 		int numBodies = 0;
 		for(int i = 0; i < _serverUpdate->numUsers; i++)
 		{
+		    std::cerr << "counting id: " << _clientUpdate[i].numMes << std::endl;
 		    numBodies += (*_clientInitMap)[_clientUpdate[i].numMes].numHeads + (*_clientInitMap)[_clientUpdate[i].numMes].numHands;
+		    std::cerr << "Num bodies: " << numBodies << std::endl;
 		}
 		if(numBodies)
 		{

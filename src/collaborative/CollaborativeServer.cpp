@@ -450,9 +450,9 @@ bool SocketThread::processEvents()
 	int index = 0;
 	for(int i = 0; i < _server->_threadList.size(); i++)
 	{
-	    numBodyToSend += _server->_clientHeadList[_server->_threadList[i]->getID()].size() + _server->_clientHandList[_server->_threadList[i]->getID()].size();
 	    if(_server->_threadList[i]->getID() != _id)
 	    {
+		numBodyToSend += _server->_clientHeadList[_server->_threadList[i]->getID()].size() + _server->_clientHandList[_server->_threadList[i]->getID()].size();
 		culist[index] = _server->_clientMap[_server->_threadList[i]->getID()];
 		index++;
 	    }
@@ -463,6 +463,10 @@ bool SocketThread::processEvents()
 
 	for(int i = 0; i < _server->_threadList.size(); i++)
 	{
+	    if(_server->_threadList[i]->getID() != _id)
+	    {
+		continue;
+	    }
 	    for(int j = 0; j < _server->_clientHeadList[_server->_threadList[i]->getID()].size(); j++)
 	    {
 		cubu[index] = _server->_clientHeadList[_server->_threadList[i]->getID()][j];
@@ -472,6 +476,10 @@ bool SocketThread::processEvents()
 
 	for(int i = 0; i < _server->_threadList.size(); i++)
 	{
+	    if(_server->_threadList[i]->getID() != _id)
+	    {
+		continue;
+	    }
 	    for(int j = 0; j < _server->_clientHandList[_server->_threadList[i]->getID()].size(); j++)
 	    {
 		cubu[index] = _server->_clientHandList[_server->_threadList[i]->getID()][j];

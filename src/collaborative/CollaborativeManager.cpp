@@ -228,7 +228,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	}
 	_id = id;
 
-	_clientInitMap[_id] = cii;
+	//_clientInitMap[_id] = cii;
 
 	std::cerr << "Init with " << numUsers << " users." << std::endl;
 
