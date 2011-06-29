@@ -83,6 +83,35 @@ void CollaborativeThread::run()
 		return;
 	    }
 
+	    //std::cerr << "Num Messages: " << _serverUpdate->numMes << std::endl;
+	    if(_serverUpdate->numMes)
+	    {
+		_messageHeaderUpdate = new CollaborativeMessageHeader[_serverUpdate->numMes];
+		_messageDataUpdate = new char*[_serverUpdate->numMes];
+
+		if(!_socket->recv(_messageHeaderUpdate, sizeof(struct CollaborativeMessageHeader) * _serverUpdate->numMes))
+		{
+		    return;
+		}
+
+		for(int i = 0; i < _serverUpdate->numMes; i++)
+		{
+		    std::cerr << "type: " << _messageHeaderUpdate[i].type << " target: " << _messageHeaderUpdate[i].target << " size: " << _messageHeaderUpdate[i].size << std::endl;
+		    if(_messageHeaderUpdate[i].size)
+		    {
+			_messageDataUpdate[i] = new char[_messageHeaderUpdate[i].size];
+			if(!_socket->recv(_messageDataUpdate[i],_messageHeaderUpdate[i].size))
+			{
+			    return;
+			}
+		    }
+		    else
+		    {
+			_messageDataUpdate[i] = NULL;
+		    }
+		}
+	    }
+
 	    if(_serverUpdate->mode == LOCKED)
 	    {
 		if(_serverUpdate->masterID != _id)
@@ -120,34 +149,8 @@ void CollaborativeThread::run()
 			return;
 		    }
 		}
-	    }
-
-	    if(_serverUpdate->numMes)
-	    {
-		_messageHeaderUpdate = new CollaborativeMessageHeader[_serverUpdate->numMes];
-		_messageDataUpdate = new char*[_serverUpdate->numMes];
-
-		if(!_socket->recv(_messageHeaderUpdate, sizeof(struct CollaborativeMessageHeader) * _serverUpdate->numMes))
-		{
-		    return;
-		}
-
-		for(int i = 0; i < _serverUpdate->numMes; i++)
-		{
-		    if(_messageHeaderUpdate[i].size)
-		    {
-			_messageDataUpdate[i] = new char[_messageHeaderUpdate[i].size];
-			if(!_socket->recv(_messageDataUpdate[i],_messageHeaderUpdate[i].size))
-			{
-			    return;
-			}
-		    }
-		    else
-		    {
-			_messageDataUpdate[i] = NULL;
-		    }
-		}
-	    }
+		std::cerr << "Num Users: " << _serverUpdate->numUsers << " NumBodies: " << numBodies << std::endl;
+	    } 
 
 	    _statusLock.lock();
 	    _updating = false;

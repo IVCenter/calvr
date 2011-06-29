@@ -478,6 +478,7 @@ bool SocketThread::processEvents()
 		index++;
 	    }
 	}
+	std::cerr << "Sending " << numBodyToSend << std::endl;
     }
 
     _server->_clientMap[_id] = cu;
@@ -516,9 +517,11 @@ bool SocketThread::processEvents()
 
     for(int i = 0; i < su.numMes; i++)
     {
+	
 	localQueue.push(_messageQueue.front());
 	cucmh[i] = _messageQueue.front()->getHeader();
 	_messageQueue.pop();
+	std::cerr << "Creating message: type: " << cucmh[i].type << " target: " << cucmh[i].target << " size: " << cucmh[i].size << std::endl;
     }
 
     _messageLock.unlock();
@@ -540,44 +543,20 @@ bool SocketThread::processEvents()
 	queueCleanup(localQueue);
 	return false;
     }
-    if(culist)
-    {
-	if(!_socket->send(culist,sizeof(struct ClientUpdate)*numToSend))
-	{
-	    delete[] culist;
-	    if(cubu)
-	    {
-		delete[] cubu;
-	    }
-	    if(cucmh)
-	    {
-		delete[] cucmh;
-	    }
-	    queueCleanup(localQueue);
-	    return false;
-	}
-	delete[] culist;
-    }
-    if(cubu)
-    {
-	if(!_socket->send(cubu,sizeof(struct BodyUpdate)*numBodyToSend))
-	{
-	    delete[] cubu;
-	    if(cucmh)
-	    {
-		delete[] cucmh;
-	    }
-	    queueCleanup(localQueue);
-	    return false;
-	}
-	delete[] cubu;
-    }
 
     if(cucmh)
     {
 	if(!_socket->send(cucmh,sizeof(struct CollaborativeMessageHeader)*su.numMes))
 	{
 	    delete[] cucmh;
+	    if(culist)
+	    {
+		delete[] culist;
+	    }
+	    if(cubu)
+	    {
+		delete[] cubu;
+	    }
 	    queueCleanup(localQueue);
 	    return false;
 	}
@@ -588,14 +567,46 @@ bool SocketThread::processEvents()
     {
 	if(localQueue.front()->getHeader().size)
 	{
+	    std::cerr << "Sending message data of size: " << localQueue.front()->getHeader().size << std::endl;
 	    if(!_socket->send(localQueue.front()->getData(),localQueue.front()->getHeader().size))
 	    {
+		if(culist)
+		{
+		    delete[] culist;
+		}
+		if(cubu)
+		{
+		    delete[] cubu;
+		}
 		queueCleanup(localQueue);
 		return false;
 	    }
 	}
 	localQueue.front()->unref();
 	localQueue.pop();
+    }
+
+    if(culist)
+    {
+	if(!_socket->send(culist,sizeof(struct ClientUpdate)*numToSend))
+	{
+	    delete[] culist;
+	    if(cubu)
+	    {
+		delete[] cubu;
+	    }
+	    return false;
+	}
+	delete[] culist;
+    }
+    if(cubu)
+    {
+	if(!_socket->send(cubu,sizeof(struct BodyUpdate)*numBodyToSend))
+	{
+	    delete[] cubu;
+	    return false;
+	}
+	delete[] cubu;
     }
 
     return true;
