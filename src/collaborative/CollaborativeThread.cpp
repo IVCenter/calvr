@@ -112,6 +112,12 @@ void CollaborativeThread::run()
 		}
 	    }
 
+	    // process add/remove events
+	    for(int i = 0; i < _serverUpdate->numMes; i++)
+	    {
+		processMessage(_messageHeaderUpdate[i],_messageDataUpdate[i]);
+	    }
+
 	    if(_serverUpdate->mode == LOCKED)
 	    {
 		if(_serverUpdate->masterID != _id)
@@ -236,4 +242,19 @@ void CollaborativeThread::getUpdate(ServerUpdate * & su, ClientUpdate * & client
     bodyList = _bodiesUpdate;
     messageHeaders = _messageHeaderUpdate;
     messageData = _messageDataUpdate;
+}
+
+void CollaborativeThread::processMessage(CollaborativeMessageHeader & cmh, char * data)
+{
+    switch(cmh.type)
+    {
+	case ADD_CLIENT:
+	{
+	    ClientInitInfo * cii = (ClientInitInfo*)data;
+	    (*_clientInitMap)[cii->id] = *cii;
+	    break;
+	}
+	default:
+	    break;
+    }
 }

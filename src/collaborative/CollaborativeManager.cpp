@@ -769,9 +769,9 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
     {
 	case ADD_CLIENT:
 	{
-	    std::cerr << "Add Client message." << std::endl;
+	    std::cerr << "Add Client message Bodies." << std::endl;
 	    ClientInitInfo * cii = (ClientInitInfo*)data;
-	    _clientInitMap[cii->id] = *cii;
+	    //_clientInitMap[cii->id] = *cii;
 
 	    BodyUpdate bu;
 	    bu.pos[0] = 0;
