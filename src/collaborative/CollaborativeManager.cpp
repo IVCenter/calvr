@@ -106,7 +106,7 @@ bool CollaborativeManager::isConnected()
 
 bool CollaborativeManager::connect(std::string host, int port)
 {
-    bool res = false;
+    bool res = true;
     int id;
     int numUsers;
     ClientInitInfo * ciiList;
@@ -185,14 +185,13 @@ bool CollaborativeManager::connect(std::string host, int port)
 		{
 		    res = false;
 		}
+		std::cerr << "cii list value name: " << ciiList[0].name << std::endl;
 	    }
 
 	    _thread->init(_socket, id);
 	    _thread->start();
 
             //startUpdate();
-
-	    res = true;
 	}
 	else
 	{
