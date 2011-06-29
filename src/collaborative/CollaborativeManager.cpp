@@ -175,8 +175,6 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    std::cerr << "There are " << sii.numUsers << " users connected to collab server." << std::endl;
 	    numUsers = sii.numUsers;
 
-	    int * userinfo = NULL;
-
 	    _clientInitMap.clear();
 
 	    if(res && sii.numUsers)
@@ -213,15 +211,24 @@ bool CollaborativeManager::connect(std::string host, int port)
 	{
 	    ComController::instance()->sendSlaves(&id,sizeof(int));
 	    ComController::instance()->sendSlaves(&numUsers,sizeof(int));
-	    ComController::instance()->sendSlaves(ciiList,sizeof(struct ClientInitInfo)*numUsers);
+	    if(numUsers)
+	    {
+		ComController::instance()->sendSlaves(ciiList,sizeof(struct ClientInitInfo)*numUsers);
+	    }
 	}
 	else
 	{
 	    ComController::instance()->readMaster(&id,sizeof(int));
 	    ComController::instance()->readMaster(&numUsers,sizeof(int));
-	    ComController::instance()->readMaster(ciiList,sizeof(struct ClientInitInfo)*numUsers);
+	    if(numUsers)
+	    {
+		ciiList = new ClientInitInfo[numUsers];
+		ComController::instance()->readMaster(ciiList,sizeof(struct ClientInitInfo)*numUsers);
+	    }
 	}
 	_id = id;
+
+	std::cerr << "Init with " << numUsers << " users." << std::endl;
 
 	for(int i = 0; i < numUsers; i++)
 	{

@@ -82,7 +82,7 @@ void CollaborativeServer::initConnection(int id, CVRSocket * sock)
 	return;
     }
 
-    std::cerr << "Got name: " << cii.name << std::endl;
+    std::cerr << "Got name: " << cii.name << " numHands: " << cii.numHands << " numHeads: " << cii.numHeads << std::endl;
 
     _serverLock.lock();
 
