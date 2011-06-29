@@ -34,7 +34,7 @@ class CollaborativeThread : public OpenThreads::Thread
 
         //TODO add message stuff
         void getUpdate(cvr::ServerUpdate * & su,
-                       cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** messageData);
+                       cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** & messageData);
 
     protected:
         bool _connected;

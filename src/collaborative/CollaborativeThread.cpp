@@ -229,7 +229,7 @@ void CollaborativeThread::quit()
     _quitLock.unlock();
 }
 
-void CollaborativeThread::getUpdate(ServerUpdate * & su, ClientUpdate * & clientList, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** messageData)
+void CollaborativeThread::getUpdate(ServerUpdate * & su, ClientUpdate * & clientList, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** & messageData)
 {
     su = _serverUpdate;
     clientList = _clientUpdate;
