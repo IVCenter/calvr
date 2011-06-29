@@ -591,7 +591,7 @@ void CollaborativeManager::update()
 		ComController::instance()->sendSlaves(culist,sizeof(struct ClientUpdate) * (su.numUsers - 1));
 		numBodies = 0;
 
-		for(int i = 0; i < su.numUsers; i++)
+		for(int i = 0; i < su.numUsers - 1; i++)
 		{
 		    numBodies += _clientInitMap[culist[i].numMes].numHeads + _clientInitMap[culist[i].numMes].numHands;
 		}
@@ -608,7 +608,7 @@ void CollaborativeManager::update()
 
 		numBodies = 0;
 
-		for(int i = 0; i < su.numUsers; i++)
+		for(int i = 0; i < su.numUsers - 1; i++)
 		{
 		    numBodies += _clientInitMap[culist[i].numMes].numHeads + _clientInitMap[culist[i].numMes].numHands;
 		}

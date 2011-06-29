@@ -137,13 +137,13 @@ void CollaborativeThread::run()
 	    }
 	    else if(_serverUpdate->numUsers > 1)
 	    {
-		_clientUpdate = new struct ClientUpdate[_serverUpdate->numUsers];
+		_clientUpdate = new struct ClientUpdate[_serverUpdate->numUsers - 1];
 		if(!_socket->recv(_clientUpdate,sizeof(struct ClientUpdate) * (_serverUpdate->numUsers - 1)))
 		{
 		    return;
 		}
 		int numBodies = 0;
-		for(int i = 0; i < _serverUpdate->numUsers; i++)
+		for(int i = 0; i < (_serverUpdate->numUsers - 1); i++)
 		{
 		    std::cerr << "counting id: " << _clientUpdate[i].numMes << std::endl;
 		    numBodies += (*_clientInitMap)[_clientUpdate[i].numMes].numHeads + (*_clientInitMap)[_clientUpdate[i].numMes].numHands;
