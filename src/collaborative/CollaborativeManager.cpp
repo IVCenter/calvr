@@ -489,6 +489,51 @@ void CollaborativeManager::update()
     {
 	ComController::instance()->readMaster(&su,sizeof(struct ServerUpdate));
     }
+   
+    if(su.numMes)
+    {
+	if(ComController::instance()->isMaster())
+	{
+	    ComController::instance()->sendSlaves(cmh,sizeof(struct CollaborativeMessageHeader) * su.numMes);
+	    for(int i = 0; i < su.numMes; i++)
+	    {
+		if(cmh[i].size)
+		{
+		    ComController::instance()->sendSlaves(messageData[i],cmh[i].size);
+		}
+	    }
+	}
+	else
+	{
+	    cmh = new CollaborativeMessageHeader[su.numMes];
+	    ComController::instance()->readMaster(cmh,sizeof(struct CollaborativeMessageHeader) * su.numMes);
+	    messageData = new char*[su.numMes];
+	    for(int i = 0; i < su.numMes; i++)
+	    {
+		if(cmh[i].size)
+		{
+		    messageData[i] = new char[cmh[i].size];
+		    ComController::instance()->readMaster(messageData[i],cmh[i].size);
+		}
+		else
+		{
+		    messageData[i] = NULL;
+		}
+	    }
+	}
+
+	for(int i = 0; i < su.numMes; i++)
+	{
+	    processMessage(cmh[i],messageData[i]);
+	}
+
+	
+	if(!ComController::instance()->isMaster())
+	{
+	    delete[] cmh;
+	    delete[] messageData;
+	}
+    }
     
     if(su.mode == LOCKED)
     {
@@ -601,51 +646,6 @@ void CollaborativeManager::update()
 		}
 	    }
 
-	}
-    }
-
-    if(su.numMes)
-    {
-	if(ComController::instance()->isMaster())
-	{
-	    ComController::instance()->sendSlaves(cmh,sizeof(struct CollaborativeMessageHeader) * su.numMes);
-	    for(int i = 0; i < su.numMes; i++)
-	    {
-		if(cmh[i].size)
-		{
-		    ComController::instance()->sendSlaves(messageData[i],cmh[i].size);
-		}
-	    }
-	}
-	else
-	{
-	    cmh = new CollaborativeMessageHeader[su.numMes];
-	    ComController::instance()->readMaster(cmh,sizeof(struct CollaborativeMessageHeader) * su.numMes);
-	    messageData = new char*[su.numMes];
-	    for(int i = 0; i < su.numMes; i++)
-	    {
-		if(cmh[i].size)
-		{
-		    messageData[i] = new char[cmh[i].size];
-		    ComController::instance()->readMaster(messageData[i],cmh[i].size);
-		}
-		else
-		{
-		    messageData[i] = NULL;
-		}
-	    }
-	}
-
-	for(int i = 0; i < su.numMes; i++)
-	{
-	    processMessage(cmh[i],messageData[i]);
-	}
-
-	
-	if(!ComController::instance()->isMaster())
-	{
-	    delete[] cmh;
-	    delete[] messageData;
 	}
     }
 
