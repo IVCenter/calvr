@@ -98,6 +98,7 @@ void CollaborativeServer::initConnection(int id, CVRSocket * sock)
 	for(std::map<int,struct ClientInitInfo>::iterator it = _clientInitMap.begin(); it != _clientInitMap.end(); it++)
 	{
 	    activeClients[acindex] = it->second;
+	    std::cerr << "Adding client init info to send name: " << activeClients[acindex].name << " id: " << activeClients[acindex].id << " heads: " << activeClients[acindex].numHeads << " hands: " << activeClients[acindex].numHands << std::endl;
 	    acindex++;
 	}
     }

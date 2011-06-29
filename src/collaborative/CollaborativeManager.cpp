@@ -179,6 +179,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 
 	    if(res && sii.numUsers)
 	    {
+		std::cerr << "Getting cii from " << sii.numUsers << " users." << std::endl;
 		ciiList = new ClientInitInfo[sii.numUsers];
 		if(_socket->recv(ciiList,sizeof(struct ClientInitInfo)*sii.numUsers))
 		{
@@ -189,7 +190,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    _thread->init(_socket, id);
 	    _thread->start();
 
-            startUpdate();
+            //startUpdate();
 
 	    res = true;
 	}
@@ -266,6 +267,10 @@ bool CollaborativeManager::connect(std::string host, int port)
 		    _collabHands[ciiList[i].id][j]->addChild(makeHand(ciiList[i].id));
 		}
 	    }
+	}
+	if(ComController::instance()->isMaster())
+	{
+	    startUpdate();
 	}
     }
 
