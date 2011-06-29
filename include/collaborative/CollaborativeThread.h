@@ -2,6 +2,7 @@
 #define CVR_COLLABORATIVE_THREAD_H
 
 #include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
 #include <collaborative/CollaborativeManager.h>
 #include <util/CVRSocket.h>
 
@@ -15,7 +16,7 @@ namespace cvr
 class CollaborativeThread : public OpenThreads::Thread
 {
     public:
-        CollaborativeThread();
+        CollaborativeThread(std::map<int,struct ClientInitInfo> * clientInitMap);
         ~CollaborativeThread();
 
         void init(cvr::CVRSocket * socket, int id);
@@ -26,14 +27,14 @@ class CollaborativeThread : public OpenThreads::Thread
         cvr::CVRSocket * getSocket();
         void setSocket(cvr::CVRSocket * socket);
 
-        void startUpdate(struct cvr::ClientUpdate & cu);
+        void startUpdate(struct cvr::ClientUpdate & cu, int numBodies, struct cvr::BodyUpdate * bodies, int numMessages, CollaborativeMessageHeader * messageHeaders, char** messageData);
         bool updateDone();
 
         void quit();
 
         //TODO add message stuff
-        void getUpdate(cvr::ServerUpdate & su,
-                       cvr::ClientUpdate * & clientlist);
+        void getUpdate(cvr::ServerUpdate * & su,
+                       cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** messageData);
 
     protected:
         bool _connected;
@@ -44,10 +45,26 @@ class CollaborativeThread : public OpenThreads::Thread
         int _id;
 
         struct ClientUpdate _myInfo;
-        struct ServerUpdate _serverUpdate;
+
+        int _numBodies;
+        struct BodyUpdate * _myTrackedBodies;
+
+        int _numMessages;
+        CollaborativeMessageHeader * _messageHeaders;
+        char ** _messageData;
+
+        std::map<int,struct ClientInitInfo> * _clientInitMap;
+
+        struct ServerUpdate * _serverUpdate;
         struct ClientUpdate * _clientUpdate;
+        struct BodyUpdate * _bodiesUpdate;
+        struct CollaborativeMessageHeader * _messageHeaderUpdate;
+        char ** _messageDataUpdate;
 
         cvr::CVRSocket * _socket;
+
+        OpenThreads::Mutex _quitLock;
+        OpenThreads::Mutex _statusLock;
 };
 
 }

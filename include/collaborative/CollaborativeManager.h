@@ -12,7 +12,7 @@
 namespace cvr
 {
 
-struct ClientUpdate
+/*struct ClientUpdate
 {
         float headPos[3];
         float headRot[4];
@@ -21,16 +21,16 @@ struct ClientUpdate
         float objScale;
         float objTrans[16];
         int numMes;
-};
+};*/
 
 // TODO: reduced struct when changes are done, for now leave for things to compile
 
-/*struct ClientUpdate
- {
- float objScale;
- float objTrans[16];
- int numMes;
- };*/
+struct ClientUpdate
+{
+    float objScale;
+    float objTrans[16];
+    int numMes;
+};
 
 struct BodyUpdate
 {
@@ -73,6 +73,7 @@ struct CollaborativeMessageHeader
 
 struct ClientInitInfo
 {
+        int id; ///< server fills this in
         char name[256];
         int numHeads;
         int numHands;
@@ -102,6 +103,7 @@ class CollaborativeManager
         osg::Node * makeHand(int num);
         osg::Node * makeHead(int num);
         void startUpdate();
+        void processMessage(CollaborativeMessageHeader & cmh, char * data);
 
         static CollaborativeManager * _myPtr;
 
@@ -110,16 +112,19 @@ class CollaborativeManager
         cvr::CollaborativeThread * _thread;
 
         std::map<int,ClientUpdate> _clientMap;
-        std::map<int,std::string> _clientNameMap;
+        std::map<int,ClientInitInfo> _clientInitMap;
 
         int _id;
         bool _connected;
         int _masterID;
         CollabMode _mode;
 
+        std::map<int,std::vector<BodyUpdate> > _handBodyMap;
+        std::map<int,std::vector<BodyUpdate> > _headBodyMap;
+
         osg::ref_ptr<osg::MatrixTransform> _collabRoot;
-        std::vector<osg::ref_ptr<osg::MatrixTransform> > _collabHands;
-        std::vector<osg::ref_ptr<osg::MatrixTransform> > _collabHeads;
+        std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHands;
+        std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHeads;
 };
 
 }
