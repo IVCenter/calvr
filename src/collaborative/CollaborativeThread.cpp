@@ -130,7 +130,7 @@ void CollaborativeThread::run()
 
 	    if(_serverUpdate->mode == LOCKED)
 	    {
-		if(_serverUpdate->masterID != _id)
+		if(_serverUpdate->masterID >= 0 && _serverUpdate->masterID != _id)
 		{
 		    _clientUpdate = new struct ClientUpdate[1];
 		    if(!_socket->recv(_clientUpdate, sizeof(struct ClientUpdate)))
@@ -211,7 +211,6 @@ void CollaborativeThread::startUpdate(struct ClientUpdate & cu, int numBodies, s
     _numMessages = numMessages;
     _messageHeaders = messageHeaders;
     _messageData = messageData;
-    //TODO update
     if(_clientUpdate)
     {
 	delete[] _clientUpdate;

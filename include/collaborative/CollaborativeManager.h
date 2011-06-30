@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <queue>
 
 #include <osg/MatrixTransform>
 
@@ -47,7 +48,9 @@ enum CollabMode
 enum CollaborativeMessageType
 {
     ADD_CLIENT = 0,
-    REMOVE_CLIENT
+    REMOVE_CLIENT,
+    SET_MASTER_ID,
+    SET_COLLAB_MODE
 };
 
 struct ServerUpdate
@@ -69,6 +72,7 @@ struct CollaborativeMessageHeader
         int type;
         char target[256];
         int size;
+        bool deleteData;
 };
 
 struct ClientInitInfo
@@ -97,6 +101,19 @@ class CollaborativeManager
 
         void update();
 
+        int getID() { return _id; }
+        const std::string & getName() { return _myName; }
+        CollabMode getMode() { return _mode; }
+        void setMode(CollabMode mode);
+        int getMasterID() { return _masterID; }
+        void setMasterID(int id);
+
+        std::map<int,ClientInitInfo> & getClientInitMap() { return _clientInitMap; }
+        int getClientNumHeads(int id);
+        int getClientNumHands(int id);
+        const osg::Matrix & getClientHeadMat(int id, int head);
+        const osg::Matrix & getClientHandMat(int id, int hand);
+
     protected:
         CollaborativeManager();
         void updateCollabNodes();
@@ -106,6 +123,8 @@ class CollaborativeManager
         void processMessage(CollaborativeMessageHeader & cmh, char * data);
 
         static CollaborativeManager * _myPtr;
+
+        std::string _myName;
 
         cvr::CVRSocket * _socket;
 
@@ -125,6 +144,8 @@ class CollaborativeManager
         osg::ref_ptr<osg::MatrixTransform> _collabRoot;
         std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHands;
         std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHeads;
+
+        std::queue<std::pair<CollaborativeMessageHeader,char*> > _messageQueue;
 };
 
 }

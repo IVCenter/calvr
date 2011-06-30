@@ -9,7 +9,7 @@ using namespace cvr;
 CollaborativeServer::CollaborativeServer(int port)
 {
     _port = port;
-    _masterID = 0;
+    _masterID = -1;
     _currentMode = UNLOCKED;
 }
 
@@ -275,7 +275,7 @@ void CollaborativeServer::checkSockets()
 		if(_masterID == (*it)->getID())
 		{
 		    _currentMode = UNLOCKED;
-		    _masterID = 0;
+		    _masterID = -1;
 		}
 	    }
 
@@ -433,6 +433,11 @@ bool SocketThread::processEvents()
 
     _server->_serverLock.lock();
 
+    if(_server->_clientMap.find(_server->_masterID) == _server->_clientMap.end())
+    {
+	_server->_masterID = -1;
+    }
+
     su.numUsers = _server->_threadList.size();
     su.mode = _server->_currentMode;
     su.masterID = _server->_masterID;
@@ -443,7 +448,7 @@ bool SocketThread::processEvents()
 
     if(_server->_currentMode == LOCKED)
     {
-	if(_server->_masterID != _id)
+	if(_server->_masterID >= 0 && _server->_masterID != _id)
 	{
 	    numToSend = 1;
 	    culist = new struct ClientUpdate[1];
@@ -655,6 +660,26 @@ bool SocketThread::processMessage(CollaborativeMessageHeader & cmh)
 
     switch(cmh.type)
     {
+	case SET_MASTER_ID:
+	{
+	    int mid = *((int*)data);
+	    std::cerr << "Setting master id to " << mid << std::endl;
+	    _server->_serverLock.lock();
+	    _server->_masterID = mid;
+	    _server->_serverLock.unlock();
+	    delete[] data;
+	    break;
+	}
+	case SET_COLLAB_MODE:
+	{
+	    CollabMode cm = *((CollabMode*)data);
+	    std::cerr << "Setting CollabMode to " << cm << std::endl;
+	    _server->_serverLock.lock();
+	    _server->_currentMode = cm;
+	    _server->_serverLock.unlock();
+	    delete[] data;
+	    break;
+	}
 	default:
 	{
 	    _server->_serverLock.lock();
@@ -674,11 +699,6 @@ bool SocketThread::processMessage(CollaborativeMessageHeader & cmh)
 	    _server->_serverLock.unlock();
 	    break;
 	}
-    }
-
-    if(data)
-    {
-	delete[] data;
     }
 
     return true;

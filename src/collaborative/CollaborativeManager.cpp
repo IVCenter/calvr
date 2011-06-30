@@ -69,6 +69,7 @@ CollaborativeManager::CollaborativeManager()
     _socket = NULL;
     _connected = false;
     _mode = UNLOCKED;
+    _masterID = -1;
     if(ComController::instance()->isMaster())
     {
 	_thread = new CollaborativeThread(&_clientInitMap);
@@ -116,6 +117,8 @@ bool CollaborativeManager::connect(std::string host, int port)
     gethostname(cii.name, 254);
     cii.numHeads = TrackingManager::instance()->getNumHeads();
     cii.numHands = TrackingManager::instance()->getNumHands();
+
+    _myName = cii.name;
 
     if(ComController::instance()->isMaster())
     {
@@ -389,10 +392,23 @@ void CollaborativeManager::startUpdate()
 	}
     }
 
-    //TODO: add message passing
-    cu.numMes = 0;
+    CollaborativeMessageHeader * mheaders = NULL;
+    char ** mData = NULL;
 
-    _thread->startUpdate(cu,numBodies,bodies,cu.numMes,NULL,NULL);
+    cu.numMes = _messageQueue.size();
+    if(cu.numMes)
+    {
+	mheaders = new CollaborativeMessageHeader[cu.numMes];
+	mData = new char*[cu.numMes];
+	for(int i = 0; i < cu.numMes; i++)
+	{
+	    mheaders[i] = _messageQueue.front().first;
+	    mData[i] = _messageQueue.front().second;
+	    _messageQueue.pop();
+	}
+    }
+
+    _thread->startUpdate(cu,numBodies,bodies,cu.numMes,mheaders,mData);
 }
 
 void CollaborativeManager::update()
@@ -488,11 +504,14 @@ void CollaborativeManager::update()
 	    delete[] messageData;
 	}
     }
+   
+    _mode = su.mode;
+    _masterID = su.masterID;
     
     if(su.mode == LOCKED)
     {
-	_masterID = su.masterID;
-	if(_masterID != _id)
+	SceneManager::instance()->getObjectsRoot()->removeChild(_collabRoot.get());
+	if(_masterID >= 0 && _masterID != _id)
 	{
 	    if(ComController::instance()->isMaster())
 	    {
@@ -533,6 +552,11 @@ void CollaborativeManager::update()
     }
     else
     {
+	if(_collabRoot->getNumParents() == 0)
+	{
+	    SceneManager::instance()->getObjectsRoot()->addChild(_collabRoot.get());
+	}
+
 	_clientMap.clear();
 
 	if(su.numUsers > 1)
@@ -608,6 +632,90 @@ void CollaborativeManager::update()
     startUpdate();
 }
 
+void CollaborativeManager::setMode(CollabMode mode)
+{
+    if(ComController::instance()->isMaster())
+    {
+	CollaborativeMessageHeader cmh;
+	cmh.type = SET_COLLAB_MODE;
+	strcpy(cmh.target, "CollabServer");
+	cmh.size = sizeof(CollabMode);
+	cmh.deleteData = true;
+	CollabMode * cmode = new CollabMode[1];
+	cmode[0] = mode;
+
+	_messageQueue.push(std::pair<CollaborativeMessageHeader,char*>(cmh,(char*)cmode));
+    }
+}
+
+void CollaborativeManager::setMasterID(int id)
+{
+    if(ComController::instance()->isMaster())
+    {
+	CollaborativeMessageHeader cmh;
+	cmh.type = SET_MASTER_ID;
+	strcpy(cmh.target, "CollabServer");
+	cmh.size = sizeof(int);
+	cmh.deleteData = true;
+	int * mid = new int[1];
+	mid[0] = id;
+
+	_messageQueue.push(std::pair<CollaborativeMessageHeader,char*>(cmh,(char*)mid));
+    }
+}
+
+int CollaborativeManager::getClientNumHeads(int id)
+{
+    std::map<int,ClientInitInfo>::iterator it;
+    if((it = _clientInitMap.find(id)) != _clientInitMap.end())
+    {
+	return it->second.numHeads;	
+    }
+    return 0;
+}
+
+int CollaborativeManager::getClientNumHands(int id)
+{
+    std::map<int,ClientInitInfo>::iterator it;
+    if((it = _clientInitMap.find(id)) != _clientInitMap.end())
+    {
+	return it->second.numHands;	
+    }
+    return 0;
+}
+
+const osg::Matrix & CollaborativeManager::getClientHeadMat(int id, int head)
+{
+    static osg::Matrix defaultReturn;
+
+    std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > >::iterator it;
+    if((it = _collabHeads.find(id)) != _collabHeads.end())
+    {
+	if(head >= 0 && head < it->second.size())
+	{
+	    return it->second[head]->getMatrix();
+	}
+    }
+
+    return defaultReturn;
+}
+
+const osg::Matrix & CollaborativeManager::getClientHandMat(int id, int hand)
+{
+    static osg::Matrix defaultReturn;
+
+    std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > >::iterator it;
+    if((it = _collabHands.find(id)) != _collabHands.end())
+    {
+	if(hand >= 0 && hand < it->second.size())
+	{
+	    return it->second[hand]->getMatrix();
+	}
+    }
+
+    return defaultReturn;
+}
+
 void CollaborativeManager::updateCollabNodes()
 {
     _collabRoot->removeChildren(0,_collabRoot->getNumChildren());
@@ -666,7 +774,7 @@ void CollaborativeManager::updateCollabNodes()
     }
     else
     {
-	if(_masterID != _id)
+	if(_masterID >= 0 && _masterID != _id)
 	{
 	    osg::Matrix objMat;
 	    for(int i = 0; i < 4; i++)
