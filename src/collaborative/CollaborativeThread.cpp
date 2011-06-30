@@ -34,11 +34,14 @@ CollaborativeThread::~CollaborativeThread()
 
 void CollaborativeThread::run()
 {
+
     while(1)
     {
 	_quitLock.lock();
 	if(_quit)
 	{
+	    _quitLock.unlock();
+	    //std::cerr << "Thread Quit exit." << std::endl;
 	    return;
 	}
 	_quitLock.unlock();
@@ -46,6 +49,7 @@ void CollaborativeThread::run()
 	_statusLock.lock();
 	if(_updating)
 	{
+	    //std::cerr << "Updating" << std::endl;
 	    _statusLock.unlock();
 	    if(!_socket->send(&_myInfo, sizeof(ClientUpdate),MSG_NOSIGNAL))
 	    {
@@ -78,11 +82,14 @@ void CollaborativeThread::run()
 		_myInfo.numMes = 0;
 	    }
 
+	    //std::cerr << "Data sent" << std::endl;
+
 	    if(!_socket->recv(_serverUpdate, sizeof(ServerUpdate)))
 	    {
 		return;
 	    }
 
+	    //std::cerr << "Got server update." << std::endl;
 	    //std::cerr << "Num Messages: " << _serverUpdate->numMes << std::endl;
 	    if(_serverUpdate->numMes)
 	    {
@@ -111,6 +118,8 @@ void CollaborativeThread::run()
 		    }
 		}
 	    }
+
+	    //std::cerr << "Got messages." << std::endl;
 
 	    // process add/remove events
 	    for(int i = 0; i < _serverUpdate->numMes; i++)
@@ -160,6 +169,8 @@ void CollaborativeThread::run()
 		//std::cerr << "Num Users: " << _serverUpdate->numUsers << " NumBodies: " << numBodies << std::endl;
 	    } 
 
+	    //std::cerr << "Got bodies." << std::endl;
+
 	    _statusLock.lock();
 	    _updating = false;
 	    _updateDone = true;
@@ -187,6 +198,7 @@ CVRSocket * CollaborativeThread::getSocket()
 
 void CollaborativeThread::startUpdate(struct ClientUpdate & cu, int numBodies, struct cvr::BodyUpdate * bodies, int numMessages, CollaborativeMessageHeader * messageHeaders, char** messageData)
 {
+    //std::cerr << "Start Update." << std::endl;
     _updateDone = false;
     _myInfo = cu;
     if(_numBodies)

@@ -549,7 +549,7 @@ bool SocketThread::processEvents()
 	localQueue.push(_messageQueue.front());
 	cucmh[i] = _messageQueue.front()->getHeader();
 	_messageQueue.pop();
-	std::cerr << "Creating message: type: " << cucmh[i].type << " target: " << cucmh[i].target << " size: " << cucmh[i].size << std::endl;
+	//std::cerr << "Creating message: type: " << cucmh[i].type << " target: " << cucmh[i].target << " size: " << cucmh[i].size << std::endl;
     }
 
     _messageLock.unlock();
@@ -595,7 +595,7 @@ bool SocketThread::processEvents()
     {
 	if(localQueue.front()->getHeader().size)
 	{
-	    std::cerr << "Sending message data of size: " << localQueue.front()->getHeader().size << std::endl;
+	    //std::cerr << "Sending message data of size: " << localQueue.front()->getHeader().size << std::endl;
 	    if(!_socket->send(localQueue.front()->getData(),localQueue.front()->getHeader().size))
 	    {
 		if(culist)

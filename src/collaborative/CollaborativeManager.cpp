@@ -174,18 +174,17 @@ bool CollaborativeManager::connect(std::string host, int port)
 		res = false;
 	    }
 
-	    std::cerr << "There are " << sii.numUsers << " users connected to collab server." << std::endl;
+	    std::cerr << "There are " << sii.numUsers << " other users connected to collab server." << std::endl;
 	    numUsers = sii.numUsers;
 
 	    if(res && sii.numUsers)
 	    {
-		std::cerr << "Getting cii from " << sii.numUsers << " users." << std::endl;
+		//std::cerr << "Getting cii from " << sii.numUsers << " users." << std::endl;
 		ciiList = new ClientInitInfo[sii.numUsers];
 		if(!_socket->recv(ciiList,sizeof(struct ClientInitInfo)*sii.numUsers))
 		{
 		    res = false;
 		}
-		std::cerr << "cii list value name: " << ciiList[0].name << std::endl;
 	    }
 
 	    _thread->init(_socket, id);
@@ -230,12 +229,12 @@ bool CollaborativeManager::connect(std::string host, int port)
 
 	//_clientInitMap[_id] = cii;
 
-	std::cerr << "Init with " << numUsers << " users." << std::endl;
+	//std::cerr << "Init with " << numUsers << " users." << std::endl;
 
 	for(int i = 0; i < numUsers; i++)
 	{
 	    _clientInitMap[ciiList[i].id] = ciiList[i];
-	    std::cerr << "Adding other user with id: " << ciiList[i].id << " name: " << ciiList[i].name << " numHeads: " << ciiList[i].numHeads << " numHands: " << ciiList[i].numHands << std::endl;
+	    std::cerr << "Client id: " << ciiList[i].id << " name: " << ciiList[i].name << " numHeads: " << ciiList[i].numHeads << " numHands: " << ciiList[i].numHands << std::endl;
 	    BodyUpdate bu;
 	    bu.pos[0] = 0;
 	    bu.pos[1] = 0;
@@ -303,7 +302,12 @@ void CollaborativeManager::disconnect()
     }
 
     _clientMap.clear();
+    _clientInitMap.clear();
     _collabRoot->removeChildren(0,_collabRoot->getNumChildren());
+    _collabHands.clear();
+    _collabHeads.clear();
+    _handBodyMap.clear();
+    _headBodyMap.clear();
     _connected = false;
 }
 
@@ -420,58 +424,6 @@ void CollaborativeManager::update()
     {
 	return;
     }
-
-    //std::cerr << "Update Ready." << std::endl;
-
-    /*struct ClientUpdate cu;
-
-    osg::Vec3 vec = TrackingManager::instance()->getHeadMat().getTrans();
-    cu.headPos[0] = vec[0];
-    cu.headPos[1] = vec[2];
-    cu.headPos[2] = vec[3];
-
-    osg::Quat quat = TrackingManager::instance()->getHeadMat().getRotate();
-    cu.headRot[0] = quat[0];
-    cu.headRot[1] = quat[1];
-    cu.headRot[2] = quat[2];
-    cu.headRot[3] = quat[3];
-
-    vec = TrackingManager::instance()->getHandMat().getTrans();
-    cu.handPos[0] = vec[0];
-    cu.handPos[1] = vec[2];
-    cu.handPos[2] = vec[3];
-
-    quat = TrackingManager::instance()->getHandMat().getRotate();
-    cu.handRot[0] = quat[0];
-    cu.handRot[1] = quat[1];
-    cu.handRot[2] = quat[2];
-    cu.handRot[3] = quat[3];
-
-    cu.objScale = SceneManager::instance()->getObjectScale();
-    
-    osg::Matrix m = SceneManager::instance()->getObjectTransform()->getMatrix();
-    for(int i = 0; i < 4; i++)
-    {
-	for(int j = 0; j < 4; j++)
-	{
-	    cu.objTrans[(4*i)+j] = m(i,j);
-	}
-    }
-
-    cu.numMes = 0;
-    if(!_socket->send(&cu, sizeof(ClientUpdate),MSG_NOSIGNAL))
-    {
-	disconnect();
-	return;
-    }
-
-    struct ServerUpdate su;
-    if(!_socket->recv(&su, sizeof(ServerUpdate)))
-    {
-	disconnect();
-	return;
-    }
-    */
 
     struct ServerUpdate su;
     struct ClientUpdate * culist = NULL;
@@ -693,12 +645,6 @@ void CollaborativeManager::updateCollabNodes()
 		m.makeRotate(quat);
 		m.setTrans(pos);
 
-		/*osg::Vec3 handpos(it->second.handPos[0],it->second.handPos[1],it->second.handPos[2]);
-		osg::Quat handquat(it->second.handRot[0],it->second.handRot[1],it->second.handRot[2],it->second.handRot[3]);
-		osg::Matrix handmat;
-		handmat.makeRotate(handquat);
-		handmat.setTrans(handpos);*/
-
 		_collabHeads[it->first][i]->setMatrix(m * objMatInv * objScaleInv);
 
 		_collabRoot->addChild(_collabHeads[it->first][i].get());
@@ -711,12 +657,6 @@ void CollaborativeManager::updateCollabNodes()
 		osg::Quat quat(bu->rot[0],bu->rot[1],bu->rot[2],bu->rot[3]);
 		m.makeRotate(quat);
 		m.setTrans(pos);
-
-		/*osg::Vec3 handpos(it->second.handPos[0],it->second.handPos[1],it->second.handPos[2]);
-		osg::Quat handquat(it->second.handRot[0],it->second.handRot[1],it->second.handRot[2],it->second.handRot[3]);
-		osg::Matrix handmat;
-		handmat.makeRotate(handquat);
-		handmat.setTrans(handpos);*/
 
 		_collabHands[it->first][i]->setMatrix(m * objMatInv * objScaleInv);
 
@@ -771,8 +711,8 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
     {
 	case ADD_CLIENT:
 	{
-	    std::cerr << "Add Client message Bodies." << std::endl;
 	    ClientInitInfo * cii = (ClientInitInfo*)data;
+	    std::cerr << "Adding client id: " << cii->id << " name: " << cii->name << " NumHeads: " << cii->numHeads << " NumHands: " << cii->numHands << std::endl;
 	    //_clientInitMap[cii->id] = *cii;
 
 	    BodyUpdate bu;
@@ -812,8 +752,10 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	}
 	case REMOVE_CLIENT:
 	{
-	    std::cerr << "Remove client bodies." << std::endl;
+	    //std::cerr << "Remove client bodies." << std::endl;
 	    int id = *((int*)data);
+	    std::cerr << "Removing client with id: " << id << std::endl;
+
 	    _headBodyMap.erase(id);
 	    for(int i = 0; i < _collabHeads[id].size(); i++)
 	    {
