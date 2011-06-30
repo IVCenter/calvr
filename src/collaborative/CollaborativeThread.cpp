@@ -8,6 +8,7 @@ using namespace OpenThreads;
 CollaborativeThread::CollaborativeThread(std::map<int,struct ClientInitInfo> * clientInitMap)
 {
     _clientInitMap = clientInitMap;
+    _numBodies = 0;
 }
 
 void CollaborativeThread::init(CVRSocket * socket, int id)
