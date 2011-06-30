@@ -784,10 +784,11 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	    bu.rot[2] = 0;
 	    bu.rot[3] = 1.0;
 
+
+	    _headBodyMap[cii->id] = std::vector<BodyUpdate>();
+	    _collabHeads[cii->id] = std::vector<osg::ref_ptr<osg::MatrixTransform> >();
 	    if(cii->numHeads)
 	    {
-		_headBodyMap[cii->id] = std::vector<BodyUpdate>();
-		_collabHeads[cii->id] = std::vector<osg::ref_ptr<osg::MatrixTransform> >();
 		for(int j = 0; j < cii->numHeads; j++)
 		{
 		    _headBodyMap[cii->id].push_back(bu);
@@ -796,10 +797,10 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 		}
 	    }
 
+	    _handBodyMap[cii->id] = std::vector<BodyUpdate>();
+	    _collabHands[cii->id] = std::vector<osg::ref_ptr<osg::MatrixTransform> >();
 	    if(cii->numHands)
 	    {
-		_handBodyMap[cii->id] = std::vector<BodyUpdate>();
-		_collabHands[cii->id] = std::vector<osg::ref_ptr<osg::MatrixTransform> >();
 		for(int j = 0; j < cii->numHands; j++)
 		{
 		    _handBodyMap[cii->id].push_back(bu);
@@ -807,6 +808,30 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 		    _collabHands[cii->id][j]->addChild(makeHand(cii->id));
 		}
 	    }
+	    break;
+	}
+	case REMOVE_CLIENT:
+	{
+	    std::cerr << "Remove client bodies." << std::endl;
+	    int id = *((int*)data);
+	    _headBodyMap.erase(id);
+	    for(int i = 0; i < _collabHeads[id].size(); i++)
+	    {
+		if(_collabHeads[id][i]->getNumParents())
+		{
+		    _collabHeads[id][i]->getParent(0)->removeChild(_collabHeads[id][i]);
+		}
+	    }
+	    _collabHeads.erase(id);
+
+	    for(int i = 0; i < _collabHands[id].size(); i++)
+	    {
+		if(_collabHands[id][i]->getNumParents())
+		{
+		    _collabHands[id][i]->getParent(0)->removeChild(_collabHands[id][i]);
+		}
+	    }
+	    _collabHands.erase(id);
 	    break;
 	}
 	default:

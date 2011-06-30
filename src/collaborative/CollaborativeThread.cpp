@@ -145,9 +145,9 @@ void CollaborativeThread::run()
 		int numBodies = 0;
 		for(int i = 0; i < (_serverUpdate->numUsers - 1); i++)
 		{
-		    std::cerr << "counting id: " << _clientUpdate[i].numMes << std::endl;
+		    //std::cerr << "counting id: " << _clientUpdate[i].numMes << std::endl;
 		    numBodies += (*_clientInitMap)[_clientUpdate[i].numMes].numHeads + (*_clientInitMap)[_clientUpdate[i].numMes].numHands;
-		    std::cerr << "Num bodies: " << numBodies << std::endl;
+		    //std::cerr << "Num bodies: " << numBodies << std::endl;
 		}
 		if(numBodies)
 		{
@@ -157,7 +157,7 @@ void CollaborativeThread::run()
 			return;
 		    }
 		}
-		std::cerr << "Num Users: " << _serverUpdate->numUsers << " NumBodies: " << numBodies << std::endl;
+		//std::cerr << "Num Users: " << _serverUpdate->numUsers << " NumBodies: " << numBodies << std::endl;
 	    } 
 
 	    _statusLock.lock();
@@ -254,6 +254,12 @@ void CollaborativeThread::processMessage(CollaborativeMessageHeader & cmh, char 
 	{
 	    ClientInitInfo * cii = (ClientInitInfo*)data;
 	    (*_clientInitMap)[cii->id] = *cii;
+	    break;
+	}
+	case REMOVE_CLIENT:
+	{
+	    int id = *((int*)data);
+	    _clientInitMap->erase(id);
 	    break;
 	}
 	default:

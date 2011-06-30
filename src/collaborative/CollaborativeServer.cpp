@@ -248,6 +248,26 @@ void CollaborativeServer::checkSockets()
 	{
 	    std::cerr << "Removing client " << (*it)->getName() << std::endl;
 	    _serverLock.lock();
+
+	    int * cid = new int[1];
+	    cid[0] = (*it)->getID();
+
+	    CollaborativeMessageHeader cmh;
+	    cmh.type = REMOVE_CLIENT;
+	    strcpy(cmh.target,"Collaborative");
+	    cmh.size = sizeof(int);
+
+	    CollaborativeMessage * cmessage = new CollaborativeMessage(_threadList.size(), cmh, (char*)cid);
+
+	    _messageAddLock.lock();
+
+	    for(int i = 0; i < _threadList.size(); i++)
+	    {
+		_threadList[i]->addMessage(cmessage);
+	    }
+
+	    _messageAddLock.unlock();
+
 	    _clientMap.erase((*it)->getID());
 	    _clientInitMap.erase((*it)->getID());
 	    if(_currentMode == LOCKED)
@@ -486,7 +506,7 @@ bool SocketThread::processEvents()
 		index++;
 	    }
 	}
-	std::cerr << "Sending " << numBodyToSend << std::endl;
+	//std::cerr << "Sending " << numBodyToSend << std::endl;
     }
 
     _server->_clientMap[_id] = cu;
