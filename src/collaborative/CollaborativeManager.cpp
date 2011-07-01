@@ -114,11 +114,6 @@ bool CollaborativeManager::connect(std::string host, int port)
     _clientInitMap.clear();
 
     ClientInitInfo cii;
-    gethostname(cii.name, 254);
-    cii.numHeads = TrackingManager::instance()->getNumHeads();
-    cii.numHands = TrackingManager::instance()->getNumHands();
-
-    _myName = cii.name;
 
     if(ComController::instance()->isMaster())
     {
@@ -126,6 +121,10 @@ bool CollaborativeManager::connect(std::string host, int port)
 	{
 	    disconnect();
 	}
+
+        gethostname(cii.name, 254);
+        cii.numHeads = TrackingManager::instance()->getNumHeads();
+        cii.numHands = TrackingManager::instance()->getNumHands();
 
 	if(_socket)
 	{
@@ -211,6 +210,7 @@ bool CollaborativeManager::connect(std::string host, int port)
     {
 	if(ComController::instance()->isMaster())
 	{
+            ComController::instance()->sendSlaves(&cii,sizeof(struct ClientInitInfo));
 	    ComController::instance()->sendSlaves(&id,sizeof(int));
 	    ComController::instance()->sendSlaves(&numUsers,sizeof(int));
 	    if(numUsers)
@@ -220,6 +220,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	}
 	else
 	{
+            ComController::instance()->readMaster(&cii,sizeof(struct ClientInitInfo));
 	    ComController::instance()->readMaster(&id,sizeof(int));
 	    ComController::instance()->readMaster(&numUsers,sizeof(int));
 	    if(numUsers)
@@ -229,6 +230,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    }
 	}
 	_id = id;
+        _myName = cii.name;
 
 	//_clientInitMap[_id] = cii;
 
@@ -821,7 +823,10 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	{
 	    ClientInitInfo * cii = (ClientInitInfo*)data;
 	    std::cerr << "Adding client id: " << cii->id << " name: " << cii->name << " NumHeads: " << cii->numHeads << " NumHands: " << cii->numHands << std::endl;
-	    //_clientInitMap[cii->id] = *cii;
+            if(!ComController::instance()->isMaster())
+            {
+	        _clientInitMap[cii->id] = *cii;
+            }
 
 	    BodyUpdate bu;
 	    bu.pos[0] = 0;
@@ -863,6 +868,11 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	    //std::cerr << "Remove client bodies." << std::endl;
 	    int id = *((int*)data);
 	    std::cerr << "Removing client with id: " << id << std::endl;
+ 
+            if(!ComController::instance()->isMaster())
+            {
+                _clientInitMap.erase(id);
+            }
 
 	    _headBodyMap.erase(id);
 	    for(int i = 0; i < _collabHeads[id].size(); i++)

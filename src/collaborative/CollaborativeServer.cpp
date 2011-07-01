@@ -488,7 +488,7 @@ bool SocketThread::processEvents()
 
 	for(int i = 0; i < _server->_threadList.size(); i++)
 	{
-	    if(_server->_threadList[i]->getID() != _id)
+	    if(_server->_threadList[i]->getID() == _id)
 	    {
 		continue;
 	    }
@@ -501,7 +501,7 @@ bool SocketThread::processEvents()
 
 	for(int i = 0; i < _server->_threadList.size(); i++)
 	{
-	    if(_server->_threadList[i]->getID() != _id)
+	    if(_server->_threadList[i]->getID() == _id)
 	    {
 		continue;
 	    }
