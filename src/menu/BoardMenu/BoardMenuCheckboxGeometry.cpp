@@ -135,6 +135,8 @@ void BoardMenuCheckboxGeometry::updateGeometry()
 	    if(text->getText().createUTF8EncodedString() != checkbox->getText())
 	    {
 		text->setText(checkbox->getText());
+		osg::BoundingBox bb = text->getBound();
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
 		text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(0));
 		if(text)
 		{
