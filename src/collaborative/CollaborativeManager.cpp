@@ -114,11 +114,6 @@ bool CollaborativeManager::connect(std::string host, int port)
     _clientInitMap.clear();
 
     ClientInitInfo cii;
-    gethostname(cii.name, 254);
-    cii.numHeads = TrackingManager::instance()->getNumHeads();
-    cii.numHands = TrackingManager::instance()->getNumHands();
-
-    _myName = cii.name;
 
     if(ComController::instance()->isMaster())
     {
@@ -126,6 +121,10 @@ bool CollaborativeManager::connect(std::string host, int port)
 	{
 	    disconnect();
 	}
+
+        gethostname(cii.name, 254);
+        cii.numHeads = TrackingManager::instance()->getNumHeads();
+        cii.numHands = TrackingManager::instance()->getNumHands();
 
 	if(_socket)
 	{
@@ -211,6 +210,7 @@ bool CollaborativeManager::connect(std::string host, int port)
     {
 	if(ComController::instance()->isMaster())
 	{
+            ComController::instance()->sendSlaves(&cii,sizeof(struct ClientInitInfo));
 	    ComController::instance()->sendSlaves(&id,sizeof(int));
 	    ComController::instance()->sendSlaves(&numUsers,sizeof(int));
 	    if(numUsers)
@@ -220,6 +220,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	}
 	else
 	{
+            ComController::instance()->readMaster(&cii,sizeof(struct ClientInitInfo));
 	    ComController::instance()->readMaster(&id,sizeof(int));
 	    ComController::instance()->readMaster(&numUsers,sizeof(int));
 	    if(numUsers)
@@ -229,6 +230,7 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    }
 	}
 	_id = id;
+        _myName = cii.name;
 
 	//_clientInitMap[_id] = cii;
 
@@ -513,19 +515,20 @@ void CollaborativeManager::update()
 	SceneManager::instance()->getObjectsRoot()->removeChild(_collabRoot.get());
 	if(_masterID >= 0 && _masterID != _id)
 	{
+            int numBodies;
 	    if(ComController::instance()->isMaster())
 	    {
 		ComController::instance()->sendSlaves(culist,sizeof(struct ClientUpdate));
 		_clientMap[culist[0].numMes] = culist[0];
-		int numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
+		numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
 		ComController::instance()->sendSlaves(bodies,sizeof(struct BodyUpdate)*numBodies);
 	    }
 	    else
 	    {
-		struct ClientUpdate cu;
-		ComController::instance()->readMaster(&cu,sizeof(struct ClientUpdate));
-		_clientMap[cu.numMes] = cu;
-		int numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
+                culist = new ClientUpdate[1];
+		ComController::instance()->readMaster(culist,sizeof(struct ClientUpdate));
+		_clientMap[culist[0].numMes] = culist[0];
+		numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
 		bodies = new BodyUpdate[numBodies];
 		ComController::instance()->readMaster(bodies,sizeof(struct BodyUpdate)*numBodies);
 	    }
@@ -544,9 +547,13 @@ void CollaborativeManager::update()
 		bindex++;
 	    }
 
-	    if(bodies && !ComController::instance()->isMaster())
+            if(!ComController::instance()->isMaster())
 	    {
-		delete[] bodies;
+		delete[] culist;
+		if(numBodies)
+		{
+		    delete[] bodies;
+		}
 	    }
 	}
     }
@@ -821,7 +828,10 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	{
 	    ClientInitInfo * cii = (ClientInitInfo*)data;
 	    std::cerr << "Adding client id: " << cii->id << " name: " << cii->name << " NumHeads: " << cii->numHeads << " NumHands: " << cii->numHands << std::endl;
-	    //_clientInitMap[cii->id] = *cii;
+            if(!ComController::instance()->isMaster())
+            {
+	        _clientInitMap[cii->id] = *cii;
+            }
 
 	    BodyUpdate bu;
 	    bu.pos[0] = 0;
@@ -863,6 +873,11 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 	    //std::cerr << "Remove client bodies." << std::endl;
 	    int id = *((int*)data);
 	    std::cerr << "Removing client with id: " << id << std::endl;
+ 
+            if(!ComController::instance()->isMaster())
+            {
+                _clientInitMap.erase(id);
+            }
 
 	    _headBodyMap.erase(id);
 	    for(int i = 0; i < _collabHeads[id].size(); i++)

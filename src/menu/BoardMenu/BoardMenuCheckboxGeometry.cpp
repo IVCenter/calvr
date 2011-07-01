@@ -126,6 +126,26 @@ void BoardMenuCheckboxGeometry::updateGeometry()
         stateset->setTextureAttributeAndModes(0, _checkedIcon,
                                               osg::StateAttribute::ON);
     }
+
+    if(_geode->getNumDrawables())
+    {
+	osgText::Text * text = dynamic_cast<osgText::Text*>(_geode->getDrawable(0));
+	if(text)
+	{
+	    if(text->getText().createUTF8EncodedString() != checkbox->getText())
+	    {
+		text->setText(checkbox->getText());
+		osg::BoundingBox bb = text->getBound();
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+		text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(0));
+		if(text)
+		{
+		    text->setText(checkbox->getText());
+		}
+	    }
+	}
+	
+    }
 }
 
 void BoardMenuCheckboxGeometry::processEvent(InteractionEvent * event)
