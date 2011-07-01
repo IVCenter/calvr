@@ -515,19 +515,20 @@ void CollaborativeManager::update()
 	SceneManager::instance()->getObjectsRoot()->removeChild(_collabRoot.get());
 	if(_masterID >= 0 && _masterID != _id)
 	{
+            int numBodies;
 	    if(ComController::instance()->isMaster())
 	    {
 		ComController::instance()->sendSlaves(culist,sizeof(struct ClientUpdate));
 		_clientMap[culist[0].numMes] = culist[0];
-		int numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
+		numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
 		ComController::instance()->sendSlaves(bodies,sizeof(struct BodyUpdate)*numBodies);
 	    }
 	    else
 	    {
-		struct ClientUpdate cu;
-		ComController::instance()->readMaster(&cu,sizeof(struct ClientUpdate));
-		_clientMap[cu.numMes] = cu;
-		int numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
+                culist = new ClientUpdate[1];
+		ComController::instance()->readMaster(culist,sizeof(struct ClientUpdate));
+		_clientMap[culist[0].numMes] = culist[0];
+		numBodies = _clientInitMap[culist[0].numMes].numHeads + _clientInitMap[culist[0].numMes].numHands;
 		bodies = new BodyUpdate[numBodies];
 		ComController::instance()->readMaster(bodies,sizeof(struct BodyUpdate)*numBodies);
 	    }
@@ -546,9 +547,13 @@ void CollaborativeManager::update()
 		bindex++;
 	    }
 
-	    if(bodies && !ComController::instance()->isMaster())
+            if(!ComController::instance()->isMaster())
 	    {
-		delete[] bodies;
+		delete[] culist;
+		if(numBodies)
+		{
+		    delete[] bodies;
+		}
 	    }
 	}
     }
