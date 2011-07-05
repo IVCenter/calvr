@@ -28,6 +28,7 @@ float BoardMenuGeometry::_iconHeight;
 float BoardMenuGeometry::_textSize;
 std::string BoardMenuGeometry::_iconDir;
 osg::ref_ptr<osgText::Font> BoardMenuGeometry::_font;
+std::map<std::string,osg::ref_ptr<osg::Texture2D> > BoardMenuGeometry::_iconCache;
 
 BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
 {
@@ -171,18 +172,40 @@ osg::Geometry * BoardMenuGeometry::makeLine(osg::Vec3 p1, osg::Vec3 p2,
     return geo;
 }
 
-// TODO: cache result
 osg::Texture2D * BoardMenuGeometry::loadIcon(std::string name)
 {
+    if(_iconCache.find(name) != _iconCache.end())
+    {
+	if(_iconCache[name])
+	{
+	    return _iconCache[name].get();
+	}
+	else
+	{
+	    return NULL;
+	}
+    }
+
     std::string file = _iconDir + "/icons/" + name;
     //std::cerr << "Trying to load icon: " << file << std::endl;
-    osg::Image * image = osgDB::readImageFile(file);
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
     if(image)
     {
         osg::Texture2D* texture;
         texture = new osg::Texture2D;
         texture->setImage(image);
+
+	// do not cache very large textures
+	if(image->s() <= 512 && image->t() <= 512)
+	{
+	    _iconCache[name] = texture;
+	}
+
         return texture;
+    }
+    else
+    {
+	_iconCache[name] = NULL;
     }
     std::cerr << "Icon: " << file << " not found." << std::endl;
     return NULL;

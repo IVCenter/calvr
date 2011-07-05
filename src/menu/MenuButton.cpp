@@ -17,6 +17,12 @@ std::string & MenuButton::getText()
     return _text;
 }
 
+void MenuButton::setText(std::string text)
+{
+    _text = text;
+    setDirty(true);
+}
+
 MenuItemType MenuButton::getType()
 {
     return BUTTON;
