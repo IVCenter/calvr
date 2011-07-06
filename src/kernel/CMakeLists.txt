@@ -34,6 +34,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CVRCullVisitor.h
     ${HEADER_PATH}/PreCullVisitor.h
     ${HEADER_PATH}/PostCullVisitor.h
+    ${HEADER_PATH}/ThreadedLoader.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -79,6 +80,7 @@ SET(LIB_SRC_FILES
     CVRCullVisitor.cpp
     PreCullVisitor.cpp
     PostCullVisitor.cpp
+    ThreadedLoader.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES}

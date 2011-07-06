@@ -33,6 +33,11 @@ class MenuButton : public MenuItem
         std::string & getText();
 
         /**
+         * @brief set the text label for this button
+         */
+        void setText(std::string text);
+
+        /**
          * @brief Returns BUTTON as this item's type
          */
         virtual MenuItemType getType();

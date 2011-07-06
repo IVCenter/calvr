@@ -73,6 +73,35 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
     _geodeSelected->addDrawable(textNode);
 }
 
+void BoardMenuButtonGeometry::updateGeometry()
+{
+    MenuButton * button = dynamic_cast<MenuButton*> (_item);
+    if(!button)
+    {
+        return;
+    }
+
+    if(_geode->getNumDrawables())
+    {
+	osgText::Text * text = dynamic_cast<osgText::Text*>(_geode->getDrawable(0));
+	if(text)
+	{
+	    if(text->getText().createUTF8EncodedString() != button->getText())
+	    {
+		text->setText(button->getText());
+		osg::BoundingBox bb = text->getBound();
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+		text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(0));
+		if(text)
+		{
+		    text->setText(button->getText());
+		}
+	    }
+	}
+	
+    }
+}
+
 void BoardMenuButtonGeometry::processEvent(InteractionEvent * event)
 {
     switch(event->type)
