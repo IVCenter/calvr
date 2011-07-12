@@ -14,7 +14,8 @@
       <ResourcesDirectory value="/home/z5-covise/covise/src/renderer/OpenCOVER/osgcaveui/resources" />
     </CUI>
       <Background r="0.0" g="0.0" b="0.0" /> 
-      <MultiThreaded value="CullDrawThreadPerContext" />
+      <!--MultiThreaded value="CullDrawThreadPerContext" /-->
+      <MultiThreaded value="SingleThreaded" />
       <SyncToVBlank value="ON"/>
 
       <LODScale value="0.1" />
@@ -40,7 +41,7 @@
 
     <Input>  
 
-      <NumHands value="2" />
+      <NumHands value="1" />
       <NumHeads value="1" />
 
       <Threaded value="true" />
@@ -71,14 +72,19 @@
         <Orientation h="0" p="-90" r="0" />
       </HeadDevice>
 
+      <HeadDevice2>
+        <Offset x="0" y="0" z="0" />
+	    <Orientation h="0" p="-90" r="180" />
+      </HeadDevice2>
+
       <HandDevice>
         <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="-90" r="0" />
+        <Orientation h="0" p="-90" r="180" />
       </HandDevice>
 
       <HandDevice2>
         <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="-90" r="0" />
+        <Orientation h="0" p="-90" r="180" />
       </HandDevice2>
 
       <DebugTracking value="RAW" />

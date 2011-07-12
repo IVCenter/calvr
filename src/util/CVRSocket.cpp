@@ -4,6 +4,8 @@
 #include <sstream>
 
 #include <errno.h>
+#include <cstdio>
+#include <cstring>
 
 #ifndef WIN32
 #include <netinet/in.h>

@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+
+<LOCAL host="pc101.cornea.vis.kaust.edu.sa,pc102.cornea.vis.kaust.edu.sa,pc103.cornea.vis.kaust.edu.sa,pc104.cornea.vis.kaust.edu.sa,pc105.cornea.vis.kaust.edu.sa,pc106.cornea.vis.kaust.edu.sa,pc107.cornea.vis.kaust.edu.sa,pc108.cornea.vis.kaust.edu.sa,pc109.cornea.vis.kaust.edu.sa,pc110.cornea.vis.kaust.edu.sa,pc111.cornea.vis.kaust.edu.sa,pc112.cornea.vis.kaust.edu.sa,pc113.cornea.vis.kaust.edu.sa,pc114.cornea.vis.kaust.edu.sa,pc115.cornea.vis.kaust.edu.sa,pc116.cornea.vis.kaust.edu.sa,pc117.cornea.vis.kaust.edu.sa,pc118.cornea.vis.kaust.edu.sa,pc119.cornea.vis.kaust.edu.sa,pc120.cornea.vis.kaust.edu.sa,pc121.cornea.vis.kaust.edu.sa,pc122.cornea.vis.kaust.edu.sa,pc123.cornea.vis.kaust.edu.sa,pc124.cornea.vis.kaust.edu.sa,pc125.cornea.vis.kaust.edu.sa,">
+
+<!-- enable or display master rendering -->
+      <RenderOnMaster value="true" />
+      <Stencil value="true" />
+      <PipeConfig>
+        <Pipe server="0" screen="0" name="0" />
+        <Pipe server="0" screen="1" name="1" />
+        <Pipe server="0" screen="2" name="2" />
+        <Pipe server="0" screen="3" name="3" />
+      </PipeConfig>
+
+      <Background r="0.0" g="0.0" b="0.0" /> 
+      <MultiThreaded value="false" />
+      <SyncToVBlank value="ON" device="DFP-1" />
+
+      <LODScale value="0.1" />
+
+      <FloorHeight value="-1524.0" />
+
+    <MultiPC>
+     <NumSlaves value="24" />   <!-- use 24 for all VL6 machines -->
+     <MasterInterface value="pc101.cornea.vis.kaust.edu.sa" />
+     <Startup arch="x11" value="ssh pc102 opencover \>\&amp; /tmp/errors.log" name="0" />
+     <Startup arch="x11" value="ssh pc103 opencover \>\&amp; /tmp/errors.log" name="1" />
+     <Startup arch="x11" value="ssh pc104 opencover \>\&amp; /tmp/errors.log" name="2" />
+     <Startup arch="x11" value="ssh pc105 opencover \>\&amp; /tmp/errors.log" name="3" />
+     <Startup arch="x11" value="ssh pc106 opencover \>\&amp; /tmp/errors.log" name="4" />
+     <Startup arch="x11" value="ssh pc107 opencover \>\&amp; /tmp/errors.log" name="5" />
+     <Startup arch="x11" value="ssh pc108 opencover \>\&amp; /tmp/errors.log" name="6" />
+     <Startup arch="x11" value="ssh pc109 opencover \>\&amp; /tmp/errors.log" name="7" />
+     <Startup arch="x11" value="ssh pc110 opencover \>\&amp; /tmp/errors.log" name="8" />
+     <Startup arch="x11" value="ssh pc111 opencover \>\&amp; /tmp/errors.log" name="9" />
+     <Startup arch="x11" value="ssh pc112 opencover \>\&amp; /tmp/errors.log" name="10" />
+     <Startup arch="x11" value="ssh pc113 opencover \>\&amp; /tmp/errors.log" name="11" />
+     <Startup arch="x11" value="ssh pc114 opencover \>\&amp; /tmp/errors.log" name="12" />
+     <Startup arch="x11" value="ssh pc115 opencover \>\&amp; /tmp/errors.log" name="13" />
+     <Startup arch="x11" value="ssh pc116 opencover \>\&amp; /tmp/errors.log" name="14" />
+     <Startup arch="x11" value="ssh pc117 opencover \>\&amp; /tmp/errors.log" name="15" />
+     <Startup arch="x11" value="ssh pc118 opencover \>\&amp; /tmp/errors.log" name="16" />  
+     <Startup arch="x11" value="ssh pc119 opencover \>\&amp; /tmp/errors.log" name="17" />
+     <Startup arch="x11" value="ssh pc120 opencover \>\&amp; /tmp/errors.log" name="18" />
+     <Startup arch="x11" value="ssh pc121 opencover \>\&amp; /tmp/errors.log" name="19" />
+     <Startup arch="x11" value="ssh pc122 opencover \>\&amp; /tmp/errors.log" name="20" />
+     <Startup arch="x11" value="ssh pc123 opencover \>\&amp; /tmp/errors.log" name="21" />
+     <Startup arch="x11" value="ssh pc124 opencover \>\&amp; /tmp/errors.log" name="22" />
+     <Startup arch="x11" value="ssh pc125 opencover \>\&amp; /tmp/errors.log" name="23" />
+    </MultiPC>
+
+    <Input>  
+
+      <NumHands value="1" />
+      <NumHeads value="1" />
+
+      <Threaded value="true" />
+
+      <ButtonSystem value="SHMEM" />
+      <TrackingSystem value="SHMEM" />
+<!--
+
+      <ButtonSystem value="MOUSE" />
+      <TrackingSystem value="MOUSE" />
+-->
+
+      <MouseNav value="ON" />
+
+      <HeadAddress value="0" />
+      <HandAddress value="1" />
+
+      <TrackingSystem>
+        <Offset x="0" y="0" z="-1524" />
+        <Orientation h="0" p="90" r="0" />
+      </TrackingSystem>
+
+      <HeadDevice>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="-90" r="0" />
+      </HeadDevice>
+
+      <HandDevice>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="-90" r="0" />
+      </HandDevice>
+    </Input>
+
+    <MenuSystem type="BOARDMENU" useHints="false">
+      <PrimaryHand value="0" />
+      <BoardMenu>
+        <Position distance="1500" />
+        <Scale value="1.0" />
+        <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+	<Trigger value="DOUBLECLICK" />
+	<OpenThreshold value="0.4" />
+      </BoardMenu>
+    </MenuSystem>
+ 
+    <!--Menu>
+      <Orientation h="0" p="0" r="0" />
+      <Position x="-400" y="1600" z="200" />
+      <Size value="1" />
+    </Menu-->
+
+    <SceneSize value="4000" />
+    <ViewerPosition x="0" y="-3000" z="300" />
+    <ShowAxis value="off" />
+    <Freeze value="off" />
+
+<!--
+
+    <Lights>
+
+     <Sun>
+        <Specular value="on" r="1.0" g="1.0" b="1.0" />
+        <Diffuse value="on" r="1.0" g="1.0" b="1.0" />
+        <Ambient value="on" r="0.3" g="0.3" b="0.3" />
+        <Position value="on" x="0.0" y="0.0" z="1.0" w="0.0" />
+        <Spot value="on" x="0.0" y="0.0" z="1.0" expo="0.0" angle="180.0" />
+      </Sun>
+      <Light1>
+        <Specular value="on" r="1.0" g="1.0" b="1.0" />
+        <Diffuse value="on" r="1.0" g="1.0" b="1.0" />
+        <Ambient value="on" r="0.3" g="0.3" b="0.3" />
+        <Position value="on" x="0.0" y="-1.0" z="0.2" w="0.0" />
+        <Spot value="on" x="0.0" y="0.0" z="1.0" expo="0.0" angle="180.0" />
+      </Light1>
+      <Light2>
+        <Specular value="on" r="1.0" g="1.0" b="1.0" />
+        <Diffuse value="on" r="1.0" g="1.0" b="1.0" />
+        <Ambient value="on" r="0.3" g="0.3" b="0.3" />
+        <Position value="on" x="-1.0" y="-0.1" z="0.0" w="0.0" />
+        <Spot value="on" x="0.0" y="0.0" z="1.0" expo="0.0" angle="180.0" />
+      </Light2> 
+
+    </Lights>
+
+-->
+
+    <Plugin>
+      <!-- Audio Plugins using Asset Manager -->
+        <AudioAssetManager>
+          <ServerAddress value="192.168.5.163" />
+          <ServerPortTCP value="15002" />
+          <ServerPortUDP value="15003" />
+        </AudioAssetManager>
+
+
+
+    </Plugin>
+ </LOCAL>
+
+ <LOCAL host="pc101.cornea.vis.kaust.edu.sa" >
+   <NumPipes value="1" />
+   <NumScreens value="1" />
+   <NumWindows value="1" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen originX="0" originY="0" originZ="0" width="3840" height="2160" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <INCLUDE>cornea-screens.xml</INCLUDE>
