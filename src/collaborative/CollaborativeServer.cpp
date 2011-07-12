@@ -2,6 +2,8 @@
 #include <util/MultiListenSocket.h>
 #include <util/CVRSocket.h>
 
+#include <osg/ArgumentParser>
+
 #include <iostream>
 
 using namespace cvr;
@@ -764,7 +766,27 @@ void CollaborativeMessage::unref()
 
 int main(int argc, char ** argv)
 {
-    CollaborativeServer * cs = new CollaborativeServer(11050);
+    osg::ArgumentParser ap(&argc,argv);
+
+    ap.getApplicationUsage()->setApplicationName(ap.getApplicationName());
+    ap.getApplicationUsage()->setDescription(ap.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    ap.getApplicationUsage()->setCommandLineUsage(ap.getApplicationName()+" [options]");
+    ap.getApplicationUsage()->addCommandLineOption("--port <port number>","Set port to listen on, default: 11050");
+    ap.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
+
+    if(ap.read("-h") || ap.read("--help"))
+    {
+	ap.getApplicationUsage()->write(std::cout);
+	return 0;
+    }
+
+    int port;
+    if(!ap.read("--port", port))
+    {
+	port = 11050;
+    }
+
+    CollaborativeServer * cs = new CollaborativeServer(port);
     if(!cs->init())
     {
 	return 0;

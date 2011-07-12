@@ -24,6 +24,7 @@ class CollaborativeManager;
 class MenuManager;
 class FileHandler;
 class PluginManager;
+class ThreadedLoader;
 
 /**
  * @brief Main class for the CalVR framework.  Sets up all other core classes 
@@ -72,6 +73,7 @@ class CalVR
         MenuManager * _menu;
         FileHandler * _file;
         PluginManager * _plugins;
+        ThreadedLoader * _threadedLoader;
 };
 
 }

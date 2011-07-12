@@ -14,6 +14,7 @@ class BoardMenuButtonGeometry : public BoardMenuGeometry
 
         virtual void selectItem(bool on);
         virtual void createGeometry(MenuItem * item);
+        virtual void updateGeometry();
 
         virtual void processEvent(InteractionEvent * event);
 

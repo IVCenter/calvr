@@ -12,6 +12,7 @@
 #include <kernel/PluginManager.h>
 #include <kernel/InteractionManager.h>
 #include <kernel/Navigation.h>
+#include <kernel/ThreadedLoader.h>
 
 #include <osgViewer/ViewerEventHandlers>
 
@@ -35,6 +36,7 @@ CalVR::CalVR()
     _menu = NULL;
     _file = NULL;
     _plugins = NULL;
+    _threadedLoader = NULL;
     _myPtr = this;
 }
 	
@@ -51,6 +53,10 @@ CalVR::~CalVR()
     if(_menu)
     {
 	delete _menu;
+    }
+    if(_threadedLoader)
+    {
+	delete _threadedLoader;
     }
     if(_collaborative)
     {
@@ -148,6 +154,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     _collaborative = cvr::CollaborativeManager::instance();
     _collaborative->init();
 
+    _threadedLoader = cvr::ThreadedLoader::instance();
+
     std::string commandLineFile;
 
     // TODO: do this better
@@ -214,6 +222,7 @@ void CalVR::run()
         _screens->computeViewProj();
         _screens->updateCamera();
 	_collaborative->update();
+	_threadedLoader->update();
         _plugins->preFrame();
         _viewer->updateTraversal();
         _viewer->renderingTraversals();
