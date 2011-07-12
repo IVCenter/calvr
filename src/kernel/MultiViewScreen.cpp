@@ -15,6 +15,12 @@
 #include <iostream>
 #include <fstream>
 using namespace cvr;
+
+cvr::MenuCheckbox *MultiViewScreen::_debug_mode = NULL;
+cvr::MenuCheckbox *MultiViewScreen::_align_head = NULL;
+cvr::SubMenu *MultiViewScreen::_mvs_menu = NULL;
+cvr::MenuRangeValue *MultiViewScreen::_fov_dial = NULL;
+
 MultiViewScreen::MultiViewScreen() : ScreenBase()
 {
 }
@@ -32,14 +38,22 @@ void MultiViewScreen::init(int mode)
 
     computeScreenInfoXZ();
 
-    _mvs_menu = new SubMenu("MultiViewScreen", "MultiViewScreen");
+    if(_debug_mode == NULL)
+	_debug_mode = new MenuCheckbox("Debug Mode", true);
 
-    _debug_mode = new MenuCheckbox("Debug Mode", false);
-    _align_head = new MenuCheckbox("Align Head", false);
-    _fov_dial = new MenuRangeValue("Field of View", 1, 180, 120, 1.0);
-    _mvs_menu->addItem(_debug_mode);
-    _mvs_menu->addItem(_align_head);
-    _mvs_menu->addItem(_fov_dial);
+    if(_align_head == NULL)
+	_align_head = new MenuCheckbox("Align Head", false);
+
+    if(_fov_dial == NULL)
+	_fov_dial = new MenuRangeValue("Field of View", 1, 180, 120, 1.0);
+
+    if(_mvs_menu == NULL) {
+	_mvs_menu = new SubMenu("MultiViewScreen", "MultiViewScreen");
+	_mvs_menu->addItem(_debug_mode);
+	_mvs_menu->addItem(_align_head);
+	_mvs_menu->addItem(_fov_dial);
+    }
+
 
     //number of times to render per eye
     _num_render = 3;
@@ -143,7 +157,7 @@ void MultiViewScreen::updateCamera() {
 	    _cameras[i]->setViewMatrix(_stereoCallbacks[i]->_viewRight);
 	    _cameras[i]->setProjectionMatrix(_stereoCallbacks[i]->_projRight);
 	} else {
-	    std::cout << "Only LEFT_EYE and RIGHT_EYE are supported" << std::endl;
+	    std::cerr << "Only LEFT_EYE and RIGHT_EYE are supported.\n";
 	    exit(0);
 	}
     }
@@ -206,30 +220,12 @@ bool MultiViewScreen::handleLineScreenIntersection(IntersectionPlane & plane)
 	plane.t_bottom);
 
     plane.hit_left = lineSegmentIntersection2D_XZ(xz_point, xz_dir,
-	_screenInfoXZ->top_left, _screenInfoXZ->bottom_left,
+	_screenInfoXZ->bottom_left, _screenInfoXZ->top_left,
 	plane.t_left);
 
     plane.hit_right = lineSegmentIntersection2D_XZ(xz_point, xz_dir,
-	_screenInfoXZ->top_right, _screenInfoXZ->bottom_right,
+	_screenInfoXZ->bottom_right, _screenInfoXZ->top_right,
 	plane.t_right);
-
-    // if hits corner of screen, make it as if it hits the top of the
-    // screen for better performance
-    if(plane.hit_left) {
-	if(plane.hit_top && fabs(plane.t_top - plane.t_left) < EPSILON)
-	    plane.hit_left = false;
-	else if(plane.hit_bottom &&
-		fabs(plane.t_bottom - plane.t_left) < EPSILON)
-	    plane.hit_left = false;
-    }
-
-    if(plane.hit_right) {
-	if(plane.hit_top && fabs(plane.t_top - plane.t_right) < EPSILON)
-	    plane.hit_right = false;
-	else if(plane.hit_bottom &&
-		fabs(plane.t_bottom - plane.t_right) < EPSILON)
-	    plane.hit_right = false;
-    }
 
     plane.t_top = plane.t_top * 2.0 - 1.0;
     plane.t_bottom = plane.t_bottom * 2.0 - 1.0;
@@ -240,42 +236,109 @@ bool MultiViewScreen::handleLineScreenIntersection(IntersectionPlane & plane)
 	plane.hit_left;
 }
 
-void MultiViewScreen::stencilOutView(const IntersectionPlane & l_p,
-	const IntersectionPlane & r_p, GLint ref, GLuint mask,
-	GLuint write_mask) const {
+void MultiViewScreen::stencilOutView(const CameraOrient &cam,
+	IntersectionPlane & l_p, IntersectionPlane & r_p,
+	GLint ref, GLuint mask, GLuint write_mask) const {
     std::vector<osg::Vec3f> list_of_points;
     //add all hit points into a list
     if(l_p.hit_left) {
-	list_of_points.push_back(osg::Vec3f(T_MIN, l_p.t_left, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		_myInfo->width / -2.0f, 0,
+		l_p.t_left * _myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(T_MIN, l_p.t_left, T_MIN));
+	else
+	    l_p.hit_left = false;
     }
 
     if(l_p.hit_right) {
-	list_of_points.push_back(osg::Vec3f(T_MAX, l_p.t_right, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		_myInfo->width / 2.0f, 0,
+		l_p.t_right * _myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(T_MAX, l_p.t_right, T_MIN));
+	else
+	    l_p.hit_right = false;
     }
 
     if(l_p.hit_top) {
-	list_of_points.push_back(osg::Vec3f(l_p.t_top, T_MAX, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		l_p.t_top * _myInfo->width / 2.0f, 0,
+		_myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(l_p.t_top, T_MAX, T_MIN));
+	else
+	    l_p.hit_top = false;
     }
 
     if(l_p.hit_bottom) {
-	list_of_points.push_back(osg::Vec3f(l_p.t_bottom, T_MIN, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		l_p.t_bottom * _myInfo->width / 2.0f, 0,
+		_myInfo->height / -2.0f)))
+	    list_of_points.push_back(osg::Vec3f(l_p.t_bottom, T_MIN, T_MIN));
+	else
+	    l_p.hit_bottom = false;
     }
 
     if(r_p.hit_left) {
-	list_of_points.push_back(osg::Vec3f(T_MIN, r_p.t_left, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		_myInfo->width / -2.0f, 0,
+		r_p.t_left * _myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(T_MIN, r_p.t_left, T_MIN));
+	else
+	    r_p.hit_left = false;
     }
 
     if(r_p.hit_right) {
-	list_of_points.push_back(osg::Vec3f(T_MAX, r_p.t_right, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		_myInfo->width / 2.0f, 0,
+		r_p.t_right * _myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(T_MAX, r_p.t_right, T_MIN));
+	else
+	    r_p.hit_right = false;
     }
 
     if(r_p.hit_top) {
-	list_of_points.push_back(osg::Vec3f(r_p.t_top, T_MAX, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		r_p.t_top * _myInfo->width / 2.0f, 0,
+		_myInfo->height / 2.0f)))
+	    list_of_points.push_back(osg::Vec3f(r_p.t_top, T_MAX, T_MIN));
+	else
+	    r_p.hit_top = false;
     }
 
     if(r_p.hit_bottom) {
-	list_of_points.push_back(osg::Vec3f(r_p.t_bottom, T_MIN, T_MIN));
+	if(IsInsideOfPlane(cam.eye, cam.viewDir, osg::Vec3f(
+		r_p.t_bottom * _myInfo->width / 2.0f, 0,
+		_myInfo->height / -2.0f)))
+	    list_of_points.push_back(osg::Vec3f(r_p.t_bottom, T_MIN, T_MIN));
+	else
+	    r_p.hit_bottom = false;
     }
+
+    if(list_of_points.empty() || list_of_points.size() < 2)
+	return;
+
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_EQUAL, ref, mask);
+    glStencilMask(write_mask);
+
+    /* super corner case: This will fix it but cause second row of starCave
+     * to have issues.
+    if(
+	    list_of_points.size() == 2 && l_p.hit_left && l_p.hit_bottom)) {
+	list_of_points.push_back(osg::Vec3f(T_MIN, T_MIN, T_MIN));
+	MultiViewScreen::sortXYPolarStartRight(list_of_points);
+	fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
+	    list_of_points.at(2));
+	return;
+    } else if(
+	    list_of_points.size() == 2 && r_p.hit_right &&
+	    r_p.hit_bottom) {
+	list_of_points.push_back(osg::Vec3f(T_MAX, T_MIN, T_MIN));
+	MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+	fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
+	    list_of_points.at(2));
+	return;
+    }
+    */
 
     /*
      * Three ways to intersect XZ plane
@@ -294,8 +357,10 @@ void MultiViewScreen::stencilOutView(const IntersectionPlane & l_p,
      */
     std::vector<int> lp_list;
     std::vector<int> rp_list;
+
     IsInLeftView(l_p, lp_list);
     IsInRightView(r_p, rp_list);
+
     if(!lp_list.empty() && !rp_list.empty()) {
 	std::vector<int> final_list;
 	std::sort(lp_list.begin(), lp_list.end(),
@@ -322,12 +387,87 @@ void MultiViewScreen::stencilOutView(const IntersectionPlane & l_p,
     if(list_of_points.empty())
 	return;
 
-    MultiViewScreen::sortToXZ(list_of_points);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilFunc(GL_EQUAL, ref, mask);
-    glStencilMask(write_mask);
+    MultiViewScreen::sortXYPolarStartRight(list_of_points);
 
-    if(list_of_points.size() == 3) {
+std::cerr << l_p.hit_left << " " << l_p.hit_right << " " << l_p.hit_top <<
+" " << l_p.hit_bottom << " " << list_of_points.size() << " " <<
+r_p.hit_left << " " << r_p.hit_right << " " << r_p.hit_top <<
+" " << r_p.hit_bottom << std::endl;
+
+
+    if(list_of_points.size() == 2) {
+	/* 1) Both left and right plane hits only top or bottom.
+	 * 2) Left and right only hit one side respectively to their name.
+	 * 3) One hits the top/bottom while the other hits the left/right.
+	 */
+	double t_hit = 0;
+	osg::Vec3f dist = cam.up * 10000;
+	osg::Vec3f result_point(0,0,0);
+
+	if(LinePlaneIntersection(cam.eye - dist, cam.eye + dist,
+		osg::Vec3f(0,0,0), osg::Vec3f(0, -1, 0),
+		result_point, t_hit)) {
+	    result_point.x() = result_point.x() / (_myInfo->width / 2.0);
+	    result_point.y() = result_point.z() / (_myInfo->height / 2.0);
+	    result_point.z() = T_MIN;
+
+	    if((l_p.hit_top && r_p.hit_top) ||
+		    (l_p.hit_bottom && r_p.hit_bottom) ||
+		    (l_p.hit_left && r_p.hit_left) ||
+		    (l_p.hit_right && r_p.hit_right)) {
+		list_of_points.push_back(result_point);
+
+		MultiViewScreen::sortXYPolarStartRight(list_of_points);
+		fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
+		    list_of_points.at(2));
+	    } else if(l_p.hit_left && r_p.hit_right) {
+		list_of_points.push_back(result_point);
+
+		if((_screenInfoXZ->normal * cam.up) >= 0.0) {
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MAX, T_MIN));
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MAX, T_MIN));
+		} else {
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MIN, T_MIN));
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MIN, T_MIN));
+		}
+		MultiViewScreen::sortXYPolarStartRight(list_of_points);
+
+		fullscreenTriangle(list_of_points.at(0),
+		    list_of_points.at(1), list_of_points.at(2));
+		fullscreenQuad(list_of_points.at(2),
+		    list_of_points.at(3), list_of_points.at(4),
+		    list_of_points.at(0));
+	    } else {
+		if(l_p.hit_left && r_p.hit_top) {
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MAX, T_MIN));
+		    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+		} else if(l_p.hit_top && r_p.hit_right) {
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MAX, T_MIN));
+		    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+		} else if(l_p.hit_left && r_p.hit_bottom) {
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MIN, T_MIN));
+		    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+		} else if(l_p.hit_bottom && r_p.hit_right) {
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MIN, T_MIN));
+		    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+		} else if(l_p.hit_top && r_p.hit_bottom) {
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MAX, T_MIN));
+		    list_of_points.push_back(osg::Vec3f(T_MIN, T_MIN, T_MIN));
+		    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+		} else if(l_p.hit_bottom && r_p.hit_top) {
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MAX, T_MIN));
+		    list_of_points.push_back(osg::Vec3f(T_MAX, T_MIN, T_MIN));
+		    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+		}
+
+		for(unsigned idx = 0; idx < list_of_points.size() - 1;
+			++idx) {
+		    fullscreenTriangle(result_point, list_of_points.at(idx),
+			list_of_points.at(idx + 1));
+		}
+	    }
+	}
+    } else if(list_of_points.size() == 3) {
 	fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
 	    list_of_points.at(2));
     } else if(list_of_points.size() == 4) {
@@ -349,7 +489,8 @@ void MultiViewScreen::stencilOutView(const IntersectionPlane & l_p,
 bool MultiViewScreen::IsInsideOfFrustum(const CameraOrient &cam,
 	const osg::Vec3f &p) const {
     return IsInsideOfPlane(cam.leftPlanePoint, cam.leftPlaneNormal, p) &&
-	IsInsideOfPlane(cam.rightPlanePoint, cam.rightPlaneNormal, p);
+	IsInsideOfPlane(cam.rightPlanePoint, cam.rightPlaneNormal, p) &&
+	IsInsideOfPlane(cam.eye, cam.viewDir, p);
 }
 
 bool MultiViewScreen::handleCameraScreenIntersection(const CameraOrient &
@@ -363,6 +504,15 @@ bool MultiViewScreen::handleCameraScreenIntersection(const CameraOrient &
     bool do_intersection = false;
 
     //need to take care of case where screen is completely inside view
+    if(top_left_in && bottom_left_in && top_right_in && bottom_right_in) {
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_EQUAL, ref, mask);
+	glStencilMask(write_mask);
+
+	fullscreenQuad(osg::Vec3f(-1,1,-1), osg::Vec3f(-1,-1,-1),
+	    osg::Vec3f(1,-1,-1), osg::Vec3f(1,1,-1));
+	do_intersection = true;
+    } else {
 	IntersectionPlane left, right;
 
 	//optimization to avoid else-statements
@@ -389,18 +539,8 @@ bool MultiViewScreen::handleCameraScreenIntersection(const CameraOrient &
 	    do_intersection = handleLineScreenIntersection(right);
 	}
 
-    if(!do_intersection && top_left_in && bottom_left_in && top_right_in && bottom_right_in) {
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_EQUAL, ref, mask);
-	glStencilMask(write_mask);
-
-	fullscreenQuad(osg::Vec3f(-1,1,-1), osg::Vec3f(-1,-1,-1),
-	    osg::Vec3f(1,-1,-1), osg::Vec3f(1,1,-1));
-	do_intersection = true;
-    } else {
-
 	if(do_intersection)
-	    stencilOutView(left, right, ref, mask, write_mask);
+	    stencilOutView(cam, left, right, ref, mask, write_mask);
     }
     return do_intersection;
 }
@@ -472,18 +612,17 @@ void MultiViewScreen::debugStencilBuffer(GLint x, GLint y, GLsizei w,
 
 void MultiViewScreen::PreDrawCallback::operator()(osg::RenderInfo & ri)
 	const {
-//    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
-std::cout << "Okay 1" << std::endl;
-    static float fov = screen->_fov_dial->getValue();
+    static float fov = 120;// * 0.5 * M_PI / 180.0;//screen->_fov_dial->getValue();
     //PreDrawCallbacks have no state
     glViewport((GLint)screen->_myInfo->myChannel->left,
 	(GLint)screen->_myInfo->myChannel->bottom,
 	(GLsizei)screen->_myInfo->myChannel->width,
 	(GLsizei)screen->_myInfo->myChannel->height);
-std::cout << "Okay 2" << std::endl;
     if(render_state == 0) {
-	std::cout << (fov = screen->_fov_dial->getValue()) << std::endl;
-
+	/*
+	if(osg::DisplaySettings::LEFT_EYE == screen->_stereoMode)
+	    fov = screen->_fov_dial->getValue();
+*/
 	CameraOrient cam0, cam1;
 	glEnable(GL_STENCIL_TEST);
 
@@ -504,7 +643,7 @@ std::cout << "Okay 2" << std::endl;
 		screen->_myInfo->myChannel->width /
 		screen->_myInfo->myChannel->height, cam1);
 	screen->cameraToScreenSpace(cam1);
-std::cout << "Okay 3" << std::endl;
+
 	//set up stencil buffer and extract section that is shared
 	screen->setupZones(cam0, cam1);
 
@@ -513,7 +652,7 @@ std::cout << "Okay 3" << std::endl;
 
 	//each viewer has it's own stencil value
 	glStencilFunc(GL_EQUAL, render_state + 1, STENCIL_MASK_ALL);
-std::cout << "Okay 4" << std::endl;
+
 	//Do not change any stencil value
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     } else if(render_state < screen->_num_render) {
@@ -524,5 +663,5 @@ std::cout << "Okay 4" << std::endl;
 	glStencilFunc(GL_EQUAL, render_state + 1, STENCIL_MASK_ALL);
     }
     ri.getCurrentCamera()->setClearMask(0);
-std::cout << "Okay 5" << std::endl;
+
 }

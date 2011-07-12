@@ -64,6 +64,22 @@ typedef struct IntersectionPlane_t {
 	t_right;	// intersection at the right of the XZ plane
 } IntersectionPlane;
 
+bool LinePlaneIntersection(const osg::Vec3f &line_point_start,
+	const osg::Vec3f &line_point_end, const osg::Vec3f &point_on_plane,
+	const osg::Vec3f &normal_of_plane, osg::Vec3f &i_point,
+	double &t_hit) const {
+    float denom = normal_of_plane * (line_point_end - line_point_start);
+
+    if(fabs(denom) < EPSILON)
+	return false;
+
+    t_hit = normal_of_plane * (point_on_plane - line_point_start) / denom;
+
+    i_point = line_point_start + (line_point_end - line_point_start) * t_hit;
+
+    return true;
+}
+
 bool planePlaneIntersection(const osg::Vec3f &p0, const osg::Vec3f &n0,
 	const osg::Vec3f &p1, const osg::Vec3f &n1,
 	osg::Vec3f &point, osg::Vec3f &direction) const {
@@ -156,7 +172,7 @@ static bool IsInsideOfPlane(const osg::Vec3f plane_position,
     return ((plane_normal * point) + d) > 0.0;
 }
 
-static double toPolar(const osg::Vec3f & v) {
+static double toPolarStartRight(const osg::Vec3f &v) {
     //default is quadrant one
     double ret = atan(v.y() / v.x()) * 180.0 / osg::PI;
 
@@ -168,6 +184,37 @@ static double toPolar(const osg::Vec3f & v) {
 	ret += 360.0;
 
     return ret;
+}
+
+static double toPolarStartLeft(const osg::Vec3f & v) {
+    double t0, t1, t3, t4;
+
+    t3 = fabs(v.x());
+    t1 = fabs(v.y());
+    t0 = std::max(t3, t1);
+    t1 = std::min(t3, t1);
+    t3 = 1.0 / t0;
+    t3 = t1 * t3;
+
+    t4 = t3 * t3;
+    t0 = -0.013480470;
+    t0 = t0 * t4 + 0.057477314;
+    t0 = t0 * t4 - 0.121239071;
+    t0 = t0 * t4 + 0.195635925;
+    t0 = t0 * t4 - 0.332994597;
+    t0 = t0 * t4 + 0.999995630;
+    t3 = t0 * t3;
+
+    if(fabs(v.y()) > fabs(v.x()))
+	t3 = 1.570796327 - t3;
+
+    if(v.x() < 0)
+	t3 = 3.141592654 - t3;
+
+    if(v.y() < 0)
+	t3 = -t3;
+
+    return t3;
 }
 
 void IsInLeftView(const IntersectionPlane & p,
@@ -268,27 +315,49 @@ static bool sort_by_int(const int & a, const int & b) {
     return a < b;
 }
 
-static bool sort_by_polar(const osg::Vec3f & a, const osg::Vec3f b) {
-    return MultiViewScreen::toPolar(a) < MultiViewScreen::toPolar(b);
+static bool sort_by_polar_start_left(const osg::Vec3f & a,
+	const osg::Vec3f b) {
+    return MultiViewScreen::toPolarStartLeft(a) <
+	MultiViewScreen::toPolarStartLeft(b);
 }
 
-static void sortToXZ(std::vector<osg::Vec3f> & list) {
-    sort(list.begin(), list.end(), MultiViewScreen::sort_by_polar);
+static bool sort_by_polar_start_right(const osg::Vec3f & a,
+	const osg::Vec3f b) {
+    return MultiViewScreen::toPolarStartRight(a) <
+	MultiViewScreen::toPolarStartRight(b);
+}
+
+static void sortXYPolarStartLeft(std::vector<osg::Vec3f> & list) {
+    sort(list.begin(), list.end(),
+	MultiViewScreen::sort_by_polar_start_left);
+}
+
+static void sortXYPolarStartRight(std::vector<osg::Vec3f> & list) {
+    sort(list.begin(), list.end(),
+	MultiViewScreen::sort_by_polar_start_right);
 }
 
 void extractViewerMat(const osg::Matrixd &viewerMat, osg::Vec3f &eye,
 	osg::Vec3f &viewDir, osg::Vec3f &up) const {
+    //IMPORTANT
+    //THE TRANSFORMATION PROVIDED TO THIS FUNCTION _myInfo->transform
+    //IS NOT SCALE INVARIANT.
+    //Multiply the transform by a osg::Vec3f, which the function will
+    //fill in the fourth coordinate as ONE, to retrieve a position.
+    //Use that position and the eye coordinate to get the view direction.
     eye = viewerMat.getTrans();
 
-    osg::Vec4 viewDir4 = osg::Vec4(0, 1, 0, 0) * viewerMat;
-    osg::Vec4 upDir4(0,0,1,0);
-
     if(!_align_head->getValue()) {
-	upDir4 = osg::Vec4(0,0,1,0) * viewerMat;
+	viewDir = osg::Vec3(0,1,0) * viewerMat;
+	up = osg::Vec3(0,0,1) * viewerMat;
+	viewDir = viewDir - eye;
+	up = up - eye;
+    } else {
+	viewDir = (osg::Vec3(0,1,0) * viewerMat) - eye;
+	viewDir.z() = 0;
+	viewDir.normalize();
+	up = osg::Vec3f(0,0,1);
     }
-
-    viewDir = osg::Vec3f(viewDir4.x(), viewDir4.y(), viewDir4.z());
-    up = osg::Vec3f(upDir4.x(), upDir4.y(), upDir4.z());
 
     viewDir.normalize();
     up.normalize();
@@ -302,7 +371,7 @@ void extractLRPlanes(const osg::Matrixd &viewerMat, float fov,
 
     extractViewerMat(viewerMat, cam.eye, cam.viewDir, cam.up);
 
-    float Hfar = 2 * tan(fov / 2.0) * farDist;
+    float Hfar = 2 * tan(fov) * farDist;
     float Wfar = Hfar * ratio;
 
     osg::Vec3f vRight = cam.viewDir ^ cam.up;
@@ -325,23 +394,47 @@ void extractLRPlanes(const osg::Matrixd &viewerMat, float fov,
 }
 
 void cameraToScreenSpace(CameraOrient & cam) const {
-    cam.eye = cam.eye * _screenInfoXZ->inv_transform;
+    //get camera position in screen space
+    osg::Vec3f eye = cam.eye * _screenInfoXZ->inv_transform;
 
-    cam.viewDir = cam.viewDir * _screenInfoXZ->inv_transform;
+    //IMPORTANT: TRANSFORMATION MATRIX IS NOT SCALE INVARIANT
+    //SO REPRESENT ALL VECTORS AS TWO POINTS
+    //translate the view direction using points into screen space
+    //to be scale invariant
+    osg::Vec3f viewDir = (cam.viewDir + cam.eye) *
+	_screenInfoXZ->inv_transform;
+    cam.viewDir = viewDir - eye;
     cam.viewDir.normalize();
 
-    cam.up = cam.up * _screenInfoXZ->inv_transform;
+    //do same thing with up direction
+    osg::Vec3f up  = (cam.up + cam.eye) * _screenInfoXZ->inv_transform;
+    cam.up = up - eye;
     cam.up.normalize();
 
-    cam.leftPlaneNormal = _myInfo->transform * cam.leftPlaneNormal;
-    cam.leftPlaneNormal.normalize();
-    cam.leftPlanePoint = cam.leftPlanePoint *
+    //origin of left plane in screen space
+    osg::Vec3f leftPlanePoint = cam.leftPlanePoint *
 	_screenInfoXZ->inv_transform;
 
-    cam.rightPlaneNormal = _myInfo->transform * cam.rightPlaneNormal;
-    cam.rightPlaneNormal.normalize();
-    cam.rightPlanePoint = cam.rightPlanePoint *
+    //normal vector of plane in screen space
+    osg::Vec3f leftPlaneNormal = (cam.leftPlanePoint +
+	cam.leftPlaneNormal) * _screenInfoXZ->inv_transform;
+    cam.leftPlaneNormal = leftPlaneNormal - leftPlanePoint;
+    cam.leftPlaneNormal.normalize();
+
+    //origin of right plane in screen space
+    osg::Vec3f rightPlanePoint = cam.rightPlanePoint *
 	_screenInfoXZ->inv_transform;
+
+    //normal vector of right plane in screen space
+    osg::Vec3f rightPlaneNormal = (cam.rightPlanePoint +
+	cam.rightPlaneNormal) * _screenInfoXZ->inv_transform;
+    cam.rightPlaneNormal = rightPlaneNormal - rightPlanePoint;
+    cam.rightPlaneNormal.normalize();
+
+    //update positions
+    cam.eye = eye;
+    cam.leftPlanePoint = leftPlanePoint;
+    cam.rightPlanePoint = rightPlanePoint;
 }
 
 void fullscreenQuad(const osg::Vec3f &p0, const osg::Vec3f &p1,
@@ -457,9 +550,9 @@ void fullscreenTriangle(const osg::Vec3f &p0, const osg::Vec3f &p1,
 	void computeScreenInfoXZ();
     	void createCameras(unsigned int quantity);
     	bool handleLineScreenIntersection(IntersectionPlane & plane) const;
-	void stencilOutView(const IntersectionPlane & l_p,
-		const IntersectionPlane & r_p, GLint ref, GLuint mask,
-		GLuint write_mask) const;
+	void stencilOutView(const CameraOrient & cam,
+	    IntersectionPlane & l_p, IntersectionPlane & r_p,
+	    GLint ref, GLuint mask, GLuint write_mask) const;
 	bool IsInsideOfFrustum(const CameraOrient &cam,
 	    const osg::Vec3f &p) const;
 	bool handleCameraScreenIntersection(const CameraOrient & cam,
@@ -474,9 +567,9 @@ void fullscreenTriangle(const osg::Vec3f &p0, const osg::Vec3f &p1,
         std::vector<PreDrawCallback * > _preCallbacks;
         std::vector<StereoCallback * > _stereoCallbacks;
 
-	cvr::MenuCheckbox *_debug_mode, *_align_head;
-	cvr::SubMenu *_mvs_menu;
-	cvr::MenuRangeValue *_fov_dial;
+	static cvr::MenuCheckbox *_debug_mode, *_align_head;
+	static cvr::SubMenu *_mvs_menu;
+	static cvr::MenuRangeValue *_fov_dial;
 };
 }
 
