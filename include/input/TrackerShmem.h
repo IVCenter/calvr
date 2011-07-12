@@ -9,6 +9,8 @@
 
 #ifdef WIN32
 typedef unsigned int uint32_t;
+#else
+#include <stdint.h>
 #endif
 
 namespace cvr
