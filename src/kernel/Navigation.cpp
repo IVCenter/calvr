@@ -2,6 +2,7 @@
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
+#include <kernel/ScreenConfig.h>
 
 #include <iostream>
 #include <cmath>
@@ -109,10 +110,10 @@ void Navigation::processEvent(InteractionEvent * iEvent)
 	{
 	    return;
 	}
-	MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
+	//MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
 
-	if(mi)
-	{
+	//if(mi)
+	//{
 	    MouseInteractionEvent mie;
 
 	    if(iEvent->type == BUTTON_DOWN)
@@ -124,12 +125,12 @@ void Navigation::processEvent(InteractionEvent * iEvent)
 		mie.type = MOUSE_BUTTON_UP;
 	    }
 
-	    mie.x = mi->x;
-	    mie.y = mi->y;
+	    mie.x = InteractionManager::instance()->getMouseX();
+	    mie.y = InteractionManager::instance()->getMouseY();
 	    mie.transform = InteractionManager::instance()->getMouseMat();
 
 	    processMouseEvent(&mie);
-	}
+	//}
 
 	return;
     }
@@ -398,9 +399,9 @@ void Navigation::processMouseNav(NavMode nm)
         case WALK:
         case DRIVE:
         {
-            MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
-            float xOffset = mi->x - _eventX;
-            float yOffset = mi->y - _eventY;
+            //MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
+            float xOffset = InteractionManager::instance()->getMouseX() - _eventX;
+            float yOffset = InteractionManager::instance()->getMouseY() - _eventY;
 
             osg::Matrix m;
             m.makeRotate(xOffset / 7000.0, osg::Vec3(0, 0, 1));
@@ -460,15 +461,23 @@ void Navigation::processMouseNav(NavMode nm)
         }
         case MOVE_WORLD:
         {
-            MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
+	    //TODO use screen transform in trackball calc
+            //MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
+	    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+
+	    if(!si)
+	    {
+		break;
+	    }
+
 #ifndef WIN32
-            float vwidth = std::min(mi->viewportX, mi->viewportY);
+            float vwidth = std::min(si->myChannel->width, si->myChannel->height);
 #else
-			float vwidth = min(mi->viewportX, mi->viewportY);
+			float vwidth = min(si->myChannel->width, si->myChannel->height);
 #endif
 
-            float widthOffset = (mi->viewportX - vwidth) / 2.0;
-            float heightOffset = (mi->viewportY - vwidth) / 2.0;
+            float widthOffset = (si->myChannel->width - vwidth) / 2.0;
+            float heightOffset = (si->myChannel->height - vwidth) / 2.0;
 
             float x, y, z;
 
@@ -505,8 +514,8 @@ void Navigation::processMouseNav(NavMode nm)
             osg::Vec3 originalPos = osg::Vec3(x, y, z);
             originalPos.normalize();
 
-            currentX = mi->x - widthOffset;
-            currentY = mi->y - heightOffset;
+            currentX = InteractionManager::instance()->getMouseX() - widthOffset;
+            currentY = InteractionManager::instance()->getMouseY() - heightOffset;
 
             if(currentX < 0)
             {
@@ -540,22 +549,40 @@ void Navigation::processMouseNav(NavMode nm)
             osg::Vec3 rotAxis = originalPos ^ currentPos;
             float angle = acos(originalPos * currentPos);
 
+	    osg::Vec3 screenCenter = si->xyz;
+
+	    if(si->myChannel->stereoMode == "HMD")
+	    {
+		screenCenter = screenCenter * TrackingManager::instance()->getHeadMat(si->myChannel->head);
+	    }
+
             osg::Matrix objmat =
                     SceneManager::instance()->getObjectTransform()->getMatrix();
             objmat = (objmat
-                    * osg::Matrix::translate(-mi->screenCenter)
+                    * osg::Matrix::translate(-screenCenter)
                     * osg::Matrix::rotate(angle, rotAxis)
-                    * osg::Matrix::translate(mi->screenCenter));
+                    * osg::Matrix::translate(screenCenter));
 	    SceneManager::instance()->setObjectMatrix(objmat);
-            _eventX = mi->x;
-            _eventY = mi->y;
+            _eventX = InteractionManager::instance()->getMouseX();
+            _eventY = InteractionManager::instance()->getMouseY();
             break;
         }
         case SCALE:
         {
-            osg::Vec3
-                    pos =
-                            InteractionManager::instance()->getMouseInfo()->screenCenter;
+	    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+	    if(!si)
+	    {
+		break;
+	    }
+
+	    osg::Vec3 screenCenter = si->xyz;
+
+	    if(si->myChannel->stereoMode == "HMD")
+	    {
+		screenCenter = screenCenter * TrackingManager::instance()->getHeadMat(si->myChannel->head);
+	    }
+
+            osg::Vec3 pos = screenCenter;
             float xdiff = _eventY - InteractionManager::instance()->getMouseY();
             xdiff = xdiff / 150.0;
             float newScale;

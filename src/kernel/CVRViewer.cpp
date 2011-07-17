@@ -505,9 +505,10 @@ void CVRViewer::eventTraversal()
 				evnt.param2 = (int)(event->getY()
                                     - si->myChannel->bottom);
 
-			    if(_invertMouseY)
+			    //std::cerr << "yparam: " << evnt.param2 << " windowHeight: " << event->getWindowHeight() << std::endl;
+			    if(!_invertMouseY)
 			    {
-				evnt.param2 = -evnt.param2 + event->getWindowHeight();
+				evnt.param2 = -evnt.param2 + si->myChannel->height;
 			    }
 			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
 			    {
@@ -706,28 +707,25 @@ void CVRViewer::eventTraversal()
             }
             case (osgGA::GUIEventAdapter::DRAG):
             {
-                MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
-                if(mi)
+                if(InteractionManager::instance()->mouseActive())
                 {
-                    mi->x = events[i].param1;
-                    mi->y = events[i].param2;
-                    InteractionManager::instance()->setMouseInfo(*mi);
+                    InteractionManager::instance()->setMouse(events[i].param1,events[i].param2);
                     InteractionManager::instance()->createMouseDragEvents();
                 }
                 break;
             }
             case (osgGA::GUIEventAdapter::MOVE):
             {
-		ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(_activeMasterScreen);
-		if(si)
-		{
-		    MouseInfo mi;
+		//ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(_activeMasterScreen);
+		//if(si)
+		//{
+		    //MouseInfo mi;
 		    /*mi.screenCenter = osg::Vec3(ei.x, ei.y, ei.z);
 		      mi.screenWidth = ei.width;
 		      mi.screenHeight = ei.height;
 		      mi.viewportX = ei.viewportX;
 		      mi.viewportY = ei.viewportY;*/
-
+		    /*
 		    if(si->myChannel->stereoMode == "LEFT")
 		    {
 			mi.eyeOffset = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
@@ -740,15 +738,18 @@ void CVRViewer::eventTraversal()
 		    {
 			mi.eyeOffset = osg::Vec3(0,0,0);
 		    }
+
+		    mi.head = si->myChannel->head;
+
 		    mi.screenCenter = si->xyz;
 		    mi.screenWidth = si->width;
 		    mi.screenHeight = si->height;
 		    mi.viewportX = (int)si->myChannel->width;
 		    mi.viewportY = (int)si->myChannel->height;
 		    mi.x = events[i].param1;
-		    mi.y = events[i].param2;
-		    InteractionManager::instance()->setMouseInfo(mi);
-		}
+		    mi.y = events[i].param2;*/
+		InteractionManager::instance()->setMouse(events[i].param1,events[i].param2);
+		//}
                 break;
             }
             case (osgGA::GUIEventAdapter::KEYDOWN):

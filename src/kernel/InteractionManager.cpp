@@ -4,6 +4,8 @@
 #include <kernel/ComController.h>
 #include <kernel/Navigation.h>
 #include <kernel/CVRViewer.h>
+#include <kernel/ScreenConfig.h>
+#include <kernel/ScreenBase.h>
 #include <kernel/PluginManager.h>
 #include <config/ConfigManager.h>
 
@@ -28,12 +30,15 @@ InteractionManager::InteractionManager()
 {
     _lastMouseButtonMask = 0;
     _mouseButtonMask = 0;
-    _mouseInfo = NULL;
+    //_mouseInfo = NULL;
     _mouseActive = false;
 
     _mouseEvents = ConfigManager::getBool("Input.MouseEvents",true);
     std::string tsystem = ConfigManager::getEntry("value","Input.TrackingSystem","NONE");
     std::string bsystem = ConfigManager::getEntry("value","Input.ButtonSystem","NONE");
+
+    _mouseX = 0;
+    _mouseY = 0;
 
     if(tsystem == "MOUSE" || bsystem == "MOUSE")
     {
@@ -117,7 +122,7 @@ void InteractionManager::addEvent(InteractionEvent * event)
     _queueLock.unlock();
 }
 
-void InteractionManager::setMouseInfo(MouseInfo & mi)
+/*void InteractionManager::setMouseInfo(MouseInfo & mi)
 {
     if(!_mouseInfo)
     {
@@ -139,7 +144,7 @@ void InteractionManager::setMouseInfo(MouseInfo & mi)
 
     osg::Vec3 mousePos = _mouseInfo->screenCenter + osg::Vec3(worldxOffset, 0,
                                                               worldyOffset);
-    osg::Vec3 headPos = _mouseInfo->eyeOffset * TrackingManager::instance()->getHeadMat();
+    osg::Vec3 headPos = _mouseInfo->eyeOffset * TrackingManager::instance()->getHeadMat(mi.head);
 
     osg::Vec3 v = mousePos - headPos;
     v.normalize();
@@ -147,6 +152,62 @@ void InteractionManager::setMouseInfo(MouseInfo & mi)
     _mouseMat.makeRotate(osg::Vec3(0, 1, 0), v);
     _mouseMat = _mouseMat * osg::Matrix::translate(headPos);
 
+}*/
+
+void InteractionManager::setMouse(int x, int y)
+{
+    //std::cerr << "Mouse x: " << x << " y: " << y << std::endl;
+    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+
+    if(!si)
+    {
+	return;
+    }
+
+    _mouseActive = true;
+    _mouseX = x;
+    _mouseY = y;
+
+    float screenX, screenY;
+    float frac;
+
+    frac = ((float)_mouseX) / si->myChannel->width;
+    frac = frac - 0.5;
+    screenX = frac * si->width;
+
+    //frac = ((float)(si->myChannel->height - _mouseY))
+    //       / (si->myChannel->height);
+    frac = ((float)_mouseY) / si->myChannel->height;
+    frac = frac - 0.5;
+    screenY = frac * si->height;
+
+    osg::Vec3 screenPoint(screenX,0,screenY);
+    // get Point in world space
+    screenPoint = screenPoint * si->transform;
+    // head mounted displays are relative to the head orientation
+    if(si->myChannel->stereoMode == "HMD")
+    {
+	screenPoint = screenPoint * TrackingManager::instance()->getHeadMat(si->myChannel->head);
+    }
+
+    osg::Vec3 eyePoint;
+
+    if(si->myChannel->stereoMode == "LEFT")
+    {
+	eyePoint = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+    }
+    else if(si->myChannel->stereoMode == "RIGHT")
+    {
+	eyePoint = osg::Vec3(-ScreenBase::getEyeSeparation() * ScreenBase::getEyeSeparationMultiplier() / 2.0, 0,0);
+    }
+
+    eyePoint = eyePoint * TrackingManager::instance()->getHeadMat(si->myChannel->head);
+
+    osg::Vec3 v = screenPoint - eyePoint;
+    v.normalize();
+
+    _mouseMat.makeRotate(osg::Vec3(0, 1, 0), v);
+    _mouseMat = _mouseMat * osg::Matrix::translate(eyePoint);
 }
 
 void InteractionManager::setMouseButtonMask(unsigned int mask)
@@ -169,32 +230,24 @@ osg::Matrix & InteractionManager::getMouseMat()
     return _mouseMat;
 }
 
-MouseInfo * InteractionManager::getMouseInfo()
+/*MouseInfo * InteractionManager::getMouseInfo()
 {
     return _mouseInfo;
-}
+}*/
 
 int InteractionManager::getMouseX()
 {
-    if(_mouseInfo)
-    {
-        return _mouseInfo->x;
-    }
-    return 0;
+    return _mouseX;
 }
 
 int InteractionManager::getMouseY()
 {
-    if(_mouseInfo)
-    {
-        return _mouseInfo->y;
-    }
-    return 0;
+    return _mouseY;
 }
 
 void InteractionManager::processMouse()
 {
-    if(!_mouseActive || !_mouseInfo)
+    if(!_mouseActive)
     {
         return;
     }
@@ -241,8 +294,8 @@ void InteractionManager::processMouse()
 		    buttonEvent->type = MOUSE_BUTTON_DOWN;
 		}
 		buttonEvent->button = i;
-		buttonEvent->x = _mouseInfo->x;
-		buttonEvent->y = _mouseInfo->y;
+		buttonEvent->x = _mouseX;
+		buttonEvent->y = _mouseY;
 		buttonEvent->transform = _mouseMat;
 		addEvent(buttonEvent);
 	    }
@@ -254,7 +307,7 @@ void InteractionManager::processMouse()
 
 void InteractionManager::createMouseDragEvents()
 {
-    if(!_mouseActive || !_mouseInfo)
+    if(!_mouseActive)
     {
         return;
     }
@@ -286,8 +339,8 @@ void InteractionManager::createMouseDragEvents()
 		MouseInteractionEvent * dEvent = new MouseInteractionEvent;
 		dEvent->type = MOUSE_DRAG;
 		dEvent->button = i;
-		dEvent->x = _mouseInfo->x;
-		dEvent->y = _mouseInfo->y;
+		dEvent->x = _mouseX;
+		dEvent->y = _mouseY;
 		dEvent->transform = _mouseMat;
 		addEvent(dEvent);
 	    }
@@ -298,7 +351,7 @@ void InteractionManager::createMouseDragEvents()
 
 void InteractionManager::createMouseDoubleClickEvent(int button)
 {
-    if(!_mouseActive || !_mouseInfo)
+    if(!_mouseActive)
     {
         return;
     }
@@ -330,8 +383,8 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
 		MouseInteractionEvent * dcEvent = new MouseInteractionEvent;
 		dcEvent->type = MOUSE_DOUBLE_CLICK;
 		dcEvent->button = i;
-		dcEvent->x = _mouseInfo->x;
-		dcEvent->y = _mouseInfo->y;
+		dcEvent->x = _mouseX;
+		dcEvent->y = _mouseY;
 		dcEvent->transform = _mouseMat;
 		addEvent(dcEvent);
 	    }

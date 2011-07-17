@@ -58,6 +58,7 @@ struct ChannelInfo
         float bottom;           ///< bottom of channel in window space
         int windowIndex;        ///< index for window holding this channel
         std::string stereoMode; ///< name of stereo mode used for this channel
+        int head;
         WindowInfo * myWindow;  ///< window params for this channel
 };
 

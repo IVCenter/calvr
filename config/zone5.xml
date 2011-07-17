@@ -5,6 +5,9 @@
 <!-- enable or display master rendering -->
       <RenderOnMaster value="true" />
       <Stencil value="true" />
+
+      <Stereo separation="-64.0" />
+
       <PipeConfig>
         <Pipe display="not needed any more" server="0" screen="0" name="0" />
         <Pipe display="n" server="0" screen="1" name="1" />
@@ -14,8 +17,8 @@
       <ResourcesDirectory value="/home/z5-covise/covise/src/renderer/OpenCOVER/osgcaveui/resources" />
     </CUI>
       <Background r="0.0" g="0.0" b="0.0" /> 
-      <!--MultiThreaded value="CullDrawThreadPerContext" /-->
-      <MultiThreaded value="SingleThreaded" />
+      <MultiThreaded value="CullDrawThreadPerContext" />
+      <!--MultiThreaded value="SingleThreaded" /-->
       <SyncToVBlank value="ON"/>
 
       <LODScale value="0.1" />
@@ -50,7 +53,7 @@
       <Hand2ButtonMask station1="0x38" station2="0x00" />
 
       <HeadAddress value="2" />
-      <Head2Address value="2" />
+      <Head2Address value="1" />
       <HandAddress value="0" />
       <Hand2Address value="1" />
 
@@ -74,7 +77,7 @@
 
       <HeadDevice2>
         <Offset x="0" y="0" z="0" />
-	    <Orientation h="0" p="-90" r="180" />
+	    <Orientation h="0" p="-90" r="0" />
       </HeadDevice2>
 
       <HandDevice>
