@@ -6,8 +6,10 @@
 #include <kernel/ScreenMVMaster.h>
 #include <kernel/MultiViewScreen.h>
 #include <kernel/ScreenFixedViewer.h>
+#include <kernel/ScreenHMD.h>
 #include <kernel/ComController.h>
 #include <kernel/CVRViewer.h>
+#include <input/TrackingManager.h>
 #include <config/ConfigManager.h>
 
 #include <osgViewer/GraphicsWindow>
@@ -297,6 +299,11 @@ bool ScreenConfig::readChannels()
             channelPtr->bottom = ConfigManager::getFloat("bottom", ss.str(), 0);
             channelPtr->stereoMode = ConfigManager::getEntry("stereoMode",
                                                              ss.str(), "MONO");
+	    channelPtr->head = ConfigManager::getInt("head",ss.str(),0);
+	    if(channelPtr->head >= TrackingManager::instance()->getNumHeads())
+	    {
+		channelPtr->head = 0;
+	    }
             int windowIndex = ConfigManager::getInt("windowIndex", ss.str(), 0);
             if(windowIndex < _windowInfoList.size())
             {
@@ -582,6 +589,12 @@ bool ScreenConfig::makeScreens()
 	    screen = new ScreenFixedViewer();
 	    screen->_myInfo = _screenInfoList[i];
 	    screen->init();
+	}
+	else if(_screenInfoList[i]->myChannel->stereoMode == "HMD")
+	{
+	    screen = new ScreenHMD();
+	    screen->_myInfo = _screenInfoList[i];
+	    screen->init(-1);
 	}
 #ifdef WITH_INTERLEAVER
         else if(_screenInfoList[i]->myChannel->stereoMode == "LENTICULAR")

@@ -22,6 +22,13 @@ flat out float diffuseV1P0;
 flat out float diffuseV1P1;
 flat out float diffuseV1P2;
 
+in vec2 texcoord[3];
+
+flat out float texture;
+flat out vec2 tcoord0;
+flat out vec2 tcoord1;
+flat out vec2 tcoord2;
+
 void main(void)
 {
     pos0 = gl_PositionIn[0].xyz;
@@ -100,7 +107,7 @@ void main(void)
 
     if(diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0 && diffuseV0P0 <= 0)
     {
-	return;
+	//return;
     }
 
     diffuseV0P0 = max(0.0, diffuseV0P0);
@@ -109,6 +116,28 @@ void main(void)
     diffuseV1P0 = max(0.0, diffuseV1P0);
     diffuseV1P1 = max(0.0, diffuseV1P1);
     diffuseV1P2 = max(0.0, diffuseV1P2);
+
+    tcoord0 = texcoord[0];
+    tcoord1 = texcoord[1];
+    tcoord2 = texcoord[2];
+
+
+    //vec2 textest;
+    //textest = texcoord[0] + texcoord[1] + texcoord[2];
+    /*if(texcoord[0].x == 0.0)
+    {
+	texture = 0.0;
+	color0 = vec3(0.0,1.0,0.0);
+    }
+    else
+    {
+	texture = 1.0;
+	tcoord0 = texcoord[0];
+	tcoord1 = texcoord[1];
+	tcoord2 = texcoord[2];
+	color0 = vec3(1.0,0.0,0.0);
+    }*/
+    //color0 = texcoord[2].y * vec3(1.0,0.0,0.0);
 
     t0p0 = gl_TextureMatrix[5] * t0p0;
     t0p1 = gl_TextureMatrix[5] * t0p1;

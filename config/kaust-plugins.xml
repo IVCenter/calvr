@@ -2,14 +2,15 @@
 
 <Plugin>
   <ModelLoader>
-    <ConfigDir value="/projects/ucsd/software/CalVR/data/ModelLoader/" />
+    <ConfigDir value="/home/covise/data/ModelLoader/" />
     <Files>
-      <se_building path="/projects/ucsd/software/CalVR/data/falko/se_building.obj" mask="1" />
+      <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
     </Files>
   </ModelLoader>
 
   <PanoView360>
-          <JoystickSpin value="false" />
+    <RenderOnMaster value="false" />
+          <JoystickSpin value="true" />
           <FloorOffset value="1759.425" />
           <ScreenConfig value="/projects/ucsd/software/CalVR/plugins/calit2/PanoView360/config/Screens.xml" />
           <Files>

@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 
- <Stereo separation="-64.0" />
-
  <LOCAL host="z5-0-0.z5.vis.kaust.edu.sa" >
    <NumPipes value="2" />
    <NumScreens value="2" />
