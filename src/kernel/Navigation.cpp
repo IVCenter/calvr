@@ -407,7 +407,7 @@ void Navigation::processMouseNav(NavMode nm)
             m.makeRotate(xOffset / 7000.0, osg::Vec3(0, 0, 1));
 
             osg::Matrix m2;
-            m2.makeTranslate(osg::Vec3(0, (yOffset / 5.0) * _scale, 0));
+            m2.makeTranslate(osg::Vec3(0, (-yOffset / 5.0) * _scale, 0));
 
             osg::Vec3 viewerPos =
                     TrackingManager::instance()->getHeadMat().getTrans();
@@ -506,7 +506,8 @@ void Navigation::processMouseNav(NavMode nm)
             z = (currentY) / (vwidth / 2.0);
 
             x = x - 1.0;
-            z = 1.0 - z;
+            //z = 1.0 - z;
+	    z = z - 1.0;
 
             y = 1.0 - x * x - z * z;
             y = y > 0 ? -sqrt(y) : 0;
@@ -538,7 +539,8 @@ void Navigation::processMouseNav(NavMode nm)
             x = (currentX) / (vwidth / 2.0);
             z = (currentY) / (vwidth / 2.0);
             x = x - 1.0;
-            z = 1.0 - z;
+            //z = 1.0 - z;
+	    z = z - 1.0;
 
             y = 1.0 - x * x - z * z;
             y = y > 0 ? -sqrt(y) : 0;
@@ -584,7 +586,7 @@ void Navigation::processMouseNav(NavMode nm)
 
             osg::Vec3 pos = screenCenter;
             float xdiff = _eventY - InteractionManager::instance()->getMouseY();
-            xdiff = xdiff / 150.0;
+            xdiff = -xdiff / 150.0;
             float newScale;
             osg::Vec3 objectPos = (pos * osg::Matrix::inverse(_startXForm))
                     / _startScale;
