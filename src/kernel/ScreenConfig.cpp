@@ -464,15 +464,19 @@ bool ScreenConfig::makeScreens()
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "LEFT")
         {
-            screen = new ScreenMono();
-	    screen->_myInfo = _screenInfoList[i];
-            screen->init(ScreenMono::LEFT);
+            //screen = new ScreenMono();
+            screen = new ScreenStereo();
+	        screen->_myInfo = _screenInfoList[i];
+            //screen->init(ScreenMono::LEFT);
+            screen->init(osg::DisplaySettings::LEFT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "RIGHT")
         {
-            screen = new ScreenMono();
-	    screen->_myInfo = _screenInfoList[i];
-            screen->init(ScreenMono::RIGHT);
+            //screen = new ScreenMono();
+            screen = new ScreenStereo();
+	        screen->_myInfo = _screenInfoList[i];
+            //screen->init(ScreenMono::RIGHT);
+            screen->init(osg::DisplaySettings::RIGHT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "HORIZONTAL_INTERLACE")
