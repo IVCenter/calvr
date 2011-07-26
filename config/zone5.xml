@@ -23,11 +23,17 @@
 
       <LODScale value="0.1" />
 
-
+    <Plugin>
+        <ArtifactVis>
+          <ArtifactPanel x="-500" y="1250" />
+          <SelectionStatsPanel x="500" y="1300" />
+        </ArtifactVis>
+    </Plugin>
     <MultiPC>
      <NumSlaves value="11" />   <!-- use 11 for all NexCAVE machines -->
 <!--     <MasterInterface value="109.171.138.177" />
 -->     <MasterInterface value="z5-fe.z5.vis.kaust.edu.sa" />
+     <CleanupScript value="tentakel killall -9 CalVR" />
      <Startup arch="x11" value="ssh z5-0-0 CalVR \>\&amp; /tmp/errors.log" name="0" />
      <Startup arch="x11" value="ssh z5-0-1 CalVR \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh z5-0-2 CalVR \>\&amp; /tmp/errors.log" name="2" />

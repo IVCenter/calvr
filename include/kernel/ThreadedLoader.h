@@ -93,6 +93,8 @@ class ThreadedLoader
         /**
          * @brief Returns the jobs progress 0-1
          *
+         * Note: This is the progress through a list of file, i.e. if 5 of 10 
+         * files are done, progress will return 0.5.
          * If the job is in error or does not exist, -1 is returned
          */
         float getProgress(int job);

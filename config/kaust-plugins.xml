@@ -4,9 +4,48 @@
   <ModelLoader>
     <ConfigDir value="/home/covise/data/ModelLoader/" />
     <Files>
-      <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
+        <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
+        <madain_saleh path="/projects/vislab/models/madain_saleh/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
+        <calit2_building path="/home/covise/data/floorplan/calit2-study2.wrl" mask="1" />
     </Files>
   </ModelLoader>
+
+    <StructView>
+      <Layer0File value="/home/covise/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+      <Layer1File value="/home/covise/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+      <Layer2File value="/home/covise/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+      <Layer3File value="/home/covise/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+      <Layer4File value="/home/covise/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+      <Layer5File value="/home/covise/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+      <Layer6File value="/home/covise/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+      <Layer7File value="/home/covise/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+      <Layer8File value="/home/covise/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+      <Layer9File value="/home/covise/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+      <Layer10File value="/home/covise/data/baybridge/T1Block13_FullConcrete.WRL" />
+      <Layer11File value="/home/covise/data/baybridge/Tower-all.wrl" />
+    </StructView>
+
+        <ArtifactVis>
+          <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
+          <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
+          <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+          <DCInfoFile value="/projects/ucsd/software/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
+          <LociFile value="/projects/ucsd/software/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+          <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+          <MaxVisibleRange value="1000000000.0" />
+          <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+        </ArtifactVis>
 
   <PanoView360>
     <RenderOnMaster value="false" />
