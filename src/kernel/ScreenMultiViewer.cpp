@@ -107,7 +107,14 @@ void ScreenMultiViewer::init(int mode)
 	}
 	else
 	{
-	    //std::cerr << "adding MultiViewerCullVisitor" << std::endl;
+	    osg::DisplaySettings * ds =
+		renderer->getSceneView(0)->getDisplaySettings();
+	    ds->setStereo(true);
+	    ds->setStereoMode(_stereoMode);
+	    StereoIdentCallback * sc = new StereoIdentCallback;
+	    renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
+	    renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+
 	    renderer->getSceneView(0)->setCullVisitor(new MultiViewerCullVisitor());
 	    renderer->getSceneView(1)->setCullVisitor(new MultiViewerCullVisitor());
 	}
