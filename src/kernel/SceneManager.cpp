@@ -292,15 +292,41 @@ void SceneManager::initLights()
 {
     osg::StateSet * stateset = _sceneRoot->getOrCreateStateSet();
 
+    //TODO: replace with lighting manager
+
+    //read any values from config file
+    osg::Vec4 diffuse,specular,ambient,position;
+    osg::Vec3 direction;
+    float spotexp,spotcutoff;
+
+    diffuse = ConfigManager::getColor("Light.Diffuse",osg::Vec4(1.0, 1.0, 1.0, 1.0));
+    specular = ConfigManager::getColor("Light.Specular",osg::Vec4(0, 0, 0, 1.0));
+    ambient = ConfigManager::getColor("Light.Ambient",osg::Vec4(0.3, 0.3, 0.3, 1.0));
+    position = ConfigManager::getVec4("Light.Position",osg::Vec4(0.0, -10000.0, 10000.0, 1.0));
+    direction = ConfigManager::getVec3("Light.Direction",osg::Vec3(0, 0, -1));
+    spotexp = ConfigManager::getFloat("Light.SpotExponent",0);
+    spotcutoff = ConfigManager::getFloat("Light.SpotCutoff",180.0);
+    
     osg::LightSource * source = new osg::LightSource();
     osg::Light * light = new osg::Light(0);
-    light->setDiffuse(osg::Vec4(1.0, 1.0, 1.0, 1.0));
+
+    /*light->setDiffuse(osg::Vec4(1.0, 1.0, 1.0, 1.0));
     light->setSpecular(osg::Vec4(0, 0, 0, 1.0));
     light->setAmbient(osg::Vec4(0.3, 0.3, 0.3, 1.0));
     light->setPosition(osg::Vec4(0.0, -10000.0, 10000.0, 1.0));
     light->setDirection(osg::Vec3(0, 0, -1));
+    //light->setDirection(osg::Vec3(0, 0.707106781, -0.707106781));
     light->setSpotExponent(0);
-    light->setSpotCutoff(180.0);
+    light->setSpotCutoff(180.0);*/
+
+    light->setDiffuse(diffuse);
+    light->setSpecular(specular);
+    light->setAmbient(ambient);
+    light->setPosition(position);
+    light->setDirection(direction);
+    light->setSpotExponent(spotexp);
+    light->setSpotCutoff(spotcutoff);
+
     source->setLight(light);
     _sceneRoot->addChild(source);
 

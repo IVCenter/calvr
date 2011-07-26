@@ -637,6 +637,89 @@ bool ConfigManager::getBool(std::string attribute, std::string path, bool def,
     return def;
 }
 
+osg::Vec3 ConfigManager::getVec3(std::string path, osg::Vec3 def, bool * found)
+{
+    return getVec3("x","y","z",path,def,found);
+}
+
+osg::Vec3 ConfigManager::getVec3(std::string attributeX, std::string attributeY, 
+	std::string attributeZ, std::string path, osg::Vec3 def,
+	bool * found)
+{
+    bool hasEntry = false;
+    bool isFound;
+
+    osg::Vec3 result;
+    result.x() = getFloat(attributeX,path,def.x(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.y() = getFloat(attributeY,path,def.y(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.z() = getFloat(attributeZ,path,def.z(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+
+    if(found)
+    {
+	*found = hasEntry;
+    }
+    return result;
+}
+
+osg::Vec4 ConfigManager::getVec4(std::string path, osg::Vec4 def, 
+	bool * found)
+{
+    return getVec4("x","y","z","w",path,def,found);
+}
+
+osg::Vec4 ConfigManager::getVec4(std::string attributeX, std::string attributeY, 
+	std::string attributeZ, std::string attributeW, std::string path, 
+	osg::Vec4 def, bool * found)
+{
+    bool hasEntry = false;
+    bool isFound;
+
+    osg::Vec4 result;
+    result.x() = getFloat(attributeX,path,def.x(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.y() = getFloat(attributeY,path,def.y(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.z() = getFloat(attributeZ,path,def.z(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.w() = getFloat(attributeW,path,def.w(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+
+    if(found)
+    {
+	*found = hasEntry;
+    }
+    return result;
+}
+
+osg::Vec4 ConfigManager::getColor(std::string path, osg::Vec4 def, bool * found)
+{
+    return getVec4("r","g","b","a",path,def,found);
+}
+
 void ConfigManager::getChildren(std::string path,
                                 std::vector<std::string> & destList)
 {
