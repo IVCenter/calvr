@@ -34,13 +34,13 @@ void ScreenMono::computeViewProj()
     switch(_type)
     {
         case CENTER:
-	    eyePos = eyePos * getCurrentHeadMatrix();
+	    eyePos = eyePos * getCurrentHeadMatrix(_myInfo->myChannel->head);
             break;
         case LEFT:
-            eyePos = defaultLeftEye();
+            eyePos = defaultLeftEye(_myInfo->myChannel->head);
             break;
         case RIGHT:
-            eyePos = defaultRightEye();
+            eyePos = defaultRightEye(_myInfo->myChannel->head);
             break;
         default:
             break;

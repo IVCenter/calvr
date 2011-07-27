@@ -58,17 +58,19 @@ void ScreenMultiViewer2::init(int mode)
     default: // Shouldn't see this!
         std::cerr<<"Error! Invalid _stereoMode.\n";
     case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-        _viewPtr = _projPtr = NULL;
+        //_viewPtr = _projPtr = NULL;
         break; // NexCAVE
     case osg::DisplaySettings::LEFT_EYE:
-        _viewPtr = &_viewLeftPtr;
-        _projPtr = &_projLeftPtr;
+        //_viewPtr = &_viewLeftPtr;
+        //_projPtr = &_projLeftPtr;
         break;
     case osg::DisplaySettings::RIGHT_EYE:
-        _viewPtr = &_viewRightPtr;
-        _projPtr = &_projRightPtr;
+        //_viewPtr = &_viewRightPtr;
+        //_projPtr = &_projRightPtr;
         break;
     }
+
+    _viewPtr = _projPtr = NULL;
 
     _zonesChanged = true;
     _zones = 0;
@@ -310,12 +312,14 @@ void ScreenMultiViewer2::createCameras()
         {
             osg::DisplaySettings * ds = renderer->getSceneView(0)->getDisplaySettings();
 
-            ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+            //ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	    ds->setStereo(true);
             ds->setStereoMode(_stereoMode);
 
             ds = renderer->getSceneView(1)->getDisplaySettings();
 
-            ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+            //ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	    ds->setStereo(true);
             ds->setStereoMode(_stereoMode);
 
             StereoCallback * sc = new StereoCallback;

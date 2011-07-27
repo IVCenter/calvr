@@ -8,6 +8,9 @@
 #include <config/Export.h>
 #include <kernel/CalVR.h>
 
+#include <osg/Vec3>
+#include <osg/Vec4>
+
 #include <string>
 #include <map>
 #include <vector>
@@ -159,6 +162,23 @@ class CVRCONFIG_EXPORT ConfigManager
          */
         static bool getBool(std::string attribute, std::string path, bool def =
                 false, bool * found = NULL);
+
+        static osg::Vec3 getVec3(std::string path, osg::Vec3 def = osg::Vec3(0,0,0), 
+                bool * found = NULL);
+
+        static osg::Vec3 getVec3(std::string attributeX, std::string attributeY, 
+                std::string attributeZ, std::string path, osg::Vec3 def = osg::Vec3(0,0,0),
+                bool * found = NULL);
+
+        static osg::Vec4 getVec4(std::string path, osg::Vec4 def = osg::Vec4(0,0,0,1), 
+                bool * found = NULL);
+
+        static osg::Vec4 getVec4(std::string attributeX, std::string attributeY, 
+                std::string attributeZ, std::string attributeW, std::string path, 
+                osg::Vec4 def = osg::Vec4(0,0,0,1), bool * found = NULL);
+
+        static osg::Vec4 getColor(std::string path, osg::Vec4 def = osg::Vec4(1,1,1,1), 
+                bool * found = NULL);
 
         /**
          * @brief Creates a list of all the children of a tag

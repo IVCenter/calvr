@@ -117,7 +117,8 @@ void MultiViewScreen::createCameras(unsigned int quantity) {
 	osg::DisplaySettings * ds = renderer->getSceneView(0)->getDisplaySettings();
 	//set to false for StarCave.  When false, the StereoBallback does
 	//not matter.  True is for NexCave.
-	ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	//ds->setStereo(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE);
+	ds->setStereo(true);
 	ds->setStereoMode(_stereoMode);
 
 	StereoCallback * sc = new StereoCallback;

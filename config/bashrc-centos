@@ -1,0 +1,8 @@
+export LD_LIBRARY_PATH=/projects/software/calvr_centos/deps/lib:/projects/software/calvr_centos/deps/lib64:/projects/software/calvr_centos/CalVR/lib:${LD_LIBRARY_PATH}
+export PATH=/projects/software/calvr_centos/CalVR/bin:${PATH}
+
+##export OSG_HOME=/home/covise/covise/extern_libs
+##export MXML_HOME=/projects/ucsd/deps
+
+export CALVR_HOME=/projects/software/calvr_centos/CalVR
+
