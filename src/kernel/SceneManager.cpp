@@ -284,6 +284,7 @@ void SceneManager::initPointers()
         osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
         osg::Geode * geode = new osg::Geode();
         geode->addDrawable(sd);
+        geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
         _handTransforms[i]->addChild(geode);
     }
 }
