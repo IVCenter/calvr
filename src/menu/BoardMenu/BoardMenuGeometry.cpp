@@ -135,6 +135,13 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
     geo->setColorIndices(colorIndexArray);
     geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    texcoords->push_back(osg::Vec2(0, 0));
+    texcoords->push_back(osg::Vec2(1, 0));
+    texcoords->push_back(osg::Vec2(1, 1));
+    texcoords->push_back(osg::Vec2(0, 1));
+    geo->setTexCoordArray(0, texcoords);
+
     return geo;
 }
 
