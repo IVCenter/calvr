@@ -262,11 +262,11 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
         float pixelRange = 400;
 
         bool valueUpdated = false;
-        if(y > _lastMouseY)
+        if(x > _lastMouseX)
         {
             if(mrv->getValue() != mrv->getMax())
             {
-                float change = (y - _lastMouseY) * (mrv->getMax()
+                float change = (x - _lastMouseX) * (mrv->getMax()
                         - mrv->getMin()) / pixelRange;
                 float newValue = std::max(mrv->getValue() + change,
                                           mrv->getMin());
@@ -274,11 +274,11 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
                 valueUpdated = true;
             }
         }
-        else if(y < _lastMouseY)
+        else if(x < _lastMouseX)
         {
             if(mrv->getValue() != mrv->getMin())
             {
-                float change = (y - _lastMouseY) * (mrv->getMax()
+                float change = (x - _lastMouseX) * (mrv->getMax()
                         - mrv->getMin()) / pixelRange;
                 float newValue = std::min(mrv->getValue() + change,
                                           mrv->getMax());
