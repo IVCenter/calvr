@@ -72,12 +72,6 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
                                                                         1.0,
                                                                         1.0),
                                    osg::Vec3(0, -2, 0));
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
-    texcoords->push_back(osg::Vec2(0, 0));
-    texcoords->push_back(osg::Vec2(1, 0));
-    texcoords->push_back(osg::Vec2(1, 1));
-    texcoords->push_back(osg::Vec2(0, 1));
-    geo->setTexCoordArray(0, texcoords);
     _geodeIcon->addDrawable(geo);
 
     MenuRangeValue * mrv = (MenuRangeValue*)item;
@@ -121,12 +115,6 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
                    osg::Vec3(width2, -2, -_iconHeight - _boarder));
-    texcoords = new osg::Vec2Array;
-    texcoords->push_back(osg::Vec2(0, 0));
-    texcoords->push_back(osg::Vec2(1, 0));
-    texcoords->push_back(osg::Vec2(1, 1));
-    texcoords->push_back(osg::Vec2(0, 1));
-    geo->setTexCoordArray(0, texcoords);
     _geodeBackIcon->addDrawable(geo);
 
     _backIcon = loadIcon("less.rgb");
@@ -153,12 +141,6 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
                    osg::Vec3(width2, -2, -_iconHeight - _boarder));
-    texcoords = new osg::Vec2Array;
-    texcoords->push_back(osg::Vec2(0, 0));
-    texcoords->push_back(osg::Vec2(1, 0));
-    texcoords->push_back(osg::Vec2(1, 1));
-    texcoords->push_back(osg::Vec2(0, 1));
-    geo->setTexCoordArray(0, texcoords);
     _geodeForwardIcon->addDrawable(geo);
 
     _forwardIcon = loadIcon("greater.rgb");
@@ -280,11 +262,11 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
         float pixelRange = 400;
 
         bool valueUpdated = false;
-        if(y > _lastMouseY)
+        if(x > _lastMouseX)
         {
             if(mrv->getValue() != mrv->getMax())
             {
-                float change = (y - _lastMouseY) * (mrv->getMax()
+                float change = (x - _lastMouseX) * (mrv->getMax()
                         - mrv->getMin()) / pixelRange;
                 float newValue = std::max(mrv->getValue() + change,
                                           mrv->getMin());
@@ -292,11 +274,11 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
                 valueUpdated = true;
             }
         }
-        else if(y < _lastMouseY)
+        else if(x < _lastMouseX)
         {
             if(mrv->getValue() != mrv->getMin())
             {
-                float change = (y - _lastMouseY) * (mrv->getMax()
+                float change = (x - _lastMouseX) * (mrv->getMax()
                         - mrv->getMin()) / pixelRange;
                 float newValue = std::min(mrv->getValue() + change,
                                           mrv->getMax());
