@@ -75,7 +75,7 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
 
     _listItem = dynamic_cast<MenuList*>(item);
 
-    _value = makeText(_listItem->getValue(), _textSize, osg::Vec3(2*_iconHeight + _boarder, -4, -_iconHeight / 2.0), _textColor);
+    _value = makeText(_listItem->getValue(), _textSize, osg::Vec3(2*_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
 
     _geode->addDrawable(_value);
 
