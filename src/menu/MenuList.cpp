@@ -85,6 +85,16 @@ const unsigned int MenuList::getFocus() const
     return _focusMargin;
 }
 
+void MenuList::matchIndexToValue(const std::string & str)
+{
+    for (unsigned int i = 0; i < _values.size(); i++)
+        if (_values[i] == str)
+        {
+            setIndex(i);
+            return;
+        }
+}
+
 void  MenuList::setFocus(const unsigned int size)
 {
     _focusMargin = size;

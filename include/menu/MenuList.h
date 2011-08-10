@@ -32,7 +32,7 @@ class MenuList : public MenuItem
         virtual MenuItemType getType();
 
         /**
-         * @brief Sets the current value
+         * @brief Sets the value at the given index
          * @param index Index of the string to modify
          * @param value New value to be put at the index
          */
@@ -75,6 +75,12 @@ class MenuList : public MenuItem
          * @brief Gets the focus margin size
          */
         const unsigned int getFocus() const;
+
+        /**
+         * @brief Sets the index to the given string, if it exists in the list
+         * @param str String value that the list index should point to
+         */
+        void matchIndexToValue(const std::string & str);
 
         /**
          * @brief Sets the focus margin size
