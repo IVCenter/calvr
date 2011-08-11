@@ -274,7 +274,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         vec = vec - _point;
         float newDistance = vec.z();
 
-        float range = 600;
+        float range = 400;
 
         bool valueUpdated = false;
         int valueMax = _listItem->getListSize();
@@ -284,7 +284,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             int change = (int)((newDistance - _lastDistance) * valueMax / range);
             if (change)
             {
-                index += change;
+                index -= change;
                 if (index > valueMax)
                     index = valueMax;
                 else if (index < 0)

@@ -3,7 +3,10 @@
 <Plugin>
   <!-- Plugin Enable Toggles -->
   <GreenLight value="off" />
+  <LightEditor value="off" />
   <ModelLoader value="off" />
+  <MVSim value="off" /> <!-- Only to be used with MultiViewerScreen configurations! -->
+  <SMV2Settings value="off" />  <!-- Only to be used with ScreenMultiViewer2 configurations! -->
 
   <!-- Plugin Specifics -->
   <GreenLight>
@@ -33,10 +36,28 @@
       fragment="/home/covise/data/GreenLight/shaders/component.frag"
       vertex="/home/covise/data/GreenLight/shaders/component.vert" /> 
   </GreenLight>
+
+  <LightEditor>
+    <GraphicModels value="on" />
+    <!--LightXmlFile value="/home/covise/data/LightEditor/testLights.xml" /-->
+    <LightXmlFile value="/home/jmangan/calvr/plugins/calit2/LightEditor/lights.xml.cessna" /> <!-- Lights for the cessna demo scene. Do not save over! -->
+    <Scene value="/home/covise/data/LightEditor/Models/cessna.osg" /> <!--Demo Scene, Comment out as you please -->
+    <LightShader textID="4"
+      vert="/home/covise/data/LightEditor/Shaders/lighting.vert"
+      frag="/home/covise/data/LightEditor/Shaders/lighting.frag" />
+  </LightEditor>
+
   <ModelLoader>
     <ConfigDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/ModelLoader" />
     <Files>
       <se_building path="/data/falko/se_building.obj" mask="1" />
     </Files>
   </ModelLoader>
+
+  <MVSim>
+    <HeadMatrixDir value="/home/covise/data/MVSim/HeadMatrices/"/>
+    <Head0 value="on" x="0" y="-1000" z="0" rotate="0"/>
+    <Head1 value="on" x="500" y="-1000" z="0" rotate="0" sim="0"/>
+  </MVSim>
+
 </Plugin>
