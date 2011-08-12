@@ -93,11 +93,24 @@ class MenuList : public MenuItem
          */
         const int getListSize() const;
 
+        /**
+         * @brief Sets the sensitivity of the Menu scrolling
+         * @param sensitivity Desired sensitivity (Negative value to use default.)
+         */
+        void setSensitivity(const float sensitivity);
+
+        /**
+         * @brief Gets the current sensitivity rating
+         * @return Returns set sensitivity rating, or getListSize() otherwise.
+         */
+        const float getSensitivity();
+
 
     protected:
         std::vector<std::string> _values; ///< values stored in the list
         int _index; ///< current chosen index (defaults to first item in the list)
         unsigned int _focusMargin; ///<  how many values above/below the current index to return from getValues()
+        float _sensitivity; ///< how sensitive the menu is to scrolling through options
 };
 
 }

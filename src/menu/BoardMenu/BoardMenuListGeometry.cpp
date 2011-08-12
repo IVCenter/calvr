@@ -227,7 +227,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         int index = _listItem->getIndex();
         if (y != _lastMouseY)
         {
-            int change = (int)((y - _lastMouseY) * valueMax / pixelRange);
+            int change = (int)((y - _lastMouseY) * _listItem->getSensitivity() / pixelRange);
             if (change)
             {
                 index -= change;
@@ -281,7 +281,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         int index = _listItem->getIndex();
         if (newDistance != _lastDistance)
         {
-            int change = (int)((newDistance - _lastDistance) * valueMax / range);
+            int change = (int)((newDistance - _lastDistance) * _listItem->getSensitivity() / range);
             if (change)
             {
                 index -= change;

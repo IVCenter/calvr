@@ -7,6 +7,7 @@ MenuList::MenuList() : MenuItem()
 {
     _index = 0;
     _focusMargin = 2;
+    _sensitivity = -1;
 }
 
 MenuList::~MenuList()
@@ -104,4 +105,17 @@ void  MenuList::setFocus(const unsigned int size)
 const int MenuList::getListSize() const
 {
     return _values.size();
+}
+
+void MenuList::setSensitivity(const float sensitivity)
+{
+    _sensitivity = sensitivity;
+}
+
+const float MenuList::getSensitivity()
+{
+    if (_sensitivity < 0)
+        return getListSize();
+    else
+        return _sensitivity;
 }
