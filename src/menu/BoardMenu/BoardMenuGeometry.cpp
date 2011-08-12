@@ -1,6 +1,7 @@
 #include <menu/BoardMenu/BoardMenuGeometry.h>
 #include <menu/BoardMenu/BoardMenuButtonGeometry.h>
 #include <menu/BoardMenu/BoardMenuCheckboxGeometry.h>
+#include <menu/BoardMenu/BoardMenuListGeometry.h>
 #include <menu/BoardMenu/BoardMenuRangeValueGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextButtonSetGeometry.h>
@@ -8,6 +9,7 @@
 #include <menu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <menu/MenuButton.h>
 #include <menu/MenuCheckbox.h>
+#include <menu/MenuList.h>
 #include <menu/MenuRangeValue.h>
 #include <menu/SubMenu.h>
 
@@ -90,6 +92,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
 	    return mg;
 	    break;
 	}
+        case LIST:
+        {
+            BoardMenuGeometry * mg = new BoardMenuListGeometry();
+            mg->createGeometry(item);
+
+            return mg;
+            break;
+        }
         case OTHER:
         default:
             break;
@@ -134,6 +144,13 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
     geo->setColorArray(colors);
     geo->setColorIndices(colorIndexArray);
     geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    texcoords->push_back(osg::Vec2(0, 0));
+    texcoords->push_back(osg::Vec2(1, 0));
+    texcoords->push_back(osg::Vec2(1, 1));
+    texcoords->push_back(osg::Vec2(0, 1));
+    geo->setTexCoordArray(0, texcoords);
 
     return geo;
 }

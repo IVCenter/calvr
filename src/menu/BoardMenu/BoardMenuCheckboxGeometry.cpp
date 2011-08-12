@@ -50,12 +50,6 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
                                                                         1.0,
                                                                         1.0),
                                    osg::Vec3(0, -2, 0));
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
-    texcoords->push_back(osg::Vec2(0, 0));
-    texcoords->push_back(osg::Vec2(1, 0));
-    texcoords->push_back(osg::Vec2(1, 1));
-    texcoords->push_back(osg::Vec2(0, 1));
-    geo->setTexCoordArray(0, texcoords);
     _geodeIcon->addDrawable(geo);
 
     osgText::Text * textNode = makeText(checkbox->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
