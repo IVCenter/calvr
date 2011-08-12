@@ -37,13 +37,6 @@ void BoardMenuImageGeometry::createGeometry(MenuItem * item)
 
     osg::Geometry * geo = makeQuad(1.0,1.0, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec3(0,-2,-1.0));
 
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
-    texcoords->push_back(osg::Vec2(0, 0));
-    texcoords->push_back(osg::Vec2(1, 0));
-    texcoords->push_back(osg::Vec2(1, 1));
-    texcoords->push_back(osg::Vec2(0, 1));
-    geo->setTexCoordArray(0, texcoords);
-
     _geode->addDrawable(geo);
 
     osg::StateSet * stateset = _geode->getOrCreateStateSet();

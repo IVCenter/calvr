@@ -1,21 +1,49 @@
 <?xml version="1.0"?>
 
  <GLOBAL>
-
+<!--
       <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
-
       <FrameRate target="25" offset="4" autoAdjust="off" />
-      <Zones maxRows="10" maxColumns="15" />
+      <Zones maxRows="1" maxColumns="400" />
       <Orientation3d value="on" />
+-->
 
       <Plugin>
 
+         <GreenLight value="on">
+           <Components textureDir="/home/covise/data/GreenLight/maps/">
+           <!-- Texture files should contain both the front and back faces, front on top-->
+             <C1 startname="convey" height="2" minWattage="640" maxWattage="690471" texture="unwrap_ConveyHC1.png" />
+             <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
+             <C3 startname="compute" height="1" minWattage="195" maxWattage="453" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+             <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+             <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
+             <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
+             <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
+             <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+             <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+             <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+           </Components>
+           <Hardware
+             local="/home/covise/data/GreenLight/GreenLightAssets.fakejson"
+             download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+           <ModelsDir value="/home/covise/data/GreenLight/Models/" />
+           <Power
+             local="/home/covise/data/GreenLight/GLpower.xml"
+             download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power&amp;method=live" />
+           <Shaders
+             fragment="/home/covise/data/GreenLight/shaders/component.frag"
+             vertex="/home/covise/data/GreenLight/shaders/component.vert" />
+         </GreenLight>
+
+
+<!--
         <SMV2Settings value="on" />
         <MVSim value="on">
-          <Head0 value="on" x="0" y="0" z="0" rotate="0" />
-          <Head1 value="on" x="0" y="0" z="0" rotate="180" sim="0" />
+          <Head0 value="off" x="0" y="0" z="0" rotate="0" />
+          <Head1 value="off" x="0" y="0" z="0" rotate="180" sim="0" />
         </MVSim>
-
+-->
 
         <PluginTest value="off" />
         <MultiHandInteraction value="off" />
@@ -82,39 +110,32 @@
         <MultiGPURender value="off" />
         <CullingMultiGPURender value="off" />
       </Plugin>
-
+<!--
  <Input>
    <NumHeads value="2" />
    <NumHands value="1" />
    <HeadAddress value="2" />
    <Head2Address value="3" />
 </Input>
-
+-->
  </GLOBAL>
 
-
- <LOCAL host="calit2-vis06.ucsd.edu" >
+<!--
+<LOCAL host="calit2-vis06.ucsd.edu" >
    <NumPipes value="1" />
    <NumScreens value="1" />
    <NumWindows value="1" />
 
    <WindowConfig>
-     <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" />
    </WindowConfig>
 
    <ChannelConfig>
-    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MULTI_VIEWER_2_LEFT"  windowIndex="0" name="0" comment="LEFT" />
-    <!--<Channel channel="1" left="1920" width="1920" bottom="0" height="1080" stereoMode="MULTI_VIEWER_2_RIGHT" windowIndex="0" name="1" comment="RIGHT" /> -->
+    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MULTI_VIEWER_MASTER"  windowIndex="0" name="0" comment="LEFT" />
    </ChannelConfig>
 
    <ScreenConfig>
-<!--
-    <Screen originX="0" originY="3000" originZ="0" width="3840" height="2160" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
-    <Screen originX="0" originY="3000" originZ="0" width="3840" height="2160" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="RIGHT" />
--->
-<!-- PHILIP Reduced screen size to increase performance -->
     <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
-    <!-- <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="RIGHT" /> -->
     </ScreenConfig>
 
 
@@ -274,7 +295,6 @@
    </ScreenConfig>
  </LOCAL>
   
- <LOCAL host="tile-4-0.local" >  <!-- tile-4-? have not been configured -->
    <ChannelConfig>
     <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="MULTI_VIEWER_2_LEFT"  windowIndex="0" name="0" comment="LEFT" />
     <Channel channel="1" left="0" width="1920" bottom="0" height="1080" stereoMode="MULTI_VIEWER_2_RIGHT" windowIndex="1" name="1" comment="RIGHT" />
@@ -283,10 +303,6 @@
    <ScreenConfig>
     <Screen originX="0" originY="-1313" originZ="-1180" width="2134" height="1200" h="180.0" p="-14.9" r="0.0" name="0" screen="0" px="0" py="-3301" pz="-1837" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="LEFT" />
     <Screen originX="0" originY="-1313" originZ="-1180" width="2134" height="1200" h="180.0" p="-14.9" r="0.0" name="1" screen="1" px="0" py="-3363" pz="-1602" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="RIGHT" />
-    <!--
-    <Screen originX="0" originY="-2513" originZ="-1180" width="2134" height="1200" h="180.0" p="-14.9" r="0.0" name="0" screen="0" comment="LEFT" />
-    <Screen originX="0" originY="-2513" originZ="-1180" width="2134" height="1200" h="180.0" p="-14.9" r="0.0" name="1" screen="1" comment="RIGHT" />
-    -->
     </ScreenConfig>
  </LOCAL>
 
@@ -299,10 +315,6 @@
    <ScreenConfig>
     <Screen originX="0" originY="-1468" originZ="0" width="2134" height="1200" h="180.0" p="0.0" r="0.0" name="0" screen="0" px="0" py="-3558" pz="-120" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="LEFT" />
     <Screen originX="0" originY="-1468" originZ="0" width="2134" height="1200" h="180.0" p="0.0" r="0.0" name="1" screen="1" px="0" py="-3558" pz="120" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="RIGHT" />
-    <!--
-    <Screen originX="0" originY="-2668" originZ="0" width="2134" height="1200" h="180.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
-    <Screen originX="0" originY="-2668" originZ="0" width="2134" height="1200" h="180.0" p="0.0" r="0.0" name="1" screen="1" comment="RIGHT" />
-    -->
     </ScreenConfig>
  </LOCAL>
 
@@ -315,10 +327,6 @@
    <ScreenConfig>
     <Screen originX="0" originY="-1313" originZ="1180" width="2134" height="1200" h="180.0" p="14.9" r="0.0" name="0" screen="0" px="0" py="-3363" pz="1602" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="LEFT" />
     <Screen originX="0" originY="-1313" originZ="1180" width="2134" height="1200" h="180.0" p="14.9" r="0.0" name="1" screen="1" px="0" py="-3301" pz="1837" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="RIGHT" />
-    <!--
-    <Screen originX="0" originY="-2513" originZ="1180" width="2134" height="1200" h="180.0" p="14.9" r="0.0" name="0" screen="0" comment="LEFT" />
-    <Screen originX="0" originY="-2513" originZ="1180" width="2134" height="1200" h="180.0" p="14.9" r="0.0" name="1" screen="1" comment="RIGHT" />
-    -->
    </ScreenConfig>
  </LOCAL>
 
@@ -345,3 +353,4 @@
     <Screen originX="0" originY="666" originZ="-1759" width="2723" height="1532" h="0.0" p="-90.0" r="0.0" name="1" screen="1" rscale="1.0" bscale="1.0" gscale="1.0" ascale="1.0" comment="RIGHT" />
    </ScreenConfig>
  </LOCAL>
+-->

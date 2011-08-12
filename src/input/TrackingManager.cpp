@@ -604,8 +604,8 @@ bool TrackingManager::init()
         p = ConfigManager::getFloat("p", "Input.HandDevice.Orientation", 0.0);
         r = ConfigManager::getFloat("r", "Input.HandDevice.Orientation", 0.0);
         osg::Matrix m;
-        m.makeRotate(h * M_PI / 180.0, osg::Vec3(0, 0, 1), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+                       osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
         _handTransformsTrans.push_back(osg::Vec3(x, y, z));
         _handTransformsRot.push_back(m);
     }
@@ -621,8 +621,8 @@ bool TrackingManager::init()
         p = ConfigManager::getFloat("p", ss.str() + ".Orientation", 0.0);
         r = ConfigManager::getFloat("r", ss.str() + ".Orientation", 0.0);
         osg::Matrix m;
-        m.makeRotate(h * M_PI / 180.0, osg::Vec3(0, 0, 1), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
         _handTransformsTrans.push_back(osg::Vec3(x, y, z));
         _handTransformsRot.push_back(m);
     }
@@ -635,8 +635,8 @@ bool TrackingManager::init()
     p = ConfigManager::getFloat("p", "Input.TrackingSystem.Orientation", 0.0);
     r = ConfigManager::getFloat("r", "Input.TrackingSystem.Orientation", 0.0);
     osg::Matrix m;
-    m.makeRotate(h * M_PI / 180.0, osg::Vec3(0, 0, 1), p * M_PI / 180.0,
-                 osg::Vec3(1, 0, 0), r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+    m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+                 osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
     m.setTrans(osg::Vec3(x, y, z));
     _systemTransform = m;
 
@@ -649,8 +649,8 @@ bool TrackingManager::init()
         p = ConfigManager::getFloat("p", "Input.HeadDevice.Orientation", 0.0);
         r = ConfigManager::getFloat("r", "Input.HeadDevice.Orientation", 0.0);
 
-        m.makeRotate(h * M_PI / 180.0, osg::Vec3(0, 0, 1), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
         _headTransformsTrans.push_back(osg::Vec3(x, y, z));
         _headTransformsRot.push_back(m);
     }
@@ -666,8 +666,8 @@ bool TrackingManager::init()
         p = ConfigManager::getFloat("p", ss.str() + ".Orientation", 0.0);
         r = ConfigManager::getFloat("r", ss.str() + ".Orientation", 0.0);
 
-        m.makeRotate(h * M_PI / 180.0, osg::Vec3(0, 0, 1), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
         _headTransformsTrans.push_back(osg::Vec3(x, y, z));
         _headTransformsRot.push_back(m);
     }

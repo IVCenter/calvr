@@ -22,14 +22,16 @@
       
       <!-- Enable/disable plugins here -->
       <Plugin>
-        <PluginTest value="on" />
-        <MultiHandInteraction value="on" />
+        <GreenLight value="off" />
+        <PluginTest value="off" />
+        <MultiHandInteraction value="off" />
 	<TelePresence value="off" />
          <Scatter value="off">
         	<FilePath value="/home/covise/srotkin/Scatter/" />
 	</Scatter>
         <Argus value="off" />
         <WebMonitor value="off" />
+	<Site value="on" />
       	<HMI value="off" />
         <ClipPlane value="on" />
         <Vrml97 value="on" />
@@ -42,6 +44,7 @@
         <LSystems value="off" />
         <Maze value="off" />
         <CaveCAD value="off" />
+	<SpaceNavigator value="off" />
         <SPH value = "off">
               <params colorScale="0.167" colorShift="0.25" 
                       transScale="0.167" transShift="0.25" 
@@ -72,7 +75,7 @@
 	<MipMapVideo value="off" />
 	<MultiVolume value="off" />
 	<Volume value="off" />
-        <ArtifactVis value="off" />
+        <ArtifactVis value="on" />
         <Talha value="off" />
         <Seismic value="off" /> 
         <StructView value="off" />
@@ -111,6 +114,10 @@
      <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/CullingMultiGPURender/shaders" />
     </CullingMultiGPURender>
 
+    <Site>
+	<ColorTable value="/home/covise/plugins/calit2/Site/colortable.rgb" />
+	<ShaderPath value="/home/covise/CalVR/plugins/calit2/Site/shaders/"/>
+    </Site>
 
     <MultiGPURender>
      <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/MultiGPURender/shaders" />
@@ -187,6 +194,42 @@
           <TextureFile value="/home/covise/data/Talha/sampleTex.png"/>
         </Talha>
 
+        <GreenLight>
+          <Components textureDir="/home/covise/data/GreenLight/maps/">
+            <!-- Texture files should contain both the front and back faces, front on top -->
+            <C1 startname="convey" height="2" minWattage="620" maxWattage="690"
+                texture="unwrap_ConveyHC1.png" />
+            <C2 startname="gpu" height="4" minWattage="233" maxWattage="493"
+                texture="unwrap_gpuKOInVidia.png" />
+            <C3 startname="compute" height="1" minWattage="195" maxWattage="453"
+                texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+            <C4 startname="headnode" height="1" minWattage="198" maxWattage="289"
+                texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+            <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102"
+                texture="switch_unwrap.png" />
+            <C6 startname="thumper" height="4" minWattage="404" maxWattage="642"
+                texture="unwrap_thumperSunFireX4540.png" />
+            <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281"
+                texture="unwrap_IntelSR2600URLXNehalem.png" />
+            <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+            <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+            <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+            <Dc startname="DC" height ="12" minWattage="1" maxWattage="2"
+                texture="unwrap_dcmeter.png" />
+          </Components>
+          <Demo value="on" />
+          <Hardware
+            local="/home/covise/data/GreenLight/GreenLightAssets.fakejson"
+            download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+          <ModelsDir value="/home/covise/data/GreenLight/Models/" />
+          <Power
+            local="/home/covise/data/GreenLight/GLpower.xml"
+            download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power" />
+          <Shaders
+            fragment="/home/covise/data/GreenLight/shaders/component.frag"
+            vertex="/home/covise/data/GreenLight/shaders/component.vert" /> 
+        </GreenLight>
+
         <ModelLoader>
           <ConfigDir value="/home/covise/plugins/calit2/ModelLoader/" />
           <Files>
@@ -222,10 +265,30 @@
         </WebMonitor>
 
         <ArtifactVis>
+	  <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
+	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
+	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+	  <DCInfoFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
+	  <LociFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+	  <MaxVisibleRange value="1000000000.0" />
+	  <Offset>
+	    <X value="-3396591.682" />
+	    <Y value="-733458.55" />
+	    <Z value="-49.44" />
+	  </Offset>
+	  <Site>
+	    <Longitude value="35.491239" />
+	    <Latitude value="30.628039" />
+	  </Site>
+	  <Tessellation value=".2" />
+	</ArtifactVis>
+
+        <!--ArtifactVis>
           <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
           <ArtifactsFile value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
           <ObjectFolder value="/home/covise/data/kyle/3d-artifacts/" />
-        </ArtifactVis>
+        </ArtifactVis-->
 
         <Volume>
           <Files>
@@ -376,6 +439,10 @@
             <Taliesin_Garden_13 reye="/state/partition1/data/SpherePans/Taliesin-Garden-13-R16_8.tif" leye="/state/partition1/data/SpherePans/Taliesin-Garden-13-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
             <Wisconsin_Capitol_Dome_2 reye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-R16_8.tif" leye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
             <HOTR_16_4 reye="/home/covise/dan/data/starCaveIM/HOTR_1_R_16_4.png" leye="/home/covise/dan/data/starCaveIM/HOTR_1_L_16_4.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <Luxor_1220891 reye="/state/partition1/data/SpherePans/P1220891-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1220891-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Luxor_1220980 reye="/state/partition1/data/SpherePans/P1220980-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1220980-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Luxor_1230059 reye="/state/partition1/data/SpherePans/P1230059-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1230059-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Luxor_1500067 reye="/state/partition1/data/SpherePans/P1500067-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1500067-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
           </Files>
         </PanoView360>
 
@@ -568,6 +635,7 @@
 -->
 
      <MasterInterface value="calit2-vis06.ucsd.edu" />
+     <CleanupScript value="tentakel killall -9 CalVR" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
@@ -598,8 +666,8 @@
 
       <Threaded value="true" />
 
-      <NumHands value="2" />
-      <NumHeads value="2" />
+      <NumHands value="1" />
+      <NumHeads value="1" />
 
       <Hand1ButtonMask station1="0x1F" station2="0xFF" />
       <Hand2ButtonMask station1="0x3E0" station2="0x00" />

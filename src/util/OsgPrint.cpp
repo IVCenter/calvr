@@ -11,31 +11,41 @@ namespace cvr {
 #define LINE_SEP "==================================================\n"
 void print(osg::Vec2f & v) {
     std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << std::endl <<
-	"Y: " << v.y() << std::endl;
+    std::cout << "X: " << v.x() << "\n";
+    std::cout << "Y: " << v.y() << "\n";
     std::cout << LINE_SEP;
 }
+
+void print(const osg::Vec3f & v) {
+    std::cout << LINE_SEP;
+    std::cout << "X: " << v.x() << "\n";
+    std::cout << "Y: " << v.y() << "\n";
+    std::cout << "Z: " << v.z() << "\n";
+    std::cout << LINE_SEP;
+}
+
 void print(osg::Vec3f & v) {
     std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << std::endl <<
-	"Y: " << v.y() << std::endl <<
-	"Z: " << v.z() << std::endl;
+    std::cout << "X: " << v.x() << "\n";
+    std::cout << "Y: " << v.y() << "\n";
+    std::cout << "Z: " << v.z() << "\n";
     std::cout << LINE_SEP;
 }
+
 void print(osg::Vec4f & v) {
     std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << std::endl <<
-	"Y: " << v.y() << std::endl <<
-	"Z: " << v.z() << std::endl <<
-	"W: " << std::endl;
+    std::cout << "X: " << v.x() << "\n";
+    std::cout << "Y: " << v.y() << "\n";
+    std::cout << "Z: " << v.z() << "\n";
     std::cout << LINE_SEP;
 }
+
 void print(osg::Matrixd & m) {
     std::cout << LINE_SEP;
     for(unsigned int i = 0; i < 4; ++i) {
-	std::cout << m(i, 0) << " " << m(i, 1) << " " <<
-	    m(i, 2) << " " << m(i,3) << std::endl;
+	std::cerr << m(i, 0) << " " << m(i, 1) << " " <<
+	    m(i, 2) << " " << m(i,3) << "\n";
     }
-    std::cout << LINE_SEP;
+    std::cerr << LINE_SEP;
 }
 }

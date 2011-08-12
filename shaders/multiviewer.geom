@@ -24,6 +24,13 @@ flat out float diffuseV1P0;
 flat out float diffuseV1P1;
 flat out float diffuseV1P2;
 
+in vec2 texcoord[3];
+
+flat out float texture;
+flat out vec2 tcoord0;
+flat out vec2 tcoord1;
+flat out vec2 tcoord2;
+
 void main(void)
 {
     pos0 = gl_PositionIn[0].xyz;
@@ -34,9 +41,9 @@ void main(void)
     color1 = gl_FrontColorIn[1].rgb;
     color2 = gl_FrontColorIn[2].rgb;
 
-    //color0 = vec3(0.0,0.0,1.0);
-    //color1 = vec3(0.0,1.0,0.0);
-    //color2 = vec3(1.0,0.0,0.0);
+    color0 = vec3(0.0,0.0,1.0);
+    color1 = vec3(0.0,1.0,0.0);
+    color2 = vec3(1.0,0.0,0.0);
 
     vec4 t0p0 = gl_TextureMatrix[4] * gl_PositionIn[0];
     vec4 t0p1 = gl_TextureMatrix[4] * gl_PositionIn[1];
@@ -130,6 +137,28 @@ void main(void)
     {
 	return;
     }
+
+    tcoord0 = texcoord[0];
+    tcoord1 = texcoord[1];
+    tcoord2 = texcoord[2];
+
+    /*vec2 textest;
+    textext = texcoord[0] + texcoord[1] + texcoord[2];
+    if(textest.x == 0.0 && textest.y == 0.0)
+    {
+	texture = false;
+	color0 = vec3(0.0,1.0,0.0);
+    }
+    else
+    {
+	texture = true;
+	tcoord0 = texcoord[0];
+	tcoord1 = texcoord[1];
+	tcoord2 = texcoord[2];
+	color0 = vec3(1.0,0.0,0.0);
+	color1 = vec3(1.0,0.0,0.0);
+	color2 = vec3(1.0,0.0,0.0);
+    }*/
 
     float distance0 = t0p0.z;
     float distance1 = t1p0.z;

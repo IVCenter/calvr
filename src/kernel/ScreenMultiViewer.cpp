@@ -53,6 +53,7 @@ void ScreenMultiViewer::init(int mode)
     _camera->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
 
     _camera->setCullingMode(osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING);
+    //_camera->setCullingMode(osgUtil::CullVisitor::NO_CULLING);
 
     osg::Scissor * scissor = new osg::Scissor((int)_myInfo->myChannel->left,(int)_myInfo->myChannel->bottom,(int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
     _camera->getOrCreateStateSet()->setAttributeAndModes(scissor,osg::StateAttribute::ON);
@@ -106,7 +107,14 @@ void ScreenMultiViewer::init(int mode)
 	}
 	else
 	{
-	    //std::cerr << "adding MultiViewerCullVisitor" << std::endl;
+	    osg::DisplaySettings * ds =
+		renderer->getSceneView(0)->getDisplaySettings();
+	    ds->setStereo(true);
+	    ds->setStereoMode(_stereoMode);
+	    StereoIdentCallback * sc = new StereoIdentCallback;
+	    renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
+	    renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+
 	    renderer->getSceneView(0)->setCullVisitor(new MultiViewerCullVisitor());
 	    renderer->getSceneView(1)->setCullVisitor(new MultiViewerCullVisitor());
 	}
@@ -292,6 +300,18 @@ void ScreenMultiViewer::init(int mode)
     _cUni->setType(osg::Uniform::FLOAT);
     _cUni->set(_c);
     _camera->getOrCreateStateSet()->addUniform(_cUni);
+
+    osg::Uniform * light = new osg::Uniform();
+    light->setName("MVLighting");
+    light->setType(osg::Uniform::BOOL);
+    light->set(true);
+    _camera->getOrCreateStateSet()->addUniform(light);
+
+    osg::Uniform * texture = new osg::Uniform();
+    texture->setName("MVTexture");
+    texture->setType(osg::Uniform::BOOL);
+    texture->set(false);
+    _camera->getOrCreateStateSet()->addUniform(texture);
 }
 
 void ScreenMultiViewer::computeViewProj()
@@ -804,6 +824,7 @@ ScreenInfo * ScreenMultiViewer::findScreenInfo(osg::Camera * c)
 
 void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal)
 {
+    osg::Vec3d worldEye = eyePos;
     //translate screen to origin
     osg::Matrix screenTrans;
     screenTrans.makeTranslate(-_myInfo->xyz);
@@ -867,7 +888,7 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
     point = point * invView;
     nearPoint = point;
 
-    nfNormal = nearPoint - eyePos;
+    nfNormal = nearPoint - worldEye;
     nfNormal.normalize();
 
     point = osg::Vec3(0.0,0.0,-_far);
@@ -1471,4 +1492,276 @@ float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
     weight.y() = std::max(weight.y(),0.0f);
 
     return weight.y() / (weight.x() + weight.y());
+}
+
+ScreenMultiViewer::StateSetVisitor::StateSetVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+{
+    _lighting = true;
+    _texture = false;
+}
+
+void ScreenMultiViewer::StateSetVisitor::apply(osg::Node& node)
+{
+    bool lastL = _lighting;
+    bool lastT = _texture;
+    osg::StateSet * stateset = node.getOrCreateStateSet();
+    osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
+    if(sa != osg::StateAttribute::INHERIT)
+    {
+	osg::Uniform * lighting = NULL;
+	if(sa == osg::StateAttribute::ON && !_lighting)
+	{
+	    lighting = stateset->getUniform("MVLighting");
+	    if(!lighting)
+	    {
+		lighting = new osg::Uniform();
+		lighting->setName("MVLighting");
+		lighting->setType(osg::Uniform::BOOL);
+		lighting->set(true);
+		stateset->addUniform(lighting);
+	    }
+	    else
+	    {
+		lighting->set(true);
+	    }
+	    _lighting = true;
+	}
+	else if(sa == osg::StateAttribute::OFF && _lighting)
+	{
+	    lighting = stateset->getUniform("MVLighting");
+	    if(!lighting)
+	    {
+		lighting = new osg::Uniform();
+		lighting->setName("MVLighting");
+		lighting->setType(osg::Uniform::BOOL);
+		lighting->set(false);
+		stateset->addUniform(lighting);
+	    }
+	    else
+	    {
+		lighting->set(false);
+	    }
+
+	    _lighting = false;
+	}
+    }
+
+    sa = stateset->getMode(GL_TEXTURE_2D);
+    if(sa != osg::StateAttribute::INHERIT)
+    {
+	osg::Uniform * texture = NULL;
+	if(sa == osg::StateAttribute::ON && !_texture)
+	{
+	    texture = stateset->getUniform("MVTexture");
+	    if(!texture)
+	    {
+		texture = new osg::Uniform();
+		texture->setName("MVTexture");
+		texture->setType(osg::Uniform::BOOL);
+		texture->set(true);
+		stateset->addUniform(texture);
+	    }
+	    else
+	    {
+		texture->set(true);
+	    }
+	    _texture = true;
+	}
+	else if(sa == osg::StateAttribute::OFF && _texture)
+	{
+	    texture = stateset->getUniform("MVTexture");
+	    if(!texture)
+	    {
+		texture = new osg::Uniform();
+		texture->setName("MVTexture");
+		texture->setType(osg::Uniform::BOOL);
+		texture->set(false);
+		stateset->addUniform(texture);
+	    }
+	    else
+	    {
+		texture->set(false);
+	    }
+
+	    _texture = false;
+	}
+    }
+
+    traverse(node);
+
+    _lighting = lastL;
+    _texture = lastT;
+}
+
+void ScreenMultiViewer::StateSetVisitor::apply(osg::Geode& node)
+{
+    bool lastL = _lighting;
+    bool lastT = _texture;
+    osg::StateSet * stateset = node.getOrCreateStateSet();
+    osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
+    if(sa != osg::StateAttribute::INHERIT)
+    {
+	osg::Uniform * lighting = NULL;
+	if(sa == osg::StateAttribute::ON && !_lighting)
+	{
+	    lighting = stateset->getUniform("MVLighting");
+	    if(!lighting)
+	    {
+		lighting = new osg::Uniform();
+		lighting->setName("MVLighting");
+		lighting->setType(osg::Uniform::BOOL);
+		lighting->set(true);
+		stateset->addUniform(lighting);
+	    }
+	    else
+	    {
+		lighting->set(true);
+	    }
+	    _lighting = true;
+	}
+	else if(sa == osg::StateAttribute::OFF && _lighting)
+	{
+	    lighting = stateset->getUniform("MVLighting");
+	    if(!lighting)
+	    {
+		lighting = new osg::Uniform();
+		lighting->setName("MVLighting");
+		lighting->setType(osg::Uniform::BOOL);
+		lighting->set(false);
+		stateset->addUniform(lighting);
+	    }
+	    else
+	    {
+		lighting->set(false);
+	    }
+
+	    _lighting = false;
+	}
+    }
+
+    sa = stateset->getMode(GL_TEXTURE_2D);
+    if(sa != osg::StateAttribute::INHERIT)
+    {
+	osg::Uniform * texture = NULL;
+	if(sa == osg::StateAttribute::ON && !_texture)
+	{
+	    texture = stateset->getUniform("MVTexture");
+	    if(!texture)
+	    {
+		texture = new osg::Uniform();
+		texture->setName("MVTexture");
+		texture->setType(osg::Uniform::BOOL);
+		texture->set(true);
+		stateset->addUniform(texture);
+	    }
+	    else
+	    {
+		texture->set(true);
+	    }
+	    _texture = true;
+	}
+	else if(sa == osg::StateAttribute::OFF && _texture)
+	{
+	    texture = stateset->getUniform("MVTexture");
+	    if(!texture)
+	    {
+		texture = new osg::Uniform();
+		texture->setName("MVTexture");
+		texture->setType(osg::Uniform::BOOL);
+		texture->set(false);
+		stateset->addUniform(texture);
+	    }
+	    else
+	    {
+		texture->set(false);
+	    }
+
+	    _texture = false;
+	}
+    }
+
+    for(unsigned int i = 0; i < node.getNumDrawables(); i++)
+    {
+	stateset = node.getDrawable(i)->getOrCreateStateSet();
+	osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
+	if(sa != osg::StateAttribute::INHERIT)
+	{
+	    osg::Uniform * lighting = NULL;
+	    if(sa == osg::StateAttribute::ON && !_lighting)
+	    {
+		lighting = stateset->getUniform("MVLighting");
+		if(!lighting)
+		{
+		    lighting = new osg::Uniform();
+		    lighting->setName("MVLighting");
+		    lighting->setType(osg::Uniform::BOOL);
+		    lighting->set(true);
+		    stateset->addUniform(lighting);
+		}
+		else
+		{
+		    lighting->set(true);
+		}
+	    }
+	    else if(sa == osg::StateAttribute::OFF && _lighting)
+	    {
+		lighting = stateset->getUniform("MVLighting");
+		if(!lighting)
+		{
+		    lighting = new osg::Uniform();
+		    lighting->setName("MVLighting");
+		    lighting->setType(osg::Uniform::BOOL);
+		    lighting->set(false);
+		    stateset->addUniform(lighting);
+		}
+		else
+		{
+		    lighting->set(false);
+		}
+	    }
+	}
+
+	sa = stateset->getMode(GL_TEXTURE_2D);
+	if(sa != osg::StateAttribute::INHERIT)
+	{
+	    osg::Uniform * texture = NULL;
+	    if(sa == osg::StateAttribute::ON && !_texture)
+	    {
+		texture = stateset->getUniform("MVTexture");
+		if(!texture)
+		{
+		    texture = new osg::Uniform();
+		    texture->setName("MVTexture");
+		    texture->setType(osg::Uniform::BOOL);
+		    texture->set(true);
+		    stateset->addUniform(texture);
+		}
+		else
+		{
+		    texture->set(true);
+		}
+	    }
+	    else if(sa == osg::StateAttribute::OFF && _texture)
+	    {
+		texture = stateset->getUniform("MVTexture");
+		if(!texture)
+		{
+		    texture = new osg::Uniform();
+		    texture->setName("MVTexture");
+		    texture->setType(osg::Uniform::BOOL);
+		    texture->set(false);
+		    stateset->addUniform(texture);
+		}
+		else
+		{
+		    texture->set(false);
+		}
+	    }
+	}
+    }
+
+    traverse(node);
+
+    _lighting = lastL;
+    _texture = lastT;
 }

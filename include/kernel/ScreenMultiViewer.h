@@ -13,6 +13,7 @@
 #include <osg/Polytope>
 
 #include <osg/Camera>
+#include <osg/NodeVisitor>
 
 namespace cvr
 {
@@ -88,6 +89,19 @@ class ScreenMultiViewer : public ScreenMVSimulator
         };
 
     protected:
+
+        class StateSetVisitor : public osg::NodeVisitor
+        {
+            public:
+                StateSetVisitor();
+                virtual void apply(osg::Node& node);
+                virtual void apply(osg::Geode& node);
+
+            protected:
+                bool _lighting;
+                bool _texture;
+        };
+
         void algtest();
         void addTestGeometry();
         void calcScreenMinMaxRatio();

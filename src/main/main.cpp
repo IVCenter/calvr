@@ -1,5 +1,6 @@
 #include <kernel/CalVR.h>
 #include <iostream>
+#include <cstdlib>
 
 #include <osg/ArgumentParser>
 

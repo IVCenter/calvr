@@ -48,8 +48,8 @@ void ScreenStereo::init(int mode)
 
 void ScreenStereo::computeViewProj()
 {
-    osg::Vec3d eyeLeft = defaultLeftEye();
-    osg::Vec3d eyeRight = defaultRightEye();
+    osg::Vec3d eyeLeft = defaultLeftEye(_myInfo->myChannel->head);
+    osg::Vec3d eyeRight = defaultRightEye(_myInfo->myChannel->head);
 
     computeDefaultViewProj(eyeLeft,_viewLeft,_projLeft);
     computeDefaultViewProj(eyeRight,_viewRight,_projRight);

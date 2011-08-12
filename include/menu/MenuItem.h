@@ -22,6 +22,7 @@ enum MenuItemType
     TEXT,
     TEXTBUTTONSET,
     IMAGE,
+    LIST,
     OTHER
 };
 

@@ -147,10 +147,10 @@
         </ArtifactVis>
 
     <PluginTest value="off" />
-    <Collaborative value="off">
+    <CollaborativePlugin value="on">
       <Server value="127.0.0.1" />
       <Port value="11050" />
-    </Collaborative>
+    </CollaborativePlugin>
 
     <MVSim value="off">
         <Head0 value="off" x="0" y="0" z="0" rotate="0" />
@@ -229,7 +229,7 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="LEFT"  windowIndex="0"  name="0"  >
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  >
      <ViewerPosition x="0.0" y="-3000" z="0.0" />
     </Channel>
     <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" channel="1" stereoMode="FIXED_VIEWER"  windowIndex="0"  name="1">

@@ -2,9 +2,129 @@
 
 <Plugin>
   <ModelLoader>
-    <ConfigDir value="/projects/ucsd/CalVR/data/ModelLoader/" />
+    <ConfigDir value="/home/covise/data/ModelLoader/" />
     <Files>
-      <se_building path="/projects/ucsd/CalVR/data/falko/se_building.obj" mask="1" />
+        <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
+        <madain_saleh path="/projects/vislab/models/madain_saleh/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
+        <calit2_building path="/home/covise/data/floorplan/calit2-study2.wrl" mask="1" />
     </Files>
   </ModelLoader>
+
+    <StructView>
+      <Layer0File value="/home/covise/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+      <Layer1File value="/home/covise/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+      <Layer2File value="/home/covise/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+      <Layer3File value="/home/covise/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+      <Layer4File value="/home/covise/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+      <Layer5File value="/home/covise/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+      <Layer6File value="/home/covise/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+      <Layer7File value="/home/covise/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+      <Layer8File value="/home/covise/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+      <Layer9File value="/home/covise/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+      <Layer10File value="/home/covise/data/baybridge/T1Block13_FullConcrete.WRL" />
+      <Layer11File value="/home/covise/data/baybridge/Tower-all.wrl" />
+    </StructView>
+
+        <ArtifactVis>
+          <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
+          <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
+          <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+          <DCInfoFile value="/projects/ucsd/software/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
+          <LociFile value="/projects/ucsd/software/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+          <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+          <MaxVisibleRange value="1000000000.0" />
+          <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+        </ArtifactVis>
+
+  <PanoView360>
+    <RenderOnMaster value="false" />
+          <JoystickSpin value="true" />
+          <FloorOffset value="1759.425" />
+          <ScreenConfig value="/projects/ucsd/software/CalVR/plugins/calit2/PanoView360/config/Screens.xml" />
+          <Files>
+            <Taliesin_Garden_13 reye="/home/covise/data/SpherePans/Taliesin-Garden-13-R16_8.tif" leye="/home/covise/data/SpherePans/Taliesin-Garden-13-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Taliesin_Entrance_11 reye="/home/covise/data/SpherePans/Taliesin-Entrance-11-R16_8.tif" leye="/home/covise/data/SpherePans/Taliesin-Entrance-11-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <SFO-Ship reye="/home/covise/data/SpherePans/SF-Ship-1-R.tif" leye="/home/covise/data/SpherePans/SF-Ship-1-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+       
+            <Madaen-Saleh-Diwan reye="/home/covise/data/SpherePans/madaen-saleh/Al-Diwan/P1420084-Panorama-R.tif" leye="/home/covise/data/SpherePans/madaen-saleh/Al-Diwan/P1120084-Panorama-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <Madaen-Saleh-AlKhuraymat reye="/home/covise/data/SpherePans/madaen-saleh/Bowl3/P1430157-Panorama-R.tif" leye="/home/covise/data/SpherePans/madaen-saleh/Bowl3/P1130157-Panorama-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />    
+    	    <Madaen-Saleh-QasrAlBint-Tomb1 reye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/P1420385-PanoramaB-R.tif" leye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/P1120385-PanoramaB-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />        	    			    
+      	    <Madaen-Saleh-QasrAlBint-Tomb2  reye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/Second-Tomb-Interior-R.tif"  leye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/Second-Tomb-Interior-L.tif"  radius="9144"  viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />        	    			    
+            <Madaen-Saleh-RockFormation reye="/home/covise/data/SpherePans/madaen-saleh/Rock-Formation-R.tif" leye="/home/covise/data/SpherePans/madaen-saleh/Rock-Formation-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+
+    	    <KAUST-Gazebo reye="/home/covise/data/SpherePans/kaust/Gazebo/Gazebo-R.tif" leye="/home/covise/data/SpherePans/kaust/Gazebo/Gazebo-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <KAUST-MosqueInterior1 reye="/home/covise/data/SpherePans/kaust/Mosque/Mosque-Interior-R.tif" leye="/home/covise/data/SpherePans/kaust/Mosque/Mosque-Interior-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <KAUST-MosqueInterior2 reye="/home/covise/data/SpherePans/kaust/Mosque/Grand-Mosque-2-R.tif" leye="/home/covise/data/SpherePans/kaust/Mosque/Grand-Mosque-2-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+            <KAUST-Museum reye="/home/covise/data/SpherePans/kaust/Museum/Museum_R.tif" leye="/home/covise/data/SpherePans/kaust/Museum/Museum_L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  /> 
+    	    <MONO-SFO-Ship reye="/home/covise/data/SpherePans/SF-Ship-1-R.tif" leye="/home/covise/data/SpherePans/SF-Ship-1-R.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+
+
+            <MONO-Madaen-Saleh-AlDiwan  reye="/home/covise/data/SpherePans/madaen-saleh/Al-Diwan/P1420084-Panorama-R.tif"  leye="/home/covise/data/SpherePans/madaen-saleh/Al-Diwan/P1420084-Panorama-R.tif"  radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <MONO-Madaen-Saleh-AlKhuraymat  reye="/home/covise/data/SpherePans/madaen-saleh/Bowl3/P1430157-Panorama-R.tif"  leye="/home/covise/data/SpherePans/madaen-saleh/Bowl3/P1430157-Panorama-R.tif"  radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />    
+    	    <MONO-Madaen-Saleh-QasrAlBint-Tomb1  reye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/P1420385-PanoramaB-R.tif"  leye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/P1420385-PanoramaB-R.tif"  radius="9144"  viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />        	    			    
+      	    <MONO-Madaen-Saleh-QasrAlBint-Tomb2  reye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/Second-Tomb-Interior-R.tif"  leye="/home/covise/data/SpherePans/madaen-saleh/Tomb-Interior/Second-Tomb-Interior-R.tif"  radius="9144"  viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />        	    			    
+            <MONO-Madaen-Saleh-RockFormation reye="/home/covise/data/SpherePans/madaen-saleh/Rock-Formation-R.tif" leye="/home/covise/data/SpherePans/madaen-saleh/Rock-Formation-R.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+ 
+     	    <MONO-KAUST-Gazebo reye="/home/covise/data/SpherePans/kaust/Gazebo/Gazebo-R.tif"  leye="/home/covise/data/SpherePans/kaust/Gazebo/Gazebo-R.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <MONO-KAUST-MosqueInterior1 reye="/home/covise/data/SpherePans/kaust/Mosque/Mosque-Interior-R.tif"  leye="/home/covise/data/SpherePans/kaust/Mosque/Mosque-Interior-R.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+    	    <MONO-KAUST-MosqueInterior2 reye="/home/covise/data/SpherePans/kaust/Mosque/Grand-Mosque-2-R.tif" leye="/home/covise/data/SpherePans/kaust/Mosque/Grand-Mosque-2-R.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />            	
+
+
+            <Luxor_1220891 reye="/home/covise/data/SpherePans/luxor/1220891/P1220891-Panorama-R.tif"
+            	   		leye="/home/covise/data/SpherePans/luxor/1220891/P1220891-Panorama-L.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+            <Luxor_1220980 reye="/home/covise/data/SpherePans/luxor/1220980/P1220980-Panorama-R.tif"
+            	   		leye="/home/covise/data/SpherePans/luxor/1220980/P1220980-Panorama-L.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+            <Luxor_1230059 reye="/home/covise/data/SpherePans/luxor/1230059/P1230059-Panorama-R.tif"
+            	   		leye="/home/covise/data/SpherePans/luxor/1230059/P1230059-Panorama-L.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+            <Luxor_150067 reye="/home/covise/data/SpherePans/luxor/1500067/P1500067-Panorama-R.tif"
+            	   		leye="/home/covise/data/SpherePans/luxor/1500067/P1500067-Panorama-L.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+				
+				  <Luxor_1210377 leye="/home/covise/data/SpherePans/luxor/1210377/P1210377-Panorama.tif"
+            	   		reye="/home/covise/data/SpherePans/luxor/1210377/P1490395-Panorama.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+				
+				
+				<Luxor_1200998 leye="/home/covise/data/SpherePans/luxor/1200998/P1200998_L.tif"
+            	   		reye="/home/covise/data/SpherePans/luxor/1200998/P1490017_R.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+				
+			   <KTshirt_Luxur leye="/home/covise/data/SpherePans/luxor/KTshirt_Luxur/P1210150LeftPanorama.tif"
+            	   		reye="/home/covise/data/SpherePans/luxor/KTshirt_Luxur//1490168RightPan.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+				
+		        <NewK_Tshirt leye="/home/covise/data/SpherePans/luxor/NewK_Tshirt/P1210150NewLeftPanorama.tif"
+            	   		reye="/home/covise/data/SpherePans/luxor/NewK_Tshirt//1490168NewRightPan.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+				<Edinburgh_Summer leye="/home/covise/data/SpherePans/Edinburgh/Edinburgh_summer.tif"
+				reye="/home/covise/data/SpherePans/Edinburgh/Edinburgh_summer.tif"
+				radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+
+
+         </Files>
+        </PanoView360>
+
 </Plugin>

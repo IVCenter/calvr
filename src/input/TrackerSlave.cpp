@@ -1,5 +1,7 @@
 #include <input/TrackerSlave.h>
 
+#include <cstring>
+
 using namespace cvr;
 
 TrackerSlave::TrackerSlave(int bodies, int buttonStations, int * buttons,
