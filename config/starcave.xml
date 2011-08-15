@@ -89,6 +89,7 @@
         <Construct4D value="off" />
         <MultiGPURender value="off" />
         <CullingMultiGPURender value="off" />
+        <CollaborativePlugin value="off" />
       </Plugin>
 
       <!-- Plugin configuration -->
@@ -130,6 +131,11 @@
      <Height value="768" />
      <NumberOfGPUs value="2" />
     </MultiGPURender>
+
+    <CollaborativePlugin>
+      <Server value="127.0.0.1" />
+      <Port value="11050" />
+    </CollaborativePlugin>
 
  	<CaveCAD>
   		<DataDir value="/home/covise/data/CaveCAD" />
