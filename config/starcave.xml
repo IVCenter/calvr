@@ -19,7 +19,6 @@
       <SyncToVBlank value="ON" device="DFP-0" />
       <Near value="100" />
       <Far value="100000000" /> 
-      
       <!-- Enable/disable plugins here -->
       <Plugin>
         <GreenLight value="off" />
