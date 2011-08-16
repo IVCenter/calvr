@@ -19,7 +19,6 @@
       <SyncToVBlank value="ON" device="DFP-0" />
       <Near value="100" />
       <Far value="100000000" /> 
-      
       <!-- Enable/disable plugins here -->
       <Plugin>
         <GreenLight value="off" />
@@ -89,6 +88,7 @@
         <Construct4D value="off" />
         <MultiGPURender value="off" />
         <CullingMultiGPURender value="off" />
+        <CollaborativePlugin value="off" />
       </Plugin>
 
       <!-- Plugin configuration -->
@@ -130,6 +130,11 @@
      <Height value="768" />
      <NumberOfGPUs value="2" />
     </MultiGPURender>
+
+    <CollaborativePlugin>
+      <Server value="127.0.0.1" />
+      <Port value="11050" />
+    </CollaborativePlugin>
 
  	<CaveCAD>
   		<DataDir value="/home/covise/data/CaveCAD" />
