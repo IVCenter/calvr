@@ -7,7 +7,6 @@ FIND_PATH(OSSIMPLANET_INCLUDE_DIR ossimplanet.h
 
 FIND_PATH(OSSIMPLANET_INCLUDE_DIR ossimplanet.h
   PATHS
-  /home/covise/covise/extern_libs/src/ossim/ossimPlanet/include
   /usr/local/include
   /usr/include
   /sw/include # Fink
@@ -25,8 +24,6 @@ FIND_LIBRARY(OSSIMPLANET_LIBRARY
 FIND_LIBRARY(OSSIMPLANET_LIBRARY 
   NAMES ossimPlanet
   PATHS
-    /home/covise/covise/extern_libs/src/ossim/ossimPlanet
-    /home/covise/covise/extern_libs
     /usr/local
     /usr
     /sw
