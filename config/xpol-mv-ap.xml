@@ -200,6 +200,7 @@
 	    <FloorPlan path="/home/aprudhom/data/floorplan/calit2-study2.wrl" mask="1" />
 	    <4HHB path="/home/aprudhom/4HHBrib.wrl" mask="1" />
 	    <Baybridge path="/home/aprudhom/data/baybridge/TowerFull.WRL" mask="1" />
+	    <Biplane path="/home/aprudhom/data/biplane.iv" mask="1" />
             <!--<Moebius path="/home/covise/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
             <ShowCase path="/home/covise/Showcase.wrl" mask="1" />
             <bearing_and_shearkeys path="/home/covise/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
@@ -1116,6 +1117,9 @@
     <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
    </ScreenConfig>
  </LOCAL>
+
+ <!--MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" /-->
+ <MultiViewerFunction a="0" b="-1.2" c="1.0" />
 
   <!--<INCLUDE global="1" configname="xpolside">xpol-side.xml</INCLUDE> -->
  <!--<INCLUDE global="1" configname="xpolinter">xpol-inter.xml</INCLUDE>-->

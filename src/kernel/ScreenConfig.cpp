@@ -402,6 +402,9 @@ bool ScreenConfig::readScreens()
 
 bool ScreenConfig::makeWindows()
 {
+    osg::DisplaySettings * ds = osg::DisplaySettings::instance();
+    ds->setNumMultiSamples(ConfigManager::getInt("MultiSample",0));
+
     for(int i = 0; i < _windowInfoList.size(); i++)
     {
         osg::GraphicsContext::Traits * traits =
@@ -423,6 +426,13 @@ bool ScreenConfig::makeWindows()
         if(ConfigManager::getBool("Stencil", false))
         {
             traits->stencil = 8;
+        }
+
+        int samples = ConfigManager::getInt("MultiSample",0);
+        if(samples)
+        {
+            traits->samples = samples;
+            traits->sampleBuffers = 1;
         }
 
         _windowInfoList[i]->gc
