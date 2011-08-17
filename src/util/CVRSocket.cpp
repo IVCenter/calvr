@@ -48,7 +48,11 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     std::stringstream ss;
     ss << port;
 
-    getaddrinfo(_host.c_str(), ss.str().c_str(), &hints, &_res);
+    if(getaddrinfo(_host.c_str(), ss.str().c_str(), &hints, &_res))
+    {
+	std::cerr << "Error socket getaddrinfo host: " << _host << " port: " << port << std::endl;
+	return;
+    }
 
     if((_socket = (int) socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
             == -1)
@@ -405,6 +409,7 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
     {
         if((read = ::recv(_socket, data, bytesToRead, flags)) <= 0)
         {
+            
             //if(errno != EAGAIN)
             //{
 	    if(_printErrors)

@@ -93,6 +93,11 @@
 
     <ArtifactVis value="on" />
 
+    <AndroidNavigator value="on" >
+     <TransMult value="1.0" />
+     <RotMult value="1.0" />
+    </AndroidNavigator>
+
     <SpaceNavigator value="on" >
      <TransMult value="1.0" />
      <RotMult value="1.0" />
