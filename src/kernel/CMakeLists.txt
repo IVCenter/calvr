@@ -14,6 +14,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenBase.h
     ${HEADER_PATH}/ScreenMono.h
     ${HEADER_PATH}/ScreenStereo.h
+    ${HEADER_PATH}/ScreenInterlacedTopBottom.h
     ${HEADER_PATH}/ScreenLenticular.h
     ${HEADER_PATH}/ScreenMultiViewer.h
     ${HEADER_PATH}/MultiViewerCullVisitor.h
@@ -67,6 +68,7 @@ SET(LIB_SRC_FILES
     ScreenBase.cpp
     ScreenMono.cpp
     ScreenStereo.cpp
+    ScreenInterlacedTopBottom.cpp
     MultiViewerCullVisitor.cpp
     ScreenMVMaster.cpp
     ScreenMVSimulator.cpp
