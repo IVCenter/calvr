@@ -6,6 +6,7 @@
 #include <osg/Shader>
 #include <osg/GL2Extensions>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
 
 #include <iostream>
@@ -28,6 +29,7 @@ ScreenInterlacedTopBottom::~ScreenInterlacedTopBottom()
 void ScreenInterlacedTopBottom::init(int mode)
 {
     _stereoMode = osg::DisplaySettings::VERTICAL_SPLIT;
+    //_stereoMode = osg::DisplaySettings::LEFT_EYE;
 
     _camera = new osg::Camera();
 
@@ -59,9 +61,11 @@ void ScreenInterlacedTopBottom::init(int mode)
     ic->screen = this;
     ic->skip = true;
     _camera->setPostDrawCallback(ic);
+    //_camera->setDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+    //_camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
 
-    osg::Image * image = new osg::Image();
+    /*osg::Image * image = new osg::Image();
     image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
     image->setInternalTextureFormat(4);
 
@@ -90,8 +94,35 @@ void ScreenInterlacedTopBottom::init(int mode)
     _colorTexture->setResizeNonPowerOfTwoHint(false);
     _colorTexture->setUseHardwareMipMapGeneration(false);
     _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
-    _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
+    _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);*/
 
+    _colorTexture = new osg::Texture2D();
+    _colorTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
+    _colorTexture->setInternalFormat(GL_RGBA);
+    _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _colorTexture->setResizeNonPowerOfTwoHint(false);
+    _colorTexture->setUseHardwareMipMapGeneration(false);
+
+    /*_depthTexture = new osg::Texture2D();
+    _depthTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
+    _depthTexture->setInternalFormat(GL_DEPTH_COMPONENT);
+    _depthTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    _depthTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _depthTexture->setResizeNonPowerOfTwoHint(false);
+    _depthTexture->setUseHardwareMipMapGeneration(false);*/
+
+
+    //image = new osg::Image();
+    //image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
+    //image->setInternalTextureFormat(4);
+    _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+    //_camera->attach(osg::Camera::COLOR_BUFFER0, image);
+    _camera->attach(osg::Camera::COLOR_BUFFER0, _colorTexture);
+    //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
+    //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //_colorTexture->setImage(image);
     ic->_texture = _colorTexture.get();
 }
 
@@ -106,6 +137,8 @@ void ScreenInterlacedTopBottom::computeViewProj()
 
 void ScreenInterlacedTopBottom::updateCamera()
 {
+    _camera->setViewMatrix(_viewLeft);
+    _camera->setProjectionMatrix(_projLeft);
     // not needed for this mode
     //std::cerr << "Update." << std::endl;
 }
@@ -154,6 +187,7 @@ ScreenInfo * ScreenInterlacedTopBottom::findScreenInfo(osg::Camera * c)
 
 void ScreenInterlacedTopBottom::adjustViewportCoords(int & x, int & y)
 {
+    return;
     if(_stereoMode == osg::DisplaySettings::HORIZONTAL_SPLIT)
     {
 	if(x > (_myInfo->myChannel->width / 2.0))
@@ -176,13 +210,20 @@ void ScreenInterlacedTopBottom::adjustViewportCoords(int & x, int & y)
 
 void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &renderInfo) const
 {
+    //osgDB::writeImageFile(*screen->image,"/home/aprudhom/testImage.tif");
+    //exit(0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glFinish();
+    //return;
     if(skip)
     {
+	//screen->_camera->setClearColor(osg::Vec4(1.0,0,0,0));
 	skip = false;
 	return;
     }
     else
     {
+	//screen->_camera->setClearColor(osg::Vec4(0,1.0,0,0));
 	skip = true;
     }
 
