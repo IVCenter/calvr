@@ -97,6 +97,8 @@ class ScreenInterlacedTopBottom : public ScreenBase
         osg::ref_ptr<osg::Camera> _camera; ///< osg::Camera for this screen
         osg::ref_ptr<osg::Texture2D> _colorTexture;
         osg::ref_ptr<osg::Texture2D> _depthTexture;
+
+        osg::Image * image;
 };
 
 }
