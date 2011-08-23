@@ -1,3 +1,4 @@
+#include <config/ConfigManager.h>
 #include <kernel/ScreenInterlacedTopBottom.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/CalVR.h>
@@ -31,16 +32,21 @@ void ScreenInterlacedTopBottom::init(int mode)
     _stereoMode = osg::DisplaySettings::VERTICAL_SPLIT;
     //_stereoMode = osg::DisplaySettings::LEFT_EYE;
 
-    _camera = new osg::Camera();
+    _cameraL = new osg::Camera();
+    _cameraR = new osg::Camera();
 
     osg::DisplaySettings * ds = new osg::DisplaySettings();
-    _camera->setDisplaySettings(ds);
+    _cameraL->setDisplaySettings(ds);
+    ds = new osg::DisplaySettings();
+    _cameraR->setDisplaySettings(ds);
 
-    CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
-    defaultCameraInit(_camera.get());
+    CVRViewer::instance()->addSlave(_cameraL.get(), osg::Matrixd(), osg::Matrixd());
+    defaultCameraInit(_cameraL.get());
+    CVRViewer::instance()->addSlave(_cameraR.get(), osg::Matrixd(), osg::Matrixd());
+    defaultCameraInit(_cameraR.get());
 
     osgViewer::Renderer * renderer =
-            dynamic_cast<osgViewer::Renderer*> (_camera->getRenderer());
+            dynamic_cast<osgViewer::Renderer*> (_cameraL->getRenderer());
     if(!renderer)
     {
         std::cerr << "Error getting renderer pointer." << std::endl;
@@ -50,17 +56,47 @@ void ScreenInterlacedTopBottom::init(int mode)
         osg::DisplaySettings * ds =
                 renderer->getSceneView(0)->getDisplaySettings();
         ds->setStereo(true);
-        ds->setStereoMode(_stereoMode);
+        ds->setStereoMode(osg::DisplaySettings::LEFT_EYE);
         StereoCallback * sc = new StereoCallback;
         sc->screen = this;
         renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
         renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+
+	osg::Viewport * vp = _cameraL->getViewport();
+	vp->height() = vp->height() / 2.0;
+	_cameraL->setViewport(vp);
     }
+
+    renderer =
+            dynamic_cast<osgViewer::Renderer*> (_cameraR->getRenderer());
+    if(!renderer)
+    {
+        std::cerr << "Error getting renderer pointer." << std::endl;
+    }
+    else
+    {
+        osg::DisplaySettings * ds =
+                renderer->getSceneView(0)->getDisplaySettings();
+        ds->setStereo(true);
+        ds->setStereoMode(osg::DisplaySettings::RIGHT_EYE);
+        StereoCallback * sc = new StereoCallback;
+        sc->screen = this;
+        renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
+        renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+
+	osg::Viewport * vp = _cameraR->getViewport();
+	vp->height() = vp->height() / 2.0;
+	_cameraR->setViewport(vp);
+    }
+
+    int samples = ConfigManager::getInt("MultiSample",0);
 
     InterlaceCallback * ic = new InterlaceCallback;
     ic->screen = this;
-    ic->skip = true;
-    _camera->setPostDrawCallback(ic);
+    ic->odd = true;
+    ic->first = true;
+    //ic->skip = true;
+    _cameraL->setPostDrawCallback(ic);
     //_camera->setDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
     //_camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
@@ -96,13 +132,13 @@ void ScreenInterlacedTopBottom::init(int mode)
     _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
     _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);*/
 
-    _colorTexture = new osg::Texture2D();
-    _colorTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
-    _colorTexture->setInternalFormat(GL_RGBA);
-    _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-    _colorTexture->setResizeNonPowerOfTwoHint(false);
-    _colorTexture->setUseHardwareMipMapGeneration(false);
+    _colorTextureL = new osg::Texture2D();
+    _colorTextureL->setTextureSize((int)_myInfo->myChannel->width,(int)(_myInfo->myChannel->height / 2.0));
+    _colorTextureL->setInternalFormat(GL_RGBA);
+    _colorTextureL->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureL->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureL->setResizeNonPowerOfTwoHint(false);
+    _colorTextureL->setUseHardwareMipMapGeneration(false);
 
     /*_depthTexture = new osg::Texture2D();
     _depthTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
@@ -116,14 +152,39 @@ void ScreenInterlacedTopBottom::init(int mode)
     //image = new osg::Image();
     //image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
     //image->setInternalTextureFormat(4);
-    _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+    _cameraL->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
     //_camera->attach(osg::Camera::COLOR_BUFFER0, image);
-    _camera->attach(osg::Camera::COLOR_BUFFER0, _colorTexture);
+    _cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL, 0, 0, false, samples, samples);
+    //_cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL);
     //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
     //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //_colorTexture->setImage(image);
-    ic->_texture = _colorTexture.get();
+    ic->_texture = _colorTextureL.get();
+
+    ic = new InterlaceCallback;
+    ic->screen = this;
+    ic->odd = false;
+    ic->first = false;
+    _cameraR->setPostDrawCallback(ic);
+
+    _colorTextureR = new osg::Texture2D();
+    _colorTextureR->setTextureSize((int)_myInfo->myChannel->width,(int)(_myInfo->myChannel->height / 2.0));
+    _colorTextureR->setInternalFormat(GL_RGBA);
+    _colorTextureR->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureR->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureR->setResizeNonPowerOfTwoHint(false);
+    _colorTextureR->setUseHardwareMipMapGeneration(false);
+
+    _cameraR->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+    //_camera->attach(osg::Camera::COLOR_BUFFER0, image);
+    _cameraR->attach(osg::Camera::COLOR_BUFFER0, _colorTextureR, 0, 0, false, samples, samples);
+    //_cameraR->attach(osg::Camera::COLOR_BUFFER0, _colorTextureR);
+    //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
+    //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //_colorTexture->setImage(image);
+    ic->_texture = _colorTextureR.get();
 }
 
 void ScreenInterlacedTopBottom::computeViewProj()
@@ -137,8 +198,10 @@ void ScreenInterlacedTopBottom::computeViewProj()
 
 void ScreenInterlacedTopBottom::updateCamera()
 {
-    _camera->setViewMatrix(_viewLeft);
-    _camera->setProjectionMatrix(_projLeft);
+    _cameraL->setViewMatrix(_viewLeft);
+    _cameraL->setProjectionMatrix(_projLeft);
+    _cameraR->setViewMatrix(_viewRight);
+    _cameraR->setProjectionMatrix(_projRight);
     // not needed for this mode
     //std::cerr << "Update." << std::endl;
 }
@@ -173,12 +236,13 @@ osg::Matrixd ScreenInterlacedTopBottom::StereoCallback::computeRightEyeView(
 
 void ScreenInterlacedTopBottom::setClearColor(osg::Vec4 color)
 {
-    _camera->setClearColor(color);
+    _cameraL->setClearColor(color);
+    _cameraR->setClearColor(color);
 }
 
 ScreenInfo * ScreenInterlacedTopBottom::findScreenInfo(osg::Camera * c)
 {
-    if(c == _camera.get())
+    if(c == _cameraL.get() || c == _cameraR.get())
     {
         return _myInfo;
     }
@@ -212,10 +276,10 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
 {
     //osgDB::writeImageFile(*screen->image,"/home/aprudhom/testImage.tif");
     //exit(0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glFinish();
     //return;
-    if(skip)
+    /*if(skip)
     {
 	//screen->_camera->setClearColor(osg::Vec4(1.0,0,0,0));
 	skip = false;
@@ -225,7 +289,14 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     {
 	//screen->_camera->setClearColor(osg::Vec4(0,1.0,0,0));
 	skip = true;
+    }*/
+
+    if(first)
+    {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+
+    //glPushAttrib(GL_ALL_ATTRIB_BITS);
 
     //std::cerr << "Callback." << std::endl;
     int context = renderInfo.getContextID();
@@ -235,8 +306,16 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
 	std::string shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
 	osg::Shader * vert, * frag;
-	vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "interlace.vert"));
-	frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "interlace.frag"));	
+	if(odd)
+	{
+	    vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "interlace.vert"));
+	    frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "interlace-odd.frag"));	
+	}
+	else
+	{
+	    vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "interlace.vert"));
+	    frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "interlace-even.frag"));
+	}
 
 	_programMap[context] = new osg::Program;
 	_programMap[context]->addShader(vert);
@@ -299,4 +378,6 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
+
+    //glPopAttrib();
 }
