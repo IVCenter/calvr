@@ -87,8 +87,8 @@ BoardMenu::BoardMenu()
     _menuRoot->addChild(_menuScale);
 
     osg::StateSet * stateset = _menuRoot->getOrCreateStateSet();
-    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    //stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+    //stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     _menuActive = false;

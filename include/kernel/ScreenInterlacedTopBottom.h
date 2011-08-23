@@ -54,7 +54,8 @@ class ScreenInterlacedTopBottom : public ScreenBase
             mutable std::map<int,bool> _initMap;
             mutable std::map<int,osg::ref_ptr<osg::Program> > _programMap;
             mutable std::map<int,osg::ref_ptr<osg::Geometry> > _geometryMap;
-            mutable bool skip;
+            mutable bool odd;
+            mutable bool first;
             static OpenThreads::Mutex _initLock;
             osg::Texture2D * _texture;
         };
@@ -94,9 +95,10 @@ class ScreenInterlacedTopBottom : public ScreenBase
         osg::Matrix _projLeft; ///< left eye projection matrix
         osg::Matrix _projRight; ///< right eye projection matrix
 
-        osg::ref_ptr<osg::Camera> _camera; ///< osg::Camera for this screen
-        osg::ref_ptr<osg::Texture2D> _colorTexture;
-        osg::ref_ptr<osg::Texture2D> _depthTexture;
+        osg::ref_ptr<osg::Camera> _cameraL; ///< osg::Camera for this screen
+        osg::ref_ptr<osg::Camera> _cameraR;
+        osg::ref_ptr<osg::Texture2D> _colorTextureL;
+        osg::ref_ptr<osg::Texture2D> _colorTextureR;
 
         osg::Image * image;
 };
