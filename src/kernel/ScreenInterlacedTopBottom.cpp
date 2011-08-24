@@ -367,7 +367,8 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
 
     osg::Texture::TextureObject * to = _texture->getTextureObject(context);
 
-    glActiveTexture(GL_TEXTURE0);
+    renderInfo.getState()->setActiveTextureUnit(0);
+    //glActiveTexture(GL_TEXTURE0);
     //glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindtex);
     if(to)
     {
