@@ -6,6 +6,7 @@
 #include <osgViewer/Renderer>
 #include <osg/Shader>
 #include <osg/GL2Extensions>
+#include <osg/FrameBufferObject>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
@@ -150,16 +151,16 @@ void ScreenInterlacedTopBottom::init(int mode)
 
 
     //image = new osg::Image();
-    //image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
+    //image->allocateImage(1920,1080,GL_RGBA,GL_RGBA,GL_FLOAT);
     //image->setInternalTextureFormat(4);
     _cameraL->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-    //_camera->attach(osg::Camera::COLOR_BUFFER0, image);
+    //_cameraL->attach(osg::Camera::COLOR_BUFFER0, image, samples, samples);
     _cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL, 0, 0, false, samples, samples);
     //_cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL);
     //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
     //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //_colorTexture->setImage(image);
+    //_colorTextureL->setImage(image);
     ic->_texture = _colorTextureL.get();
 
     ic = new InterlaceCallback;
@@ -274,6 +275,11 @@ void ScreenInterlacedTopBottom::adjustViewportCoords(int & x, int & y)
 
 void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &renderInfo) const
 {
+    int context = renderInfo.getContextID();
+    const osg::GL2Extensions* extensions = osg::GL2Extensions::Get(context,true);
+    //osg::FBOExtensions* ext = osg::FBOExtensions::instance(context,true);
+    //ext->glBindFramebuffer(osg::FrameBufferObject::READ_DRAW_FRAMEBUFFER, 0);
+    //glColorMask(true,true,true,true);
     //osgDB::writeImageFile(*screen->image,"/home/aprudhom/testImage.tif");
     //exit(0);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -299,7 +305,6 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     //glPushAttrib(GL_ALL_ATTRIB_BITS);
 
     //std::cerr << "Callback." << std::endl;
-    int context = renderInfo.getContextID();
     if(!_initMap[context])
     {
 	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_initLock);
@@ -355,15 +360,28 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     glPushMatrix();
     glLoadIdentity();
 
-    _texture->apply(*renderInfo.getState());
+    GLint activeTexture,bindtex;
+    glGetIntegerv(GL_ACTIVE_TEXTURE,&activeTexture);
+
+    osg::Texture::TextureObject * to = _texture->getTextureObject(context);
+
+    glActiveTexture(GL_TEXTURE0);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindtex);
+    if(to)
+    {
+	to->bind();
+    }
+    //_texture->apply(*renderInfo.getState());
 
     _programMap[context]->apply(*renderInfo.getState());
     _geometryMap[context]->drawImplementation(renderInfo);
 
-    const osg::GL2Extensions* extensions = osg::GL2Extensions::Get(context,true);
+    glBindTexture(GL_TEXTURE_2D,bindtex);
+
     extensions->glUseProgram(0);
     renderInfo.getState()->setLastAppliedProgramObject(0);
 
+    glActiveTexture(activeTexture);
     /*glBegin(GL_TRIANGLE_STRIP);
 
     glColor3f(1.0,0.0,0.0);
