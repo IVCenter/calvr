@@ -7,7 +7,6 @@ FIND_PATH(OSSIM_INCLUDE_DIR ossim.h
 
 FIND_PATH(OSSIM_INCLUDE_DIR ossim.h
   PATHS
-  /home/covise/covise/extern_libs/src/ossim/ossim/include
   /usr/local/include
   /usr/include
   /sw/include # Fink
@@ -25,7 +24,6 @@ FIND_LIBRARY(OSSIM_LIBRARY
 FIND_LIBRARY(OSSIM_LIBRARY 
   NAMES ossim
   PATHS
-    /home/covise/covise/extern_libs/src/ossim/ossim
     /usr/local
     /usr
     /sw
