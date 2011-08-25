@@ -360,13 +360,16 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     glPushMatrix();
     glLoadIdentity();
 
-    GLint activeTexture,bindtex;
-    glGetIntegerv(GL_ACTIVE_TEXTURE,&activeTexture);
+    //GLint activeTexture,bindtex;
+    //glGetIntegerv(GL_ACTIVE_TEXTURE,&activeTexture);
+
+    unsigned int activeTexture = renderInfo.getState()->getActiveTextureUnit();
 
     osg::Texture::TextureObject * to = _texture->getTextureObject(context);
 
-    glActiveTexture(GL_TEXTURE0);
-    glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindtex);
+    renderInfo.getState()->setActiveTextureUnit(0);
+    //glActiveTexture(GL_TEXTURE0);
+    //glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindtex);
     if(to)
     {
 	to->bind();
@@ -376,12 +379,13 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     _programMap[context]->apply(*renderInfo.getState());
     _geometryMap[context]->drawImplementation(renderInfo);
 
-    glBindTexture(GL_TEXTURE_2D,bindtex);
+    //glBindTexture(GL_TEXTURE_2D,bindtex);
 
     extensions->glUseProgram(0);
     renderInfo.getState()->setLastAppliedProgramObject(0);
 
-    glActiveTexture(activeTexture);
+    renderInfo.getState()->setActiveTextureUnit(activeTexture);
+    //glActiveTexture(activeTexture);
     /*glBegin(GL_TRIANGLE_STRIP);
 
     glColor3f(1.0,0.0,0.0);
