@@ -170,6 +170,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 
         bool getUsingMouseTracker();
 
+        void cleanupCurrentEvents();
+
     protected:
         TrackingManager();
         virtual ~TrackingManager();
@@ -269,6 +271,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<unsigned int> _threadHandButtonMasks;
         std::vector<osg::Matrix> _threadHeadMatList;
         std::vector<osg::Matrix> _threadHandMatList;
+
+        TrackingInteractionEvent * _currentEvents;
 };
 
 /**

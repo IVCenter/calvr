@@ -219,6 +219,7 @@ void CalVR::run()
         _menu->update();
         _interaction->update();
         _navigation->update();
+	_scene->postEventUpdate();
         _screens->computeViewProj();
         _screens->updateCamera();
 	_collaborative->update();

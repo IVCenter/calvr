@@ -1,9 +1,11 @@
 #include <kernel/SceneManager.h>
 #include <input/TrackingManager.h>
 #include <config/ConfigManager.h>
+#include <kernel/InteractionManager.h>
 #include <kernel/NodeMask.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/ComController.h>
+#include <kernel/SceneObject.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
@@ -12,12 +14,19 @@
 #include <osg/Material>
 
 #include <iostream>
+#include <list>
+#include <queue>
 
 using namespace cvr;
 
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
 #endif
+
+bool operator< (const std::pair<float,SceneObject*>& first, const std::pair<float,SceneObject*>& second)
+{
+    return first.first < second.first;
+}
 
 SceneManager * SceneManager::_myPtr = NULL;
 
@@ -110,6 +119,32 @@ void SceneManager::update()
                                               TrackingManager::instance()->getUnfrozenHeadMat(
                                                                                       i));
         }
+    }
+
+    updateActiveObject();
+}
+
+void SceneManager::postEventUpdate()
+{
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
+    {
+	if(it->second)
+	{
+	    it->second->moveCleanup();
+	    if(it->first >= 0)
+	    {
+		it->second->updateCallback(it->first,TrackingManager::instance()->getHandMat(it->first));
+	    }
+	    else
+	    {
+		it->second->updateCallback(it->first,InteractionManager::instance()->getMouseMat());
+	    }
+	}
     }
 }
 
@@ -261,6 +296,68 @@ bool SceneManager::getDepthPartitionActive()
 void SceneManager::setViewerScene(CVRViewer * cvrviewer)
 {
     cvrviewer->setSceneData(_actualRoot);
+}
+
+bool SceneManager::processEvent(InteractionEvent * ie)
+{
+    int hand = -2;
+
+    if(ie->type == BUTTON_UP || ie->type == BUTTON_DRAG || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_DOWN)
+    {
+	TrackingInteractionEvent * tie = (TrackingInteractionEvent*)ie;
+	hand = tie->hand;
+    }
+    else if(ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_DOWN)
+    {
+	hand = -1;
+    }
+
+    if(hand == -2)
+    {
+	return false;
+    }
+
+    if(_activeObjects[hand])
+    {
+	return _activeObjects[hand]->processEvent(ie);
+    }
+    return false;
+}
+
+void SceneManager::registerSceneObject(SceneObject * object, std::string plugin)
+{
+    if(_pluginObjectMap.find(plugin) == _pluginObjectMap.end())
+    {
+	_pluginObjectMap[plugin] = std::vector<SceneObject*>();
+    }
+
+    _pluginObjectMap[plugin].push_back(object);
+    object->setRegistered(true);
+}
+
+void SceneManager::unregisterSceneObject(SceneObject * object)
+{
+    for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+    {
+	for(std::vector<SceneObject*>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+	{
+	    if((*it2) == object)
+	    {
+		// detach
+		(*it2)->detachFromScene();
+		it->second.erase(it2);
+		for(std::map<int,SceneObject*>::iterator aobjit = _activeObjects.begin(); aobjit != _activeObjects.end(); aobjit++)
+		{
+		    if(aobjit->second == object)
+		    {
+			aobjit->second = NULL;
+		    }
+		}
+		object->setRegistered(false);
+		return;
+	    }
+	}
+    }
 }
 
 void SceneManager::initPointers()
@@ -454,4 +551,121 @@ void SceneManager::initAxis()
     }
 
     //_objectRoot->addChild(_axisNode);
+}
+
+void SceneManager::updateActiveObject()
+{
+    osg::Vec3 start, end;
+
+    for(int i = 0; i <= TrackingManager::instance()->getNumHands(); i++)
+    {
+	int hand;
+	osg::Matrix handMatrix;
+	if(i == TrackingManager::instance()->getNumHands())
+	{
+	    hand = -1;
+	    handMatrix = InteractionManager::instance()->getMouseMat();
+	}
+	else
+	{
+	    hand = i;
+	    handMatrix = TrackingManager::instance()->getHandMat(i);
+	}
+
+	if(_activeObjects[hand])
+	{
+	    if(_activeObjects[hand]->getEventActive() && _activeObjects[hand]->getActiveHand() == hand)
+	    {
+		//_activeObjects[hand]->updateCallback(hand,handMatrix);
+		continue;
+	    }
+	}
+
+	start = osg::Vec3(0,0,0);
+	end = osg::Vec3(0,10000,0);
+	start = start * handMatrix;
+	end = end * handMatrix;
+
+	std::list<SceneObject*> hitList;
+
+	// Find list of all ojects that pass bounding sphere intersection
+	for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+	{
+	    for(int j = 0; j < it->second.size(); j++)
+	    {
+		if(it->second[j]->intersectsFast(start,end))
+		{
+		    hitList.push_back(it->second[j]);
+		}
+	    }
+	}
+
+	std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
+
+	osg::Vec3 isec1, isec2;
+	bool neg1,neg2;
+	std::priority_queue<std::pair<float,SceneObject*> > sortQueue;
+
+	// find points of bounding box intersection
+	for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
+	{
+	    if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+	    {
+		if(neg1)
+		{
+		    sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
+		}
+		else
+		{
+		    sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
+		}
+
+		if(neg2)
+		{
+		    sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
+		}
+		else
+		{
+		    sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
+		}
+	    }
+	}
+
+	std::map<SceneObject*,int> countMap;
+	SceneObject * currentObject = NULL;
+	while(sortQueue.size())
+	{
+	    currentObject = sortQueue.top().second;
+	    countMap[currentObject]++;
+	    if(countMap[currentObject] == 2)
+	    {
+		break;
+	    }
+	    sortQueue.pop();
+	}
+
+	if(currentObject)
+	{
+	    //TODO extend to nested objects
+	    if(_activeObjects[hand] != currentObject)
+	    {
+		if(_activeObjects[hand])
+		{
+		    _activeObjects[hand]->leaveCallback(hand);
+		}
+		_activeObjects[hand] = currentObject;
+		currentObject->enterCallback(hand,handMatrix);
+	    }
+	}
+	else if(_activeObjects[hand])
+	{
+	    _activeObjects[hand]->leaveCallback(hand);
+	    _activeObjects[hand] = NULL;
+	}
+    }
+}
+
+void SceneManager::removePluginObjects(CVRPlugin * plugin)
+{
+    //TODO create find plugin name function in PluginManager
 }

@@ -11,11 +11,15 @@
 #include <util/DepthPartitionNode.h>
 
 #include <vector>
+#include <map>
 
 namespace cvr
 {
 
 class CVRViewer;
+class SceneObject;
+class CVRPlugin;
+struct InteractionEvent;
 
 /**
  * @brief Creates and manages the main scenegraph
@@ -23,6 +27,7 @@ class CVRViewer;
 class CVRKERNEL_EXPORT SceneManager
 {
     friend class CVRViewer;
+    friend class CVRPlugin;
     public:
         virtual ~SceneManager();
 
@@ -40,6 +45,7 @@ class CVRKERNEL_EXPORT SceneManager
          * @brief Do per frame operations
          */
         void update();
+        void postEventUpdate();
 
         /**
          * @brief Get root node of Scene (world space root)
@@ -123,6 +129,11 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void setViewerScene(CVRViewer * cvrviewer);
 
+        bool processEvent(InteractionEvent * ie);
+
+        void registerSceneObject(SceneObject * object, std::string plugin = "");
+        void unregisterSceneObject(SceneObject * object);
+
     protected:
         SceneManager();
 
@@ -130,6 +141,9 @@ class CVRKERNEL_EXPORT SceneManager
         void initLights();
         void initSceneState();
         void initAxis();
+
+        void updateActiveObject();
+        void removePluginObjects(CVRPlugin * plugin);
 
         static SceneManager * _myPtr;   ///< static self pointer
 
@@ -152,6 +166,10 @@ class CVRKERNEL_EXPORT SceneManager
         std::vector<osg::ref_ptr<osg::MatrixTransform> > _headAxisTransforms;   ///< head location debug axis transforms
         std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms;       ///< current hand transforms
         float _scale;                                                           ///< current scale of object space
+
+
+        std::map<int,SceneObject*> _activeObjects;
+        std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap;
 };
 
 }
