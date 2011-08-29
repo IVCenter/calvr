@@ -1,6 +1,7 @@
 #include <kernel/ScreenConfig.h>
 #include <kernel/ScreenMono.h>
 #include <kernel/ScreenStereo.h>
+#include <kernel/ScreenInterlacedTopBottom.h>
 #include <kernel/ScreenMultiViewer.h>
 #include <kernel/ScreenMultiViewer2.h>
 #include <kernel/ScreenMVMaster.h>
@@ -402,6 +403,9 @@ bool ScreenConfig::readScreens()
 
 bool ScreenConfig::makeWindows()
 {
+    osg::DisplaySettings * ds = osg::DisplaySettings::instance();
+    ds->setNumMultiSamples(ConfigManager::getInt("MultiSample",0));
+
     for(int i = 0; i < _windowInfoList.size(); i++)
     {
         osg::GraphicsContext::Traits * traits =
@@ -423,6 +427,13 @@ bool ScreenConfig::makeWindows()
         if(ConfigManager::getBool("Stencil", false))
         {
             traits->stencil = 8;
+        }
+
+        int samples = ConfigManager::getInt("MultiSample",0);
+        if(samples)
+        {
+            traits->samples = samples;
+            traits->sampleBuffers = 1;
         }
 
         _windowInfoList[i]->gc
@@ -599,6 +610,12 @@ bool ScreenConfig::makeScreens()
 	    screen = new ScreenHMD();
 	    screen->_myInfo = _screenInfoList[i];
 	    screen->init(-1);
+	}
+	else if(_screenInfoList[i]->myChannel->stereoMode == "INTERLACED_TOP_BOTTOM")
+	{
+	    screen = new ScreenInterlacedTopBottom();
+	    screen->_myInfo = _screenInfoList[i];
+	    screen->init();
 	}
 #ifdef WITH_INTERLEAVER
         else if(_screenInfoList[i]->myChannel->stereoMode == "LENTICULAR")

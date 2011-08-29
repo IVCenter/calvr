@@ -416,8 +416,9 @@ void CVRViewer::eventTraversal()
                                     osg::Camera* camera = *citr;
                                     if(camera->getView() == this
                                             && camera->getAllowEventFocus()
-                                            && camera->getRenderTargetImplementation()
-                                                    == osg::Camera::FRAME_BUFFER)
+                                            //&& camera->getRenderTargetImplementation()
+                                            //        == osg::Camera::FRAME_BUFFER
+					    )
                                     {
                                         osg::Viewport* viewport =
                                                 camera ? camera->getViewport()
@@ -542,8 +543,9 @@ void CVRViewer::eventTraversal()
 				    osg::Camera* camera = *citr;
 				    if(camera->getView() == this
 					    && camera->getAllowEventFocus()
-					    && camera->getRenderTargetImplementation()
-					    == osg::Camera::FRAME_BUFFER)
+					    //&& camera->getRenderTargetImplementation()
+					    //== osg::Camera::FRAME_BUFFER
+					    )
 				    {
 					osg::Viewport* viewport =
 					    camera ? camera->getViewport()
