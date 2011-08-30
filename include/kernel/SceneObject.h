@@ -20,11 +20,18 @@ class SceneObject : public MenuCallback
 {
     friend class SceneManager;
     public:
+
+        enum BoundsCalcMode
+        {
+            MANUAL = 1,
+            AUTO
+        };
+
         SceneObject(std::string name, bool navigation, bool movable, bool clip, bool contextMenu, bool showBounds = false);
         virtual ~SceneObject();
 
         const std::string & getName() { return _name; }
-        bool getNavigationOn() { return _navigation; }
+        bool getNavigationOn();
         void setNavigationOn(bool nav);
         bool getMovable() { return _movable;}
         void setMovable(bool mov);
@@ -48,12 +55,14 @@ class SceneObject : public MenuCallback
 
         void addChild(osg::Node * node);
         void removeChild(osg::Node * node);
+        void addChild(SceneObject * so);
+        void removeChild(SceneObject * so);
 
         void addMenuItem(MenuItem * item);
         void removeMenuItem(MenuItem * item);
 
-        const osg::Matrix & getObjectToWorldMatrix() { return _obj2world; }
-        const osg::Matrix & getWorldToObjectMatrix() { return _world2obj; }
+        osg::Matrix getObjectToWorldMatrix();
+        osg::Matrix getWorldToObjectMatrix();
 
         bool processEvent(InteractionEvent * ie);
 
@@ -65,8 +74,10 @@ class SceneObject : public MenuCallback
         virtual bool eventCallback(int type, int hand, int button, const osg::Matrix & mat) { return false; }
 
         void setBoundingBox(osg::BoundingBox bb);
-        const osg::BoundingBox & getBoundingBox() { return _bb; }
-        void computeBoundingBox();
+        const osg::BoundingBox & getOrComputeBoundingBox();
+        void dirtyBounds() { _boundsDirty = true; }
+        void setBoundsCalcMode(BoundsCalcMode bcm) { _boundsCalcMode = bcm; }
+        BoundsCalcMode getBoundsCalcMode() { return _boundsCalcMode; } 
 
     protected:
         bool getRegistered() { return _registered; }
@@ -76,6 +87,8 @@ class SceneObject : public MenuCallback
         void setActiveHand(int hand) { _activeHand = hand; }
         void processMove(osg::Matrix & mat);
         void moveCleanup();
+
+        void computeBoundingBox();
 
         bool intersectsFast(osg::Vec3 & start, osg::Vec3 & end);
         bool intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & itersect1, bool & neg1, osg::Vec3 & intersect2, bool & neg2);
@@ -91,7 +104,8 @@ class SceneObject : public MenuCallback
         osg::ref_ptr<osg::Geode> _boundsGeode;
         osg::Matrix _transMat, _scaleMat;
 
-        osg::Matrix _obj2world, _world2obj;
+        osg::Matrix _obj2root, _root2obj;
+        osg::Matrix _invTransform;
 
         std::string _name;
         bool _navigation;
@@ -110,11 +124,18 @@ class SceneObject : public MenuCallback
 
         int _activeHand;
         int _activeButton;
+        bool _moving;
         osg::Matrix _lastHandMat;
         osg::Matrix _lastHandInv;
         osg::Matrix _lastobj2world;
 
-        osg::BoundingBox _bb;
+        osg::BoundingBox _bb, _bbLocal;
+        bool _boundsDirty;
+        BoundsCalcMode _boundsCalcMode;
+
+        std::vector<osg::ref_ptr<osg::Node> > _childrenNodes;
+        std::vector<SceneObject*> _childrenObjects;
+        SceneObject * _parent;
 };
 
 }

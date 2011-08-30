@@ -600,7 +600,7 @@ void SceneManager::updateActiveObject()
 	    }
 	}
 
-	std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
+	//std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
 
 	osg::Vec3 isec1, isec2;
 	bool neg1,neg2;
