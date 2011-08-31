@@ -85,6 +85,7 @@ bool SceneManager::init()
     _scale = 1.0;
     _showAxis = false;
     _hidePointer = false;
+    _menuOpenObject = NULL;
 
     initPointers();
     initLights();
@@ -97,6 +98,15 @@ bool SceneManager::init()
 
     b = ConfigManager::getBool("HidePointer", false);
     setHidePointer(b);
+
+    _menuScale = ConfigManager::getFloat("hand","ContextMenus.Scale",1.0);
+    _menuScaleMouse = ConfigManager::getFloat("mouse","ContextMenus.Scale",1.0);
+    _menuMinDistance = ConfigManager::getFloat("hand","ContextMenus.MinDistance",500.0);
+    _menuMinDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MinDistance",500.0);
+    _menuMaxDistance = ConfigManager::getFloat("hand","ContextMenus.MaxDistance",1000.0);
+    _menuMaxDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MaxDistance",1000.0);
+    _menuDefaultOpenButton = ConfigManager::getInt("hand","ContextMenus.DefaultOpenButton",1);
+    _menuDefaultOpenButtonMouse = ConfigManager::getInt("mouse","ContextMenus.DefaultOpenButton",2);
 
     return true;
 }
@@ -304,15 +314,18 @@ void SceneManager::setViewerScene(CVRViewer * cvrviewer)
 bool SceneManager::processEvent(InteractionEvent * ie)
 {
     int hand = -2;
+    int button = -1;
 
     if(ie->type == BUTTON_UP || ie->type == BUTTON_DRAG || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_DOWN)
     {
 	TrackingInteractionEvent * tie = (TrackingInteractionEvent*)ie;
 	hand = tie->hand;
+	button = tie->button;
     }
     else if(ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_DOWN)
     {
 	hand = -1;
+	button = ((MouseInteractionEvent*)ie)->button;
     }
 
     if(hand == -2)
@@ -323,6 +336,17 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     if(_activeObjects[hand])
     {
 	return _activeObjects[hand]->processEvent(ie);
+    }
+    else if(_menuOpenObject)
+    {
+	if(ie->type == MOUSE_BUTTON_DOWN && button == _menuOpenObject->_menuMouseButton)
+	{
+	    return _menuOpenObject->processEvent(ie);
+	}
+	else if(ie->type == BUTTON_DOWN && button == _menuOpenObject->_menuButton)
+	{
+	    return _menuOpenObject->processEvent(ie);
+	}
     }
     return false;
 }
@@ -366,6 +390,31 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
 		return;
 	    }
 	}
+    }
+}
+
+void SceneManager::setMenuOpenObject(SceneObject * object)
+{
+    if(object != _menuOpenObject)
+    {
+	closeOpenObjectMenu();
+    }
+
+    _menuOpenObject = object;
+
+}
+
+SceneObject * SceneManager::getMenuOpenObject()
+{
+    return _menuOpenObject;
+}
+
+void SceneManager::closeOpenObjectMenu()
+{
+    if(_menuOpenObject)
+    {
+	_menuOpenObject->closeMenu();
+	_menuOpenObject = NULL;
     }
 }
 
@@ -713,6 +762,8 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object, osg::Vec
 	    hitList.push_back(object->getChildObject(i));
 	}
     }
+
+    //std::cerr << "Nested: hitlist size: " << hitList.size() << std::endl;
 
     osg::Vec3 isec1, isec2;
     bool neg1,neg2;

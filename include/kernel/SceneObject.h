@@ -2,6 +2,7 @@
 #define CALVR_SCENE_OBJECT_H
 
 #include <menu/MenuItem.h>
+#include <menu/PopupMenu.h>
 #include <kernel/SceneManager.h>
 #include <kernel/InteractionManager.h>
 
@@ -15,6 +16,9 @@
 
 namespace cvr
 {
+
+class MenuCheckbox;
+class MenuRangeValue;
 
 class SceneObject : public MenuCallback
 {
@@ -65,6 +69,13 @@ class SceneObject : public MenuCallback
         void addMenuItem(MenuItem * item);
         void removeMenuItem(MenuItem * item);
 
+        void addMoveMenuItem(std::string label = "Movable");
+        void removeMoveMenuItem();
+        void addNavigationMenuItem(std::string label = "Navigation");
+        void removeNavigationMenuItem();
+        void addScaleMenuItem(std::string label, float min, float max, float value);
+        void removeScaleMenuItem();
+
         osg::Matrix getObjectToWorldMatrix();
         osg::Matrix getWorldToObjectMatrix();
 
@@ -81,7 +92,9 @@ class SceneObject : public MenuCallback
         const osg::BoundingBox & getOrComputeBoundingBox();
         void dirtyBounds() { _boundsDirty = true; }
         void setBoundsCalcMode(BoundsCalcMode bcm) { _boundsCalcMode = bcm; }
-        BoundsCalcMode getBoundsCalcMode() { return _boundsCalcMode; } 
+        BoundsCalcMode getBoundsCalcMode() { return _boundsCalcMode; }
+
+        void closeMenu();
 
     protected:
         bool getRegistered() { return _registered; }
@@ -114,6 +127,11 @@ class SceneObject : public MenuCallback
 
         osg::Matrix _obj2root, _root2obj;
         osg::Matrix _invTransform;
+
+        PopupMenu * _myMenu;
+        MenuCheckbox * _moveMenuItem;
+        MenuCheckbox * _navMenuItem;
+        MenuRangeValue * _scaleMenuItem;
 
         std::string _name;
         bool _navigation;

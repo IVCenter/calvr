@@ -228,6 +228,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                     _menuRoot->setMatrix(osg::Matrix::translate(-menuOffset) * menuRot * osg::Matrix::translate(menuPoint));
 
                     _menuActive = true;
+		    SceneManager::instance()->closeOpenObjectMenu();
                     return true;
                 }
             }
@@ -249,6 +250,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                     _menuRoot->setMatrix(m);
 
                     _menuActive = true;
+		    SceneManager::instance()->closeOpenObjectMenu();
                     return true;
                 }
             }

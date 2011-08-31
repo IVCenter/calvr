@@ -28,6 +28,7 @@ class CVRKERNEL_EXPORT SceneManager
 {
     friend class CVRViewer;
     friend class CVRPlugin;
+    friend class SceneObject;
     public:
         virtual ~SceneManager();
 
@@ -134,6 +135,10 @@ class CVRKERNEL_EXPORT SceneManager
         void registerSceneObject(SceneObject * object, std::string plugin = "");
         void unregisterSceneObject(SceneObject * object);
 
+        void setMenuOpenObject(SceneObject * object);
+        SceneObject * getMenuOpenObject();
+        void closeOpenObjectMenu();
+
     protected:
         SceneManager();
 
@@ -168,9 +173,14 @@ class CVRKERNEL_EXPORT SceneManager
         std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms;       ///< current hand transforms
         float _scale;                                                           ///< current scale of object space
 
-
+        SceneObject * _menuOpenObject;
         std::map<int,SceneObject*> _activeObjects;
         std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap;
+
+        float _menuScale,_menuScaleMouse;
+        float _menuMinDistance,_menuMinDistanceMouse;
+        float _menuMaxDistance,_menuMaxDistanceMouse;
+        int _menuDefaultOpenButton,_menuDefaultOpenButtonMouse;
 };
 
 }
