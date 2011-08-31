@@ -5,6 +5,7 @@
 
 #include <osg/ShapeDrawable>
 #include <osg/PolygonMode>
+#include <osg/Geometry>
 
 #include <iostream>
 
@@ -20,6 +21,7 @@ _name(name), _navigation(navigation), _movable(movable), _clip(clip), _contextMe
     _parent = NULL;
     _boundsDirty = false;
     _boundsCalcMode = AUTO;
+    _interactionCount = 0;
 
     _bb.init();
     _bbLocal.init();
@@ -28,6 +30,7 @@ _name(name), _navigation(navigation), _movable(movable), _clip(clip), _contextMe
     _clipRoot = new osg::ClipNode();
     _boundsTransform = new osg::MatrixTransform();
     _boundsGeode = new osg::Geode();
+    _boundsGeodeActive = new osg::Geode();
 
     _boundsTransform->addChild(_boundsGeode);
     createBoundsGeometry();
@@ -162,7 +165,7 @@ osg::Matrix SceneObject::getTransform()
 void SceneObject::setTransform(osg::Matrix m)
 {
     _transMat = m;
-    updateMatrices();
+    splitMatrix();
 }
 
 float SceneObject::getScale()
@@ -186,6 +189,12 @@ void SceneObject::attachToScene()
     if(!_registered)
     {
 	std::cerr << "Scene Object: " << _name << " must be registered before it is attached." << std::endl;
+	return;
+    }
+
+    if(_parent)
+    {
+	std::cerr << "Scene Object: attachToScene: error, " << _name << " is a child object." << std::endl;
 	return;
     }
 
@@ -265,6 +274,15 @@ void SceneObject::removeChild(osg::Node * node)
 
 void SceneObject::addChild(SceneObject * so)
 {
+    if(so->_registered)
+    {
+	if(so->_attached)
+	{
+	    so->detachFromScene();
+	}
+	SceneManager::instance()->unregisterSceneObject(so);
+    }
+
     if(_clip)
     {
 	_clipRoot->addChild(so->_root);
@@ -304,6 +322,25 @@ void SceneObject::removeChild(SceneObject * so)
     //updateBoundsGeometry();
 }
 
+osg::Node * SceneObject::getChildNode(int node)
+{
+    if(node < 0 || node >= _childrenNodes.size())
+    {
+	return NULL;
+    }
+
+    return _childrenNodes[node];
+}
+
+SceneObject * SceneObject::getChildObject(int obj)
+{
+    if(obj < 0 || obj >= _childrenObjects.size())
+    {
+	return NULL;
+    }
+
+    return _childrenObjects[obj];
+}
 
 void SceneObject::addMenuItem(MenuItem * item)
 {
@@ -317,7 +354,7 @@ void SceneObject::removeMenuItem(MenuItem * item)
 
 osg::Matrix SceneObject::getObjectToWorldMatrix()
 {
-    if(_navigation)
+    if(getNavigationOn())
     {
 	return _root->getMatrix() * _obj2root * PluginHelper::getObjectToWorldTransform();
     }
@@ -329,7 +366,7 @@ osg::Matrix SceneObject::getObjectToWorldMatrix()
 
 osg::Matrix SceneObject::getWorldToObjectMatrix()
 {
-    if(_navigation)
+    if(getNavigationOn())
     {
 	return PluginHelper::getWorldToObjectTransform() * _root2obj * _invTransform;
     }
@@ -607,7 +644,7 @@ void SceneObject::processMove(osg::Matrix & mat)
 {
     //std::cerr << "Process move." << std::endl;
     osg::Matrix m;
-    if(_navigation)
+    if(getNavigationOn())
     {
 	m = PluginHelper::getWorldToObjectTransform();
     }
@@ -641,7 +678,7 @@ void SceneObject::moveCleanup()
 {
     //TODO: mod for nested
     // cleanup nav happening last in the event process
-    if(_moving && _navigation && _movable)
+    if(_moving && getNavigationOn() && _movable)
     {
 	processMove(_lastHandMat);
     }
@@ -713,6 +750,8 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
     startlocal = start * getWorldToObjectMatrix();
     endlocal = end * getWorldToObjectMatrix();
 
+    osg::Matrix obj2world = getObjectToWorldMatrix();
+
     /*if(_navigation)
     {
 	startlocal = start * PluginHelper::getWorldToObjectTransform() * _root2obj;
@@ -738,7 +777,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -751,7 +790,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -776,7 +815,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -789,7 +828,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -814,7 +853,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -827,7 +866,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -852,7 +891,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -865,7 +904,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -890,7 +929,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -903,7 +942,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -928,7 +967,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	{
 	    if(isecnum == 1)
 	    {
-		intersect1 = planepoint;
+		intersect1 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg1 = true;
@@ -941,7 +980,7 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 	    }
 	    else
 	    {
-		intersect2 = planepoint;
+		intersect2 = planepoint * obj2world;
 		if(d < 0.0)
 		{
 		    neg2 = true;
@@ -960,14 +999,64 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 
 void SceneObject::createBoundsGeometry()
 {
-    osg::Box * box = new osg::Box(osg::Vec3(0,0,0),1.0,1.0,1.0);
+    /*osg::Box * box = new osg::Box(osg::Vec3(0,0,0),1.0,1.0,1.0);
     osg::ShapeDrawable * sd = new osg::ShapeDrawable(box);
     _boundsGeode->addDrawable(sd);
 
     osg::StateSet * stateset = sd->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     osg::PolygonMode * pm = new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-    stateset->setAttributeAndModes(pm,osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(pm,osg::StateAttribute::ON);*/
+
+    osg::Geometry * geometry = new osg::Geometry();
+    osg::Vec3Array * verts = new osg::Vec3Array(0);
+    osg::Vec4Array * colors = new osg::Vec4Array(1);
+    osg::DrawArrays * primitive = new osg::DrawArrays(osg::PrimitiveSet::LINES, 0, 0);
+    geometry->setVertexArray(verts);
+    geometry->setColorArray(colors);
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->addPrimitiveSet(primitive);
+    (*colors)[0] = osg::Vec4(1.0,1.0,1.0,1.0);
+    primitive->setCount(24);
+
+    verts->push_back(osg::Vec3(-0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(-0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,-0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,-0.5));
+    verts->push_back(osg::Vec3(-0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(-0.5,0.5,0.5));
+    verts->push_back(osg::Vec3(0.5,-0.5,0.5));
+    verts->push_back(osg::Vec3(0.5,0.5,0.5));
+
+    _boundsGeode->addDrawable(geometry);
+
+    geometry = new osg::Geometry();
+    colors = new osg::Vec4Array(1);
+    geometry->setVertexArray(verts);
+    geometry->setColorArray(colors);
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    geometry->addPrimitiveSet(primitive);
+    (*colors)[0] = osg::Vec4(1.0,0.0,0.0,1.0);
+    _boundsGeodeActive->addDrawable(geometry);
+
+    osg::StateSet * stateset = _boundsTransform->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 }
 
 void SceneObject::updateBoundsGeometry()
@@ -1006,11 +1095,12 @@ void SceneObject::updateMatrices()
 void SceneObject::splitMatrix()
 {
     osg::Vec3 trans, scale;
-    osg::Quat rot;
+    osg::Quat rot, so;
 
-    trans = _root->getMatrix().getTrans();
+    /*trans = _root->getMatrix().getTrans();
     scale = _root->getMatrix().getScale();
-    rot = _root->getMatrix().getRotate();
+    rot = _root->getMatrix().getRotate();*/
+    _root->getMatrix().decompose(trans,rot,scale,so);
 
     //std::cerr << "Trans x: " << trans.x() << " y: " << trans.y() << " z: " << trans.z() << std::endl;
 
@@ -1018,4 +1108,24 @@ void SceneObject::splitMatrix()
     _scaleMat = osg::Matrix::scale(scale);
 
     updateMatrices();
+}
+
+void SceneObject::interactionCountInc()
+{
+    _interactionCount++;
+    if(_interactionCount == 1)
+    {
+	_boundsTransform->removeChild(_boundsGeode);
+	_boundsTransform->addChild(_boundsGeodeActive);
+    }
+}
+
+void SceneObject::interactionCountDec()
+{
+    _interactionCount--;
+    if(!_interactionCount)
+    {
+	_boundsTransform->removeChild(_boundsGeodeActive);
+	_boundsTransform->addChild(_boundsGeode);
+    }
 }

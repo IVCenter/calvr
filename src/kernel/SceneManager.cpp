@@ -23,10 +23,13 @@ using namespace cvr;
 #define M_PI 3.141592653589793238462643
 #endif
 
-bool operator< (const std::pair<float,SceneObject*>& first, const std::pair<float,SceneObject*>& second)
+struct PrioritySort
 {
-    return first.first < second.first;
-}
+    bool operator() (const std::pair<float,SceneObject*>& first, const std::pair<float,SceneObject*>& second)
+    {
+	return first.first > second.first;
+    }
+};
 
 SceneManager * SceneManager::_myPtr = NULL;
 
@@ -326,6 +329,12 @@ bool SceneManager::processEvent(InteractionEvent * ie)
 
 void SceneManager::registerSceneObject(SceneObject * object, std::string plugin)
 {
+    if(object->_parent)
+    {
+	std::cerr << "SceneManager: error: trying to register SceneObject " << object->getName() << ", which is a child object." << std::endl;
+	return; 
+    }
+
     if(_pluginObjectMap.find(plugin) == _pluginObjectMap.end())
     {
 	_pluginObjectMap[plugin] = std::vector<SceneObject*>();
@@ -576,6 +585,16 @@ void SceneManager::updateActiveObject()
 	{
 	    if(_activeObjects[hand]->getEventActive() && _activeObjects[hand]->getActiveHand() == hand)
 	    {
+		// recalc parent bounding box during movement;
+		if(_activeObjects[hand]->_moving)
+		{
+		    SceneObject * root = _activeObjects[hand];
+		    while(root->_parent)
+		    {
+			root = root->_parent;
+		    }
+		    root->getOrComputeBoundingBox();
+		}
 		//_activeObjects[hand]->updateCallback(hand,handMatrix);
 		continue;
 	    }
@@ -600,11 +619,19 @@ void SceneManager::updateActiveObject()
 	    }
 	}
 
+	if(hand == -1)
+	{
+	    if(!InteractionManager::instance()->mouseActive())
+	    {
+		continue;
+	    }
+	}
+
 	//std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
 
 	osg::Vec3 isec1, isec2;
 	bool neg1,neg2;
-	std::priority_queue<std::pair<float,SceneObject*> > sortQueue;
+	std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
 
 	// find points of bounding box intersection
 	for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
@@ -613,28 +640,35 @@ void SceneManager::updateActiveObject()
 	    {
 		if(neg1)
 		{
+		    //std::cerr << "n1: " << -(isec1-start).length() << std::endl;
 		    sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
 		}
 		else
 		{
+		    //std::cerr << "1: " << (isec1-start).length() << std::endl;
 		    sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
 		}
 
 		if(neg2)
 		{
+		    //std::cerr << "n2: " << -(isec2-start).length() << std::endl;
 		    sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
 		}
 		else
 		{
+		    //std::cerr << "2: " << (isec2-start).length() << std::endl;
 		    sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
 		}
 	    }
 	}
 
+	//std::cerr << "sortqueue size: " << sortQueue.size() << std::endl;
+
 	std::map<SceneObject*,int> countMap;
 	SceneObject * currentObject = NULL;
 	while(sortQueue.size())
 	{
+	    //std::cerr << "dist: " << sortQueue.top().first << std::endl;
 	    currentObject = sortQueue.top().second;
 	    countMap[currentObject]++;
 	    if(countMap[currentObject] == 2)
@@ -646,23 +680,88 @@ void SceneManager::updateActiveObject()
 
 	if(currentObject)
 	{
-	    //TODO extend to nested objects
+	    currentObject = findChildActiveObject(currentObject,start,end);
 	    if(_activeObjects[hand] != currentObject)
 	    {
 		if(_activeObjects[hand])
 		{
 		    _activeObjects[hand]->leaveCallback(hand);
+		    _activeObjects[hand]->interactionCountDec();
 		}
 		_activeObjects[hand] = currentObject;
 		currentObject->enterCallback(hand,handMatrix);
+		currentObject->interactionCountInc();
 	    }
 	}
 	else if(_activeObjects[hand])
 	{
 	    _activeObjects[hand]->leaveCallback(hand);
+	    _activeObjects[hand]->interactionCountDec();
 	    _activeObjects[hand] = NULL;
 	}
     }
+}
+
+SceneObject * SceneManager::findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end)
+{
+    std::list<SceneObject*> hitList;
+
+    for(int i = 0; i < object->getNumChildObjects(); i++)
+    {
+	if(object->getChildObject(i)->intersectsFast(start,end))
+	{
+	    hitList.push_back(object->getChildObject(i));
+	}
+    }
+
+    osg::Vec3 isec1, isec2;
+    bool neg1,neg2;
+    std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
+
+    // find points of bounding box intersection
+    for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
+    {
+	if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+	{
+	    if(neg1)
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
+	    }
+	    else
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
+	    }
+
+	    if(neg2)
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
+	    }
+	    else
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
+	    }
+	}
+    }
+
+    std::map<SceneObject*,int> countMap;
+    SceneObject * currentObject = NULL;
+    while(sortQueue.size())
+    {
+	currentObject = sortQueue.top().second;
+	countMap[currentObject]++;
+	if(countMap[currentObject] == 2)
+	{
+	    break;
+	}
+	sortQueue.pop();
+    }
+
+    if(currentObject)
+    {
+	return findChildActiveObject(currentObject,start,end);
+    }
+
+    return object;
 }
 
 void SceneManager::removePluginObjects(CVRPlugin * plugin)

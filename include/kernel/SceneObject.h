@@ -57,6 +57,10 @@ class SceneObject : public MenuCallback
         void removeChild(osg::Node * node);
         void addChild(SceneObject * so);
         void removeChild(SceneObject * so);
+        int getNumChildNodes() { return _childrenNodes.size(); }
+        osg::Node * getChildNode(int node);
+        int getNumChildObjects() { return _childrenObjects.size(); }
+        SceneObject * getChildObject(int obj);
 
         void addMenuItem(MenuItem * item);
         void removeMenuItem(MenuItem * item);
@@ -68,9 +72,9 @@ class SceneObject : public MenuCallback
 
         virtual void menuCallback(MenuItem * item);
 
-        virtual void enterCallback(int handID, const osg::Matrix & mat) { std::cerr << "Object enter." << std::endl; }
+        virtual void enterCallback(int handID, const osg::Matrix & mat) {}
         virtual void updateCallback(int handID, const osg::Matrix & mat) {}
-        virtual void leaveCallback(int handID) { std::cerr << "Object leave." << std::endl; }
+        virtual void leaveCallback(int handID) {}
         virtual bool eventCallback(int type, int hand, int button, const osg::Matrix & mat) { return false; }
 
         void setBoundingBox(osg::BoundingBox bb);
@@ -98,10 +102,14 @@ class SceneObject : public MenuCallback
         void updateMatrices();
         void splitMatrix();
 
+        void interactionCountInc();
+        void interactionCountDec();
+
         osg::ref_ptr<osg::MatrixTransform> _root;
         osg::ref_ptr<osg::ClipNode> _clipRoot;
         osg::ref_ptr<osg::MatrixTransform> _boundsTransform;
         osg::ref_ptr<osg::Geode> _boundsGeode;
+        osg::ref_ptr<osg::Geode> _boundsGeodeActive;
         osg::Matrix _transMat, _scaleMat;
 
         osg::Matrix _obj2root, _root2obj;
@@ -136,6 +144,8 @@ class SceneObject : public MenuCallback
         std::vector<osg::ref_ptr<osg::Node> > _childrenNodes;
         std::vector<SceneObject*> _childrenObjects;
         SceneObject * _parent;
+
+        int _interactionCount;
 };
 
 }

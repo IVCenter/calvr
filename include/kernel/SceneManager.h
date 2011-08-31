@@ -143,6 +143,7 @@ class CVRKERNEL_EXPORT SceneManager
         void initAxis();
 
         void updateActiveObject();
+        SceneObject * findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end);
         void removePluginObjects(CVRPlugin * plugin);
 
         static SceneManager * _myPtr;   ///< static self pointer
