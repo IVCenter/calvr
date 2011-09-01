@@ -10,6 +10,8 @@
 
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec3d>
+#include <osg/Vec4d>
 
 #include <string>
 #include <map>
@@ -116,6 +118,12 @@ class CVRCONFIG_EXPORT ConfigManager
         static float getFloat(std::string attribute, std::string path,
                               float def = 0.0, bool * found = NULL);
 
+        static double getDouble(std::string path, double def = 0.0, bool * found =
+                NULL);
+
+        static double getDouble(std::string attribute, std::string path,
+                              double def = 0.0, bool * found = NULL);
+
         /**
          * @brief Looks for a integer config file value in tag path with the default attribute
          *        "value"
@@ -176,6 +184,22 @@ class CVRCONFIG_EXPORT ConfigManager
         static osg::Vec4 getVec4(std::string attributeX, std::string attributeY, 
                 std::string attributeZ, std::string attributeW, std::string path, 
                 osg::Vec4 def = osg::Vec4(0,0,0,1), bool * found = NULL);
+
+
+        static osg::Vec3d getVec3d(std::string path, osg::Vec3d def = osg::Vec3d(0,0,0), 
+                bool * found = NULL);
+
+        static osg::Vec3d getVec3d(std::string attributeX, std::string attributeY, 
+                std::string attributeZ, std::string path, osg::Vec3d def = osg::Vec3d(0,0,0),
+                bool * found = NULL);
+
+        static osg::Vec4d getVec4d(std::string path, osg::Vec4d def = osg::Vec4d(0,0,0,1), 
+                bool * found = NULL);
+
+        static osg::Vec4d getVec4d(std::string attributeX, std::string attributeY, 
+                std::string attributeZ, std::string attributeW, std::string path, 
+                osg::Vec4d def = osg::Vec4d(0,0,0,1), bool * found = NULL);
+
 
         static osg::Vec4 getColor(std::string path, osg::Vec4 def = osg::Vec4(1,1,1,1), 
                 bool * found = NULL);

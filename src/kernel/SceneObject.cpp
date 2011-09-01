@@ -851,9 +851,12 @@ const osg::BoundingBox & SceneObject::getOrComputeBoundingBox()
 	for(int i = 0; i < _childrenObjects.size(); i++)
 	{
 	    tbb = _childrenObjects[i]->getOrComputeBoundingBox();
-	    for(int j = 0; j < 8; j++)
+	    if(tbb.valid())
 	    {
-		_bb.expandBy(tbb.corner(j) * _childrenObjects[i]->_root->getMatrix());
+		for(int j = 0; j < 8; j++)
+		{
+		    _bb.expandBy(tbb.corner(j) * _childrenObjects[i]->_root->getMatrix());
+		}
 	    }
 	}
 
@@ -970,6 +973,10 @@ bool SceneObject::intersectsFast(osg::Vec3 & start, osg::Vec3 & end)
     osg::Vec3 startlocal;
     osg::Vec3 endlocal;
     osg::BoundingBox bb = getOrComputeBoundingBox();
+    if(!bb.valid())
+    {
+	return false;
+    }
 
     osg::Vec3 center = bb.center();
 
