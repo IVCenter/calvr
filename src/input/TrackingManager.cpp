@@ -1110,11 +1110,11 @@ bool TrackingManager::getUsingMouseTracker()
 
 void TrackingManager::cleanupCurrentEvents()
 {
-    if(_currentEvents)
+    /*if(_currentEvents)
     {
 	delete[] _currentEvents;
 	_currentEvents = NULL;
-    }
+    }*/
 }
 
 void TrackingManager::updateHandMask()
@@ -1270,15 +1270,19 @@ void TrackingManager::generateButtonEvents()
         }
     }
 
+    TrackingInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        InteractionManager::instance()->addEvent(&_currentEvents[i]);
+        ie = new TrackingInteractionEvent;
+        *ie = _currentEvents[i];
+        InteractionManager::instance()->addEvent(ie);
     }
 
-    /*if(events)
+    if(_currentEvents)
     {
-        delete[] events;
-    }*/
+        delete[] _currentEvents;
+        _currentEvents = NULL;
+    }
 }
 
 void TrackingManager::generateThreadButtonEvents()
@@ -1434,15 +1438,19 @@ void TrackingManager::flushEvents()
         }
     }
 
+    TrackingInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        InteractionManager::instance()->addEvent(&_currentEvents[i]);
+        ie = new TrackingInteractionEvent;
+        *ie = _currentEvents[i];
+        InteractionManager::instance()->addEvent(ie);
     }
 
-    /*if(tie)
+    if(_currentEvents)
     {
-        delete[] tie;
-    }*/
+        delete[] _currentEvents;
+        _currentEvents = NULL;
+    }
 }
 
 GenComplexTrackingEvents::GenComplexTrackingEvents()

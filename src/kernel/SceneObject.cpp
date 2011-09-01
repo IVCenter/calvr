@@ -583,8 +583,6 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 
 		    if(intersects(start,end,p1,n1,p2,n2))
 		    {
-			p1 = p1 * getObjectToWorldMatrix();
-			p2 = p2 * getObjectToWorldMatrix();
 			float d1 = (p1 - start).length();
 			if(n1)
 			{
@@ -716,8 +714,6 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 
 		    if(intersects(start,end,p1,n1,p2,n2))
 		    {
-			p1 = p1 * getObjectToWorldMatrix();
-			p2 = p2 * getObjectToWorldMatrix();
 			float d1 = (p1 - start).length();
 			if(n1)
 			{
