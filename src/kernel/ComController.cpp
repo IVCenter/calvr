@@ -1,4 +1,5 @@
 #include <kernel/ComController.h>
+#include <kernel/CalVR.h>
 #include <config/ConfigManager.h>
 
 #include <osg/Timer>
@@ -77,12 +78,12 @@ bool ComController::init(osg::ArgumentParser * ap)
     if(_isMaster)
     {
         char hostname[51];
-        gethostname(hostname, 50);
-        std::string myHost = hostname;
+        //gethostname(hostname, 50);
+        //std::string myHost = hostname;
         //std::cerr << "myHost: " << myHost << std::endl;
         _masterInterface = ConfigManager::getEntry("value",
                                                    "MultiPC.MasterInterface",
-                                                   myHost);
+                                                   CalVR::instance()->getHostName());
         std::cerr << "Starting up as Master." << std::endl;
         return setupConnections(fileArg);
     }

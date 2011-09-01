@@ -105,6 +105,20 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
     _home = home;
 
+    char * chostname = getenv("CALVR_HOST_NAME");
+    if(chostname)
+    {
+	_hostName = chostname;	
+    }
+    else
+    {
+	char hostname[512];
+	gethostname(hostname,511);
+	_hostName = hostname;
+    }
+
+    std::cerr << "HostName: " << _hostName << std::endl;
+
     _config = new cvr::ConfigManager();
     if(!_config->init())
     {

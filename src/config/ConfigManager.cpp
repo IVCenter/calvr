@@ -1,4 +1,5 @@
 #include <config/ConfigManager.h>
+#include <kernel/CalVR.h>
 
 #include<iostream>
 #include <sstream>
@@ -135,9 +136,10 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
             std::string blockHost;
             const char * attr = mxmlElementGetAttr(xmlNode, "host");
 
-            char hostname[51];
-            gethostname(hostname, 50);
-            std::string myHost = hostname;
+            //char hostname[51];
+            //gethostname(hostname, 50);
+            //std::string myHost = hostname;
+	    std::string myHost = CalVR::instance()->getHostName();
 
             if(attr && !myHost.empty() && attr[0] != '\0')
             {
