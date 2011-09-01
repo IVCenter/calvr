@@ -3,6 +3,7 @@
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
+#include <kernel/CalVR.h>
 
 #include <iostream>
 #include <cstring>
@@ -122,7 +123,8 @@ bool CollaborativeManager::connect(std::string host, int port)
 	    disconnect();
 	}
 
-        gethostname(cii.name, 254);
+        //gethostname(cii.name, 254);
+	strncpy(cii.name,CalVR::instance()->getHostName().c_str(),254);
         cii.numHeads = TrackingManager::instance()->getNumHeads();
         cii.numHands = TrackingManager::instance()->getNumHands();
 
