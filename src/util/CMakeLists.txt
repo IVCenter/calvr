@@ -17,6 +17,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/OsgPrint.h
     ${HEADER_PATH}/ComputeBoundingBoxVisitor.h
     ${HEADER_PATH}/CVRMulticastSocket.h
+    ${HEADER_PATH}/OSGMath.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -40,6 +41,7 @@ SET(LIB_SRC_FILES
     OsgPrint.cpp
     ComputeBoundingBoxVisitor.cpp
     CVRMulticastSocket.cpp
+    OSGMath.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES
