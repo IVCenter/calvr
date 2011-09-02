@@ -8,6 +8,7 @@
 #include <kernel/Export.h>
 #include <kernel/CalVR.h>
 #include <util/CVRSocket.h>
+#include <util/CVRMulticastSocket.h>
 #include <util/MultiListenSocket.h>
 
 #include <osg/ArgumentParser>
@@ -52,6 +53,9 @@ class CVRKERNEL_EXPORT ComController
          * Only valid if called by slave node
          */
         bool readMaster(void * data, int size);
+
+        bool sendSlavesMulticast(void * data, int size);
+        bool readMasterMulticast(void * data, int size);
 
         /**
          * @brief Read data from all slave nodes
@@ -110,6 +114,7 @@ class CVRKERNEL_EXPORT ComController
 
         bool setupConnections(std::string & fileArgs);
         bool connectMaster();
+        void setupMulticast();
 
         /**
          * Message passed during multinode startup
@@ -131,6 +136,10 @@ class CVRKERNEL_EXPORT ComController
         std::map<int,cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets
         cvr::MultiListenSocket * _listenSocket; ///< sock that listens for slave node connections
         std::map<int,std::string> _startupMap; ///< startup commands indexed by node number
+
+        bool _multicastUsable;
+        CVRMulticastSocket * _masterMCSocket;
+        CVRMulticastSocket * _slaveMCSocket;
 
         static ComController * _myPtr; ///< static self pointer
 

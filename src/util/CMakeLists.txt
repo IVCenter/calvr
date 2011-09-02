@@ -16,6 +16,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/DistanceAccumulator.h
     ${HEADER_PATH}/OsgPrint.h
     ${HEADER_PATH}/ComputeBoundingBoxVisitor.h
+    ${HEADER_PATH}/CVRMulticastSocket.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -38,6 +39,7 @@ SET(LIB_SRC_FILES
     DistanceAccumulator.cpp
     OsgPrint.cpp
     ComputeBoundingBoxVisitor.cpp
+    CVRMulticastSocket.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES

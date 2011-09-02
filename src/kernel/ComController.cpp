@@ -93,6 +93,8 @@ bool ComController::init(osg::ArgumentParser * ap)
                 << _masterInterface << std::endl;
         return connectMaster();
     }
+
+    setupMulticast();
 }
 
 bool ComController::sendSlaves(void * data, int size)
@@ -138,6 +140,62 @@ bool ComController::readMaster(void * data, int size)
 	std::cerr << "ComController Error: recv failure, readMaster." << std::endl;
 	_CCError = true;
 	return false;
+    }
+    return true;
+}
+
+bool ComController::sendSlavesMulticast(void * data, int size)
+{
+    if(!_isMaster || !data || _CCError)
+    {
+	return false;
+    }
+
+    if(!size)
+    {
+	return true;
+    }
+
+    if(_multicastUsable)
+    {
+	if(!_slaveMCSocket->send(data, size))
+	{
+	    std::cerr << "ComController Error: send failure, sendSlaves, multicast" << std::endl;
+	    _CCError = true;
+	    return false;
+	}
+    }
+    else
+    {
+	return sendSlaves(data,size);
+    }
+    return true;
+}
+
+bool ComController::readMasterMulticast(void * data, int size)
+{
+    if(_isMaster || !data || _CCError)
+    {
+        return false;
+    }
+
+    if(!size)
+    {
+	return true;
+    }
+
+    if(_multicastUsable)
+    {
+	if(!_masterMCSocket->recv(data, size))
+	{
+	    std::cerr << "ComController Error: recv failure, readMasterMulticast." << std::endl;
+	    _CCError = true;
+	    return false;
+	}
+    }
+    else
+    {
+	return readMaster(data,size);
     }
     return true;
 }
@@ -520,4 +578,54 @@ bool ComController::connectMaster()
     readMaster(&im, sizeof(struct InitMsg));
 
     return im.ok;
+}
+
+void ComController::setupMulticast()
+{
+    if(_numSlaves && ConfigManager::getBool("value","MultiPC.Multicast",false,NULL))
+    {
+	std::string groupAddress = ConfigManager::getEntry("groupAddress","MultiPC.Multicast","225.0.0.51");
+	int port = ConfigManager::getInt("port","MultiPC.Multicast",12000);
+	bool found;
+	std::string masterInterface = ConfigManager::getEntry("masterInterface","MultiPC.Multicast","",&found);
+	if(isMaster())
+	{
+	    _slaveMCSocket = new CVRMulticastSocket(CVRMulticastSocket::SEND, groupAddress, port);
+	    if(_slaveMCSocket->valid() && found);
+	    {
+		_slaveMCSocket->setMulticastInterface(masterInterface);
+	    }
+	    _multicastUsable = _slaveMCSocket->valid();
+	    bool * status = new bool[_numSlaves];
+	    readSlaves(status,sizeof(bool));
+	    for(int i = 0; i < _numSlaves; i++)
+	    {
+		if(!status[i])
+		{
+		    _multicastUsable = false;
+		}
+	    }
+	    delete[] status;
+	    sendSlaves(&_multicastUsable,sizeof(bool));
+	}
+	else
+	{
+	    _masterMCSocket = new CVRMulticastSocket(CVRMulticastSocket::RECV, groupAddress, port);
+	    _multicastUsable = _masterMCSocket->valid();
+	    sendMaster(&_multicastUsable,sizeof(bool));
+	    readMaster(&_multicastUsable,sizeof(bool));
+	}
+	if(_multicastUsable)
+	{
+	    std::cerr << "Multicast setup." << std::endl;
+	}
+	else
+	{
+	    std::cerr << "Multicast setup failed, converting multicast calls to TCP." << std::endl;
+	}
+    }
+    else
+    {
+	_multicastUsable = false;
+    }
 }
