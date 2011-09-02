@@ -75,6 +75,7 @@ bool ComController::init(osg::ArgumentParser * ap)
 
     _numSlaves = ConfigManager::getInt("MultiPC.NumSlaves", 0);
 
+    bool ret;
     if(_isMaster)
     {
         char hostname[51];
@@ -85,16 +86,21 @@ bool ComController::init(osg::ArgumentParser * ap)
                                                    "MultiPC.MasterInterface",
                                                    CalVR::instance()->getHostName());
         std::cerr << "Starting up as Master." << std::endl;
-        return setupConnections(fileArg);
+        ret = setupConnections(fileArg);
     }
     else
     {
         std::cerr << "Starting up as Node: " << _slaveNum << " with Master: "
                 << _masterInterface << std::endl;
-        return connectMaster();
+        ret = connectMaster();
     }
 
-    setupMulticast();
+    if(ret)
+    {
+        setupMulticast();
+    }
+
+    return ret;
 }
 
 bool ComController::sendSlaves(void * data, int size)
