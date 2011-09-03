@@ -5,7 +5,6 @@
 #define CALVR_MULTI_LISTEN_SOCKET_H
 
 #include <util/Export.h>
-#include <util/CVRSocket.h>
 
 #ifndef WIN32
 #include <sys/types.h>
@@ -17,6 +16,8 @@
 
 namespace cvr
 {
+
+class CVRSocket;
 
 class CVRUTIL_EXPORT MultiListenSocket
 {

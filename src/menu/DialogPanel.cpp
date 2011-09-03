@@ -1,4 +1,5 @@
 #include <menu/DialogPanel.h>
+#include <menu/MenuText.h>
 
 #include <iostream>
 

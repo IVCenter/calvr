@@ -9,6 +9,8 @@
 #include <stack>
 #include <algorithm>
 
+#include <mxml.h>
+
 #ifdef WIN32
 #include <Winsock2.h>
 #include <stdlib.h>

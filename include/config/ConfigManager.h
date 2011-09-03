@@ -6,7 +6,6 @@
 #define CALVR_CONFIG_MANAGER_H
 
 #include <config/Export.h>
-#include <kernel/CalVR.h>
 
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -17,7 +16,8 @@
 #include <map>
 #include <vector>
 
-#include <mxml.h>
+struct mxml_node_s;
+typedef struct mxml_node_s mxml_node_t;
 
 /*class ConfigNode
  {
@@ -48,6 +48,8 @@
 
 namespace cvr
 {
+
+class CalVR;
 
 /**
  * @brief Used to read values from the xml config file
