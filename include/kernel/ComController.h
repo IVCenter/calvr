@@ -112,7 +112,7 @@ class CVRKERNEL_EXPORT ComController
         virtual ~ComController();
 
 
-        bool setupConnections(std::string & fileArgs);
+        bool setupConnections();
         bool connectMaster();
         void setupMulticast();
 

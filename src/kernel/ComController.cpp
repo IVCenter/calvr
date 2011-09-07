@@ -46,9 +46,32 @@ ComController * ComController::instance()
 
 bool ComController::init(osg::ArgumentParser * ap)
 {
-    std::string fileArg;
-    // TODO: do this better
-    if(ap->argc() > 6)
+    if(ap->read("-s",_slaveNum))
+    {
+	if(!ap->read("-h",_masterInterface))
+	{
+	    std::cerr << "Error: no \"-h\" (master interface) option given on command line." << std::endl;
+	    return false;
+	}
+	if(!ap->read("-p",_port))
+	{
+	    std::cerr << "Error: not \"-p\" (master port) option given on command line." << std::endl;
+	    return false;
+	}
+	_isMaster = false;
+    }
+    else
+    {
+	_isMaster = true;
+    }
+
+    /*std::cerr << "Argc: " << ap->argc() << std::endl;
+    for(int i = 0; i < ap->argc(); i++)
+    {
+	std::cerr << "argv: " << ap->argv()[i] << std::endl;
+    }*/
+
+    /*if(ap->argc() > 6)
     {
         if(!strcmp(ap->argv()[1], "-s") && !strcmp(ap->argv()[3], "-h")
                 && !strcmp(ap->argv()[5], "-p"))
@@ -71,7 +94,7 @@ bool ComController::init(osg::ArgumentParser * ap)
             fileArg = ap->argv()[1];
         }
         _isMaster = true;
-    }
+    }*/
 
     _numSlaves = ConfigManager::getInt("MultiPC.NumSlaves", 0);
 
@@ -86,7 +109,7 @@ bool ComController::init(osg::ArgumentParser * ap)
                                                    "MultiPC.MasterInterface",
                                                    CalVR::instance()->getHostName());
         std::cerr << "Starting up as Master." << std::endl;
-        ret = setupConnections(fileArg);
+        ret = setupConnections();
     }
     else
     {
@@ -357,7 +380,7 @@ int ComController::getNumSlaves()
     return _numSlaves;
 }
 
-bool ComController::setupConnections(std::string & fileArg)
+bool ComController::setupConnections()
 {
     int baseport = ConfigManager::getInt("port","MultiPC.MasterInterface",11000);
 
@@ -453,7 +476,7 @@ bool ComController::setupConnections(std::string & fileArg)
     {
         std::stringstream ss;
         ss << "CalVR -s " << it->first << " -h " << _masterInterface << " -p "
-                << baseport << " " << fileArg;
+                << baseport;
         size_t location = it->second.find("CalVR");
         if(location != std::string::npos)
         {
