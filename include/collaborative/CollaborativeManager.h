@@ -50,7 +50,8 @@ enum CollaborativeMessageType
     ADD_CLIENT = 0,
     REMOVE_CLIENT,
     SET_MASTER_ID,
-    SET_COLLAB_MODE
+    SET_COLLAB_MODE,
+    PLUGIN_MESSAGE
 };
 
 struct ServerUpdate
@@ -70,6 +71,7 @@ struct ServerInitInfo
 struct CollaborativeMessageHeader
 {
         int type;
+        int pluginMessageType;
         char target[256];
         int size;
         bool deleteData;
@@ -113,6 +115,9 @@ class CollaborativeManager
         int getClientNumHands(int id);
         const osg::Matrix & getClientHeadMat(int id, int head);
         const osg::Matrix & getClientHandMat(int id, int hand);
+
+        void sendCollaborativeMessageAsync(std::string target, int type, char * data, int size, bool sendLocal = false);
+        void sendCollaborativeMessageSync(std::string target, int type, char * data, int size, bool sendLocal = false);
 
     protected:
         CollaborativeManager();

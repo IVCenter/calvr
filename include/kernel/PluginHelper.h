@@ -224,6 +224,10 @@ class CVRKERNEL_EXPORT PluginHelper
          */
         static ScreenInfo * getScreenInfo(int screen);
 
+        static void sendMessageByName(std::string plugin, int type, char * data);
+        static void sendCollaborativeMessageAsync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+        static void sendCollaborativeMessageSync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+
     protected:
 
 };

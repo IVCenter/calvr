@@ -2,6 +2,7 @@
 #include <collaborative/CollaborativeThread.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
+#include <kernel/PluginManager.h>
 #include <kernel/ComController.h>
 #include <kernel/CalVR.h>
 
@@ -725,6 +726,71 @@ const osg::Matrix & CollaborativeManager::getClientHandMat(int id, int hand)
     return defaultReturn;
 }
 
+void CollaborativeManager::sendCollaborativeMessageAsync(std::string target, int type, char * data, int size, bool sendLocal)
+{
+    if(ComController::instance()->isMaster())
+    {
+	CollaborativeMessageHeader cmh;
+	cmh.type = PLUGIN_MESSAGE;
+	cmh.pluginMessageType = type;
+	cmh.target[255] = '\0';
+	strncpy(cmh.target, target.c_str(),255);
+	cmh.size = size;
+	cmh.deleteData = true;
+
+	_messageQueue.push(std::pair<CollaborativeMessageHeader,char *>(cmh,data));
+    }
+    
+    if(sendLocal)
+    {
+	PluginManager::instance()->sendMessageByName(target, type, data);
+    }
+}
+
+void CollaborativeManager::sendCollaborativeMessageSync(std::string target, int type, char * data, int size, bool sendLocal)
+{
+    if(_connected && !ComController::instance()->getIsSyncError())
+    {
+	bool done = true;
+	if(ComController::instance()->isMaster())
+	{
+	    CollaborativeMessageHeader cmh;
+	    cmh.type = PLUGIN_MESSAGE;
+	    cmh.pluginMessageType = type;
+	    cmh.target[255] = '\0';
+	    strncpy(cmh.target, target.c_str(),255);
+	    cmh.size = size;
+	    cmh.deleteData = false;
+
+	    _messageQueue.push(std::pair<CollaborativeMessageHeader,char *>(cmh,data));
+
+	    while(_thread->isRunning() && !_thread->updateDone())
+	    {
+		//TODO:nanosleep
+	    }
+
+	    update();
+
+	    while(_thread->isRunning() && !_thread->updateDone())
+	    {
+		//TODO:nanosleep
+	    }
+
+	    ComController::instance()->sendSlaves(&done,sizeof(bool));
+	}
+	else
+	{
+	    update();
+	    ComController::instance()->readMaster(&done,sizeof(bool));
+	}
+    }
+
+    if(sendLocal)
+    {
+	PluginManager::instance()->sendMessageByName(target, type, data);
+    }
+}
+
 void CollaborativeManager::updateCollabNodes()
 {
     _collabRoot->removeChildren(0,_collabRoot->getNumChildren());
@@ -899,6 +965,15 @@ void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh, char
 		}
 	    }
 	    _collabHands.erase(id);
+	    break;
+	}
+	case PLUGIN_MESSAGE:
+	{
+	    CVRPlugin * plugin = PluginManager::instance()->getPlugin(cmh.target);
+	    if(plugin)
+	    {
+		plugin->message(cmh.pluginMessageType,data,true);
+	    }
 	    break;
 	}
 	default:

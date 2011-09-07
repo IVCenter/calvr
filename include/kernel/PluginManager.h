@@ -62,6 +62,10 @@ class CVRKERNEL_EXPORT PluginManager
 
         void sendMessageByName(std::string plugin, int type, char * data);
 
+        CVRPlugin * getPlugin(std::string plugin);
+
+        bool getPluginLoaded(std::string plugin);
+
     protected:
         PluginManager();
 

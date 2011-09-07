@@ -1,4 +1,7 @@
 #include <kernel/PluginHelper.h>
+#include <kernel/PluginManager.h>
+#include <collaborative/CollaborativeManager.h>
+
 
 using namespace cvr;
 
@@ -163,4 +166,19 @@ int PluginHelper::getNumScreens()
 ScreenInfo * PluginHelper::getScreenInfo(int screen)
 {
     return ScreenConfig::instance()->getScreenInfo(screen);
+}
+
+void PluginHelper::sendMessageByName(std::string plugin, int type, char * data)
+{
+    PluginManager::instance()->sendMessageByName(plugin,type,data);
+}
+
+void PluginHelper::sendCollaborativeMessageAsync(std::string plugin, int type, char * data, int size, bool sendLocal)
+{
+    CollaborativeManager::instance()->sendCollaborativeMessageAsync(plugin,type,data,size,sendLocal);
+}
+
+void PluginHelper::sendCollaborativeMessageSync(std::string plugin, int type, char * data, int size, bool sendLocal)
+{
+    CollaborativeManager::instance()->sendCollaborativeMessageSync(plugin,type,data,size,sendLocal);
 }

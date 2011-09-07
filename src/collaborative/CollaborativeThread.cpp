@@ -70,9 +70,16 @@ void CollaborativeThread::run()
 		}
 		for(int i = 0; i < _numMessages; i++)
 		{
-		    if(!_socket->send(_messageData[i], _messageHeaders[i].size,MSG_NOSIGNAL))
+		    if(_messageHeaders[i].size)
 		    {
-			return;
+			if(!_socket->send(_messageData[i], _messageHeaders[i].size,MSG_NOSIGNAL))
+			{
+			    return;
+			}
+			if(_messageHeaders[i].deleteData)
+			{
+			    delete[] _messageData[i];
+			}
 		    }
 		}
 		// clean up message meta data after send
@@ -231,7 +238,9 @@ void CollaborativeThread::startUpdate(struct ClientUpdate & cu, int numBodies, s
 	delete[] _messageDataUpdate;
 	_messageDataUpdate = NULL;
     }
+    _statusLock.lock();
     _updating = true;
+    _statusLock.unlock();
 }
 
 bool CollaborativeThread::updateDone()

@@ -5,13 +5,12 @@
 #define DIALOG_PANEL_H
 
 #include <menu/PopupMenu.h>
+#include <menu/MenuText.h>
 
 #include <string>
 
 namespace cvr
 {
-
-class MenuText;
 
 /**
  * @brief A PopupMenu with an updateable text field

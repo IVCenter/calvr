@@ -97,7 +97,7 @@ class CVRPlugin
          * @param type what this message is, up to the plugin
          * @param data pointer to some block of data consistent with the type
          */
-        virtual void message(int type, char * data)
+        virtual void message(int type, char * & data, bool collaborative = false)
         {
         }
 
