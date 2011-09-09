@@ -5,6 +5,7 @@
 #include <kernel/PluginManager.h>
 #include <kernel/ComController.h>
 #include <kernel/CalVR.h>
+#include <util/CVRSocket.h>
 
 #include <iostream>
 #include <cstring>

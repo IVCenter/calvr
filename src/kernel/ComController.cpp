@@ -1,6 +1,9 @@
 #include <kernel/ComController.h>
 #include <kernel/CalVR.h>
 #include <config/ConfigManager.h>
+#include <util/CVRSocket.h>
+#include <util/CVRMulticastSocket.h>
+#include <util/MultiListenSocket.h>
 
 #include <osg/Timer>
 

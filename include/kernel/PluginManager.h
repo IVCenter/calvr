@@ -60,10 +60,25 @@ class CVRKERNEL_EXPORT PluginManager
          */
         bool processEvent(InteractionEvent * event);
 
+        /**
+         * @brief Sends a message to a plugin with the given name through the message() callback in the plugin interface
+         * @param plugin name of plugin to send message to
+         * @param type value the plugin gets as the message type
+         * @param data pointer to any message data
+         *
+         * If the plugin is not on, nothing happens.  This is a local call and no data copies or movement is involved.
+         */
         void sendMessageByName(std::string plugin, int type, char * data);
 
+        /**
+         * @brief Get the pointer to a plugin with the given name
+         * @return returns NULL if plugin is off
+         */
         CVRPlugin * getPlugin(std::string plugin);
 
+        /**
+         * @brief Returns if the plugin with the given name is on
+         */
         bool getPluginLoaded(std::string plugin);
 
     protected:

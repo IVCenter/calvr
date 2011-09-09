@@ -1,4 +1,4 @@
-#include <util/OSGMath.h>
+#include <util/OsgMath.h>
 
 #include <cmath>
 

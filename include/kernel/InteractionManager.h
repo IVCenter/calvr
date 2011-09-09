@@ -44,22 +44,6 @@ enum EventType
 };
 
 /**
- * @brief Structure containing mouse information with some screen state
- */
-/*struct MouseInfo
-{
-        osg::Vec3 screenCenter; ///< center of the screen the mouse intersects
-        osg::Vec3 eyeOffset;
-        int head; ///< tracked head number used for this screen
-        float screenWidth; ///< width of screen (worldspace)
-        float screenHeight; ///< height of screen (worldspace)
-        int viewportX; ///< width of viewport
-        int viewportY; ///< height of viewport
-        int x; ///< mouse viewport x position
-        int y; ///< mouse viewport y position
-};*/
-
-/**
  * @brief Base interaction event struct, all other inherit from this
  */
 struct InteractionEvent
@@ -141,9 +125,9 @@ class CVRKERNEL_EXPORT InteractionManager
 
         /**
          * @brief Sets the current mouse state
-         * @param mi mouse state
+         * @param x viewport x value
+         * @param y viewport y value
          */
-        //void setMouseInfo(MouseInfo & mi);
         void setMouse(int x, int y);
 
         /**
@@ -166,11 +150,6 @@ class CVRKERNEL_EXPORT InteractionManager
          * @brief get the current mouse orientation
          */
         osg::Matrix & getMouseMat();
-
-        /**
-         * @brief get the current mouse state
-         */
-        //MouseInfo * getMouseInfo();
 
         /**
          * @brief get the current mouse x viewport position
@@ -213,8 +192,8 @@ class CVRKERNEL_EXPORT InteractionManager
         //MouseInfo * _mouseInfo; ///< current mouse state
         bool _mouseActive; ///< have we had a mouse event
         osg::Matrix _mouseMat; ///< mouse orientation
-        int _mouseX;
-        int _mouseY;
+        int _mouseX; ///< current mouse x position
+        int _mouseY; ///< current mouse y position
 
 };
 

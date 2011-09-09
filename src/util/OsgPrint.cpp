@@ -1,51 +1,48 @@
 #include <iostream>
 
-#include <osg/Matrixd>
-#include <osg/Vec4f>
-#include <osg/Vec3f>
-#include <osg/Vec2f>
+#include <osg/Vec4>
+#include <osg/Vec3>
+#include <osg/Vec2>
 
 #include <util/OsgPrint.h>
 
-namespace cvr {
-#define LINE_SEP "==================================================\n"
-void print(osg::Vec2f & v) {
-    std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << "\n";
-    std::cout << "Y: " << v.y() << "\n";
-    std::cout << LINE_SEP;
+namespace cvr 
+{
+
+void print(osg::Vec2 & v, std::string label) 
+{
+    std::cerr << label << " x: " << v.x() << " y: " << v.y() << std::endl;
 }
 
-void print(const osg::Vec3f & v) {
-    std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << "\n";
-    std::cout << "Y: " << v.y() << "\n";
-    std::cout << "Z: " << v.z() << "\n";
-    std::cout << LINE_SEP;
+void print(osg::Vec3 & v, std::string label) 
+{
+    std::cerr << label << " x: " << v.x() << " y: " << v.y() << " z: " << v.z() << std::endl;
 }
 
-void print(osg::Vec3f & v) {
-    std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << "\n";
-    std::cout << "Y: " << v.y() << "\n";
-    std::cout << "Z: " << v.z() << "\n";
-    std::cout << LINE_SEP;
+void print(osg::Vec4 & v, std::string label) 
+{
+    std::cerr << label << " x: " << v.x() << " y: " << v.y() << " z: " << v.z() << " w: " << v.w() << std::endl;
 }
 
-void print(osg::Vec4f & v) {
-    std::cout << LINE_SEP;
-    std::cout << "X: " << v.x() << "\n";
-    std::cout << "Y: " << v.y() << "\n";
-    std::cout << "Z: " << v.z() << "\n";
-    std::cout << LINE_SEP;
-}
-
-void print(osg::Matrixd & m) {
-    std::cout << LINE_SEP;
-    for(unsigned int i = 0; i < 4; ++i) {
-	std::cerr << m(i, 0) << " " << m(i, 1) << " " <<
-	    m(i, 2) << " " << m(i,3) << "\n";
+void print(osg::Matrix & m, std::string label, bool transpose) 
+{
+    std::cerr << label << ":" << std::endl;
+    if(!transpose)
+    {
+	for(unsigned int i = 0; i < 4; ++i) 
+	{
+	    std::cerr << m(i,0) << " " << m(i,1) << " " <<
+		m(i,2) << " " << m(i,3) << "\n";
+	}
     }
-    std::cerr << LINE_SEP;
+    else
+    {
+	for(unsigned int i = 0; i < 4; ++i) 
+	{
+	    std::cerr << m(0,i) << " " << m(1,i) << " " <<
+		m(2,i) << " " << m(3,i) << std::endl;
+	}
+    }
 }
+
 }

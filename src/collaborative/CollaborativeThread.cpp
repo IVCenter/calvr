@@ -1,4 +1,5 @@
 #include <collaborative/CollaborativeThread.h>
+#include <util/CVRSocket.h>
 
 #include <iostream>
 

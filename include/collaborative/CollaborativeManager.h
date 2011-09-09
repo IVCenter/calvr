@@ -1,8 +1,6 @@
 #ifndef CVR_COLLABORATIVE_MANAGER_H
 #define CVR_COLLABORATIVE_MANAGER_H
 
-#include <util/CVRSocket.h>
-
 #include <string>
 #include <map>
 #include <vector>
@@ -24,7 +22,6 @@ namespace cvr
         int numMes;
 };*/
 
-// TODO: reduced struct when changes are done, for now leave for things to compile
 
 struct ClientUpdate
 {
@@ -86,6 +83,7 @@ struct ClientInitInfo
 };
 
 class CollaborativeThread;
+class CVRSocket;
 
 class CollaborativeManager
 {

@@ -48,7 +48,7 @@ class ScreenMVMaster : public ScreenMVSimulator
         /**
          * @brief Callback for mouse interaction with the viewport
          * @param x Integer value of the x coordinate
-         * @param x Integer value of the y coordinate
+         * @param y Integer value of the y coordinate
          */
         virtual void adjustViewportCoords(int &x, int&y);
 

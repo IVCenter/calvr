@@ -970,6 +970,11 @@ void SceneObject::moveCleanup()
 
 bool SceneObject::intersectsFast(osg::Vec3 & start, osg::Vec3 & end)
 {
+    if(!_attached)
+    {
+	return false;
+    }
+
     osg::Vec3 startlocal;
     osg::Vec3 endlocal;
     osg::BoundingBox bb = getOrComputeBoundingBox();

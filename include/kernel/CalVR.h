@@ -56,13 +56,16 @@ class CalVR
          */
         std::string & getHomeDir() { return _home; }
 
+        /**
+         * @brief Get the host name for this node
+         */
         std::string & getHostName() { return _hostName; }
 
     protected:
         static CalVR * _myPtr; ///< static self pointer
 
         std::string _home; ///< CalVR home directory
-        std::string _hostName;
+        std::string _hostName; ///< node's host name
 
         ConfigManager * _config;
         ComController * _communication;
