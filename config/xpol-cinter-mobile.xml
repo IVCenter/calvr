@@ -4,6 +4,11 @@
    <Stereo separation="-64.0" />
  </GLOBAL>
 
+ <ChannelConfig>
+   <Channel stereoMode="INTERLACED_TOP_BOTTOM" name="0" />
+   <Channel stereoMode="INTERLACED_TOP_BOTTOM" name="1" />
+ </ChannelConfig>
+
  <LOCAL host="tile-0-0.local" >
    <NumPipes value="2" />
    <NumScreens value="2" />
