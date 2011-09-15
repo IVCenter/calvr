@@ -685,6 +685,7 @@ void SceneManager::updateActiveObject()
 	// find points of bounding box intersection
 	for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
 	{
+	    //std::cerr << "Object " << (*objit)->getName() << std::endl;
 	    if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
 	    {
 		if(neg1)

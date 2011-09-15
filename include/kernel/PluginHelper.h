@@ -225,6 +225,20 @@ class CVRKERNEL_EXPORT PluginHelper
         static ScreenInfo * getScreenInfo(int screen);
 
         /**
+         * @brief Register a SceneObject with the SceneManager
+         * @param object SceneObject to register
+         * @param plugin optional plugin name to associate with the object
+         *
+         * A SceneObject must be registered before it can be attached to the scene
+         */
+        static void registerSceneObject(SceneObject * object, std::string plugin = "");
+
+        /**
+         * @brief Unregister a SceneObject with the SceneManager
+         */
+        static void unregisterSceneObject(SceneObject * object);
+
+        /**
          * @brief Sends a message to a plugin with the given name through the message() callback in the plugin interface
          * @param plugin name of plugin to send message to
          * @param type value the plugin gets as the message type

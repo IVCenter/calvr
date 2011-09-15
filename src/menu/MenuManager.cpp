@@ -176,3 +176,11 @@ void MenuManager::updateEnd()
 	(*it)->updateEnd();
     }
 }
+
+void MenuManager::itemDelete(MenuItem * item)
+{
+    for(std::list<MenuSystemBase *>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
+    {
+	(*it)->itemDelete(item);
+    }
+}

@@ -222,12 +222,12 @@ void SceneObject::setRotation(osg::Quat rot)
 
 osg::Matrix SceneObject::getTransform()
 {
-    return _transMat;
+    return _root->getMatrix();
 }
 
 void SceneObject::setTransform(osg::Matrix m)
 {
-    _transMat = m;
+    _root->setMatrix(m);
     splitMatrix();
 }
 
