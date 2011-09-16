@@ -168,6 +168,16 @@ ScreenInfo * PluginHelper::getScreenInfo(int screen)
     return ScreenConfig::instance()->getScreenInfo(screen);
 }
 
+void PluginHelper::registerSceneObject(SceneObject * object, std::string plugin)
+{
+    SceneManager::instance()->registerSceneObject(object,plugin);
+}
+
+void PluginHelper::unregisterSceneObject(SceneObject * object)
+{
+    SceneManager::instance()->unregisterSceneObject(object);
+}
+
 void PluginHelper::sendMessageByName(std::string plugin, int type, char * data)
 {
     PluginManager::instance()->sendMessageByName(plugin,type,data);
