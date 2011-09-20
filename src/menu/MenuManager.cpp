@@ -1,8 +1,11 @@
 #include <menu/MenuManager.h>
+#include <menu/MenuSystem.h>
 #include <config/ConfigManager.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
+#include <kernel/InteractionManager.h>
+#include <util/Intersection.h>
 
 #ifdef WIN32
 #pragma comment(lib, "config.lib")
@@ -171,5 +174,13 @@ void MenuManager::updateEnd()
     for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
     {
 	(*it)->updateEnd();
+    }
+}
+
+void MenuManager::itemDelete(MenuItem * item)
+{
+    for(std::list<MenuSystemBase *>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
+    {
+	(*it)->itemDelete(item);
     }
 }

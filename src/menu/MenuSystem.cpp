@@ -1,6 +1,10 @@
 #include <menu/MenuSystem.h>
 #include <menu/BoardMenu.h>
+#include <menu/MenuBase.h>
+#include <menu/SubMenu.h>
+#include <kernel/InteractionManager.h>
 #include <config/ConfigManager.h>
+#include <util/Intersection.h>
 
 #include <iostream>
 

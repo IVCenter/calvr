@@ -1,6 +1,7 @@
 #include <menu/PopupMenu.h>
 #include <menu/BoardPopupMenu.h>
 #include <menu/MenuManager.h>
+#include <menu/PopupMenuBase.h>
 
 #include <config/ConfigManager.h>
 

@@ -4,6 +4,7 @@
 #include <kernel/ComController.h>
 #include <kernel/Navigation.h>
 #include <kernel/CVRViewer.h>
+#include <kernel/SceneManager.h>
 #include <kernel/ScreenConfig.h>
 #include <kernel/ScreenBase.h>
 #include <kernel/PluginManager.h>
@@ -91,6 +92,8 @@ void InteractionManager::handleEvents()
     }
 
     _queueLock.unlock();
+
+    TrackingManager::instance()->cleanupCurrentEvents();
 }
 
 void InteractionManager::handleEvent(InteractionEvent * event)
@@ -98,6 +101,11 @@ void InteractionManager::handleEvent(InteractionEvent * event)
     if(MenuManager::instance()->processEvent(event))
     {
         return;
+    }
+
+    if(SceneManager::instance()->processEvent(event))
+    {
+	return;
     }
 
     if(PluginManager::instance()->processEvent(event))

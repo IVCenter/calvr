@@ -39,6 +39,7 @@ TrackingManager::TrackingManager()
     _buttonTracker = NULL;
     _debugOutput = false;
     _threadQuit = false;
+    _currentEvents = NULL;
 }
 
 TrackingManager::~TrackingManager()
@@ -1107,6 +1108,15 @@ bool TrackingManager::getUsingMouseTracker()
     return _mouseTracker;
 }
 
+void TrackingManager::cleanupCurrentEvents()
+{
+    /*if(_currentEvents)
+    {
+	delete[] _currentEvents;
+	_currentEvents = NULL;
+    }*/
+}
+
 void TrackingManager::updateHandMask()
 {
     if(!_buttonTracker)
@@ -1189,7 +1199,6 @@ void TrackingManager::updateThreadHandMask()
 
 void TrackingManager::generateButtonEvents()
 {
-    TrackingInteractionEvent * events = NULL;
     int numEvents;
     if(ComController::instance()->isMaster())
     {
@@ -1241,12 +1250,12 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->sendSlaves(&numEvents, sizeof(int));
         if(numEvents)
         {
-            events = new TrackingInteractionEvent[numEvents];
+            _currentEvents = new TrackingInteractionEvent[numEvents];
             for(int i = 0; i < numEvents; i++)
             {
-                events[i] = eventList[i];
+                _currentEvents[i] = eventList[i];
             }
-            ComController::instance()->sendSlaves(events, numEvents
+            ComController::instance()->sendSlaves(_currentEvents, numEvents
                     * sizeof(TrackingInteractionEvent));
         }
     }
@@ -1255,20 +1264,24 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->readMaster(&numEvents, sizeof(int));
         if(numEvents)
         {
-            events = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(events, numEvents
+            _currentEvents = new TrackingInteractionEvent[numEvents];
+            ComController::instance()->readMaster(_currentEvents, numEvents
                     * sizeof(TrackingInteractionEvent));
         }
     }
 
+    TrackingInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        InteractionManager::instance()->handleEvent(&events[i]);
+        ie = new TrackingInteractionEvent;
+        *ie = _currentEvents[i];
+        InteractionManager::instance()->addEvent(ie);
     }
 
-    if(events)
+    if(_currentEvents)
     {
-        delete[] events;
+        delete[] _currentEvents;
+        _currentEvents = NULL;
     }
 }
 
@@ -1393,7 +1406,6 @@ void TrackingManager::updateThreadMats()
 
 void TrackingManager::flushEvents()
 {
-    TrackingInteractionEvent * tie = NULL;
     int numEvents;
     if(ComController::instance()->isMaster())
     {
@@ -1401,17 +1413,17 @@ void TrackingManager::flushEvents()
         ComController::instance()->sendSlaves(&numEvents, sizeof(int));
         if(numEvents)
         {
-            tie = new TrackingInteractionEvent[_threadEvents.size()];
+            _currentEvents = new TrackingInteractionEvent[_threadEvents.size()];
             int index = 0;
             while(_threadEvents.size())
             {
-                tie[index]
+                _currentEvents[index]
                         = *((TrackingInteractionEvent*)_threadEvents.front());
                 delete _threadEvents.front();
                 _threadEvents.pop();
                 index++;
             }
-            ComController::instance()->sendSlaves(tie, numEvents
+            ComController::instance()->sendSlaves(_currentEvents, numEvents
                     * sizeof(struct TrackingInteractionEvent));
         }
     }
@@ -1420,20 +1432,24 @@ void TrackingManager::flushEvents()
         ComController::instance()->readMaster(&numEvents, sizeof(int));
         if(numEvents)
         {
-            tie = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(tie, numEvents
+            _currentEvents = new TrackingInteractionEvent[numEvents];
+            ComController::instance()->readMaster(_currentEvents, numEvents
                     * sizeof(struct TrackingInteractionEvent));
         }
     }
 
+    TrackingInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        InteractionManager::instance()->handleEvent(&tie[i]);
+        ie = new TrackingInteractionEvent;
+        *ie = _currentEvents[i];
+        InteractionManager::instance()->addEvent(ie);
     }
 
-    if(tie)
+    if(_currentEvents)
     {
-        delete[] tie;
+        delete[] _currentEvents;
+        _currentEvents = NULL;
     }
 }
 

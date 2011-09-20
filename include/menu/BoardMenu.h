@@ -5,6 +5,7 @@
 #define CALVR_BOARD_MENU_H
 
 #include <menu/MenuBase.h>
+
 #include <menu/BoardMenu/BoardMenuGeometry.h>
 #include <menu/BoardMenu/BoardMenuSubMenuGeometry.h>
 

@@ -1,3 +1,6 @@
+/**
+ * @file LocalToWorldVisitor.h
+ */
 #ifndef CVR_LOCAL_TO_WORLD_VISITOR_H
 #define CVR_LOCAL_TO_WORLD_VISITOR_H
 
@@ -40,6 +43,14 @@ class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
         osg::Matrix _matrix;
 };
 
+/**
+ * @brief Computes the matrix to transform the local coords of a given node into world space
+ * @param node local node
+ * @return local to world matrix
+ *
+ * Note: is node is a transform type node, its transform will be contained in the resulting local to world
+ * matrix
+ */
 osg::Matrixd getLocalToWorldMatrix( osg::Node* node)
 {
     getWorldCoordOfNodeVisitor* ncv = new getWorldCoordOfNodeVisitor();

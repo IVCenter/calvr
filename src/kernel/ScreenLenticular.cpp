@@ -178,9 +178,10 @@ void ScreenLenticular::initDisplay()
 bool ScreenLenticular::readFromThumbFile(std::string file)
 {
 
-    char hostname[51];
-    gethostname(hostname, 50);
-    std::string myHostName = hostname;
+    //char hostname[51];
+    //gethostname(hostname, 50);
+    //std::string myHostName = hostname;
+    std::string myHostName = CalVR::instance()->getHostName();
 
     size_t lpos = myHostName.find(".local");
     if(lpos != std::string::npos)

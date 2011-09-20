@@ -1,10 +1,10 @@
 #include <menu/MenuItem.h>
 
-#include <menu/MenuSystem.h>
+#include <menu/MenuManager.h>
 
 using namespace cvr;
 
 MenuItem::~MenuItem()
 {
-    MenuSystem::instance()->itemDelete(this);
+    MenuManager::instance()->itemDelete(this);
 }

@@ -6,7 +6,6 @@
 
 #include <menu/PopupMenu.h>
 #include <menu/MenuItem.h>
-#include <menu/MenuTextButtonSet.h>
 
 #include <osg/Texture2D>
 
@@ -17,6 +16,9 @@
 
 namespace cvr
 {
+
+class MenuItem;
+class MenuTextButtonSet;
 
 /**
  * @brief PopupMenu you can add text and image tabs to

@@ -131,8 +131,14 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          */
         int getActiveMasterScreen() { return _activeMasterScreen; }
 
+        /**
+         * @brief Set if the y widow coord should be inverted for mouse events
+         */
         void setInvertMouseY(bool inv) { _invertMouseY = inv; }
 
+        /**
+         * @brief Get if the y widow coord should be inverted for mouse events
+         */
         bool getInvertMouseY() { return _invertMouseY; }
     protected:
         virtual ~CVRViewer();

@@ -7,8 +7,6 @@
 
 #include <kernel/Export.h>
 #include <kernel/CalVR.h>
-#include <util/CVRSocket.h>
-#include <util/MultiListenSocket.h>
 
 #include <osg/ArgumentParser>
 
@@ -18,6 +16,10 @@
 
 namespace cvr
 {
+
+class CVRSocket;
+class CVRMulticastSocket;
+class MultiListenSocket;
 
 /**
  * @brief Handles cluster communication
@@ -52,6 +54,24 @@ class CVRKERNEL_EXPORT ComController
          * Only valid if called by slave node
          */
         bool readMaster(void * data, int size);
+
+        /**
+         * @brief Send a block of data to the slave node using multicast
+         * @param data data to send
+         * @param size size of the data
+         *
+         * Only valid if called by master node.  If multicast is not set up, tcp socket is used
+         */
+        bool sendSlavesMulticast(void * data, int size);
+
+        /**
+         * @brief Read a block of data from the master node, sent using multicast
+         * @param data Pointer to buffer to receive data
+         * @param size Ammount of data to read
+         *
+         * Only valid if called by slave node.  If multicast is not set up, tcp socket is used
+         */
+        bool readMasterMulticast(void * data, int size);
 
         /**
          * @brief Read data from all slave nodes
@@ -108,8 +128,9 @@ class CVRKERNEL_EXPORT ComController
         virtual ~ComController();
 
 
-        bool setupConnections(std::string & fileArgs);
+        bool setupConnections();
         bool connectMaster();
+        void setupMulticast();
 
         /**
          * Message passed during multinode startup
@@ -131,6 +152,10 @@ class CVRKERNEL_EXPORT ComController
         std::map<int,cvr::CVRSocket *> _slaveSockets; ///< list of slave node sockets
         cvr::MultiListenSocket * _listenSocket; ///< sock that listens for slave node connections
         std::map<int,std::string> _startupMap; ///< startup commands indexed by node number
+
+        bool _multicastUsable;
+        CVRMulticastSocket * _masterMCSocket;
+        CVRMulticastSocket * _slaveMCSocket;
 
         static ComController * _myPtr; ///< static self pointer
 
