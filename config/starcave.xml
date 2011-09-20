@@ -21,7 +21,7 @@
       <Far value="100000000" /> 
       <!-- Enable/disable plugins here -->
       <Plugin>
-        <GreenLight value="off" />
+        <GreenLight value="on" />
         <PluginTest value="off" />
         <MultiHandInteraction value="off" />
 	<TelePresence value="off" />
@@ -44,6 +44,7 @@
         <Maze value="off" />
         <CaveCAD value="off" />
 	<SpaceNavigator value="off" />
+	<AndroidNavigator value = "off" />
         <SPH value = "off">
               <params colorScale="0.167" colorShift="0.25" 
                       transScale="0.167" transShift="0.25" 
@@ -74,7 +75,7 @@
 	<MipMapVideo value="off" />
 	<MultiVolume value="off" />
 	<Volume value="off" />
-        <ArtifactVis value="on" />
+        <ArtifactVis value="off" />
         <Talha value="off" />
         <Seismic value="off" /> 
         <StructView value="off" />
@@ -270,30 +271,23 @@
         </WebMonitor>
 
         <ArtifactVis>
-	  <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
-	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
-	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-	  <DCInfoFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
-	  <LociFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
-	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
-	  <MaxVisibleRange value="1000000000.0" />
-	  <Offset>
-	    <X value="-3396591.682" />
-	    <Y value="-733458.55" />
-	    <Z value="-49.44" />
-	  </Offset>
-	  <Site>
-	    <Longitude value="35.491239" />
-	    <Latitude value="30.628039" />
-	  </Site>
-	  <Tessellation value=".2" />
-	</ArtifactVis>
-
-        <!--ArtifactVis>
-          <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
-          <ArtifactsFile value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
-          <ObjectFolder value="/home/covise/data/kyle/3d-artifacts/" />
-        </ArtifactVis-->
+          <ArchInterfaceFolder value="/home/cdefanti/ArchInterface/" />
+          <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+          <3DModelFolder value="/home/cdefanti/models/dcode_models/Finished/obj/" />
+          <Offset>
+            <X value="-304670000.000" />
+            <Y value="1450800.00" />
+            <Z value="-354990000.00" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+          <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
+        </ArtifactVis>
 
         <Volume>
           <Files>
