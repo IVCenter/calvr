@@ -12,7 +12,7 @@
       </PipeConfig>
 
       <!-- disabled befault 4 -->
-      <MultiSample value="0" />
+      <MultiSample value="4" />
 
       <CollisionDist value="1500" />
 
@@ -45,15 +45,15 @@
         <Vrml97 value="off" />
         <Site value="off" />
 <!-- Demoable plugins: -->
-        <GreenLight value="off" />
+        <GreenLight value="on" />
         <VisualAcuity value="off" />
         <OssimPlanet value="off" />
         <OsgEarth value="off" />
-        <OsgMovie value="on" />
+        <OsgMovie value="off" />
         <Volume value="off" />
         <Molecules value="off" />
         <CAMERAVis value="off" />
-        <PDB value="off" /> 
+        <PDB value="on" /> 
         <Marker value="off" />
         <Image value="off" /> <!-- DO NOT ENABLE ME -->
         <AirCurrents value="off" />

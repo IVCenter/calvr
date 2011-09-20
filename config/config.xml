@@ -5,12 +5,15 @@
    <ResourcesDirectory value="/home/aprudhom/CalVR/resources/" />
   </CUI>
 
+   <Background g="0.0" a="0.0" />
+
    <Stencil value="true" />
    <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
    <SyncToVBlank value="ON" />
    <Near value="100"/>
    <Far value="1000000" />
    <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
+   <MultiSample value="4" />
 
    <ShowAxis value="off" />
 
@@ -26,7 +29,7 @@
       <Threaded value="false" FPS="60.0" />
       <ClickTimeout single="0.4" double="0.4" />
 
-      <NumHands value="1" />
+      <NumHands value="0" />
       <NumHeads value="1" />
 
       <Hand1ButtonMask station1="0x0F" station2="0xFF" />
@@ -66,6 +69,7 @@
 
    <Plugin>
     <OssimPlanet value="off" />
+    <Sketch value="on" />
     <CullingMultiGPURender value="off" >
      <Width value="1024" />
      <Height value="768" />
@@ -91,9 +95,9 @@
      <DrawLines value="false" />
     </MultiGPURender>
 
-    <ArtifactVis value="on" />
+    <ArtifactVis value="off" />
 
-    <AndroidNavigator value="on" >
+    <AndroidNavigator value="off" >
      <TransMult value="1.0" />
      <RotMult value="1.0" />
     </AndroidNavigator>
@@ -151,7 +155,7 @@
 	  <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
         </ArtifactVis>
 
-    <PluginTest value="off" />
+    <PluginTest value="on" />
     <CollaborativePlugin value="on">
       <Server value="127.0.0.1" />
       <Port value="11050" />
@@ -208,6 +212,13 @@
     </TourCave>
 
    </Plugin>
+
+   <ContextMenus>
+     <Scale hand="1.0" mouse="0.5" />
+     <MinDistance hand="400" mouse="300" />
+     <MaxDistance hand="1000" mouse="1000" />
+     <DefaultOpenButton hand="1" mouse="2" />
+   </ContextMenus>
 
    <MenuSystem type="BOARDMENU" useHints="false">
     <PrimaryHand value="0" />
