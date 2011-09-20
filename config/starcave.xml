@@ -21,8 +21,11 @@
       <Far value="100000000" /> 
       <!-- Enable/disable plugins here -->
       <Plugin>
-        <GreenLight value="off" />
+        <GreenLight value="on" />
         <PluginTest value="off" />
+        <LightEditor value="off" />
+        <MVSim value="off" /> <!-- Only to be used with MultiViewerScreen configurations! -->
+        <SMV2Settings value="off" />  <!-- Only to be used with ScreenMultiViewer2 configurations! -->
         <MultiHandInteraction value="off" />
 	<TelePresence value="off" />
          <Scatter value="off">
@@ -44,6 +47,7 @@
         <Maze value="off" />
         <CaveCAD value="off" />
 	<SpaceNavigator value="off" />
+	<AndroidNavigator value = "off" />
         <SPH value = "off">
               <params colorScale="0.167" colorShift="0.25" 
                       transScale="0.167" transShift="0.25" 
@@ -74,7 +78,7 @@
 	<MipMapVideo value="off" />
 	<MultiVolume value="off" />
 	<Volume value="off" />
-        <ArtifactVis value="on" />
+        <ArtifactVis value="off" />
         <Talha value="off" />
         <Seismic value="off" /> 
         <StructView value="off" />
@@ -100,7 +104,51 @@
         </Audio>
       </Vrml97>
 
-    <CullingMultiGPURender value="off" >
+      <GreenLight>
+        <Components textureDir="/home/covise/data/GreenLight/maps/">
+          <!-- Texture files should contain both the front and back faces, front on top-->
+          <C1 startname="convey" height="2" minWattage="620" maxWattage="690" texture="unwrap_ConveyHC1.png" />
+          <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
+          <C3 startname="compute" height="1" minWattage="195" maxWattage="453"     texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+          <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+          <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
+          <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
+          <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
+          <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+          <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+          <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+          <Dc startname="DC" height ="12" minWattage="1" maxWattage="2" texture="unwrap_dcmeter.png" />
+        </Components>
+        <Demo value="on" />
+        <Hardware
+          local="/home/covise/data/GreenLight/GreenLightAssets.fakejson"
+          download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+        <ModelsDir value="/home/covise/data/GreenLight/Models/" />
+        <Power
+          local="/home/covise/data/GreenLight/GLpower.xml"
+          download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power" />
+        <Shaders
+          fragment="/home/covise/data/GreenLight/shaders/component.frag"
+          vertex="/home/covise/data/GreenLight/shaders/component.vert" /> 
+      </GreenLight>
+
+      <LightEditor>
+        <GraphicModels value="on" />
+        <!--LightXmlFile value="/home/covise/data/LightEditor/testLights.xml" /-->
+        <LightXmlFile value="/home/jmangan/calvr/plugins/calit2/LightEditor/lights.xml.cessna" /> <!-- Lights for the cessna demo scene. Do not save over! -->
+        <Scene value="/home/covise/data/LightEditor/Models/cessna.osg" /> <!--Demo Scene, Comment out as you please -->
+        <LightShader textID="4"
+          vert="/home/covise/data/LightEditor/Shaders/lighting.vert"
+          frag="/home/covise/data/LightEditor/Shaders/lighting.frag" />
+      </LightEditor>
+
+      <MVSim>
+        <HeadMatrixDir value="/home/covise/data/MVSim/HeadMatrices/"/>
+        <Head0 value="on" x="0" y="-1000" z="0" rotate="0"/>
+        <Head1 value="on" x="500" y="-1000" z="0" rotate="0" sim="0"/>
+      </MVSim>
+
+     <CullingMultiGPURender value="off" >
      <Width value="1920" />
      <Height value="1080" />
      <NumberOfGPUs value="2" />
@@ -270,30 +318,23 @@
         </WebMonitor>
 
         <ArtifactVis>
-	  <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
-	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
-	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-	  <DCInfoFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
-	  <LociFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
-	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
-	  <MaxVisibleRange value="1000000000.0" />
-	  <Offset>
-	    <X value="-3396591.682" />
-	    <Y value="-733458.55" />
-	    <Z value="-49.44" />
-	  </Offset>
-	  <Site>
-	    <Longitude value="35.491239" />
-	    <Latitude value="30.628039" />
-	  </Site>
-	  <Tessellation value=".2" />
-	</ArtifactVis>
-
-        <!--ArtifactVis>
-          <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
-          <ArtifactsFile value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
-          <ObjectFolder value="/home/covise/data/kyle/3d-artifacts/" />
-        </ArtifactVis-->
+          <ArchInterfaceFolder value="/home/cdefanti/ArchInterface/" />
+          <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+          <3DModelFolder value="/home/cdefanti/models/dcode_models/Finished/obj/" />
+          <Offset>
+            <X value="-304670000.000" />
+            <Y value="1450800.00" />
+            <Z value="-354990000.00" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+          <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
+        </ArtifactVis>
 
         <Volume>
           <Files>

@@ -19,13 +19,15 @@
 #include <util/DepthPartitionNode.h>
 #include <osgUtil/CullVisitor>
 
+#include <iostream>
+
 using namespace osg;
 
 #define CURRENT_CLASS DepthPartitionNode
 
 CURRENT_CLASS::CURRENT_CLASS()
 {
-    _distAccumulator = new DistanceAccumulator;
+    _forwardOtherTraversals = true;
     init();
 }
 
@@ -33,9 +35,9 @@ CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn, const osg::CopyOp& copyop
     : osg::Group(dpn, copyop),
           _active(dpn._active),
           _renderOrder(dpn._renderOrder),
-          _clearColorBuffer(dpn._clearColorBuffer)
+          _clearColorBuffer(dpn._clearColorBuffer),
+	  _forwardOtherTraversals(dpn._forwardOtherTraversals)
 {
-    _distAccumulator = new DistanceAccumulator;
     _numCameras = 0;
 }
 
@@ -60,50 +62,85 @@ void CURRENT_CLASS::setClearColorBuffer(bool clear)
 {
     _clearColorBuffer = clear;
 
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
+    {
+	if(!it->second.empty())
+	{
+	    if(clear) 
+		it->second[0]->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	    else  
+		it->second[0]->setClearMask(GL_DEPTH_BUFFER_BIT);
+	}
+    }
+
     // Update the render order for the first Camera if it exists
-    if(!_cameraList.empty())
+    /*if(!_cameraList.empty())
     {
       if(clear) 
         _cameraList[0]->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       else  
         _cameraList[0]->setClearMask(GL_DEPTH_BUFFER_BIT);
-    }
+    }*/
 }
 
 void CURRENT_CLASS::setRenderOrder(osg::Camera::RenderOrder order)
 {
     _renderOrder = order;
 
-    // Update the render order for existing Cameras
-    unsigned int numCameras = _cameraList.size();
-    for(unsigned int i = 0; i < numCameras; i++)
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
     {
-      _cameraList[i]->setRenderOrder(_renderOrder);
+
+	// Update the render order for existing Cameras
+	unsigned int numCameras = it->second.size();
+	for(unsigned int i = 0; i < numCameras; i++)
+	{
+	    it->second[i]->setRenderOrder(_renderOrder);
+	}
+
     }
 }
 
 void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
 {
+    //printf("DEPTH ADDRESS %d\n", this);
+
     // If the scene hasn't been defined then don't do anything
     unsigned int numChildren = _children.size();
     if(numChildren == 0) return;
 
-    // If the node is not active then don't analyze it
+    // If the visitor is not a cull visitor, pass it directly onto the scene.
+    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+
     if(!_active)
     {
       // Traverse the graph as usual
-      Group::traverse(nv);
+      if(cv)
+      {
+	  Group::traverse(nv);
+      }
+      else if(_forwardOtherTraversals)
+      {
+	Group::traverse(nv);
+      }
       return;
     }
 
-    // If the visitor is not a cull visitor, pass it directly onto the scene.
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
     if(!cv) 
     { 
-      Group::traverse(nv);
+      if(_forwardOtherTraversals)
+      {
+	Group::traverse(nv);
+      }
       return; 
     }
 
+    int contextId = cv->getRenderInfo().getContextID();
+    if( !_daMap[contextId] )  
+    {
+	_daMap[contextId] = new DistanceAccumulator();
+    }
+
+    //std::cerr << "This: " << this << " context: " << contextId << " DA: " << _daMap[contextId].get() << std::endl;
     // We are in the cull traversal, so first collect information on the
     // current modelview and projection matrices and viewport.
     osg::RefMatrix& modelview = *(cv->getModelViewMatrix());
@@ -111,37 +148,37 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
     osg::Viewport* viewport = cv->getViewport();
 
     // Prepare for scene traversal.
-    _distAccumulator->setMatrices(modelview, projection);
-    _distAccumulator->setNearFarRatio(cv->getNearFarRatio());
-    _distAccumulator->reset();
+     _daMap[contextId]->setMatrices(modelview, projection);
+     _daMap[contextId]->setNearFarRatio(cv->getNearFarRatio());
+     _daMap[contextId]->reset();
 
     // Step 1: Traverse the children, collecting the near/far distances.
     unsigned int i;
     for(i = 0; i < numChildren; i++)
     {
-      _children[i]->accept(*(_distAccumulator.get()));
+      _children[i]->accept(*( _daMap[contextId].get()));
     }
 
     // Step 2: Compute the near and far distances for every Camera that
     // should be used to render the scene.
-    _distAccumulator->computeCameraPairs();
+     _daMap[contextId]->computeCameraPairs();
 
     // Step 3: Create the Cameras, and add them as children.
-    DistanceAccumulator::PairList& camPairs = _distAccumulator->getCameraPairs();
-    _numCameras = camPairs.size(); // Get the number of cameras
+    DistanceAccumulator::PairList& camPairs =  _daMap[contextId]->getCameraPairs();
+    unsigned int numCameras = camPairs.size(); // Get the number of cameras
 
     // Create the Cameras, and add them as children.
-    if(_numCameras > 0)
+    if(numCameras > 0)
     {
       osg::Camera *currCam;
       DistanceAccumulator::DistancePair currPair;
 
-      for(i = 0; i < _numCameras; i++)
+      for(i = 0; i < numCameras; i++)
       {
         // Create the camera, and clamp it's projection matrix
         currPair = camPairs[i];  // (near,far) pair for current camera
         currCam = createOrReuseCamera(projection, currPair.first, 
-                                      currPair.second, i);
+                                      currPair.second, i, contextId);
 
         // TEMP fix Philip 
         currCam->setLODScale(0.0001);
@@ -155,7 +192,7 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
       }
 
       // Set the clear color for the first camera
-      _cameraList[0]->setClearColor(cv->getRenderStage()->getClearColor());
+      _cameraList[contextId][0]->setClearColor(cv->getRenderStage()->getClearColor());
     }
 }
 
@@ -168,11 +205,16 @@ bool CURRENT_CLASS::insertChild(unsigned int index, osg::Node *child)
 {
     if(!Group::insertChild(index, child)) return false; // Insert child
 
-    // Insert child into each Camera
-    unsigned int totalCameras = _cameraList.size();
-    for(unsigned int i = 0; i < totalCameras; i++)
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
     {
-      _cameraList[i]->insertChild(index, child);
+
+	// Insert child into each Camera
+	unsigned int totalCameras = it->second.size();
+	for(unsigned int i = 0; i < totalCameras; i++)
+	{
+	    it->second[i]->insertChild(index, child);
+	}
+
     }
     return true;
 }
@@ -182,11 +224,16 @@ bool CURRENT_CLASS::removeChildren(unsigned int pos, unsigned int numRemove)
 {
     if(!Group::removeChildren(pos, numRemove)) return false; // Remove child
 
-    // Remove child from each Camera
-    unsigned int totalCameras = _cameraList.size();
-    for(unsigned int i = 0; i < totalCameras; i++)
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
     {
-      _cameraList[i]->removeChildren(pos, numRemove);
+
+	// Remove child from each Camera
+	unsigned int totalCameras = it->second.size();
+	for(unsigned int i = 0; i < totalCameras; i++)
+	{
+	    it->second[i]->removeChildren(pos, numRemove);
+	}
+
     }
     return true;
 }
@@ -195,21 +242,36 @@ bool CURRENT_CLASS::setChild(unsigned int i, osg::Node *node)
 {
     if(!Group::setChild(i, node)) return false; // Set child
 
-    // Set child for each Camera
-    unsigned int totalCameras = _cameraList.size();
-    for(unsigned int j = 0; j < totalCameras; j++)
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
     {
-      _cameraList[j]->setChild(i, node);
+
+	// Set child for each Camera
+	unsigned int totalCameras = it->second.size();
+	for(unsigned int j = 0; j < totalCameras; j++)
+	{
+	    it->second[j]->setChild(i, node);
+	}
+
     }
     return true;
 }
 
+void DepthPartitionNode::setForwardOtherTraversals(bool b)
+{
+    _forwardOtherTraversals = b;
+}
+
+bool DepthPartitionNode::getForwardOtherTraversals()
+{
+    return _forwardOtherTraversals;
+}
+
 osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj, 
                             double znear, double zfar, 
-                            const unsigned int &camNum)
+                            const unsigned int &camNum,int context)
 {
-    if(_cameraList.size() <= camNum) _cameraList.resize(camNum+1);
-    osg::Camera *camera = _cameraList[camNum].get();
+    if(_cameraList[context].size() <= camNum) _cameraList[context].resize(camNum+1);
+    osg::Camera *camera = _cameraList[context][camNum].get();
     
     if(!camera) // Create a new Camera
     {
@@ -234,7 +296,7 @@ osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
         camera->addChild(_children[i].get());
       }
 
-      _cameraList[camNum] = camera;
+      _cameraList[context][camNum] = camera;
     }
 
     osg::Matrixd &projection = camera->getProjectionMatrix();

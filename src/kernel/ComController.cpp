@@ -1,5 +1,9 @@
 #include <kernel/ComController.h>
+#include <kernel/CalVR.h>
 #include <config/ConfigManager.h>
+#include <util/CVRSocket.h>
+#include <util/CVRMulticastSocket.h>
+#include <util/MultiListenSocket.h>
 
 #include <osg/Timer>
 
@@ -45,9 +49,32 @@ ComController * ComController::instance()
 
 bool ComController::init(osg::ArgumentParser * ap)
 {
-    std::string fileArg;
-    // TODO: do this better
-    if(ap->argc() > 6)
+    if(ap->read("-s",_slaveNum))
+    {
+	if(!ap->read("-h",_masterInterface))
+	{
+	    std::cerr << "Error: no \"-h\" (master interface) option given on command line." << std::endl;
+	    return false;
+	}
+	if(!ap->read("-p",_port))
+	{
+	    std::cerr << "Error: not \"-p\" (master port) option given on command line." << std::endl;
+	    return false;
+	}
+	_isMaster = false;
+    }
+    else
+    {
+	_isMaster = true;
+    }
+
+    /*std::cerr << "Argc: " << ap->argc() << std::endl;
+    for(int i = 0; i < ap->argc(); i++)
+    {
+	std::cerr << "argv: " << ap->argv()[i] << std::endl;
+    }*/
+
+    /*if(ap->argc() > 6)
     {
         if(!strcmp(ap->argv()[1], "-s") && !strcmp(ap->argv()[3], "-h")
                 && !strcmp(ap->argv()[5], "-p"))
@@ -70,28 +97,36 @@ bool ComController::init(osg::ArgumentParser * ap)
             fileArg = ap->argv()[1];
         }
         _isMaster = true;
-    }
+    }*/
 
     _numSlaves = ConfigManager::getInt("MultiPC.NumSlaves", 0);
 
+    bool ret;
     if(_isMaster)
     {
         char hostname[51];
-        gethostname(hostname, 50);
-        std::string myHost = hostname;
+        //gethostname(hostname, 50);
+        //std::string myHost = hostname;
         //std::cerr << "myHost: " << myHost << std::endl;
         _masterInterface = ConfigManager::getEntry("value",
                                                    "MultiPC.MasterInterface",
-                                                   myHost);
+                                                   CalVR::instance()->getHostName());
         std::cerr << "Starting up as Master." << std::endl;
-        return setupConnections(fileArg);
+        ret = setupConnections();
     }
     else
     {
         std::cerr << "Starting up as Node: " << _slaveNum << " with Master: "
                 << _masterInterface << std::endl;
-        return connectMaster();
+        ret = connectMaster();
     }
+
+    if(ret)
+    {
+        setupMulticast();
+    }
+
+    return ret;
 }
 
 bool ComController::sendSlaves(void * data, int size)
@@ -137,6 +172,62 @@ bool ComController::readMaster(void * data, int size)
 	std::cerr << "ComController Error: recv failure, readMaster." << std::endl;
 	_CCError = true;
 	return false;
+    }
+    return true;
+}
+
+bool ComController::sendSlavesMulticast(void * data, int size)
+{
+    if(!_isMaster || !data || _CCError)
+    {
+	return false;
+    }
+
+    if(!size)
+    {
+	return true;
+    }
+
+    if(_multicastUsable)
+    {
+	if(!_slaveMCSocket->send(data, size))
+	{
+	    std::cerr << "ComController Error: send failure, sendSlaves, multicast" << std::endl;
+	    _CCError = true;
+	    return false;
+	}
+    }
+    else
+    {
+	return sendSlaves(data,size);
+    }
+    return true;
+}
+
+bool ComController::readMasterMulticast(void * data, int size)
+{
+    if(_isMaster || !data || _CCError)
+    {
+        return false;
+    }
+
+    if(!size)
+    {
+	return true;
+    }
+
+    if(_multicastUsable)
+    {
+	if(!_masterMCSocket->recv(data, size))
+	{
+	    std::cerr << "ComController Error: recv failure, readMasterMulticast." << std::endl;
+	    _CCError = true;
+	    return false;
+	}
+    }
+    else
+    {
+	return readMaster(data,size);
     }
     return true;
 }
@@ -292,7 +383,7 @@ int ComController::getNumSlaves()
     return _numSlaves;
 }
 
-bool ComController::setupConnections(std::string & fileArg)
+bool ComController::setupConnections()
 {
     int baseport = ConfigManager::getInt("port","MultiPC.MasterInterface",11000);
 
@@ -388,7 +479,7 @@ bool ComController::setupConnections(std::string & fileArg)
     {
         std::stringstream ss;
         ss << "CalVR -s " << it->first << " -h " << _masterInterface << " -p "
-                << baseport << " " << fileArg;
+                << baseport;
         size_t location = it->second.find("CalVR");
         if(location != std::string::npos)
         {
@@ -519,4 +610,54 @@ bool ComController::connectMaster()
     readMaster(&im, sizeof(struct InitMsg));
 
     return im.ok;
+}
+
+void ComController::setupMulticast()
+{
+    if(_numSlaves && ConfigManager::getBool("value","MultiPC.Multicast",false,NULL))
+    {
+	std::string groupAddress = ConfigManager::getEntry("groupAddress","MultiPC.Multicast","225.0.0.51");
+	int port = ConfigManager::getInt("port","MultiPC.Multicast",12000);
+	bool found;
+	std::string masterInterface = ConfigManager::getEntry("masterInterface","MultiPC.Multicast","",&found);
+	if(isMaster())
+	{
+	    _slaveMCSocket = new CVRMulticastSocket(CVRMulticastSocket::SEND, groupAddress, port);
+	    if(_slaveMCSocket->valid() && found);
+	    {
+		_slaveMCSocket->setMulticastInterface(masterInterface);
+	    }
+	    _multicastUsable = _slaveMCSocket->valid();
+	    bool * status = new bool[_numSlaves];
+	    readSlaves(status,sizeof(bool));
+	    for(int i = 0; i < _numSlaves; i++)
+	    {
+		if(!status[i])
+		{
+		    _multicastUsable = false;
+		}
+	    }
+	    delete[] status;
+	    sendSlaves(&_multicastUsable,sizeof(bool));
+	}
+	else
+	{
+	    _masterMCSocket = new CVRMulticastSocket(CVRMulticastSocket::RECV, groupAddress, port);
+	    _multicastUsable = _masterMCSocket->valid();
+	    sendMaster(&_multicastUsable,sizeof(bool));
+	    readMaster(&_multicastUsable,sizeof(bool));
+	}
+	if(_multicastUsable)
+	{
+	    std::cerr << "Multicast setup." << std::endl;
+	}
+	else
+	{
+	    std::cerr << "Multicast setup failed, converting multicast calls to TCP." << std::endl;
+	}
+    }
+    else
+    {
+	_multicastUsable = false;
+    }
 }

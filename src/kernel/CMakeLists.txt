@@ -14,6 +14,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenBase.h
     ${HEADER_PATH}/ScreenMono.h
     ${HEADER_PATH}/ScreenStereo.h
+    ${HEADER_PATH}/ScreenInterlacedTopBottom.h
     ${HEADER_PATH}/ScreenLenticular.h
     ${HEADER_PATH}/ScreenMultiViewer.h
     ${HEADER_PATH}/MultiViewerCullVisitor.h
@@ -36,6 +37,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/PreCullVisitor.h
     ${HEADER_PATH}/PostCullVisitor.h
     ${HEADER_PATH}/ThreadedLoader.h
+    ${HEADER_PATH}/SceneObject.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -67,6 +69,7 @@ SET(LIB_SRC_FILES
     ScreenBase.cpp
     ScreenMono.cpp
     ScreenStereo.cpp
+    ScreenInterlacedTopBottom.cpp
     MultiViewerCullVisitor.cpp
     ScreenMVMaster.cpp
     ScreenMVSimulator.cpp
@@ -86,6 +89,7 @@ SET(LIB_SRC_FILES
     PreCullVisitor.cpp
     PostCullVisitor.cpp
     ThreadedLoader.cpp
+    SceneObject.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES}

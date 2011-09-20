@@ -1,9 +1,11 @@
 #include <kernel/SceneManager.h>
 #include <input/TrackingManager.h>
 #include <config/ConfigManager.h>
+#include <kernel/InteractionManager.h>
 #include <kernel/NodeMask.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/ComController.h>
+#include <kernel/SceneObject.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
@@ -12,12 +14,22 @@
 #include <osg/Material>
 
 #include <iostream>
+#include <list>
+#include <queue>
 
 using namespace cvr;
 
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
 #endif
+
+struct PrioritySort
+{
+    bool operator() (const std::pair<float,SceneObject*>& first, const std::pair<float,SceneObject*>& second)
+    {
+	return first.first > second.first;
+    }
+};
 
 SceneManager * SceneManager::_myPtr = NULL;
 
@@ -73,6 +85,7 @@ bool SceneManager::init()
     _scale = 1.0;
     _showAxis = false;
     _hidePointer = false;
+    _menuOpenObject = NULL;
 
     initPointers();
     initLights();
@@ -85,6 +98,15 @@ bool SceneManager::init()
 
     b = ConfigManager::getBool("HidePointer", false);
     setHidePointer(b);
+
+    _menuScale = ConfigManager::getFloat("hand","ContextMenus.Scale",1.0);
+    _menuScaleMouse = ConfigManager::getFloat("mouse","ContextMenus.Scale",1.0);
+    _menuMinDistance = ConfigManager::getFloat("hand","ContextMenus.MinDistance",500.0);
+    _menuMinDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MinDistance",500.0);
+    _menuMaxDistance = ConfigManager::getFloat("hand","ContextMenus.MaxDistance",1000.0);
+    _menuMaxDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MaxDistance",1000.0);
+    _menuDefaultOpenButton = ConfigManager::getInt("hand","ContextMenus.DefaultOpenButton",1);
+    _menuDefaultOpenButtonMouse = ConfigManager::getInt("mouse","ContextMenus.DefaultOpenButton",2);
 
     return true;
 }
@@ -110,6 +132,32 @@ void SceneManager::update()
                                               TrackingManager::instance()->getUnfrozenHeadMat(
                                                                                       i));
         }
+    }
+
+    updateActiveObject();
+}
+
+void SceneManager::postEventUpdate()
+{
+    if(ComController::instance()->getIsSyncError())
+    {
+	return;
+    }
+
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
+    {
+	if(it->second)
+	{
+	    it->second->moveCleanup();
+	    if(it->first >= 0)
+	    {
+		it->second->updateCallback(it->first,TrackingManager::instance()->getHandMat(it->first));
+	    }
+	    else
+	    {
+		it->second->updateCallback(it->first,InteractionManager::instance()->getMouseMat());
+	    }
+	}
     }
 }
 
@@ -263,6 +311,113 @@ void SceneManager::setViewerScene(CVRViewer * cvrviewer)
     cvrviewer->setSceneData(_actualRoot);
 }
 
+bool SceneManager::processEvent(InteractionEvent * ie)
+{
+    int hand = -2;
+    int button = -1;
+
+    if(ie->type == BUTTON_UP || ie->type == BUTTON_DRAG || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_DOWN)
+    {
+	TrackingInteractionEvent * tie = (TrackingInteractionEvent*)ie;
+	hand = tie->hand;
+	button = tie->button;
+    }
+    else if(ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_DOWN)
+    {
+	hand = -1;
+	button = ((MouseInteractionEvent*)ie)->button;
+    }
+
+    if(hand == -2)
+    {
+	return false;
+    }
+
+    if(_activeObjects[hand])
+    {
+	return _activeObjects[hand]->processEvent(ie);
+    }
+    else if(_menuOpenObject)
+    {
+	if(ie->type == MOUSE_BUTTON_DOWN && button == _menuOpenObject->_menuMouseButton)
+	{
+	    return _menuOpenObject->processEvent(ie);
+	}
+	else if(ie->type == BUTTON_DOWN && button == _menuOpenObject->_menuButton)
+	{
+	    return _menuOpenObject->processEvent(ie);
+	}
+    }
+    return false;
+}
+
+void SceneManager::registerSceneObject(SceneObject * object, std::string plugin)
+{
+    if(object->_parent)
+    {
+	std::cerr << "SceneManager: error: trying to register SceneObject " << object->getName() << ", which is a child object." << std::endl;
+	return; 
+    }
+
+    if(_pluginObjectMap.find(plugin) == _pluginObjectMap.end())
+    {
+	_pluginObjectMap[plugin] = std::vector<SceneObject*>();
+    }
+
+    _pluginObjectMap[plugin].push_back(object);
+    object->setRegistered(true);
+}
+
+void SceneManager::unregisterSceneObject(SceneObject * object)
+{
+    for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+    {
+	for(std::vector<SceneObject*>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+	{
+	    if((*it2) == object)
+	    {
+		// detach
+		(*it2)->detachFromScene();
+		it->second.erase(it2);
+		for(std::map<int,SceneObject*>::iterator aobjit = _activeObjects.begin(); aobjit != _activeObjects.end(); aobjit++)
+		{
+		    if(aobjit->second == object)
+		    {
+			aobjit->second = NULL;
+		    }
+		}
+		object->setRegistered(false);
+		return;
+	    }
+	}
+    }
+}
+
+void SceneManager::setMenuOpenObject(SceneObject * object)
+{
+    if(object != _menuOpenObject)
+    {
+	closeOpenObjectMenu();
+    }
+
+    _menuOpenObject = object;
+
+}
+
+SceneObject * SceneManager::getMenuOpenObject()
+{
+    return _menuOpenObject;
+}
+
+void SceneManager::closeOpenObjectMenu()
+{
+    if(_menuOpenObject)
+    {
+	_menuOpenObject->closeMenu();
+	_menuOpenObject = NULL;
+    }
+}
+
 void SceneManager::initPointers()
 {
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
@@ -372,10 +527,10 @@ void SceneManager::initSceneState()
     mat->setAlpha(osg::Material::FRONT_AND_BACK, 1.0f);
     mat->setColorMode(osg::Material::DIFFUSE);
 
-    osg::ColorMask* rootColorMask = new osg::ColorMask;
-    rootColorMask->setMask(true, true, true, true);
+    //osg::ColorMask* rootColorMask = new osg::ColorMask;
+    //rootColorMask->setMask(true, true, true, true);
 
-    stateset->setAttribute(rootColorMask);
+    //stateset->setAttribute(rootColorMask);
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(mat, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(lm, osg::StateAttribute::ON);
@@ -454,4 +609,214 @@ void SceneManager::initAxis()
     }
 
     //_objectRoot->addChild(_axisNode);
+}
+
+void SceneManager::updateActiveObject()
+{
+    osg::Vec3 start, end;
+
+    for(int i = 0; i <= TrackingManager::instance()->getNumHands(); i++)
+    {
+	int hand;
+	osg::Matrix handMatrix;
+	if(i == TrackingManager::instance()->getNumHands())
+	{
+	    hand = -1;
+	    handMatrix = InteractionManager::instance()->getMouseMat();
+	}
+	else
+	{
+	    hand = i;
+	    handMatrix = TrackingManager::instance()->getHandMat(i);
+	}
+
+	if(_activeObjects[hand])
+	{
+	    if(_activeObjects[hand]->getEventActive() && _activeObjects[hand]->getActiveHand() == hand)
+	    {
+		// recalc parent bounding box during movement;
+		if(_activeObjects[hand]->_moving)
+		{
+		    SceneObject * root = _activeObjects[hand];
+		    while(root->_parent)
+		    {
+			root = root->_parent;
+		    }
+		    root->getOrComputeBoundingBox();
+		}
+		//_activeObjects[hand]->updateCallback(hand,handMatrix);
+		continue;
+	    }
+	}
+
+	start = osg::Vec3(0,0,0);
+	end = osg::Vec3(0,10000,0);
+	start = start * handMatrix;
+	end = end * handMatrix;
+
+	std::list<SceneObject*> hitList;
+
+	// Find list of all ojects that pass bounding sphere intersection
+	for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+	{
+	    for(int j = 0; j < it->second.size(); j++)
+	    {
+		if(it->second[j]->intersectsFast(start,end))
+		{
+		    hitList.push_back(it->second[j]);
+		}
+	    }
+	}
+
+	if(hand == -1)
+	{
+	    if(!InteractionManager::instance()->mouseActive())
+	    {
+		continue;
+	    }
+	}
+
+	//std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
+
+	osg::Vec3 isec1, isec2;
+	bool neg1,neg2;
+	std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
+
+	// find points of bounding box intersection
+	for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
+	{
+	    //std::cerr << "Object " << (*objit)->getName() << std::endl;
+	    if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+	    {
+		if(neg1)
+		{
+		    //std::cerr << "n1: " << -(isec1-start).length() << std::endl;
+		    sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
+		}
+		else
+		{
+		    //std::cerr << "1: " << (isec1-start).length() << std::endl;
+		    sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
+		}
+
+		if(neg2)
+		{
+		    //std::cerr << "n2: " << -(isec2-start).length() << std::endl;
+		    sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
+		}
+		else
+		{
+		    //std::cerr << "2: " << (isec2-start).length() << std::endl;
+		    sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
+		}
+	    }
+	}
+
+	//std::cerr << "sortqueue size: " << sortQueue.size() << std::endl;
+
+	std::map<SceneObject*,int> countMap;
+	SceneObject * currentObject = NULL;
+	while(sortQueue.size())
+	{
+	    //std::cerr << "dist: " << sortQueue.top().first << std::endl;
+	    currentObject = sortQueue.top().second;
+	    countMap[currentObject]++;
+	    if(countMap[currentObject] == 2)
+	    {
+		break;
+	    }
+	    sortQueue.pop();
+	}
+
+	if(currentObject)
+	{
+	    currentObject = findChildActiveObject(currentObject,start,end);
+	    if(_activeObjects[hand] != currentObject)
+	    {
+		if(_activeObjects[hand])
+		{
+		    _activeObjects[hand]->leaveCallback(hand);
+		    _activeObjects[hand]->interactionCountDec();
+		}
+		_activeObjects[hand] = currentObject;
+		currentObject->enterCallback(hand,handMatrix);
+		currentObject->interactionCountInc();
+	    }
+	}
+	else if(_activeObjects[hand])
+	{
+	    _activeObjects[hand]->leaveCallback(hand);
+	    _activeObjects[hand]->interactionCountDec();
+	    _activeObjects[hand] = NULL;
+	}
+    }
+}
+
+SceneObject * SceneManager::findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end)
+{
+    std::list<SceneObject*> hitList;
+
+    for(int i = 0; i < object->getNumChildObjects(); i++)
+    {
+	if(object->getChildObject(i)->intersectsFast(start,end))
+	{
+	    hitList.push_back(object->getChildObject(i));
+	}
+    }
+
+    //std::cerr << "Nested: hitlist size: " << hitList.size() << std::endl;
+
+    osg::Vec3 isec1, isec2;
+    bool neg1,neg2;
+    std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
+
+    // find points of bounding box intersection
+    for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
+    {
+	if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+	{
+	    if(neg1)
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
+	    }
+	    else
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
+	    }
+
+	    if(neg2)
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
+	    }
+	    else
+	    {
+		sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
+	    }
+	}
+    }
+
+    std::map<SceneObject*,int> countMap;
+    SceneObject * currentObject = NULL;
+    while(sortQueue.size())
+    {
+	currentObject = sortQueue.top().second;
+	countMap[currentObject]++;
+	if(countMap[currentObject] == 2)
+	{
+	    break;
+	}
+	sortQueue.pop();
+    }
+
+    if(currentObject)
+    {
+	return findChildActiveObject(currentObject,start,end);
+    }
+
+    return object;
+}
+
+void SceneManager::removePluginObjects(CVRPlugin * plugin)
+{
+    //TODO create find plugin name function in PluginManager
 }

@@ -4,7 +4,6 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
 #include <collaborative/CollaborativeManager.h>
-#include <util/CVRSocket.h>
 
 #ifdef __APPLE__
 #define MSG_NOSIGNAL SO_NOSIGPIPE
@@ -12,6 +11,8 @@
 
 namespace cvr
 {
+
+class CVRSocket;
 
 class CollaborativeThread : public OpenThreads::Thread
 {

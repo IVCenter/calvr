@@ -1,4 +1,5 @@
 #include <menu/TabbedDialogPanel.h>
+#include <menu/MenuTextButtonSet.h>
 #include <menu/MenuText.h>
 #include <menu/MenuImage.h>
 

@@ -416,8 +416,9 @@ void CVRViewer::eventTraversal()
                                     osg::Camera* camera = *citr;
                                     if(camera->getView() == this
                                             && camera->getAllowEventFocus()
-                                            && camera->getRenderTargetImplementation()
-                                                    == osg::Camera::FRAME_BUFFER)
+                                            //&& camera->getRenderTargetImplementation()
+                                            //        == osg::Camera::FRAME_BUFFER
+					    )
                                     {
                                         osg::Viewport* viewport =
                                                 camera ? camera->getViewport()
@@ -508,7 +509,7 @@ void CVRViewer::eventTraversal()
 			    //std::cerr << "yparam: " << evnt.param2 << " windowHeight: " << event->getWindowHeight() << std::endl;
 			    if(!_invertMouseY)
 			    {
-				evnt.param2 = -evnt.param2 + si->myChannel->height;
+				evnt.param2 = -evnt.param2 + (int)si->myChannel->height;
 			    }
 			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
 			    {
@@ -542,8 +543,9 @@ void CVRViewer::eventTraversal()
 				    osg::Camera* camera = *citr;
 				    if(camera->getView() == this
 					    && camera->getAllowEventFocus()
-					    && camera->getRenderTargetImplementation()
-					    == osg::Camera::FRAME_BUFFER)
+					    //&& camera->getRenderTargetImplementation()
+					    //== osg::Camera::FRAME_BUFFER
+					    )
 				    {
 					osg::Viewport* viewport =
 					    camera ? camera->getViewport()

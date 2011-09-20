@@ -1,4 +1,5 @@
 #include <util/MultiListenSocket.h>
+#include <util/CVRSocket.h>
 
 #include <iostream>
 #include <errno.h>

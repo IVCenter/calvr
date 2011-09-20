@@ -42,7 +42,7 @@ bool Navigation::init()
     }
     _buttonMap[0] = DRIVE;
     _buttonMap[1] = FLY;
-    _buttonMap[2] = MOVE_WORLD;
+    _buttonMap[2] = DRIVE;
     //_buttonMap[3] = SCALE;
 
     return true;
@@ -473,7 +473,7 @@ void Navigation::processMouseNav(NavMode nm)
 #ifndef WIN32
             float vwidth = std::min(si->myChannel->width, si->myChannel->height);
 #else
-			float vwidth = min(si->myChannel->width, si->myChannel->height);
+	    float vwidth = min(si->myChannel->width, si->myChannel->height);
 #endif
 
             float widthOffset = (si->myChannel->width - vwidth) / 2.0;
@@ -548,8 +548,8 @@ void Navigation::processMouseNav(NavMode nm)
             osg::Vec3 currentPos = osg::Vec3(x, y, z);
             currentPos.normalize();
 
-            osg::Vec3 rotAxis = originalPos ^ currentPos;
-            float angle = acos(originalPos * currentPos);
+            //osg::Vec3 rotAxis = originalPos ^ currentPos;
+            //float angle = acos(originalPos * currentPos);
 
 	    osg::Vec3 screenCenter = si->xyz;
 
@@ -562,7 +562,8 @@ void Navigation::processMouseNav(NavMode nm)
                     SceneManager::instance()->getObjectTransform()->getMatrix();
             objmat = (objmat
                     * osg::Matrix::translate(-screenCenter)
-                    * osg::Matrix::rotate(angle, rotAxis)
+                    //* osg::Matrix::rotate(angle, rotAxis)
+		    * osg::Matrix::rotate(originalPos, currentPos)
                     * osg::Matrix::translate(screenCenter));
 	    SceneManager::instance()->setObjectMatrix(objmat);
             _eventX = InteractionManager::instance()->getMouseX();

@@ -11,11 +11,15 @@
 #include <util/DepthPartitionNode.h>
 
 #include <vector>
+#include <map>
 
 namespace cvr
 {
 
 class CVRViewer;
+class SceneObject;
+class CVRPlugin;
+struct InteractionEvent;
 
 /**
  * @brief Creates and manages the main scenegraph
@@ -23,6 +27,8 @@ class CVRViewer;
 class CVRKERNEL_EXPORT SceneManager
 {
     friend class CVRViewer;
+    friend class CVRPlugin;
+    friend class SceneObject;
     public:
         virtual ~SceneManager();
 
@@ -40,6 +46,11 @@ class CVRKERNEL_EXPORT SceneManager
          * @brief Do per frame operations
          */
         void update();
+
+        /**
+         * @brief Second update called after the interaction events are processed
+         */
+        void postEventUpdate();
 
         /**
          * @brief Get root node of Scene (world space root)
@@ -91,7 +102,14 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void setAxis(bool on);
 
+        /**
+         * @brief Set if the hand pointer graphic should be hidden
+         */
         void setHidePointer(bool b);
+
+        /**
+         * @brief Get if the hand pointer graphic is hidden
+         */
         bool getHidePointer() { return _hidePointer; }
 
         /**
@@ -123,6 +141,42 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void setViewerScene(CVRViewer * cvrviewer);
 
+        /**
+         * @brief Handle interaction events for SceneObjects
+         * @return return true if the event should be consumed from the pipeline
+         */
+        bool processEvent(InteractionEvent * ie);
+
+        /**
+         * @brief Register a SceneObject with the SceneManager
+         * @param object SceneObject to register
+         * @param plugin optional plugin name to associate with the object
+         *
+         * A SceneObject must be registered before it can be attached to the scene
+         */
+        void registerSceneObject(SceneObject * object, std::string plugin = "");
+
+        /**
+         * @brief Unregister a SceneObject with the SceneManager
+         */
+        void unregisterSceneObject(SceneObject * object);
+
+        /**
+         * @brief Set which SceneObject has the open context menu
+         */
+        void setMenuOpenObject(SceneObject * object);
+
+        /**
+         * @brief Get the SceneObject with the open context menu
+         * @return returns NULL if no menu is open
+         */
+        SceneObject * getMenuOpenObject();
+
+        /**
+         * @brief Close any active context menu
+         */
+        void closeOpenObjectMenu();
+
     protected:
         SceneManager();
 
@@ -130,6 +184,10 @@ class CVRKERNEL_EXPORT SceneManager
         void initLights();
         void initSceneState();
         void initAxis();
+
+        void updateActiveObject();
+        SceneObject * findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end);
+        void removePluginObjects(CVRPlugin * plugin);
 
         static SceneManager * _myPtr;   ///< static self pointer
 
@@ -152,6 +210,15 @@ class CVRKERNEL_EXPORT SceneManager
         std::vector<osg::ref_ptr<osg::MatrixTransform> > _headAxisTransforms;   ///< head location debug axis transforms
         std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms;       ///< current hand transforms
         float _scale;                                                           ///< current scale of object space
+
+        SceneObject * _menuOpenObject; ///< object with an open menu
+        std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
+        std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
+
+        float _menuScale,_menuScaleMouse;
+        float _menuMinDistance,_menuMinDistanceMouse;
+        float _menuMaxDistance,_menuMaxDistanceMouse;
+        int _menuDefaultOpenButton,_menuDefaultOpenButtonMouse;
 };
 
 }

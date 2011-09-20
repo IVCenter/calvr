@@ -58,7 +58,7 @@ struct ChannelInfo
         float bottom;           ///< bottom of channel in window space
         int windowIndex;        ///< index for window holding this channel
         std::string stereoMode; ///< name of stereo mode used for this channel
-        int head;
+        int head;               ///< head number to use for viewer position
         WindowInfo * myWindow;  ///< window params for this channel
 };
 
@@ -123,6 +123,10 @@ class CVRKERNEL_EXPORT ScreenConfig
         void findScreenInfo(osg::Camera * c, osg::Vec3 & center, float & width,
                             float & height);
 
+        /**
+         * @brief Find screen number that contains a given camera
+         * @return returns -1 if camera is not found
+         */
         int findScreenNumber(osg::Camera * c);
 
         /**
@@ -130,8 +134,11 @@ class CVRKERNEL_EXPORT ScreenConfig
          */
         int getNumScreens();
 
+        /**
+         * @brief Get the screen instance for a given screen number
+         * @return returns NULL if number out of range
+         */
         ScreenBase * getScreen(int screen);
-
 
         /**
          * @brief Get the parameters for a given screen number
@@ -139,6 +146,11 @@ class CVRKERNEL_EXPORT ScreenConfig
          */
         ScreenInfo * getScreenInfo(int screen);
 
+        /**
+         * @brief Get the screen info of the screen on the master node with the given number
+         * @param screen screen number on the master node
+         * @return returns NULL if number out of range
+         */
         ScreenInfo * getMasterScreenInfo(int screen);
 
         /**

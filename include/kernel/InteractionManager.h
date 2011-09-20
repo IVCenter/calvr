@@ -24,33 +24,24 @@ namespace cvr
  */
 enum InteractionType
 {
-    BUTTON_DOWN = 0,
-    BUTTON_UP,
-    BUTTON_DRAG,
-    BUTTON_DOUBLE_CLICK,
-    MOUSE_DRAG,
-    MOUSE_BUTTON_UP,
-    MOUSE_BUTTON_DOWN,
-    MOUSE_DOUBLE_CLICK,
-    KEY_UP,
-    KEY_DOWN
+    BUTTON_DOWN = 0x10000000,
+    BUTTON_UP = 0x10000001,
+    BUTTON_DRAG = 0x10000002,
+    BUTTON_DOUBLE_CLICK = 0x10000003,
+    MOUSE_DRAG = 0x08000000,
+    MOUSE_BUTTON_UP = 0x08000001,
+    MOUSE_BUTTON_DOWN = 0x08000002,
+    MOUSE_DOUBLE_CLICK = 0x08000003,
+    KEY_UP = 0x04000000,
+    KEY_DOWN = 0x04000001
 };
 
-/**
- * @brief Structure containing mouse information with some screen state
- */
-/*struct MouseInfo
+enum EventType
 {
-        osg::Vec3 screenCenter; ///< center of the screen the mouse intersects
-        osg::Vec3 eyeOffset;
-        int head; ///< tracked head number used for this screen
-        float screenWidth; ///< width of screen (worldspace)
-        float screenHeight; ///< height of screen (worldspace)
-        int viewportX; ///< width of viewport
-        int viewportY; ///< height of viewport
-        int x; ///< mouse viewport x position
-        int y; ///< mouse viewport y position
-};*/
+    TRACKING_EVENT = 0x10000000,
+    MOUSE_EVENT = 0x08000000,
+    KEYBOARD_EVENT = 0x04000000
+};
 
 /**
  * @brief Base interaction event struct, all other inherit from this
@@ -134,9 +125,9 @@ class CVRKERNEL_EXPORT InteractionManager
 
         /**
          * @brief Sets the current mouse state
-         * @param mi mouse state
+         * @param x viewport x value
+         * @param y viewport y value
          */
-        //void setMouseInfo(MouseInfo & mi);
         void setMouse(int x, int y);
 
         /**
@@ -159,11 +150,6 @@ class CVRKERNEL_EXPORT InteractionManager
          * @brief get the current mouse orientation
          */
         osg::Matrix & getMouseMat();
-
-        /**
-         * @brief get the current mouse state
-         */
-        //MouseInfo * getMouseInfo();
 
         /**
          * @brief get the current mouse x viewport position
@@ -206,8 +192,8 @@ class CVRKERNEL_EXPORT InteractionManager
         //MouseInfo * _mouseInfo; ///< current mouse state
         bool _mouseActive; ///< have we had a mouse event
         osg::Matrix _mouseMat; ///< mouse orientation
-        int _mouseX;
-        int _mouseY;
+        int _mouseX; ///< current mouse x position
+        int _mouseY; ///< current mouse y position
 
 };
 
