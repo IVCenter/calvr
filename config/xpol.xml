@@ -4,10 +4,15 @@
       <RenderOnMaster value="true" />
       <Stencil value="true" />
       <ShowAxis value="false" />
+      <HidePointer value="false" />
+      <UseDepthPartition value="false" />
       <PipeConfig>
         <Pipe display="not needed any more" server="0" screen="0" name="0" />
         <Pipe display="n" server="0" screen="1" name="1" />
       </PipeConfig>
+
+      <!-- disabled befault 4 -->
+      <MultiSample value="4" />
 
       <CollisionDist value="1500" />
 
@@ -16,8 +21,9 @@
     </CUI>
 
       <Background r="0.0" g="0.0" b="0.0" /> 
-      <MultiThreaded value="CullDrawThreadPerContext" />
-      <!-- <MultiThreaded value="SingleThreaded" /> -->
+      <!-- <MultiThreaded value="CullDrawThreadPerContext" /> -->
+      <MultiThreaded value="SingleThreaded" />
+      <CullingMode value="CALVR" />
       <SyncToVBlank value="on" device="DFP-1" />
       <FloorHeight value="-1663" />
       <Near value="100" />
@@ -39,26 +45,29 @@
         <Vrml97 value="off" />
         <Site value="off" />
 <!-- Demoable plugins: -->
-        <GreenLight value="off" />
+        <GreenLight value="on" />
         <VisualAcuity value="off" />
         <OssimPlanet value="off" />
+        <OsgEarth value="off" />
+        <OsgMovie value="off" />
         <Volume value="off" />
         <Molecules value="off" />
         <CAMERAVis value="off" />
-        <PDB value="off" /> 
+        <PDB value="on" /> 
         <Marker value="off" />
         <Image value="off" /> <!-- DO NOT ENABLE ME -->
         <AirCurrents value="off" />
-        <StructView value="on" />
+        <StructView value="off" />
         <CCDBVR value="off" />
         <EQVis value="off" />
+	<Sketch value="on" />
         <FloorPlan value="off" /> <!-- Turn on Calit2HallwaySound for audio demo -->
-	<Collaborative value="off">
+	<Collaborative>
 	  <Server value="127.0.0.1" />
 	  <Port value="11050" />
 	</Collaborative>
         <PointStream value="off" />
-	<ModelLoader value="off" />
+	<ModelLoader value="on" />
 	<PanoView360 value="on" />
         <FileBrowser value="off" />
         <directFEA value="off" />
@@ -72,7 +81,7 @@
         <Calit2HallwaySound value="off" /> <!-- Turn on FloorPlan -->
 	<Sound_Medical value="off"/> <!-- Turn on CaveCAD -->
 	<!-- run opencover ~/data/JacobsHospital/JacobsHospitalRemodel.WRL -->
-
+        <GreenLight value="on" />
 <!-- Plugins not ready for demos: -->
       	<AudioAssetManagerCtrl value="off" /> <!-- Keep it OFF -->
         <TelePresence value="off" />
@@ -102,7 +111,8 @@
 	<BlackBoxInfo value="off" />
 	<GML value="off" />
         <Point value="off" />
-        <ArtifactVis value="on" />
+        <ArtifactVis value="off" />
+        <LocationTracker value="off" />
         <MipMapVideo value="off" /> 
 	<TomsBirthday value="off" />
         <Vic value="off" />
@@ -139,7 +149,11 @@
         <PathRecorder value="off" />
 	<OsgPathRecorder value="off" />
 	<TourCave value="off" />
+	<CollaborativePlugin value="off" />
 
+        <Sketch>
+          <ColorSelector x="0" y="1200" z="-150" />
+	</Sketch>
 
         <SoundServer>
           <Server value="137.110.111.239" />
@@ -153,6 +167,11 @@
         <OsgPathRecorder>
 	   <DataDir value="/home/covise/data/OsgPathRecorder" />
 	</OsgPathRecorder>
+
+        <CollaborativePlugin>
+	  <Server value="starcave.ucsd.edu" />
+	  <Port value="11050" />
+	</CollaborativePlugin>
 
     <TourCave>
      <AudioBase value="/CalVR-OSSIMPlanet" />
@@ -270,6 +289,32 @@
           </PDUlist>
         </BlackBoxInfo>
 
+        <GreenLight>
+          <Components textureDir="/home/covise/data/GreenLight/maps/">
+            <!-- Texture files should contain both the front and back faces, front on top-->
+            <C1 startname="convey" height="2" minWattage="640" maxWattage="690471" texture="unwrap_ConveyHC1.png" />
+            <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
+            <C3 startname="compute" height="1" minWattage="195" maxWattage="453" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+            <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+            <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
+            <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
+            <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
+            <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+            <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+            <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+          </Components>
+          <Hardware
+            local="/home/covise/data/GreenLight/GreenLightAssets.fakejson"
+            download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+          <ModelsDir value="/home/covise/data/GreenLight/Models/" />
+          <Power
+            local="/home/covise/data/GreenLight/GLpower.xml"
+            download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power&amp;method=live" />
+          <Shaders
+            fragment="/home/covise/data/GreenLight/shaders/component.frag"
+            vertex="/home/covise/data/GreenLight/shaders/component.vert" />
+        </GreenLight>
+
 	<ModelLoader>
           <ConfigDir value="/home/aprudhom/plugins/calit2/ModelLoader/" />
 	  <Files>
@@ -278,7 +323,7 @@
 	    <hammerhead_full_color path="/home/covise/data/LarryFrank/hammerhead/hammerhead_full_color.obj" mask="1" lights="0" />
 	<!--    <hammerhead_parts path="/home/covise/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
 	    <hammerhead_full path="/home/covise/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
-	    <se_building path="/home/aprudhom/data/falko/se_building.obj" mask="1" />
+	    <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
             <!--<Moebius path="/home/covise/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
             <ShowCase path="/home/covise/Showcase.wrl" mask="1" />
             <bearing_and_shearkeys path="/home/covise/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
@@ -324,7 +369,7 @@
 
 	<PanoView360>
           <FloorOffset value="1759.425" />
-          <ScreenConfig value="/home/covise/plugins/calit2/PanoView360-temp/xpol.xml" />
+          <ScreenConfig value="/home/covise/plugins/calit2/PanoView360/config/xpol.xml" />
           <Files>
             <Milwaukee1_8_4 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_8_4.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_8_4.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
 	    <Milwaukee1_16_8 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_16_8.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
@@ -362,6 +407,7 @@
 
         <ArtifactVis>
           <Database value="/home/covise/data/ArtifactVis/artifactslist.txt" />
+	  <ArchInterfaceFolder value="/home/covise/ArchInterface/" />
 	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
 	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
 	  <DCInfoFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
@@ -369,9 +415,9 @@
 	   <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
           <MaxVisibleRange value="1000000000.0" />
           <Offset>
-            <X value="-3396591.682" />
-            <Y value="-733458.55" />
-            <Z value="-49.44" />
+            <X value="-304670000.000"/>
+            <Y value="1450800.00" />
+            <Z value="-354990000.00" />
           </Offset>
           <Site>
             <Longitude value="35.491239" />
@@ -447,12 +493,12 @@
 
         <OssimPlanet>
           <ConfigFile value="/home/covise/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
-	  <Kml>
+<!--	  <Kml>
 		<Mecca value="/home/covise/data/collada/mecca2/doc.kml" />
 		<Trail value="/home/covise/data/collada/meccatofaynan/doc.kml" />
 		<DigSite value="/home/covise/data/collada/digSite/doc.kml" />
 		<Medan value="/home/covise/data/collada/medan/doc.kml" />
-	  </Kml>
+	  </Kml> -->
         </OssimPlanet>
 
         <VRMoleculeViewerPlugin>
@@ -979,8 +1025,15 @@
     <MultiPC>
      <SyncMode value="TCP" />
      <NumSlaves value="5" />   <!-- use 5 for all Xpol machines -->
-     <MasterInterface value="10.1.1.1" />
+     <MasterInterface value="10.1.1.1" port="11011" />
      <CleanupScript value="tentakel killall -9 CalVR" />
+     <!--
+     <Startup arch="x11" value="ssh ${USER}@tile-0-0 CalVR \>\&amp; /tmp/errors.log" name="0" />
+     <Startup arch="x11" value="ssh ${USER}@tile-0-1 CalVR \>\&amp; /tmp/errors.log" name="1" />
+     <Startup arch="x11" value="ssh ${USER}@tile-0-2 CalVR \>\&amp; /tmp/errors.log" name="2" />
+     <Startup arch="x11" value="ssh ${USER}@tile-1-0 CalVR \>\&amp; /tmp/errors.log" name="3" />
+     <Startup arch="x11" value="ssh ${USER}@tile-1-1 CalVR \>\&amp; /tmp/errors.log" name="4" />
+     -->
      <Startup arch="x11" value="ssh ${USER}@tile-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
      <Startup arch="x11" value="ssh ${USER}@tile-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh ${USER}@tile-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />

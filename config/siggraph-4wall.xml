@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
 
+<PipeConfig>
+        <Pipe display="not needed any more" server="0" screen="2" name="0" />
+	    <Pipe display="n" server="0" screen="3" name="1" />
+		<Pipe display="n" server="0" screen="0" name="2" />
+		    <Pipe display="n" server="0" screen="1" name="3" />
+		          </PipeConfig>
+
  <LOCAL host="vcalvr-00" >
     <NumPipes value="4" />
     <NumScreens value="4" />
@@ -136,7 +143,7 @@
    </ScreenConfig>
  </LOCAL>
 
- <LOCAL host="vcglx1-10" >
+ <LOCAL host="vcglx2-10" >
     <NumPipes value="4" />
     <NumScreens value="4" />
     <NumWindows value="4" />
@@ -170,7 +177,7 @@
    </ScreenConfig>
  </LOCAL>
 
- <LOCAL host="vcglx2-10" >
+ <LOCAL host="vcglx1-10" >
     <NumPipes value="4" />
     <NumScreens value="4" />
     <NumWindows value="4" />

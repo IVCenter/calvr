@@ -17,6 +17,8 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
+#include <vector>
+#include <cstring>
 
 using namespace cvr;
 
@@ -105,6 +107,20 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
     _home = home;
 
+    char * chostname = getenv("CALVR_HOST_NAME");
+    if(chostname)
+    {
+	_hostName = chostname;	
+    }
+    else
+    {
+	char hostname[512];
+	gethostname(hostname,511);
+	_hostName = hostname;
+    }
+
+    std::cerr << "HostName: " << _hostName << std::endl;
+
     _config = new cvr::ConfigManager();
     if(!_config->init())
     {
@@ -117,6 +133,38 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     {
         std::cerr << "Error starting Communication Controller." << std::endl;
         return false;
+    }
+
+    // distribute files listed on command line
+    std::vector<std::string> fileList;
+    int files,size;
+    if(_communication->isMaster())
+    {
+	for(int i = 1; i < args.argc(); i++)
+	{
+	    fileList.push_back(args.argv()[i]);
+	}
+	files = fileList.size();
+	_communication->sendSlaves(&files,sizeof(int));
+	for(int i = 0; i < files; i++)
+	{
+	    size = fileList[i].length() + 1;
+	    _communication->sendSlaves(&size,sizeof(int));
+	    _communication->sendSlaves((void*)fileList[i].c_str(),size);
+	}
+    }
+    else
+    {
+	_communication->readMaster(&files,sizeof(int));
+	char * temp;
+	for(int i = 0; i < files; i++)
+	{
+	    _communication->readMaster(&size,sizeof(int));
+	    temp = new char[size];
+	    _communication->readMaster(temp,size);
+	    fileList.push_back(temp);
+	    delete[] temp;
+	}
     }
 
     _tracking = cvr::TrackingManager::instance();
@@ -156,10 +204,10 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     _threadedLoader = cvr::ThreadedLoader::instance();
 
-    std::string commandLineFile;
+    //std::string commandLineFile;
 
     // TODO: do this better
-    if(_communication->isMaster())
+    /*if(_communication->isMaster())
     {
         if(args.argc() > 1)
         {
@@ -172,7 +220,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         {
             commandLineFile = args.argv()[7];
         }
-    }
+    }*/
 
     osgViewer::StatsHandler * stats = new osgViewer::StatsHandler;
     stats->setKeyEventTogglesOnScreenStats((int)'S');
@@ -191,9 +239,14 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     _plugins = cvr::PluginManager::instance();
     _plugins->init();
 
-    if(!commandLineFile.empty())
+    /*if(!commandLineFile.empty())
     {
         cvr::FileHandler::instance()->loadFile(commandLineFile);
+    }*/
+
+    for(int i = 0; i < fileList.size(); i++)
+    {
+	cvr::FileHandler::instance()->loadFile(fileList[i]);
     }
 
     return true;
@@ -219,6 +272,7 @@ void CalVR::run()
         _menu->update();
         _interaction->update();
         _navigation->update();
+	_scene->postEventUpdate();
         _screens->computeViewProj();
         _screens->updateCamera();
 	_collaborative->update();

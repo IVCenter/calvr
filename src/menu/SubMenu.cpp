@@ -23,6 +23,11 @@ SubMenu::~SubMenu()
 
 void SubMenu::addItem(MenuItem * item)
 {
+    if(!item)
+    {
+	return;
+    }
+
     for(int i = 0; i < _children.size(); i++)
     {
         if(_children[i] == item)

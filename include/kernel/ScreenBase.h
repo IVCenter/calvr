@@ -78,25 +78,49 @@ class ScreenBase
          */
         static void setFar(float far) { _far = far; }
 
+        /**
+         * @brief Get the eye separation
+         */
         static double getEyeSeparation() { return _separation; }
 
+        /**
+         * @brief Get the current eye separation multiplier
+         */
         static double getEyeSeparationMultiplier() { return _eyeSepMult; }
 
+        /**
+         * @brief Applies some default settings to the camera
+         *
+         * Sets up viewport, sets culling mode/masks, etc
+         */
         void defaultCameraInit(osg::Camera * cam);
 
         osg::Matrix & getCurrentHeadMatrix(int head = 0);
 
+        /**
+         * @brief Get the left eye position for a given user
+         */
         osg::Vec3d defaultLeftEye(int head = 0);
+
+        /**
+         * @brief Get the right eye position for a given user
+         */
         osg::Vec3d defaultRightEye(int head = 0);
+
+        /**
+         * @brief Compute the view and projection matrices for an eye position
+         *
+         * Uses information in the screen info to do the typical calculation
+         */
         void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj);
 
     protected:
-        static double _separation;
-        static double _eyeSepMult;
-        static double _near;
-        static double _far;
+        static double _separation; ///< eye separation
+        static double _eyeSepMult; ///< eye separation multiplier
+        static double _near; ///< near plane
+        static double _far; ///< far plane
 
-        ScreenInfo * _myInfo;
+        ScreenInfo * _myInfo; ///< config information for this screen
 
         std::map<int,osg::Matrix> _currentHeadMatList;
         bool _headMatListInit;

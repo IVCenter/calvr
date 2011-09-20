@@ -25,6 +25,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Polytope>
 #include <osg/fast_back_stack>
+#include <OpenThreads/Mutex>
 
 #define CURRENT_CLASS DistanceAccumulator
 /**********************************************************

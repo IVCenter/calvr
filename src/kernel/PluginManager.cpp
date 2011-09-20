@@ -197,10 +197,34 @@ void PluginManager::sendMessageByName(std::string plugin, int type, char * data)
     {
 	if(_loadedPluginList[i]->name == plugin)
 	{
-	    _loadedPluginList[i]->ptr->message(type,data);
+	    _loadedPluginList[i]->ptr->message(type,data,false);
 	    break;
 	}
     }
+}
+
+bool PluginManager::getPluginLoaded(std::string plugin)
+{
+    if(_pluginMap.find(plugin) == _pluginMap.end())
+    {
+	return false;
+    }
+
+    return _pluginMap[plugin];
+}
+
+CVRPlugin * PluginManager::getPlugin(std::string plugin)
+{
+    CVRPlugin * ptr = NULL;
+    for(int i = 0; i < _loadedPluginList.size(); i++)
+    {
+	if(_loadedPluginList[i]->name == plugin)
+	{
+	    ptr = _loadedPluginList[i]->ptr;
+	    break;
+	}
+    }
+    return ptr;
 }
 
 bool PluginManager::loadPlugin(std::string plugin)

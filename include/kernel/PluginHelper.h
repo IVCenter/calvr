@@ -224,6 +224,59 @@ class CVRKERNEL_EXPORT PluginHelper
          */
         static ScreenInfo * getScreenInfo(int screen);
 
+        /**
+         * @brief Register a SceneObject with the SceneManager
+         * @param object SceneObject to register
+         * @param plugin optional plugin name to associate with the object
+         *
+         * A SceneObject must be registered before it can be attached to the scene
+         */
+        static void registerSceneObject(SceneObject * object, std::string plugin = "");
+
+        /**
+         * @brief Unregister a SceneObject with the SceneManager
+         */
+        static void unregisterSceneObject(SceneObject * object);
+
+        /**
+         * @brief Sends a message to a plugin with the given name through the message() callback in the plugin interface
+         * @param plugin name of plugin to send message to
+         * @param type value the plugin gets as the message type
+         * @param data pointer to any message data
+         *
+         * If the plugin is not on, nothing happens.  This is a local call and no data copies or movement is involved.
+         */
+        static void sendMessageByName(std::string plugin, int type, char * data);
+
+        /**
+         * @brief Sends a message to a plugin in a collaborative session (asynchronous)
+         * @param plugin plugin to send message to
+         * @param type value the plugin gets as the message type
+         * @param data data to send for this message
+         * @param size size of data to send
+         * @param sendLocal if true, this message is also sent to the local instance of this plugin using the standard
+         *        message interface
+         *
+         * This call is asynchronous and the message will not likely be sent for at least a frame.  The data is assumed to be
+         * disposable and the buffer is deleted automatically after the message is sent.  If sendLocal is true, it happens before
+         * the function returns.
+         */
+        static void sendCollaborativeMessageAsync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+
+        /**
+         * @brief Sends a message to a plugin in a collaborative session (synchronous)
+         * @param plugin plugin to send message to
+         * @param type value the plugin gets as the message type
+         * @param data data to send for this message
+         * @param size size of data to send
+         * @param sendLocal if true, this message is also sent to the local instance of this plugin using the standard
+         *        message interface
+         *
+         * This is a synchronous call.  The function does not return until the message is sent.  The time taken depends on the 
+         * event in the collaborative queue and the network latency to the server.
+         */
+        static void sendCollaborativeMessageSync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+
     protected:
 
 };

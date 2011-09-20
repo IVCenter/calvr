@@ -5,13 +5,17 @@
 #define MENU_MANAGER_H
 
 #include <menu/Export.h>
-#include <kernel/InteractionManager.h>
-#include <menu/MenuSystem.h>
 
 #include <list>
 
+class IsectInfo;
+
 namespace cvr
 {
+
+struct InteractionEvent;
+class MenuItem;
+class MenuSystemBase;
 
 /**
  * @brief Manages all active MenuSystemBase menus

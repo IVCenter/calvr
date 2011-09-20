@@ -509,7 +509,7 @@ void CVRViewer::eventTraversal()
 			    //std::cerr << "yparam: " << evnt.param2 << " windowHeight: " << event->getWindowHeight() << std::endl;
 			    if(!_invertMouseY)
 			    {
-				evnt.param2 = -evnt.param2 + si->myChannel->height;
+				evnt.param2 = -evnt.param2 + (int)si->myChannel->height;
 			    }
 			    if(ScreenConfig::instance()->getScreen(_activeMasterScreen))
 			    {

@@ -6,13 +6,15 @@
 
 #include <menu/Export.h>
 #include <menu/MenuSystemBase.h>
-#include <menu/SubMenu.h>
-#include <menu/MenuBase.h>
-#include <kernel/InteractionManager.h>
-#include <util/Intersection.h>
+
+class IsectInfo;
 
 namespace cvr
 {
+
+struct InteractionEvent;
+class MenuBase;
+class SubMenu;
 
 /**
  * @brief MenuSystem implementation for the main CalVR menu

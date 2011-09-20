@@ -769,7 +769,7 @@ int main(int argc, char ** argv)
     osg::ArgumentParser ap(&argc,argv);
 
     ap.getApplicationUsage()->setApplicationName(ap.getApplicationName());
-    ap.getApplicationUsage()->setDescription(ap.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    ap.getApplicationUsage()->setDescription(ap.getApplicationName()+" is a server that supports collaborative sessions of CalVR.");
     ap.getApplicationUsage()->setCommandLineUsage(ap.getApplicationName()+" [options]");
     ap.getApplicationUsage()->addCommandLineOption("--port <port number>","Set port to listen on, default: 11050");
     ap.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");

@@ -61,10 +61,10 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 	/** Set/get the maximum depth that the scene will be traversed to.
 	    Defaults to UINT_MAX. */
 	void setMaxTraversalDepth(unsigned int depth) 
-	{ _distAccumulator->setMaxDepth(depth); }
+	{ printf("SETMAX\n"); }//_distAccumulator->setMaxDepth(depth);
 
 	inline unsigned int getMaxTraversalDepth() const
-	{ return _distAccumulator->getMaxDepth(); }
+	{ printf("GETMAX\n"); return 0; } //_distAccumulator->getMaxDepth();
 
 	/** Override update and cull traversals */
 	virtual void traverse(osg::NodeVisitor &nv);
@@ -76,6 +76,9 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 	virtual bool removeChildren(unsigned int pos, unsigned int numRemove = 1);
 	virtual bool setChild(unsigned int i, osg::Node *node);
 
+        void setForwardOtherTraversals(bool b);
+        bool getForwardOtherTraversals();
+
   protected:
 	typedef std::vector< osg::ref_ptr<osg::Camera> > CameraList;
 
@@ -86,7 +89,7 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 	// Creates a new Camera object with default settings
 	osg::Camera* createOrReuseCamera(const osg::Matrix& proj, 
                                 double znear, double zfar, 
-                                const unsigned int &camNum);
+                                const unsigned int &camNum, int context);
 
 	bool _active; // Whether partitioning is active on the scene
 
@@ -98,8 +101,12 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 
 	// Cameras that should be used to draw the scene.  These cameras
 	// will be reused on every frame in order to save time and memory.
-	CameraList _cameraList;
+	std::map<int,CameraList> _cameraList;
 	unsigned int _numCameras; // Number of Cameras actually being used
+
+        std::map<int,osg::ref_ptr<DistanceAccumulator> > _daMap;
+
+        bool _forwardOtherTraversals;
 };
 #undef CURRENT_CLASS
 

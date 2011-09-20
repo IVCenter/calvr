@@ -5,8 +5,7 @@
 #ifndef POPUP_MENU_H
 #define POPUP_MENU_H
 
-#include <menu/MenuManager.h>
-#include <menu/PopupMenuBase.h>
+#include <menu/MenuSystemBase.h>
 
 #include <osg/Vec3>
 #include <osg/Quat>
@@ -15,6 +14,10 @@
 
 namespace cvr
 {
+
+class MenuManager;
+class PopupMenuBase;
+class SubMenu;
 
 /**
  * @brief Creates a popup menu that can hold all standard MenuItem members

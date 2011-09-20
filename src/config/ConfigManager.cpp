@@ -1,4 +1,5 @@
 #include <config/ConfigManager.h>
+#include <kernel/CalVR.h>
 
 #include<iostream>
 #include <sstream>
@@ -7,6 +8,8 @@
 #include <cstdio>
 #include <stack>
 #include <algorithm>
+
+#include <mxml.h>
 
 #ifdef WIN32
 #include <Winsock2.h>
@@ -135,9 +138,10 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
             std::string blockHost;
             const char * attr = mxmlElementGetAttr(xmlNode, "host");
 
-            char hostname[51];
-            gethostname(hostname, 50);
-            std::string myHost = hostname;
+            //char hostname[51];
+            //gethostname(hostname, 50);
+            //std::string myHost = hostname;
+	    std::string myHost = CalVR::instance()->getHostName();
 
             if(attr && !myHost.empty() && attr[0] != '\0')
             {
@@ -575,6 +579,33 @@ float ConfigManager::getFloat(std::string attribute, std::string path,
     return def;
 }
 
+double ConfigManager::getDouble(std::string path, double def, bool * found)
+{
+    return getDouble("value", path, def, found);
+}
+
+double ConfigManager::getDouble(std::string attribute, std::string path,
+                              double def, bool * found)
+{
+    bool hasEntry = false;
+    std::stringstream ss;
+    ss << def;
+    std::string result = getEntry(attribute, path, ss.str(), &hasEntry);
+    if(hasEntry)
+    {
+        if(found)
+        {
+            *found = true;
+        }
+        return atof(result.c_str());
+    }
+    if(found)
+    {
+        *found = false;
+    }
+    return def;
+}
+
 int ConfigManager::getInt(std::string path, int def, bool * found)
 {
     return getInt("value", path, def, found);
@@ -703,6 +734,84 @@ osg::Vec4 ConfigManager::getVec4(std::string attributeX, std::string attributeY,
 	hasEntry = true;
     }
     result.w() = getFloat(attributeW,path,def.w(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+
+    if(found)
+    {
+	*found = hasEntry;
+    }
+    return result;
+}
+
+osg::Vec3d ConfigManager::getVec3d(std::string path, osg::Vec3d def, bool * found)
+{
+    return getVec3d("x","y","z",path,def,found);
+}
+
+osg::Vec3d ConfigManager::getVec3d(std::string attributeX, std::string attributeY, 
+	std::string attributeZ, std::string path, osg::Vec3d def,
+	bool * found)
+{
+    bool hasEntry = false;
+    bool isFound;
+
+    osg::Vec3d result;
+    result.x() = getDouble(attributeX,path,def.x(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.y() = getDouble(attributeY,path,def.y(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.z() = getDouble(attributeZ,path,def.z(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+
+    if(found)
+    {
+	*found = hasEntry;
+    }
+    return result;
+}
+
+osg::Vec4d ConfigManager::getVec4d(std::string path, osg::Vec4d def, 
+	bool * found)
+{
+    return getVec4d("x","y","z","w",path,def,found);
+}
+
+osg::Vec4d ConfigManager::getVec4d(std::string attributeX, std::string attributeY, 
+	std::string attributeZ, std::string attributeW, std::string path, 
+	osg::Vec4d def, bool * found)
+{
+    bool hasEntry = false;
+    bool isFound;
+
+    osg::Vec4d result;
+    result.x() = getDouble(attributeX,path,def.x(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.y() = getDouble(attributeY,path,def.y(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.z() = getDouble(attributeZ,path,def.z(),&isFound);
+    if(isFound)
+    {
+	hasEntry = true;
+    }
+    result.w() = getDouble(attributeW,path,def.w(),&isFound);
     if(isFound)
     {
 	hasEntry = true;

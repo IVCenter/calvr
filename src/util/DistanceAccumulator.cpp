@@ -24,6 +24,7 @@
 #include <math.h>
 #include <limits.h>
 
+
 /** Function that sees whether one DistancePair should come before another in
     an sorted list. Used to sort the vector of DistancePairs. */
 bool precedes(const DistanceAccumulator::DistancePair &a, 
@@ -110,7 +111,8 @@ bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
     if(bs.valid())
     {
       // Make sure bounding sphere is within the viewing volume
-      if(!_localFrusta.back().contains(bs)) keepTraversing = false;
+      bool containsTest = _localFrusta.back().contains(bs);
+      if(!containsTest) keepTraversing = false;
 
       else // Compute near and far planes for this node
       {
@@ -244,8 +246,9 @@ void CURRENT_CLASS::apply(osg::Geode &geode)
         const osg::BoundingBox &bb = drawable->getBound();
         if(bb.valid())
         {
+	  bool containsTest = _localFrusta.back().contains(bb);
           // Make sure drawable will be visible in the scene
-          if(!_localFrusta.back().contains(bb)) continue;
+          if(!containsTest) continue;
 
           // Compute near/far distances for current drawable
           zNear = distance(bb.corner(_bbCorners.back().first), 
@@ -268,6 +271,7 @@ void CURRENT_CLASS::setMatrices(const osg::Matrix &modelview,
 
 void CURRENT_CLASS::reset()
 {
+    //printf("ADDRESS %d\n", this);
     // Clear vectors & values
     _distancePairs.clear();
     _cameraPairs.clear();
