@@ -4,7 +4,6 @@
 <!-- enable or display master rendering -->
       <RenderOnMaster value="true" />
       <Stencil value="true" />
-      <ShowAxis value="false" />
 
       <CollisionDist value="1500" />
 
@@ -21,6 +20,7 @@
       <Far value="10000000" />
 
       <ConfigDebug value="false" />
+      <ShowAxis value="false" />
 
       <PointerAppearance Length="2500" />
 
@@ -36,6 +36,7 @@
         <Vrml97 value="off" />
         <Site value="off" />
 <!-- Demoable plugins: -->
+        <PluginTest value="on" />
         <VisualAcuity value="off" />
         <OssimPlanet value="off" />
         <GreenLight value="on" />
@@ -99,7 +100,7 @@
 	<BlackBoxInfo value="off" />
 	<GML value="off" />
         <Point value="off" />
-        <ArtifactVis value="on" />
+        <ArtifactVis value="off" />
         <MipMapVideo value="off" /> 
 	<TomsBirthday value="off" />
         <Vic value="off" />
@@ -1007,10 +1008,13 @@
     <MultiPC>
      <SyncMode value="TCP" />
      <NumSlaves value="2" />
-     <MasterInterface value="67.58.41.13" />
+     <!--MasterInterface value="67.58.41.13" /-->
+     <MasterInterface value="10.2.1.1" />
      <CleanupScript value="tentakel killall -9 CalVR" />
-     <Startup arch="x11" value="ssh 67.58.41.14 CalVR \>\&amp; /tmp/errors.log" name="0" />
-     <Startup arch="x11" value="ssh 67.58.41.15 CalVR \>\&amp; /tmp/errors.log" name="1" />
+     <!--Startup arch="x11" value="ssh 67.58.41.14 CalVR \>\&amp; /tmp/errors.log" name="0" />
+     <Startup arch="x11" value="ssh 67.58.41.15 CalVR \>\&amp; /tmp/errors.log" name="1" /-->
+     <Startup arch="x11" value="ssh tile-0-0 CalVR \>\&amp; /tmp/errors.log" name="0" />
+          <Startup arch="x11" value="ssh tile-1-0 CalVR \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh 67.58.41.11 CalVR \>\&amp; /tmp/errors.log" name="2" />
      <Startup arch="x11" value="ssh 67.58.41.5 CalVR \>\&amp; /tmp/errors.log" name="3" />
      <Startup arch="x11" value="ssh 67.58.41.8 CalVR \>\&amp; /tmp/errors.log" name="4" />

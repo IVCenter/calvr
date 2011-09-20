@@ -527,10 +527,10 @@ void SceneManager::initSceneState()
     mat->setAlpha(osg::Material::FRONT_AND_BACK, 1.0f);
     mat->setColorMode(osg::Material::DIFFUSE);
 
-    osg::ColorMask* rootColorMask = new osg::ColorMask;
-    rootColorMask->setMask(true, true, true, true);
+    //osg::ColorMask* rootColorMask = new osg::ColorMask;
+    //rootColorMask->setMask(true, true, true, true);
 
-    stateset->setAttribute(rootColorMask);
+    //stateset->setAttribute(rootColorMask);
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(mat, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(lm, osg::StateAttribute::ON);

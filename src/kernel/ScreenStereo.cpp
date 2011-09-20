@@ -123,3 +123,21 @@ void ScreenStereo::adjustViewportCoords(int & x, int & y)
 
     return;
 }
+
+void ScreenStereo::setStereoMode(osg::DisplaySettings::StereoMode sm)
+{
+    _stereoMode = sm;
+
+    osgViewer::Renderer * renderer =
+	dynamic_cast<osgViewer::Renderer*> (_camera->getRenderer());
+    if(!renderer)
+    {
+	std::cerr << "Error getting renderer pointer." << std::endl;
+    }
+    else
+    {
+	osg::DisplaySettings * ds =
+	    renderer->getSceneView(0)->getDisplaySettings();
+	ds->setStereoMode(_stereoMode);
+    }
+}
