@@ -595,7 +595,7 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 			    d2 = -d2;
 			}
 
-			if(d1 < d2)
+			if(d1 < d2 && d1 > 0)
 			{
 			    dist = d1;
 			}
@@ -970,7 +970,7 @@ void SceneObject::moveCleanup()
 
 bool SceneObject::intersectsFast(osg::Vec3 & start, osg::Vec3 & end)
 {
-    if(!_attached)
+    if(!_parent && !_attached)
     {
 	return false;
     }
