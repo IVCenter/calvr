@@ -1,7 +1,5 @@
 /**
  * @file
- * @brief Handle collection and access to tracking information
- * @ingroup input
  * @author Andrew Prudhomme (aprudhomme@ucsd.edu)
  */
 
