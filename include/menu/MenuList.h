@@ -5,6 +5,7 @@
 #ifndef CALVR_MENU_LIST_H
 #define CALVR_MENU_LIST_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <string>
@@ -16,7 +17,7 @@ namespace cvr
 /**
  * @brief Menu item to select a value within a range
  */
-class MenuList : public MenuItem
+class CVRMENU_EXPORT MenuList : public MenuItem
 {
     public:
 

@@ -120,6 +120,10 @@ class CVRPlugin
 
 }
 
+#ifdef WIN32
+#define CVRPLUGIN_EXPORT   __declspec(dllexport)
+#endif
+
 /**
  * @brief Defines the interface function for the plugin's library
  * @param plugin name of the plugin class
@@ -130,7 +134,7 @@ class CVRPlugin
 #define CVRPLUGIN(plugin) \
 extern "C" \
 { \
- cvr::CVRPlugin * createPlugin() \
+ CVRPLUGIN_EXPORT cvr::CVRPlugin * createPlugin() \
  { \
   return new plugin(); \
  } \

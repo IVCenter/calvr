@@ -4,6 +4,7 @@
 #ifndef CALVR_SCENE_OBJECT_H
 #define CALVR_SCENE_OBJECT_H
 
+#include <kernel/Export.h>
 #include <menu/MenuItem.h>
 #include <menu/PopupMenu.h>
 #include <kernel/SceneManager.h>
@@ -28,7 +29,7 @@ class MenuRangeValue;
  *
  * Handles movement, navigation and interaction.  These objects can be nested.
  */
-class SceneObject : public MenuCallback
+class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 {
     friend class SceneManager;
     public:

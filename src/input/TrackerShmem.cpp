@@ -235,7 +235,7 @@ void TrackerShmem::update()
         }
     }
 
-    static const float deg2rad = M_PI / 180.0f;
+    static const float deg2rad = (float) M_PI / 180.0f;
 
     for(int i = 0; i < _numBodies; i++)
     {

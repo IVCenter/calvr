@@ -4,6 +4,7 @@
 #ifndef TABBED_DIALOG_PANEL_H
 #define TABBED_DIALOG_PANEL_H
 
+#include <menu/Export.h>
 #include <menu/PopupMenu.h>
 #include <menu/MenuItem.h>
 
@@ -23,7 +24,7 @@ class MenuTextButtonSet;
 /**
  * @brief PopupMenu you can add text and image tabs to
  */
-class TabbedDialogPanel : public PopupMenu, public MenuCallback
+class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu, public MenuCallback
 {
     public:
         /**

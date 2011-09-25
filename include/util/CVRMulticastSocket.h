@@ -43,11 +43,11 @@ class CVRMulticastSocket
 
         /**
          * @brief Set the interface to use for sending multicast
-         * @param interface ip address or resolvable hostname of interface
+         * @param iface ip address or resolvable hostname of interface
          *
          * This function only has an effect if the socket is a SEND type
          */
-        void setMulticastInterface(std::string interface);
+        void setMulticastInterface(std::string iface);
 
         /**
          * @brief Wrapper to the setsockopt function

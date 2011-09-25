@@ -5,6 +5,7 @@
 #ifndef CALVR_MENU_TEXT_H
 #define CALVR_MENU_TEXT_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <osg/Vec4>
@@ -17,7 +18,7 @@ namespace cvr
 /**
  * @brief Menu item that provides a text label
  */
-class MenuText : public MenuItem
+class CVRMENU_EXPORT MenuText : public MenuItem
 {
     public:
         /**

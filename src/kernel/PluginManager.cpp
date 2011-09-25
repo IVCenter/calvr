@@ -255,7 +255,7 @@ bool PluginManager::loadPlugin(std::string plugin)
     }
 #else
     HINSTANCE libHandle;
-    std::string libPath = _pluginLibDir + "lib" + plugin + ".dll";
+    std::string libPath = _pluginLibDir + plugin + ".dll";
     libHandle = LoadLibrary(libPath.c_str());
     if(!libHandle)
     {

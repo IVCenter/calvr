@@ -112,7 +112,7 @@ float MenuTextButtonSet::getRowHeight()
 
 int MenuTextButtonSet::getNumButtons()
 {
-    return _buttons.size();
+    return (int)_buttons.size();
 }
 
 int MenuTextButtonSet::getButtonNumber(std::string button)

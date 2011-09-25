@@ -5,5 +5,13 @@ doc
 CMakeCache.txt
 *vcxproj*
 *~
+*.opensdf
+*.sdf
+*.sln
+*.suo
+Debug
+ipch
+*.dir
+x64
 lib
 bin

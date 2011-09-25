@@ -7,6 +7,7 @@
 #define CALVR_SCREEN_MULTIVIEWER2_H
 
 #include <vector>
+#include <kernel/Export.h>
 #include <kernel/ScreenBase.h>
 #include <kernel/ScreenMVSimulator.h>
 #include <osgViewer/Renderer>
@@ -18,7 +19,7 @@ typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0, f
 /**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
  */
-class ScreenMultiViewer2 : public ScreenMVSimulator
+class CVRKERNEL_EXPORT ScreenMultiViewer2 : public ScreenMVSimulator
 {
     public:
         ScreenMultiViewer2();

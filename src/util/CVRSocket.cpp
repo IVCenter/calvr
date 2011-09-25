@@ -39,6 +39,36 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
 
     _socket = -1;
 
+#ifdef WIN32
+	static bool wsaInitDone = false;
+	static bool wsaInitGood = false;
+
+	if(!wsaInitDone)
+	{
+		WSADATA wsaData;
+		int iResult;
+
+        iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+        if (iResult != 0) 
+		{
+            std::cerr << "WSAStartup failed: " << iResult << std::endl;
+			wsaInitGood = false;
+        }
+		else
+		{
+			wsaInitGood = true;
+		}
+
+		wsaInitDone = true;
+	}
+
+	if(!wsaInitGood)
+	{
+		std::cerr << "CVRSocket Error: WSAStartup has failed." << std::endl;
+		return;
+	}
+#endif
+
     struct ::addrinfo hints;
 
     memset(&hints, 0, sizeof hints);
@@ -87,9 +117,9 @@ bool CVRSocket::bind()
         return false;
     }
 
-    if(::bind(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
+    if(::bind(_socket, _res->ai_addr, (int)_res->ai_addrlen) == -1)
     {
-	if(_printErrors)
+	if(_printErrors && errno)
 	{
 	    perror("bind");
 	}
@@ -146,7 +176,7 @@ bool CVRSocket::accept()
     if((tmpSock = (int) ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
             == -1)
     {
-	if(_printErrors)
+	if(_printErrors && errno)
 	{
 	    perror("accept");
 	}
@@ -193,9 +223,16 @@ bool CVRSocket::connect(int timeout)
 
     int currentTimeout = timeout;
 
-    while(::connect(_socket, _res->ai_addr, _res->ai_addrlen) == -1)
+    while(::connect(_socket, _res->ai_addr, (int)_res->ai_addrlen) == -1)
     {
 	//perror("connect");
+#ifdef WIN32
+        if(WSAGetLastError() == WSAEISCONN)
+		{
+			break;
+		}
+#endif
+
         if(timeout == 0)
         {
             std::cerr << "Error: Unable to connect to host: " << _host
@@ -370,7 +407,7 @@ bool CVRSocket::send(void * buf, size_t len, int flags)
         if((sent = ::send(_socket, (const char *)data, bytesToSend, flags))
                 <= 0)
         {
-	    if(_printErrors)
+	    if(_printErrors && errno)
 	    {
 		std::cerr << "Error sending data." << std::endl;
 		perror("send");
@@ -412,7 +449,7 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
             
             //if(errno != EAGAIN)
             //{
-	    if(_printErrors)
+	    if(_printErrors && errno)
 	    {
 		std::cerr << "Error on recv." << std::endl;
 		perror("recv");

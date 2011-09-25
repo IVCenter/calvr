@@ -4,6 +4,7 @@
 #ifndef CALVR_THREADED_LOADER_H
 #define CALVR_THREADED_LOADER_H
 
+#include <kernel/Export.h>
 #include <kernel/CalVR.h>
 
 #include <osgDB/ReadFile>
@@ -21,7 +22,7 @@ namespace cvr
  * @brief Class that allows loading of files using a background thread and allows job status to be queried.  
  * Progress is synced across the graphics cluster
  */
-class ThreadedLoader
+class CVRKERNEL_EXPORT ThreadedLoader
 {
     friend class CalVR;
     public:

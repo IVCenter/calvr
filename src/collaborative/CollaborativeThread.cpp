@@ -3,6 +3,10 @@
 
 #include <iostream>
 
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+
 using namespace cvr;
 using namespace OpenThreads;
 
@@ -234,7 +238,7 @@ void CollaborativeThread::startUpdate(struct ClientUpdate & cu, int numBodies, s
 	delete[] _messageHeaderUpdate;
 	_messageHeaderUpdate = NULL;
     }
-    if(_messageDataUpdate);
+    if(_messageDataUpdate)
     {
 	delete[] _messageDataUpdate;
 	_messageDataUpdate = NULL;

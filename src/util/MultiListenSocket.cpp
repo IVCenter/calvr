@@ -21,6 +21,37 @@ MultiListenSocket::MultiListenSocket(int port, int queue)
     _port = port;
     _queue = queue;
     _valid = false;
+
+#ifdef WIN32
+	static bool wsaInitDone = false;
+	static bool wsaInitGood = false;
+
+	if(!wsaInitDone)
+	{
+		WSADATA wsaData;
+		int iResult;
+
+        iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
+        if (iResult != 0) 
+		{
+            std::cerr << "WSAStartup failed: " << iResult << std::endl;
+			wsaInitGood = false;
+        }
+		else
+		{
+			wsaInitGood = true;
+		}
+
+		wsaInitDone = true;
+	}
+
+	if(!wsaInitGood)
+	{
+		std::cerr << "MultiListenSocket Error: WSAStartup has failed." << std::endl;
+		return;
+	}
+#endif
+
 }
 
 MultiListenSocket::~MultiListenSocket()
@@ -109,7 +140,7 @@ CVRSocket * MultiListenSocket::accept()
     int val = (int) ::accept(_socket, (sockaddr *)&addr, (socklen_t *)&length);
     if(val == -1)
     {
-        if(errno != EWOULDBLOCK)
+        if(errno && errno != EWOULDBLOCK)
         {
             perror("accept");
         }

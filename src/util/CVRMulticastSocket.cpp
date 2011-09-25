@@ -1,6 +1,8 @@
 #include <util/CVRMulticastSocket.h>
 
+#ifndef WIN32
 #include <arpa/inet.h>
+#endif
 
 #include <iostream>
 #include <sstream>
@@ -13,7 +15,7 @@ CVRMulticastSocket::CVRMulticastSocket(MCSocketType st, std::string groupAddress
     _groupAddress = groupAddress;
     _port = port;
 
-    _socket = socket(AF_INET,SOCK_DGRAM,0);
+    _socket = (int)socket(AF_INET,SOCK_DGRAM,0);
     if(socket < 0)
     {
 	std::cerr << "CVRMulticastSocket: error creating socket." << std::endl;
@@ -23,13 +25,13 @@ CVRMulticastSocket::CVRMulticastSocket(MCSocketType st, std::string groupAddress
     if(_type == SEND)
     {
 	unsigned char ttl = 1;
-	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl)) < 0)
+	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_TTL, (const char *)&ttl, sizeof(ttl)) < 0)
 	{
 	    std::cerr << "CVRMulticastSocket: warning, unable to set IP_MULTICAST_TTL." << std::endl;
 	}
 
 	unsigned char loop = 0;
-	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_LOOP, &loop, sizeof(loop)) < 0)
+	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_LOOP, (const char *)&loop, sizeof(loop)) < 0)
 	{
 	    std::cerr << "CVRMulticastSocket: warning, unable to set IP_MULTICAST_LOOP." << std::endl;
 	}
@@ -69,7 +71,7 @@ CVRMulticastSocket::CVRMulticastSocket(MCSocketType st, std::string groupAddress
 	struct ip_mreq mreq;
 	mreq.imr_multiaddr.s_addr = inet_addr(_groupAddress.c_str());
 	mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-	if(::setsockopt(_socket,IPPROTO_IP,IP_ADD_MEMBERSHIP,&mreq,sizeof(mreq)) < 0)
+	if(::setsockopt(_socket,IPPROTO_IP,IP_ADD_MEMBERSHIP,(const char *)&mreq,sizeof(mreq)) < 0)
 	{
 	    std::cerr << "CVRMulticastSocket: error joing multicast group: " << _groupAddress << std::endl;
 #ifdef WIN32
@@ -91,7 +93,7 @@ CVRMulticastSocket::~CVRMulticastSocket()
 	struct ip_mreq mreq;
 	mreq.imr_multiaddr.s_addr = inet_addr(_groupAddress.c_str());
 	mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-	::setsockopt(_socket,IPPROTO_IP,IP_DROP_MEMBERSHIP,&mreq,sizeof(mreq));
+	::setsockopt(_socket,IPPROTO_IP,IP_DROP_MEMBERSHIP,(const char *)&mreq,sizeof(mreq));
 #ifdef WIN32
         closesocket(_socket);
 #else
@@ -100,7 +102,7 @@ CVRMulticastSocket::~CVRMulticastSocket()
     }
 }
 
-void CVRMulticastSocket::setMulticastInterface(std::string interface)
+void CVRMulticastSocket::setMulticastInterface(std::string iface)
 {
     if(_type == SEND)
     {
@@ -113,9 +115,9 @@ void CVRMulticastSocket::setMulticastInterface(std::string interface)
 	std::stringstream ss;
 	ss << _port;
 
-	if(getaddrinfo(interface.c_str(), ss.str().c_str(), &hints, &res))
+	if(getaddrinfo(iface.c_str(), ss.str().c_str(), &hints, &res))
 	{
-	    std::cerr << "CVRMulticastSocket: Error socket getaddrinfo interface: " << interface << " port: " << _port << std::endl;
+	    std::cerr << "CVRMulticastSocket: Error socket getaddrinfo interface: " << iface << " port: " << _port << std::endl;
 	    return;
 	}
 
@@ -123,7 +125,7 @@ void CVRMulticastSocket::setMulticastInterface(std::string interface)
 
 	struct in_addr interface_addr;
 	interface_addr.s_addr = addr->sin_addr.s_addr;
-	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_IF, &interface_addr, sizeof(interface_addr)) < 0 )
+	if(::setsockopt(_socket, IPPROTO_IP, IP_MULTICAST_IF, (const char *)&interface_addr, sizeof(interface_addr)) < 0 )
 	{
 	    std::cerr << "CVRMulticastSocket: warning, unable to set multicast interface." << std::endl;
 	}

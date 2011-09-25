@@ -74,7 +74,7 @@ void  MenuList::setIndex(const int index)
     if (index < 0)
         _index = 0;
     else if (index >= _values.size())
-        _index = _values.size() - 1;
+        _index = (int) _values.size() - 1;
     else
         _index = index;
 
@@ -104,7 +104,7 @@ void  MenuList::setFocus(const unsigned int size)
 
 const int MenuList::getListSize() const
 {
-    return _values.size();
+    return (int)_values.size();
 }
 
 void MenuList::setSensitivity(const float sensitivity)
@@ -115,7 +115,7 @@ void MenuList::setSensitivity(const float sensitivity)
 const float MenuList::getSensitivity()
 {
     if (_sensitivity < 0)
-        return getListSize();
+        return (float)getListSize();
     else
         return _sensitivity;
 }

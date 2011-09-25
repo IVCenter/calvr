@@ -4,6 +4,7 @@
 #ifndef CALVR_MENU_TEXT_BUTTON_SET_H
 #define CALVR_MENU_TEXT_BUTTON_SET_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <string>
@@ -15,7 +16,7 @@ namespace cvr
 /**
  * @brief Menu item for a gridded layout of state buttons with text labels
  */
-class MenuTextButtonSet : public MenuItem
+class CVRMENU_EXPORT MenuTextButtonSet : public MenuItem
 {
     public:
         /**

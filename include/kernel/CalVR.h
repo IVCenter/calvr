@@ -5,6 +5,8 @@
 #ifndef CALVR_MAIN_H
 #define CALVR_MAIN_H
 
+#include <kernel/Export.h>
+
 #include <osg/ArgumentParser>
 
 #include <string>
@@ -30,7 +32,7 @@ class ThreadedLoader;
  * @brief Main class for the CalVR framework.  Sets up all other core classes 
  * and contains the main run loop.
  */
-class CalVR
+class CVRKERNEL_EXPORT CalVR
 {
     public:
         CalVR();

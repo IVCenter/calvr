@@ -551,6 +551,7 @@ bool ScreenConfig::makeScreens()
 	    screen->_myInfo = _screenInfoList[i];
 	    screen->init(osg::DisplaySettings::RIGHT_EYE);
 	}
+#ifdef WITH_SCREEN_MULTI_VIEWER
 	else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP")
 	{
 	    screen = new ScreenMultiViewer();
@@ -575,6 +576,7 @@ bool ScreenConfig::makeScreens()
 	    screen->_myInfo = _screenInfoList[i];
 	    screen->init(osg::DisplaySettings::HORIZONTAL_INTERLACE);
 	}
+#endif
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_2_LEFT")
         {
             screen = new ScreenMultiViewer2();

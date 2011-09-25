@@ -1,10 +1,19 @@
 #include <collaborative/CollaborativeServer.h>
+
+#ifdef WIN32
+#undef CVRUTIL_LIBRARY
+#endif
+
 #include <util/MultiListenSocket.h>
 #include <util/CVRSocket.h>
 
 #include <osg/ArgumentParser>
 
 #include <iostream>
+
+#ifdef WIN32
+#pragma comment(lib, "wsock32.lib")
+#endif
 
 using namespace cvr;
 
@@ -38,7 +47,9 @@ void CollaborativeServer::run()
 {
     int socketid = 0;
 
+#ifndef WIN32
     signal(SIGPIPE, SIG_IGN);
+#endif
 
     while(1)
     {

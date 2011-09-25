@@ -5,6 +5,7 @@
 #ifndef CALVR_SUB_MENU_H
 #define CALVR_SUB_MENU_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <osg/Vec4>
@@ -18,7 +19,7 @@ namespace cvr
 /**
  * @brief Menu item that represents a submenu
  */
-class SubMenu : public MenuItem
+class CVRMENU_EXPORT SubMenu : public MenuItem
 {
     public:
         /**

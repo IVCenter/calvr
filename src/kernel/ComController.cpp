@@ -104,7 +104,7 @@ bool ComController::init(osg::ArgumentParser * ap)
     bool ret;
     if(_isMaster)
     {
-        char hostname[51];
+        //char hostname[51];
         //gethostname(hostname, 50);
         //std::string myHost = hostname;
         //std::cerr << "myHost: " << myHost << std::endl;
@@ -257,6 +257,7 @@ bool ComController::readSlaves(void * data, int size)
     }
 
     /*int nodesRead = 0;
+	fd_set _sockets;
     std::map<int,bool> readMap;
     while(nodesRead < _numSlaves)
     {
@@ -623,7 +624,7 @@ void ComController::setupMulticast()
 	if(isMaster())
 	{
 	    _slaveMCSocket = new CVRMulticastSocket(CVRMulticastSocket::SEND, groupAddress, port);
-	    if(_slaveMCSocket->valid() && found);
+	    if(_slaveMCSocket->valid() && found)
 	    {
 		_slaveMCSocket->setMulticastInterface(masterInterface);
 	    }

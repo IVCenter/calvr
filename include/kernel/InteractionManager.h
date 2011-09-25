@@ -36,12 +36,12 @@ enum InteractionType
     KEY_DOWN = 0x04000001
 };
 
-enum EventType
+/*enum EventType
 {
     TRACKING_EVENT = 0x10000000,
     MOUSE_EVENT = 0x08000000,
     KEYBOARD_EVENT = 0x04000000
-};
+};*/
 
 /**
  * @brief Base interaction event struct, all other inherit from this

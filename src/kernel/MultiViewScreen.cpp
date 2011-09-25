@@ -14,7 +14,17 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <iterator>
+
+#ifdef WIN32
+#pragma comment(lib, "Opengl32.lib")
+#endif
+
 using namespace cvr;
+
+const float MultiViewScreen::EPSILON = 0.00001;
+const float MultiViewScreen::T_MAX = 1.0;
+const float MultiViewScreen::T_MIN = -1.0;
 
 cvr::MenuCheckbox *MultiViewScreen::_debug_mode = NULL;
 cvr::MenuCheckbox *MultiViewScreen::_align_head = NULL;

@@ -14,6 +14,14 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#endif
+
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+
 using namespace cvr;
 
 osg::Vec3 makeColor(float f)

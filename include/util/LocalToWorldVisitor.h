@@ -4,8 +4,11 @@
 #ifndef CVR_LOCAL_TO_WORLD_VISITOR_H
 #define CVR_LOCAL_TO_WORLD_VISITOR_H
 
+#include <util/Export.h>
+
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
+#include <osg/Transform>
 
 namespace cvr
 {
@@ -51,18 +54,7 @@ class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
  * Note: is node is a transform type node, its transform will be contained in the resulting local to world
  * matrix
  */
-osg::Matrixd getLocalToWorldMatrix( osg::Node* node)
-{
-    getWorldCoordOfNodeVisitor* ncv = new getWorldCoordOfNodeVisitor();
-    osg::Matrix retMat;
-    if (node && ncv)
-    {
-        node->accept(*ncv);
-        retMat = ncv->getMat();
-    }
-    delete ncv;
-    return retMat;
-}
+osg::Matrixd CVRUTIL_EXPORT getLocalToWorldMatrix( osg::Node* node);
 
 }
 

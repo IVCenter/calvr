@@ -11,12 +11,6 @@
 
 #include <mxml.h>
 
-#ifdef WIN32
-#include <Winsock2.h>
-#include <stdlib.h>
-#pragma comment(lib, "wsock32.lib")
-#endif
-
 using namespace cvr;
 
 std::vector<mxml_node_t *> ConfigManager::_configRootList = std::vector<

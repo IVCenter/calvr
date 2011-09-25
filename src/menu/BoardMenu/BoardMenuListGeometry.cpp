@@ -126,7 +126,7 @@ void BoardMenuListGeometry::updateGeometry()
 
     if (_clicked)
     {
-        float maxWidth;
+        float maxWidth = 0;
         for (int i = 0; i < valueCount; i++)
         {
             osg::BoundingBox bb = _valuesSelected[i]->getBound();
@@ -205,7 +205,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 	|| (TrackingManager::instance()->getUsingMouseTracker() &&
 	(event->type == BUTTON_DRAG || event->type == BUTTON_UP)))
     {
-	int x,y;
+	int y;
 	if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)
 	{
 	    MouseInteractionEvent* mie = (MouseInteractionEvent*)event;

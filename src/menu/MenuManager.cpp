@@ -7,13 +7,6 @@
 #include <kernel/InteractionManager.h>
 #include <util/Intersection.h>
 
-#ifdef WIN32
-#pragma comment(lib, "config.lib")
-#pragma comment(lib, "kernel.lib")
-#pragma comment(lib, "input.lib")
-#pragma comment(lib, "util.lib")
-#endif
-
 using namespace cvr;
 
 MenuManager * MenuManager::_myPtr = NULL;

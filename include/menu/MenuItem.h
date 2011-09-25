@@ -5,6 +5,8 @@
 #ifndef CALVR_MENU_ITEM_H
 #define CALVR_MENU_ITEM_H
 
+#include <menu/Export.h>
+
 #include <string>
 
 namespace cvr
@@ -31,7 +33,7 @@ class MenuCallback;
 /**
  * @brief Base class for all menu items
  */
-class MenuItem
+class CVRMENU_EXPORT MenuItem
 {
     public:
         MenuItem()

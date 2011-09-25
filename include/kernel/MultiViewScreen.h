@@ -17,6 +17,11 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#endif
+
 namespace cvr
 {
 
@@ -30,9 +35,9 @@ class MultiViewScreen : public ScreenBase {
 #define k_Bottom_Left 2
 #define k_Bottom_Right 3
 
-static const float EPSILON = 0.00001;
-static const float T_MAX = 1.0;
-static const float T_MIN = -1.0;
+static const float EPSILON;
+static const float T_MAX;
+static const float T_MIN;
 static const GLint MAX_STENCIL_BIT = 255;
 static const GLint DEFAULT_STENCIL_BIT = 0;
 static const GLuint STENCIL_MASK_ALL = ~0;
@@ -506,7 +511,7 @@ void fullscreenTriangle(const osg::Vec3f &p0, const osg::Vec3f &p1,
                 osg::Matrix _projRight; ///< right eye projection matrix
         };
 
-        struct PreDrawCallback : public osg::Camera::Camera::DrawCallback {
+        struct PreDrawCallback : public osg::Camera::DrawCallback {
             MultiViewScreen * screen;
 	    unsigned int render_state;
             std::string vertShader;

@@ -303,8 +303,8 @@
    </ChannelConfig>
    
    <WindowConfig>
-    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" />
-    <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="true" />
+    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" />
+    <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="00" bottom="0" name="1" decoration="true" />
    </WindowConfig>
 
    <ScreenConfig>

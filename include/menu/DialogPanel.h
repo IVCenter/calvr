@@ -4,6 +4,7 @@
 #ifndef DIALOG_PANEL_H
 #define DIALOG_PANEL_H
 
+#include <menu/Export.h>
 #include <menu/PopupMenu.h>
 #include <menu/MenuText.h>
 
@@ -15,7 +16,7 @@ namespace cvr
 /**
  * @brief A PopupMenu with an updateable text field
  */
-class DialogPanel : public PopupMenu
+class CVRMENU_EXPORT DialogPanel : public PopupMenu
 {
     public:
         /**

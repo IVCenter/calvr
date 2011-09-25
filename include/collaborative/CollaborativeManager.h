@@ -4,6 +4,8 @@
 #ifndef CVR_COLLABORATIVE_MANAGER_H
 #define CVR_COLLABORATIVE_MANAGER_H
 
+#include <collaborative/Export.h>
+
 #include <string>
 #include <map>
 #include <vector>
@@ -117,7 +119,7 @@ class CVRSocket;
 /**
  * @brief Manages a collaborative session and handles collaborative message passing
  */
-class CollaborativeManager
+class CVRCOLLAB_EXPORT CollaborativeManager
 {
     public:
         ~CollaborativeManager();

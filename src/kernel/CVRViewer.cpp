@@ -17,13 +17,6 @@
 #include <vector>
 #include <iostream>
 
-#ifdef WIN32
-#pragma comment(lib, "config.lib")
-#pragma comment(lib, "util.lib")
-#pragma comment(lib, "menu.lib")
-#pragma comment(lib, "input.lib")
-#endif
-
 using namespace cvr;
 
 CVRViewer * CVRViewer::_myPtr = NULL;

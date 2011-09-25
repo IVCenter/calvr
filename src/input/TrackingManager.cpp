@@ -20,11 +20,8 @@
 
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
-#include <WinBase.h>
+//#include <WinBase.h>
 #include <util/TimeOfDay.h>
-#pragma comment(lib, "kernel.lib")
-#pragma comment(lib, "config.lib")
-#pragma comment(lib, "util.lib")
 #else
 #include <sys/time.h>
 #endif

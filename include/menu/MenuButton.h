@@ -5,6 +5,7 @@
 #ifndef CALVR_MENU_BUTTON_H
 #define CALVR_MENU_BUTTON_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <osg/Vec4>
@@ -17,7 +18,7 @@ namespace cvr
 /**
  * @brief Menu item that provides a clickable button with a text label
  */
-class MenuButton : public MenuItem
+class CVRMENU_EXPORT MenuButton : public MenuItem
 {
     public:
         /**

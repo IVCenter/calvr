@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 using namespace cvr;
 
@@ -470,11 +471,8 @@ void Navigation::processMouseNav(NavMode nm)
 		break;
 	    }
 
-#ifndef WIN32
-            float vwidth = std::min(si->myChannel->width, si->myChannel->height);
-#else
-	    float vwidth = min(si->myChannel->width, si->myChannel->height);
-#endif
+
+	    float vwidth = std::min(si->myChannel->width, si->myChannel->height);
 
             float widthOffset = (si->myChannel->width - vwidth) / 2.0;
             float heightOffset = (si->myChannel->height - vwidth) / 2.0;

@@ -5,6 +5,7 @@
 #ifndef CALVR_MENU_CHECKBOX_H
 #define CALVR_MENU_CHECKBOX_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <string>
@@ -15,7 +16,7 @@ namespace cvr
 /**
  * @brief Menu item for a labeled checkbox
  */
-class MenuCheckbox : public MenuItem
+class CVRMENU_EXPORT MenuCheckbox : public MenuItem
 {
     public:
 

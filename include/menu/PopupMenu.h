@@ -5,6 +5,7 @@
 #ifndef POPUP_MENU_H
 #define POPUP_MENU_H
 
+#include <menu/Export.h>
 #include <menu/MenuSystemBase.h>
 
 #include <osg/Vec3>
@@ -22,7 +23,7 @@ class SubMenu;
 /**
  * @brief Creates a popup menu that can hold all standard MenuItem members
  */
-class PopupMenu : public MenuSystemBase
+class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
 {
     friend class MenuManager;
     public:

@@ -4,6 +4,7 @@
 #ifndef CALVR_MENU_IMAGE_H
 #define CALVR_MENU_IMAGE_H
 
+#include <menu/Export.h>
 #include <menu/MenuItem.h>
 
 #include <osg/Texture2D>
@@ -16,7 +17,7 @@ namespace cvr
 /**
  * @brief Allows you to add a texture image to a menu
  */
-class MenuImage : public MenuItem
+class CVRMENU_EXPORT MenuImage : public MenuItem
 {
     public:
         /**

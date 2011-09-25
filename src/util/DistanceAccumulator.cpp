@@ -37,7 +37,7 @@ bool precedes(const DistanceAccumulator::DistancePair &a,
 
 /** Computes distance (in z direction) betwen a point and the viewer's eye,
     given by a view matrix */
-double distance(const osg::Vec3 &coord, const osg::Matrix& matrix)
+double distanceDA(const osg::Vec3 &coord, const osg::Matrix& matrix)
 {
     // Here we are taking only the z coordinate of the point transformed
     // by the matrix, ie coord*matrix. The negative sign is because we
@@ -251,9 +251,9 @@ void CURRENT_CLASS::apply(osg::Geode &geode)
           if(!containsTest) continue;
 
           // Compute near/far distances for current drawable
-          zNear = distance(bb.corner(_bbCorners.back().first), 
+          zNear = distanceDA(bb.corner(_bbCorners.back().first), 
                                _viewMatrices.back());
-          zFar = distance(bb.corner(_bbCorners.back().second), 
+          zFar = distanceDA(bb.corner(_bbCorners.back().second), 
                           _viewMatrices.back());
           if(zNear > zFar) std::swap(zNear, zFar);
           pushDistancePair(zNear, zFar);

@@ -20,7 +20,7 @@ class CVRKERNEL_EXPORT FileLoadCallback;
 /**
  * @brief Handles the loading of data file types
  */
-class FileHandler
+class CVRKERNEL_EXPORT FileHandler
 {
     public:
         ~FileHandler();
@@ -72,7 +72,7 @@ class FileHandler
  * @brief Interface class to receive a callback from the FileHandler when a file with a certain 
  * extension is being loaded
  */
-class FileLoadCallback
+class CVRKERNEL_EXPORT FileLoadCallback
 {
     public:
         /**
