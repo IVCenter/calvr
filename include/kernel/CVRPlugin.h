@@ -122,6 +122,8 @@ class CVRPlugin
 
 #ifdef WIN32
 #define CVRPLUGIN_EXPORT   __declspec(dllexport)
+#else
+#define CVRPLUGIN_EXPORT
 #endif
 
 /**
