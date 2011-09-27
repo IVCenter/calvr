@@ -1,5 +1,6 @@
 #include <kernel/InteractionManager.h>
 #include <input/TrackingManager.h>
+#include <input/TrackerMouse.h>
 #include <menu/MenuManager.h>
 #include <kernel/ComController.h>
 #include <kernel/Navigation.h>
@@ -34,21 +35,21 @@ InteractionManager::InteractionManager()
     //_mouseInfo = NULL;
     _mouseActive = false;
 
-    _mouseEvents = ConfigManager::getBool("Input.MouseEvents",true);
-    std::string tsystem = ConfigManager::getEntry("value","Input.TrackingSystem","NONE");
-    std::string bsystem = ConfigManager::getEntry("value","Input.ButtonSystem","NONE");
+    //_mouseEvents = ConfigManager::getBool("Input.MouseEvents",true);
+    //std::string tsystem = ConfigManager::getEntry("value","Input.TrackingSystem","NONE");
+    //std::string bsystem = ConfigManager::getEntry("value","Input.ButtonSystem","NONE");
 
     _mouseX = 0;
     _mouseY = 0;
 
-    if(tsystem == "MOUSE" || bsystem == "MOUSE")
+    /*if(tsystem == "MOUSE" || bsystem == "MOUSE")
     {
 	_mouseTracker = true;
     }
     else
     {
 	_mouseTracker = false;
-    }
+    }*/
 }
 
 InteractionManager::~InteractionManager()
@@ -94,6 +95,13 @@ void InteractionManager::handleEvents()
     _queueLock.unlock();
 
     TrackingManager::instance()->cleanupCurrentEvents();
+
+    //std::cerr << "Cleaning " << _mouseQueue.size() << " mouse events." << std::endl;
+    while(_mouseQueue.size())
+    {
+	delete _mouseQueue.front();
+	_mouseQueue.pop();
+    }
 }
 
 void InteractionManager::handleEvent(InteractionEvent * event)
@@ -129,38 +137,6 @@ void InteractionManager::addEvent(InteractionEvent * event)
 
     _queueLock.unlock();
 }
-
-/*void InteractionManager::setMouseInfo(MouseInfo & mi)
-{
-    if(!_mouseInfo)
-    {
-        _mouseInfo = new MouseInfo;
-        _mouseActive = true;
-    }
-    *_mouseInfo = mi;
-
-    float worldxOffset, worldyOffset;
-
-    float frac = ((float)_mouseInfo->x) / ((float)_mouseInfo->viewportX);
-    frac = frac - 0.5;
-    worldxOffset = frac * _mouseInfo->screenWidth;
-
-    frac = ((float)(_mouseInfo->viewportY - _mouseInfo->y))
-            / ((float)_mouseInfo->viewportY);
-    frac = frac - 0.5;
-    worldyOffset = frac * _mouseInfo->screenHeight;
-
-    osg::Vec3 mousePos = _mouseInfo->screenCenter + osg::Vec3(worldxOffset, 0,
-                                                              worldyOffset);
-    osg::Vec3 headPos = _mouseInfo->eyeOffset * TrackingManager::instance()->getHeadMat(mi.head);
-
-    osg::Vec3 v = mousePos - headPos;
-    v.normalize();
-
-    _mouseMat.makeRotate(osg::Vec3(0, 1, 0), v);
-    _mouseMat = _mouseMat * osg::Matrix::translate(headPos);
-
-}*/
 
 void InteractionManager::setMouse(int x, int y)
 {
@@ -238,11 +214,6 @@ osg::Matrix & InteractionManager::getMouseMat()
     return _mouseMat;
 }
 
-/*MouseInfo * InteractionManager::getMouseInfo()
-{
-    return _mouseInfo;
-}*/
-
 int InteractionManager::getMouseX()
 {
     return _mouseX;
@@ -266,7 +237,7 @@ void InteractionManager::processMouse()
     {
         if((_lastMouseButtonMask & bit) != (_mouseButtonMask & bit))
         {
-	    if(_mouseTracker)
+	    /*if(_mouseTracker)
 	    {
 		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
 		if(_lastMouseButtonMask & bit)
@@ -289,8 +260,8 @@ void InteractionManager::processMouse()
 		tie->rot[2] = rot.z();
 		tie->rot[3] = rot.w();
 		addEvent(tie);
-	    }
-	    else if(_mouseEvents)
+	    }*/
+	    //else if(_mouseEvents)
 	    {
 		MouseInteractionEvent * buttonEvent = new MouseInteractionEvent;
 		if(_lastMouseButtonMask & bit)
@@ -305,7 +276,7 @@ void InteractionManager::processMouse()
 		buttonEvent->x = _mouseX;
 		buttonEvent->y = _mouseY;
 		buttonEvent->transform = _mouseMat;
-		addEvent(buttonEvent);
+		_mouseQueue.push(buttonEvent);
 	    }
         }
         bit = bit << 1;
@@ -325,7 +296,7 @@ void InteractionManager::createMouseDragEvents()
     {
         if((_mouseButtonMask & bit))
         {
-	    if(_mouseTracker)
+	    /*if(_mouseTracker)
 	    {
 		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
 		tie->type = BUTTON_DRAG;
@@ -341,8 +312,8 @@ void InteractionManager::createMouseDragEvents()
 		tie->rot[2] = rot.z();
 		tie->rot[3] = rot.w();
 		addEvent(tie);
-	    }
-	    else if(_mouseEvents)
+	    }*/
+	    //else if(_mouseEvents)
 	    {
 		MouseInteractionEvent * dEvent = new MouseInteractionEvent;
 		dEvent->type = MOUSE_DRAG;
@@ -350,7 +321,7 @@ void InteractionManager::createMouseDragEvents()
 		dEvent->x = _mouseX;
 		dEvent->y = _mouseY;
 		dEvent->transform = _mouseMat;
-		addEvent(dEvent);
+		_mouseQueue.push(dEvent);
 	    }
         }
         bit = bit << 1;
@@ -369,7 +340,7 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
     {
         if((button & bit))
         {
-	    if(_mouseTracker)
+	    /*if(_mouseTracker)
 	    {
 		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
 		tie->type = BUTTON_DOUBLE_CLICK;
@@ -385,8 +356,8 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
 		tie->rot[2] = rot.z();
 		tie->rot[3] = rot.w();
 		addEvent(tie);
-	    }
-	    else if(_mouseEvents)
+	    }*/
+	    //else if(_mouseEvents)
 	    {
 		MouseInteractionEvent * dcEvent = new MouseInteractionEvent;
 		dcEvent->type = MOUSE_DOUBLE_CLICK;
@@ -394,7 +365,7 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
 		dcEvent->x = _mouseX;
 		dcEvent->y = _mouseY;
 		dcEvent->transform = _mouseMat;
-		addEvent(dcEvent);
+		_mouseQueue.push(dcEvent);
 	    }
             _mouseButtonMask |= button;
             _lastMouseButtonMask |= button;

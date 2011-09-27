@@ -4,27 +4,16 @@
 
 using namespace cvr;
 
-TrackerSlave::TrackerSlave(int bodies, int buttonStations, int * buttons,
-                           int valStations, int * vals)
+TrackerSlave::TrackerSlave(int bodies, int buttons, int vals)
 {
     _numBodies = bodies;
+    _numButtons = buttons;
+    _numVals = vals;
 
-    for(int i = 0; i < buttonStations; i++)
-    {
-        _numButtons.push_back(buttons[i]);
-        _buttonMaskList.push_back(0);
-    }
-
-    _totalvals = 0;
-    for(int i = 0; i < valStations; i++)
-    {
-        _valArrayIndex.push_back(_totalvals);
-        _numVals.push_back(vals[i]);
-        _totalvals += vals[i];
-    }
+    _buttonMask = 0;
 
     _bodyArray = _numBodies ? new trackedBody[_numBodies] : NULL;
-    _valArray = _totalvals ? new float[_totalvals] : NULL;
+    _valArray = _numVals ? new float[_numVals] : NULL;
 }
 
 TrackerSlave::~TrackerSlave()
@@ -39,48 +28,34 @@ TrackerSlave::~TrackerSlave()
     }
 }
 
-bool TrackerSlave::initBodyTrack()
+bool TrackerSlave::init(std::string tag)
 {
     return true;
 }
 
-bool TrackerSlave::initButtonTrack()
+trackedBody * TrackerSlave::getBody(int index)
 {
-    return true;
-}
-
-trackedBody * TrackerSlave::getBody(int station)
-{
-    if(station < 0 || station >= _numBodies)
+    if(index < 0 || index >= _numBodies)
     {
         return NULL;
     }
 
-    return _bodyArray + station;
+    return _bodyArray + index;
 }
 
-unsigned int TrackerSlave::getButtonMask(int station)
+unsigned int TrackerSlave::getButtonMask()
 {
-    if(station >= 0 && station < _buttonMaskList.size())
-    {
-        return _buttonMaskList[station];
-    }
-    return 0;
+    return _buttonMask;
 }
 
-float TrackerSlave::getValuator(int station, int index)
+float TrackerSlave::getValuator(int index)
 {
-    if(station < 0 || station >= _numVals.size())
+    if(index < 0 || index >= _numVals)
     {
         return 0.0;
     }
 
-    if(index < 0 || index >= _numVals[station])
-    {
-        return 0.0;
-    }
-
-    return _valArray[_valArrayIndex[station] + index];
+    return _valArray[index];
 }
 
 int TrackerSlave::getNumBodies()
@@ -88,35 +63,17 @@ int TrackerSlave::getNumBodies()
     return _numBodies;
 }
 
-int TrackerSlave::getNumValuators(int station = 0)
+int TrackerSlave::getNumValuators()
 {
-    if(station < 0 || station >= _numVals.size())
-    {
-        return 0;
-    }
-    return _numVals[station];
+    return _numVals;
 }
 
-int TrackerSlave::getNumValuatorStations()
+int TrackerSlave::getNumButtons()
 {
-    return _numVals.size();
+    return _numButtons;
 }
 
-int TrackerSlave::getNumButtons(int station = 0)
-{
-    if(station < 0 || station >= _numButtons.size())
-    {
-        return 0;
-    }
-    return _numButtons[station];
-}
-
-int TrackerSlave::getNumButtonStations()
-{
-    return _numButtons.size();
-}
-
-void TrackerSlave::update()
+void TrackerSlave::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
 }
 
@@ -128,13 +85,10 @@ void TrackerSlave::readValues(trackedBody * tb, unsigned int * buttons,
         memcpy(_bodyArray, tb, _numBodies * sizeof(struct trackedBody));
     }
 
-    for(int i = 0; i < _buttonMaskList.size(); i++)
-    {
-        _buttonMaskList[i] = buttons[i];
-    }
+    _buttonMask = *buttons;
 
     if(vals)
     {
-        memcpy(_valArray, vals, _totalvals * sizeof(float));
+        memcpy(_valArray, vals, _numVals * sizeof(float));
     }
 }

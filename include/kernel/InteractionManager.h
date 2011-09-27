@@ -36,12 +36,14 @@ enum InteractionType
     KEY_DOWN = 0x04000001
 };
 
-/*enum EventType
+enum InteractionEventType
 {
-    TRACKING_EVENT = 0x10000000,
-    MOUSE_EVENT = 0x08000000,
-    KEYBOARD_EVENT = 0x04000000
-};*/
+    TRACKING_INTER_EVENT = 0,
+    MOUSE_INTER_EVENT,
+    KEYBOARD_INTER_EVENT,
+    INTER_EVENT,
+    NUM_INTER_EVENT_TYPES // must be last item
+};
 
 /**
  * @brief Base interaction event struct, all other inherit from this
@@ -84,6 +86,8 @@ struct KeyboardInteractionEvent : public InteractionEvent
 
 CVRKERNEL_EXPORT osg::Matrix tie2mat(TrackingInteractionEvent * tie);
 
+class TrackerMouse;
+
 /**
  * @brief Directs events through interaction pipeline, manages event queue
  */
@@ -91,6 +95,7 @@ class CVRKERNEL_EXPORT InteractionManager
 {
         friend class CVRViewer;
         friend class CalVR;
+        friend class TrackerMouse;
     public:
 
         /**
@@ -168,6 +173,8 @@ class CVRKERNEL_EXPORT InteractionManager
         /// queue for events, flushed every frame
         std::queue<InteractionEvent *,std::list<InteractionEvent *> >
                 _eventQueue;
+
+        std::queue<InteractionEvent *,std::list<InteractionEvent *> > _mouseQueue;
         OpenThreads::Mutex _queueLock; ///< lock for queue add/removes
 
         static InteractionManager * _myPtr; ///< static self pointer

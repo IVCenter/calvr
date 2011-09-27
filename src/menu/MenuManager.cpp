@@ -5,6 +5,7 @@
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
 #include <kernel/InteractionManager.h>
+#include <kernel/NodeMask.h>
 #include <util/Intersection.h>
 
 using namespace cvr;
@@ -38,7 +39,11 @@ bool MenuManager::init()
 
     _menuSystemList.push_back(mainMenu);
 
-    _primaryHand = ConfigManager::getInt("MenuSystem.PrimaryHand",0);
+    //_primaryHand = ConfigManager::getInt("MenuSystem.PrimaryHand",0);
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+    {
+	_handLastMenuSystem.push_back(NULL);
+    }
     return true;
 }
 
@@ -56,10 +61,66 @@ void MenuManager::update()
 	(*it)->updateStart();
     }
 
+    osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(cvr::INTERSECT_MASK);
 
     // process intersection
     osg::Vec3 pointerStart, pointerEnd;
-    std::vector<IsectInfo> isecvec;
+
+    std::vector<osg::ref_ptr<osg::LineSegment> > handsegs;
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+    {
+	pointerStart = TrackingManager::instance()->getHandMat(i).getTrans();
+	pointerEnd.set(0.0f, 10000.0f, 0.0f);
+	pointerEnd = pointerEnd
+	    * TrackingManager::instance()->getHandMat(i);
+	handsegs.push_back(new osg::LineSegment());
+	handsegs.back()->set(pointerStart,pointerEnd);
+	iv.addLineSegment(handsegs.back().get());
+    }
+    
+    SceneManager::instance()->getMenuRoot()->accept(iv);
+
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+    {
+	osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(handsegs[i].get());
+	for(size_t j = 0; j < hitList.size(); j++)
+	{
+	    IsectInfo isect;
+	    isect.point = hitList.at(j).getWorldIntersectPoint();
+            isect.normal = hitList.at(j).getWorldIntersectNormal();
+            isect.geode = hitList.at(j)._geode.get();
+	    if(_handLastMenuSystem[i])
+	    {
+		if(_handLastMenuSystem[i]->processIsect(isect,i))
+		{
+		    break;
+		}
+	    }
+
+	    bool found = false;
+	    for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
+	    {
+		if((*it) == _handLastMenuSystem[i])
+		{
+		    continue;
+		}
+		if((*it)->processIsect(isect,i))
+		{
+		    found = true;
+		    break;
+		}
+	    }
+	    if(found)
+	    {
+		break;
+	    }
+	}
+    }
+
+    updateEnd();
+
+    /*std::vector<IsectInfo> isecvec;
 
     if(TrackingManager::instance()->getNumHands())
     {
@@ -99,7 +160,7 @@ void MenuManager::update()
     }
 
     updateEnd();
-    //_mainMenu->updateEnd();
+    //_mainMenu->updateEnd();*/
 }
 
 bool MenuManager::processEvent(InteractionEvent * event)
@@ -128,6 +189,14 @@ void MenuManager::addMenuSystem(MenuSystemBase * ms)
 
 void MenuManager::removeMenuSystem(MenuSystemBase * ms)
 {
+    for(int i = 0; i < _handLastMenuSystem.size(); i++)
+    {
+	if(_handLastMenuSystem[i] == ms)
+	{
+	    _handLastMenuSystem[i] = NULL;
+	}
+    }
+
     for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
     {
 	if((*it) == ms)

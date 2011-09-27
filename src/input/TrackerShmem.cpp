@@ -26,19 +26,23 @@ using namespace cvr;
 TrackerShmem::TrackerShmem()
 {
     _numBodies = 0;
+    _numButtons = 0;
+    _numVal = 0;
 
     _controller = NULL;
     _tracker = NULL;
+
+    _buttonMask = 0;
 }
 
 TrackerShmem::~TrackerShmem()
 {
 }
 
-bool TrackerShmem::initBodyTrack()
+bool TrackerShmem::init(std::string tag)
 {
     int shmKey =
-            ConfigManager::getInt("Input.CaveLibConfig.TrackerSHMID", 4126);
+            ConfigManager::getInt(tag + ".CaveLibConfig.TrackerSHMID", 4126);
 
 #ifndef WIN32
     int shmID = shmget(shmKey, sizeof(struct tracker_header), 0);
@@ -81,15 +85,10 @@ bool TrackerShmem::initBodyTrack()
         _bodyList.push_back(tb);
     }
 
-    return true;
-}
-
-bool TrackerShmem::initButtonTrack()
-{
-    int shmKey = ConfigManager::getInt("Input.CaveLibConfig.WandSHMID", 4127);
+    shmKey = ConfigManager::getInt(tag + ".CaveLibConfig.WandSHMID", 4127);
 
 #ifndef WIN32
-    int shmID = shmget(shmKey, sizeof(struct control_header), 0);
+    shmID = shmget(shmKey, sizeof(struct control_header), 0);
     if(shmID == -1)
     {
         std::cerr << "Unable to get Shared memory id for key: " << shmKey
@@ -105,8 +104,7 @@ bool TrackerShmem::initButtonTrack()
     }
 
 #else
-    HANDLE shmID;
-    std::stringstream cKey;
+    cKey = std::stringstream();
     cKey << shmKey;
     shmID = OpenFileMapping(FILE_MAP_WRITE, FALSE, cKey.str().c_str());
     if(shmID)
@@ -121,56 +119,46 @@ bool TrackerShmem::initButtonTrack()
 #endif
 
 #ifndef WIN32
-    _numButtons.push_back(std::min(_controller->but_count,
-                                   (uint32_t)CVR_MAX_BUTTONS));
+    _numButtons = std::min(_controller->but_count,
+                                   (uint32_t)CVR_MAX_BUTTONS);
 #else
-    _numButtons.push_back(min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS));
+    _numButtons = min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS);
 #endif
 
-    _buttonMaskList.push_back(0);
+    _buttonMask = 0;
 
-    _numVal.push_back(_controller->val_count);
-    _valList.push_back(std::vector<float>());
-    for(int i = 0; i < _numVal[0]; i++)
+    _numVal = _controller->val_count;
+    for(int i = 0; i < _numVal; i++)
     {
-        _valList[0].push_back(0.0);
+        _valList.push_back(0.0);
     }
 
     return true;
 }
 
-trackedBody * TrackerShmem::getBody(int station)
+trackedBody * TrackerShmem::getBody(int index)
 {
-    if(station < 0 || station >= _numBodies)
+    if(index < 0 || index >= _numBodies)
     {
         return NULL;
     }
 
-    return _bodyList[station];
+    return _bodyList[index];
 }
 
-unsigned int TrackerShmem::getButtonMask(int station)
+unsigned int TrackerShmem::getButtonMask()
 {
-    if(station < 0 || station >= _buttonMaskList.size())
-    {
-        return 0;
-    }
-    return _buttonMaskList[station];
+    return _buttonMask;
 }
 
-float TrackerShmem::getValuator(int station, int index)
+float TrackerShmem::getValuator(int index)
 {
-    if(station < 0 || station >= _numVal.size())
+    if(index < 0 || index >= _numVal)
     {
         return 0.0;
     }
 
-    if(index < 0 || index >= _numVal[station])
-    {
-        return 0.0;
-    }
-
-    return _valList[station][index];
+    return _valList[index];
 }
 
 int TrackerShmem::getNumBodies()
@@ -178,61 +166,37 @@ int TrackerShmem::getNumBodies()
     return _numBodies;
 }
 
-int TrackerShmem::getNumValuators(int station)
+int TrackerShmem::getNumValuators()
 {
-    if(station >= 0 && station < _numButtons.size())
+    return _numVal;
+}
+
+int TrackerShmem::getNumButtons()
+{
+    return _numButtons;
+}
+
+void TrackerShmem::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
+{
+    if(_numButtons)
     {
-        return _numVal[station];
-    }
-    return 0;
-}
-
-int TrackerShmem::getNumValuatorStations()
-{
-    return _numVal.size();
-}
-
-int TrackerShmem::getNumButtons(int station)
-{
-    if(station >= 0 && station < _numButtons.size())
-    {
-        return _numButtons[station];
-    }
-    return 0;
-}
-
-int TrackerShmem::getNumButtonStations()
-{
-    return _numButtons.size();
-}
-
-void TrackerShmem::update()
-{
-    if(_buttonMaskList.size())
-    {
-        for(int j = 0; j < _buttonMaskList.size(); j++)
-        {
-            int * buttonStart = (int *)(((char *)_controller)
-                    + _controller->but_offset);
-            _buttonMaskList[j] = 0;
-            for(int i = 0; i < _numButtons[j]; i++)
-            {
-                _buttonMaskList[j] = _buttonMaskList[j] | (buttonStart[i] << i);
-            }
-        }
+	int * buttonStart = (int *)(((char *)_controller)
+		+ _controller->but_offset);
+	_buttonMask = 0;
+	for(int i = 0; i < _numButtons; i++)
+	{
+	    _buttonMask = _buttonMask | (buttonStart[i] << i);
+	}
     }
 
-    if(_numVal.size())
+    if(_numVal)
     {
-        for(int j = 0; j < _numVal.size(); j++)
-        {
-            float * valStart = (float *)(((char *)_controller)
-                    + _controller->val_offset);
-            for(int i = 0; i < _numVal[j]; i++)
-            {
-                _valList[j][i] = valStart[i];
-            }
-        }
+	float * valStart = (float *)(((char *)_controller)
+		+ _controller->val_offset);
+	for(int i = 0; i < _numVal; i++)
+	{
+	    _valList[i] = valStart[i];
+	}
     }
 
     static const float deg2rad = (float) M_PI / 180.0f;
@@ -247,9 +211,6 @@ void TrackerShmem::update()
         osg::Quat q = osg::Quat(sen->r[2] * deg2rad, osg::Vec3(0, 0, 1),
                                 sen->r[1] * deg2rad, osg::Vec3(1, 0, 0),
                                 sen->r[0] * deg2rad, osg::Vec3(0, 1, 0));
-        //_bodyList[i]->h = sen->r[0];
-        //_bodyList[i]->p = sen->r[1];
-        //_bodyList[i]->r = sen->r[2];
         _bodyList[i]->qx = q.x();
         _bodyList[i]->qy = q.y();
         _bodyList[i]->qz = q.z();

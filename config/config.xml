@@ -20,7 +20,8 @@
    <ConfigDebug value="false" />
    <GeneralDebug value="true" />
 
-   <!--Input>
+   <Input>
+     <Threaded FPS="60.0" />
      <TrackingSystem0 value="MOUSE">
        <Offset x="0" y="0" z="0" />
        <Orientation h="0" p="0" r="0" />
@@ -52,9 +53,9 @@
 
      <NumValuators value="0" />
      <Valuator0 station="0" number="0" />
-   </Input-->
+   </Input>
     
-   <Input>  
+   <!--Input>  
       <ButtonSystem value="NONE" />
       <TrackingSystem value="NONE" />
 
@@ -99,7 +100,7 @@
         <Offset x="0" y="0" z="0" />
         <Orientation h="0" p="0" r="0" />
       </HandDevice>
-    </Input>
+    </Input-->
 
    <Plugin>
     <OssimPlanet value="off" />

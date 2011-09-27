@@ -178,9 +178,9 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         _listItem->setDirty(true);
     }
 
-    if (event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK
-	|| (TrackingManager::instance()->getUsingMouseTracker() && 
-	(event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)))
+    if (event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK)
+	//|| (TrackingManager::instance()->getUsingMouseTracker() && 
+	//(event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)))
     {
 	int y;
 
@@ -201,9 +201,9 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         return;
     }
 
-    if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP
-	|| (TrackingManager::instance()->getUsingMouseTracker() &&
-	(event->type == BUTTON_DRAG || event->type == BUTTON_UP)))
+    if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)
+	//|| (TrackingManager::instance()->getUsingMouseTracker() &&
+	//(event->type == BUTTON_DRAG || event->type == BUTTON_UP)))
     {
 	int y;
 	if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)

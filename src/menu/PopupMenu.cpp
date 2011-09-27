@@ -123,9 +123,9 @@ bool PopupMenu::processEvent(InteractionEvent * event)
     return _menu->processEvent(event);
 }
 
-bool PopupMenu::processIsect(IsectInfo & isect, bool mouse)
+bool PopupMenu::processIsect(IsectInfo & isect, int hand)
 {
-    return _menu->processIsect(isect,mouse);
+    return _menu->processIsect(isect,hand);
 }
 
 void PopupMenu::updateEnd()

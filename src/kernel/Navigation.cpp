@@ -105,7 +105,7 @@ void Navigation::processEvent(InteractionEvent * iEvent)
             return;
     }
 
-    if(TrackingManager::instance()->getUsingMouseTracker())
+    /*if(TrackingManager::instance()->getUsingMouseTracker())
     {
 	if(iEvent->type != BUTTON_UP && iEvent->type != BUTTON_DOWN)
 	{
@@ -134,7 +134,7 @@ void Navigation::processEvent(InteractionEvent * iEvent)
 	//}
 
 	return;
-    }
+    }*/
 
     TrackingInteractionEvent * event = (TrackingInteractionEvent *)iEvent;
 

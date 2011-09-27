@@ -25,9 +25,9 @@ void BoardPopupMenu::updateStart()
     BoardMenu::updateStart();
 }
 
-bool BoardPopupMenu::processIsect(IsectInfo & isect, bool mouse)
+bool BoardPopupMenu::processIsect(IsectInfo & isect, int hand)
 {
-    if(BoardMenu::processIsect(isect,mouse))
+    if(BoardMenu::processIsect(isect,hand))
     {
 	_currentPoint = isect.point;
 	return true;

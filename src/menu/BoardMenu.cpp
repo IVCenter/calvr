@@ -70,12 +70,12 @@ BoardMenu::BoardMenu()
             = ConfigManager::getInt("secondaryMouseButton",
                                     "MenuSystem.BoardMenu.Button", 1);
 
-    if(TrackingManager::instance()->getUsingMouseTracker())
+    /*if(TrackingManager::instance()->getUsingMouseTracker())
     {
 	_primaryHand = _secondaryHand = 0;
 	_primaryButton = _primaryMouseButton;
 	_secondaryButton = _secondaryMouseButton;
-    }
+    }*/
 
     _scale = ConfigManager::getFloat("MenuSystem.BoardMenu.Scale", 1.0);
 
@@ -856,7 +856,7 @@ void BoardMenu::updateMenus()
     return NULL;
 }*/
 
-bool BoardMenu::processIsect(IsectInfo & isect, bool mouse)
+bool BoardMenu::processIsect(IsectInfo & isect, int hand)
 {
     if(!_menuActive)
     {
@@ -869,15 +869,28 @@ bool BoardMenu::processIsect(IsectInfo & isect, bool mouse)
     
     if(_intersectMap.find(isect.geode) != _intersectMap.end())
     {
+	TrackerBase::TrackerType ttype = TrackingManager::instance()->getHandTrackerType(hand);
+	if(ttype == TrackerBase::TRACKER)
+	{
+	    _activeInteractor = HAND;
+	}
+	else if(ttype == TrackerBase::MOUSE)
+	{
+	    _activeInteractor = MOUSE;
+	}
+	else
+	{
+	    return false;
+	}
 	selectItem(_intersectMap[isect.geode]);
-	if(mouse)
+	/*if(mouse)
 	{
 	    _activeInteractor = MOUSE;
 	}
 	else
 	{
 	    _activeInteractor = HAND;
-	}
+	}*/
 	_foundItem = true;
 	return true;
     }

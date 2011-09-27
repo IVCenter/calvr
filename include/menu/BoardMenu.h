@@ -71,7 +71,7 @@ class BoardMenu : public MenuBase
          * @param isect geometry intersection to check
          * @param mouse is this intersection from the mouse
          */
-        virtual bool processIsect(IsectInfo & isect, bool mouse);
+        virtual bool processIsect(IsectInfo & isect, int hand);
 
         /**
          * @brief Function called right after the processIsect calls happen

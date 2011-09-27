@@ -78,19 +78,19 @@ osg::Matrix & PluginHelper::getHeadMat(int head)
     return TrackingManager::instance()->getHeadMat(head);
 }
 
-int PluginHelper::getNumButtonStations()
+int PluginHelper::getNumTrackingSystems()
 {
-    return TrackingManager::instance()->getNumButtonStations();
+    return TrackingManager::instance()->getNumTrackingSystems();
 }
 
-int PluginHelper::getNumButtons(int station)
+int PluginHelper::getNumButtons(int system)
 {
-    return TrackingManager::instance()->getNumButtons(station);
+    return TrackingManager::instance()->getNumButtons(system);
 }
 
-unsigned int PluginHelper::getRawButtonMask(int station)
+unsigned int PluginHelper::getRawButtonMask(int system)
 {
-    return TrackingManager::instance()->getRawButtonMask(station);
+    return TrackingManager::instance()->getRawButtonMask(system);
 }
 
 unsigned int PluginHelper::getHandButtonMask(int hand)
@@ -98,19 +98,14 @@ unsigned int PluginHelper::getHandButtonMask(int hand)
     return TrackingManager::instance()->getHandButtonMask(hand);
 }
 
-int PluginHelper::getNumValuatorStations()
+int PluginHelper::getNumValuators(int system)
 {
-    return TrackingManager::instance()->getNumValuatorStations();
+    return TrackingManager::instance()->getNumValuators(system);
 }
 
-int PluginHelper::getNumValuators(int station)
+float PluginHelper::getValuator(int system, int index)
 {
-    return TrackingManager::instance()->getNumValuators(station);
-}
-
-float PluginHelper::getValuator(int station, int index)
-{
-    return TrackingManager::instance()->getValuator(station, index);
+    return TrackingManager::instance()->getValuator(system, index);
 }
 
 int PluginHelper::getMouseX()

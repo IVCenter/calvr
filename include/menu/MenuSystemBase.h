@@ -50,7 +50,7 @@ class MenuSystemBase
          * @param mouse is this a mouse intersection
          * @return return true if this menu claims the intersect
          */
-        virtual bool processIsect(IsectInfo & isect, bool mouse) = 0;
+        virtual bool processIsect(IsectInfo & isect, int hand) = 0;
 
         /**
          * @brief Function called after the Isect results are processed

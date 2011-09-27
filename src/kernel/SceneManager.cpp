@@ -427,20 +427,25 @@ void SceneManager::initPointers()
         _handTransforms[i]->setMatrix(
                                       TrackingManager::instance()->getHandMat(i));
 
-        if(!TrackingManager::instance()->getShowWand())
-        {
-            continue;
-        }
-
-        // TODO: get a hand model to add
-        osg::Cone * cone = new osg::Cone(osg::Vec3(0, 500, 0), 10, 2000);
-        osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
-        cone->setRotation(q);
-        osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
-        osg::Geode * geode = new osg::Geode();
-        geode->addDrawable(sd);
-        geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
-        _handTransforms[i]->addChild(geode);
+	switch(TrackingManager::instance()->getPointerGraphicType(i))
+	{
+	    case CONE:
+		{
+		    osg::Cone * cone = new osg::Cone(osg::Vec3(0, 500, 0), 10, 2000);
+		    osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
+		    cone->setRotation(q);
+		    osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
+		    osg::Geode * geode = new osg::Geode();
+		    geode->addDrawable(sd);
+		    geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
+		    _handTransforms[i]->addChild(geode);
+		    break;
+		}
+	    case NONE:
+		break;
+	    default:
+		break;
+	}
     }
 }
 

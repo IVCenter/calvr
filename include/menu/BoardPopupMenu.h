@@ -25,7 +25,7 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
 
         virtual void setMenu(SubMenu * menu);
         virtual void updateStart();
-        virtual bool processIsect(IsectInfo & isect, bool mouse);
+        virtual bool processIsect(IsectInfo & isect, int hand);
         virtual void updateEnd();
         virtual bool processEvent(InteractionEvent * event);
         virtual void itemDelete(MenuItem * item);

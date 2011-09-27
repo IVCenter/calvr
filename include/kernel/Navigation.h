@@ -84,6 +84,13 @@ class CVRKERNEL_EXPORT Navigation
          */
         float getScale();
 
+        enum NavImplementation
+        {
+            MOUSE_NAV = 0,
+            TRACKER_NAV,
+            NONE_NAV
+        };
+
     protected:
         Navigation();
         virtual ~Navigation();
