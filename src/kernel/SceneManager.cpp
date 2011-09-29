@@ -316,16 +316,10 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     int hand = -2;
     int button = -1;
 
-    if(ie->type == BUTTON_UP || ie->type == BUTTON_DRAG || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_DOWN)
+    if(ie->asTrackedButtonEvent())
     {
-	TrackingInteractionEvent * tie = (TrackingInteractionEvent*)ie;
-	hand = tie->hand;
-	button = tie->button;
-    }
-    else if(ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_DOWN)
-    {
-	hand = -1;
-	button = ((MouseInteractionEvent*)ie)->button;
+	hand = ie->asTrackedButtonEvent()->getHand();
+	button = ie->asTrackedButtonEvent()->getButton();
     }
 
     if(hand == -2)
@@ -339,11 +333,7 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     }
     else if(_menuOpenObject)
     {
-	if(ie->type == MOUSE_BUTTON_DOWN && button == _menuOpenObject->_menuMouseButton)
-	{
-	    return _menuOpenObject->processEvent(ie);
-	}
-	else if(ie->type == BUTTON_DOWN && button == _menuOpenObject->_menuButton)
+	if(ie->getInteraction() == BUTTON_DOWN && _menuOpenObject->_menuButton)
 	{
 	    return _menuOpenObject->processEvent(ie);
 	}
@@ -620,20 +610,12 @@ void SceneManager::updateActiveObject()
 {
     osg::Vec3 start, end;
 
-    for(int i = 0; i <= TrackingManager::instance()->getNumHands(); i++)
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
 	int hand;
 	osg::Matrix handMatrix;
-	if(i == TrackingManager::instance()->getNumHands())
-	{
-	    hand = -1;
-	    handMatrix = InteractionManager::instance()->getMouseMat();
-	}
-	else
-	{
-	    hand = i;
-	    handMatrix = TrackingManager::instance()->getHandMat(i);
-	}
+	hand = i;
+	handMatrix = TrackingManager::instance()->getHandMat(i);
 
 	if(_activeObjects[hand])
 	{
@@ -673,7 +655,7 @@ void SceneManager::updateActiveObject()
 	    }
 	}
 
-	if(hand == -1)
+	if(TrackingManager::instance()->getHandTrackerType(hand) == TrackerBase::MOUSE)
 	{
 	    if(!InteractionManager::instance()->mouseActive())
 	    {

@@ -134,6 +134,7 @@ class BoardMenu : public MenuBase
         MenuTrigger _trigger; ///< Method for spawning the menu
 
         ActiveInteractor _activeInteractor; ///< currently active interaction type
+        int _activeHand;
 
         bool _menuActive; ///< if the menu is open
         BoardMenuGeometry * _activeItem; ///< menu item currently being interacted with

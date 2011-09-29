@@ -129,64 +129,9 @@ void PluginManager::postFrame()
 
 bool PluginManager::processEvent(InteractionEvent * event)
 {
-    switch(event->type)
+    for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-        case KEY_UP:
-        case KEY_DOWN:
-        {
-            KeyboardInteractionEvent * kie = (KeyboardInteractionEvent *)event;
-            for(int i = 0; i < _loadedPluginList.size(); i++)
-            {
-                if(_loadedPluginList[i]->ptr->keyEvent(kie->type == KEY_DOWN,
-                                                       kie->key, kie->mod))
-                {
-                    return true;
-                }
-            }
-            break;
-        }
-        case MOUSE_DRAG:
-        case MOUSE_BUTTON_UP:
-        case MOUSE_BUTTON_DOWN:
-	case MOUSE_DOUBLE_CLICK:
-        {
-            MouseInteractionEvent * mie = (MouseInteractionEvent *)event;
-            for(int i = 0; i < _loadedPluginList.size(); i++)
-            {
-                if(_loadedPluginList[i]->ptr->mouseButtonEvent(mie->type,
-                                                               mie->button,
-                                                               mie->x, mie->y,
-                                                               mie->transform))
-                {
-                    return true;
-                }
-            }
-            break;
-        }
-        case BUTTON_DOWN:
-        case BUTTON_UP:
-        case BUTTON_DRAG:
-        case BUTTON_DOUBLE_CLICK:
-        {
-            TrackingInteractionEvent * tie = (TrackingInteractionEvent *)event;
-            osg::Matrix m, t;
-            t.makeTranslate(tie->xyz[0], tie->xyz[1], tie->xyz[2]);
-            m.makeRotate(osg::Quat(tie->rot[0], tie->rot[1], tie->rot[2],
-                                   tie->rot[3]));
-            m = m * t;
-            for(int i = 0; i < _loadedPluginList.size(); i++)
-            {
-                if(_loadedPluginList[i]->ptr->buttonEvent(tie->type,
-                                                          tie->button,
-                                                          tie->hand, m))
-                {
-                    return true;
-                }
-            }
-            break;
-        }
-        default:
-            return false;
+	return _loadedPluginList[i]->ptr->processEvent(event);
     }
     return false;
 }

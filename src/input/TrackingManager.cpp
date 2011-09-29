@@ -35,6 +35,7 @@ struct TrackingSystemInit
     SceneManager::PointerGraphicType defaultPointerType;
     bool thread;
     bool genDefaultButtonEvents;
+    bool initOK;
 };
 
 TrackingManager * TrackingManager::_myPtr = NULL;
@@ -43,7 +44,6 @@ TrackingManager::TrackingManager()
 {
     _debugOutput = false;
     _threadQuit = false;
-    _currentEvents = NULL;
 }
 
 TrackingManager::~TrackingManager()
@@ -145,6 +145,7 @@ bool TrackingManager::init()
 		trackInit.type = tracker->getTrackerType();
 		trackInit.defaultPointerType = tracker->getPointerType();
 		trackInit.genDefaultButtonEvents = tracker->genDefaultButtonEvents();
+		trackInit.initOK = true;
 	    }
 	    else
 	    {
@@ -153,14 +154,28 @@ bool TrackingManager::init()
 		trackInit.type = TrackerBase::TRACKER;
 		trackInit.defaultPointerType = SceneManager::NONE;
 		trackInit.genDefaultButtonEvents = false;
+		trackInit.initOK = false;
+		if(tracker)
+		{
+		    delete tracker;
+		    tracker = NULL;
+		}
 	    }
 
 	    ComController::instance()->sendSlaves(&trackInit, sizeof(struct TrackingSystemInit));
 	}
 	else
 	{
-	    tracker = new TrackerSlave(tsi->numBodies, tsi->numButtons, tsi->numVal);
 	    ComController::instance()->readMaster(&trackInit, sizeof(struct TrackingSystemInit));
+	    if(trackInit.initOK)
+	    {
+		tracker = new TrackerSlave(tsi->numBodies, tsi->numButtons, tsi->numVal);
+	    }
+	    else
+	    {
+		tracker = NULL;
+	    }
+	    
 	}
 
 	tsi->navImp = trackInit.nav;
@@ -212,6 +227,7 @@ bool TrackingManager::init()
 	_handAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",handss.str(),0),
 	                                          ConfigManager::getInt("body",handss.str(),0)));
 	_threadHandButtonMasks.push_back(0);
+	_threadLastHandButtonMask.push_back(0);
         _threadHandMatList.push_back(osg::Matrix());
 	_handMatList.push_back(osg::Matrix());
         _handButtonMask.push_back(0);
@@ -243,7 +259,7 @@ bool TrackingManager::init()
 
 	_headAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",headss.str(),0),
 	                                          ConfigManager::getInt("body",headss.str(),0)));
-	_threadHeadMatList.push_back(osg::Matrix());
+	//_threadHeadMatList.push_back(osg::Matrix());
 	_headMatList.push_back(osg::Matrix());
 	_lastUpdatedHeadMatList.push_back(osg::Matrix());
     }
@@ -339,9 +355,12 @@ void TrackingManager::update()
 
     _updateLock.lock();
 
-    //TODO: zero size check
     int totalData = _totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int) + _totalValuators * sizeof(float);
-    char * data = new char[totalData];
+    char * data = NULL;
+    if(totalData)
+    {
+	data = new char[totalData];
+    }
 
     //std::cerr << "Update Called." << std::endl;
     if(ComController::instance()->isMaster())
@@ -512,6 +531,12 @@ void TrackingManager::update()
     generateButtonEvents();
     flushEvents();
 
+    // merge threaded and non-threaded hand masks
+    for(int i = 0; i < _handButtonMask.size(); i++)
+    {
+	_handButtonMask[i] |= _threadHandButtonMasks[i];
+    }
+
     _updateLock.unlock();
 }
 
@@ -667,12 +692,28 @@ int TrackingManager::getNumTrackingSystems()
 
 TrackerBase::TrackerType TrackingManager::getHandTrackerType(int hand)
 {
-    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0 || _handAddress[hand].first >= _systemInfo.size() || _handAddress[hand].second < 0 || _handAddress[hand].second >= _systemInfo[_handAddress[hand].first]->numBodies)
+    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0 || 
+	_handAddress[hand].first >= _systemInfo.size() || 
+	_handAddress[hand].second < 0 || 
+	_handAddress[hand].second >= _systemInfo[_handAddress[hand].first]->numBodies)
     {
 	return TrackerBase::INVALID;
     }
 
     return _systemInfo[_handAddress[hand].first]->trackerType;
+}
+
+Navigation::NavImplementation TrackingManager::getHandNavType(int hand)
+{
+    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0 || 
+	_handAddress[hand].first >= _systemInfo.size() || 
+	_handAddress[hand].second < 0 || 
+	_handAddress[hand].second >= _systemInfo[_handAddress[hand].first]->numBodies)
+    {
+	return Navigation::NONE_NAV;
+    }
+
+    return _systemInfo[_handAddress[hand].first]->navImp;
 }
 
 int TrackingManager::getNumButtons(int system)
@@ -753,10 +794,13 @@ void TrackingManager::updateHandMask()
             {
                 if(_handStationFilterMask[i][j] & stationMask)
                 {
-                    unsigned int value =
-                            (getRawButtonMask(j) & stationMask) ? 1 : 0;
-                    value = value << handMaskOffset;
-                    _handButtonMask[i] |= value;
+		    if(!_systemInfo[j]->thread)
+		    {
+			unsigned int value =
+			    (getRawButtonMask(j) & stationMask) ? 1 : 0;
+			value = value << handMaskOffset;
+			_handButtonMask[i] |= value;
+		    }
 
                     handMaskOffset++;
                     if(handMaskOffset == CVR_MAX_BUTTONS)
@@ -788,7 +832,7 @@ void TrackingManager::updateThreadHandMask()
             {
                 if(_handStationFilterMask[i][j] & stationMask)
                 {
-		    if(_systems[j])
+		    if(_systems[j] && _systemInfo[j]->thread)
 		    {
 			unsigned int value = (_systems[j]->getButtonMask()
 				& stationMask) ? 1 : 0;
@@ -816,9 +860,10 @@ void TrackingManager::updateThreadHandMask()
 void TrackingManager::generateButtonEvents()
 {
     int numEvents;
+    TrackedButtonInteractionEvent * events = NULL;
     if(ComController::instance()->isMaster())
     {
-        std::vector<TrackingInteractionEvent> eventList;
+        std::vector<TrackedButtonInteractionEvent*> eventList;
         for(int j = 0; j < _numHands; j++)
         {
             unsigned int bit = 1;
@@ -836,31 +881,25 @@ void TrackingManager::generateButtonEvents()
                         || ((_lastHandButtonMask[j] & bit) && (newMask & bit)))
                 {
                     //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-                    TrackingInteractionEvent buttonEvent;
+
+		    TrackedButtonInteractionEvent * buttonEvent = new TrackedButtonInteractionEvent();
+
                     if((_lastHandButtonMask[j] & bit) && (newMask & bit))
                     {
-                        buttonEvent.type = BUTTON_DRAG;
+                        buttonEvent->setInteraction(BUTTON_DRAG);
                     }
                     else if(_lastHandButtonMask[j] & bit)
                     {
-                        buttonEvent.type = BUTTON_UP;
+                        buttonEvent->setInteraction(BUTTON_UP);
                     }
                     else
                     {
-                        buttonEvent.type = BUTTON_DOWN;
+                        buttonEvent->setInteraction(BUTTON_DOWN);
                     }
-                    buttonEvent.button = i;
+                    buttonEvent->setButton(i);
                     // set current pointer info
-                    osg::Quat q = _handMatList[j].getRotate();
-                    osg::Vec3 pos = _handMatList[j].getTrans();
-                    buttonEvent.xyz[0] = pos.x();
-                    buttonEvent.xyz[1] = pos.y();
-                    buttonEvent.xyz[2] = pos.z();
-                    buttonEvent.rot[0] = q.x();
-                    buttonEvent.rot[1] = q.y();
-                    buttonEvent.rot[2] = q.z();
-                    buttonEvent.rot[3] = q.w();
-                    buttonEvent.hand = j;
+		    buttonEvent->setTransform(_handMatList[j]);
+                    buttonEvent->setHand(j);
                     eventList.push_back(buttonEvent);
                 }
                 bit = bit << 1;
@@ -871,13 +910,14 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->sendSlaves(&numEvents, sizeof(int));
         if(numEvents)
         {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
+            events = new TrackedButtonInteractionEvent[numEvents];
             for(int i = 0; i < numEvents; i++)
             {
-                _currentEvents[i] = eventList[i];
+                events[i] = *eventList[i];
+		delete eventList[i];
             }
-            ComController::instance()->sendSlaves(_currentEvents, numEvents
-                    * sizeof(TrackingInteractionEvent));
+            ComController::instance()->sendSlaves(events, numEvents
+                    * sizeof(TrackedButtonInteractionEvent));
         }
     }
     else
@@ -885,30 +925,29 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->readMaster(&numEvents, sizeof(int));
         if(numEvents)
         {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(_currentEvents, numEvents
-                    * sizeof(TrackingInteractionEvent));
+            events = new TrackedButtonInteractionEvent[numEvents];
+            ComController::instance()->readMaster(events, numEvents
+                    * sizeof(TrackedButtonInteractionEvent));
         }
     }
 
-    TrackingInteractionEvent * ie;
+    TrackedButtonInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        ie = new TrackingInteractionEvent;
-        *ie = _currentEvents[i];
+        ie = new TrackedButtonInteractionEvent();
+        *ie = events[i];
         InteractionManager::instance()->addEvent(ie);
     }
 
-    if(_currentEvents)
+    if(events)
     {
-        delete[] _currentEvents;
-        _currentEvents = NULL;
+	delete[] events;
     }
 }
 
 void TrackingManager::generateThreadButtonEvents()
 {
-    TrackingInteractionEvent * buttonEvent;
+    TrackedButtonInteractionEvent * buttonEvent;
     for(int j = 0; j < _numHands; j++)
     {
         unsigned int bit = 1;
@@ -922,62 +961,46 @@ void TrackingManager::generateThreadButtonEvents()
 		continue;
 	    }
             //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << " bit: " << bit << " " << (newMask & bit) << " " << (_lastButtonMask & bit) << std::endl;
-            if((_lastHandButtonMask[j] & bit) != (newMask & bit))
+            if((_threadLastHandButtonMask[j] & bit) != (newMask & bit))
             {
-                buttonEvent = new TrackingInteractionEvent;
+                buttonEvent = new TrackedButtonInteractionEvent();
                 //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-                if(_lastHandButtonMask[j] & bit)
+                if(_threadLastHandButtonMask[j] & bit)
                 {
-                    buttonEvent->type = BUTTON_UP;
+                    buttonEvent->setInteraction(BUTTON_UP);
                 }
                 else
                 {
-                    buttonEvent->type = BUTTON_DOWN;
+                    buttonEvent->setInteraction(BUTTON_DOWN);
                 }
-                buttonEvent->button = i;
+                buttonEvent->setButton(i);
                 // set current pointer info
-                osg::Quat q = _threadHandMatList[j].getRotate();
-                osg::Vec3 pos = _threadHandMatList[j].getTrans();
-                buttonEvent->xyz[0] = pos.x();
-                buttonEvent->xyz[1] = pos.y();
-                buttonEvent->xyz[2] = pos.z();
-                buttonEvent->rot[0] = q.x();
-                buttonEvent->rot[1] = q.y();
-                buttonEvent->rot[2] = q.z();
-                buttonEvent->rot[3] = q.w();
-                buttonEvent->hand = j;
+		buttonEvent->setTransform(_threadHandMatList[j]);
+                buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
             }
-            else if((_lastHandButtonMask[j] & bit) && (newMask & bit))
+            else if((_threadLastHandButtonMask[j] & bit) && (newMask & bit))
             {
-                buttonEvent = new TrackingInteractionEvent;
-                buttonEvent->type = BUTTON_DRAG;
-                buttonEvent->button = i;
+                buttonEvent = new TrackedButtonInteractionEvent();
+                buttonEvent->setInteraction(BUTTON_DRAG);
+                buttonEvent->setButton(i);
                 // set current pointer info
-                osg::Quat q = _threadHandMatList[j].getRotate();
-                osg::Vec3 pos = _threadHandMatList[j].getTrans();
-                buttonEvent->xyz[0] = pos.x();
-                buttonEvent->xyz[1] = pos.y();
-                buttonEvent->xyz[2] = pos.z();
-                buttonEvent->rot[0] = q.x();
-                buttonEvent->rot[1] = q.y();
-                buttonEvent->rot[2] = q.z();
-                buttonEvent->rot[3] = q.w();
-                buttonEvent->hand = j;
+		buttonEvent->setTransform(_threadHandMatList[j]);
+                buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
             }
             bit = bit << 1;
         }
-        _lastHandButtonMask[j] = newMask;
+        _threadLastHandButtonMask[j] = newMask;
     }
 }
 
 void TrackingManager::updateThreadMats()
 {
     trackedBody * tb;
-    for(int i = 0; i < _numHeads; i++)
+    /*for(int i = 0; i < _numHeads; i++)
     {
 	if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))
         {
@@ -992,12 +1015,17 @@ void TrackingManager::updateThreadMats()
                         * osg::Matrix::translate(_systemInfo[_headAddress[i].first]->bodyTranslations[_headAddress[i].second]);
             }
         }
-    }
+    }*/
 
     for(int i = 0; i < _numHands; i++)
     {
 	if(_systems[_handAddress[i].first] && _systems[_handAddress[i].first]->getBody(_handAddress[i].second))
         {
+	    if(!_systemInfo[_handAddress[i].first]->thread)
+	    {
+		continue;
+	    }
+
             tb = _systems[_handAddress[i].first]->getBody(_handAddress[i].second);
             if(tb)
             {
@@ -1032,14 +1060,9 @@ void TrackingManager::flushEvents()
 
     for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
     {
-	//TODO: change this when the new event class structure is in place
-	if(i == TRACKING_INTER_EVENT)
+	if(numEvents[i])
 	{
-	    eventsDataSize += numEvents[i] * sizeof(struct TrackingInteractionEvent);
-	}
-	else if(i == MOUSE_INTER_EVENT)
-	{
-	    eventsDataSize += numEvents[i] * sizeof(struct MouseInteractionEvent);
+	    eventsDataSize += numEvents[i] * getEventSize((InteractionEventType)i);
 	}
     }
 
@@ -1051,36 +1074,14 @@ void TrackingManager::flushEvents()
     }
     if(ComController::instance()->isMaster())
     {
-	//TODO: change this when the new event class structure is in place
 	char * eventptr = data;
 	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
 	{
-	    if(i == TRACKING_INTER_EVENT)
+	    for(std::list<InteractionEvent*>::iterator it = _eventMap[i].begin(); it != _eventMap[i].end(); it++)
 	    {
-		for(std::list<InteractionEvent*>::iterator it = _eventMap[i].begin(); it != _eventMap[i].end(); it++)
-		{
-		    *((TrackingInteractionEvent*)eventptr) = *((TrackingInteractionEvent*)(*it));
-		    InteractionManager::instance()->addEvent(*it);
-		    eventptr += sizeof(struct TrackingInteractionEvent);
-		}
-	    }
-	    else if(i == MOUSE_INTER_EVENT)
-	    {
-		//std::cerr << "Found " << _eventMap[i].size() << " mouse events." << std::endl;
-		for(std::list<InteractionEvent*>::iterator it = _eventMap[i].begin(); it != _eventMap[i].end(); it++)
-		{
-		    //std::cerr << "Got mouse event." << std::endl;
-		    *((MouseInteractionEvent*)eventptr) = *((MouseInteractionEvent*)(*it));
-		    InteractionManager::instance()->addEvent(*it);
-		    eventptr += sizeof(struct MouseInteractionEvent);
-		}
-	    }
-	    else
-	    {
-		for(std::list<InteractionEvent*>::iterator it = _eventMap[i].begin(); it != _eventMap[i].end(); it++)
-		{
-		    delete *it;
-		}
+		storeEvent(*it,eventptr);
+		eventptr += getEventSize((InteractionEventType)i);
+		InteractionManager::instance()->addEvent(*it);
 	    }
 	}
 	ComController::instance()->sendSlaves(data,eventsDataSize);
@@ -1091,25 +1092,14 @@ void TrackingManager::flushEvents()
 	char * eventptr = data;
 	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
 	{
-	    if(i == TRACKING_INTER_EVENT)
+	    for(int j = 0; j < numEvents[i]; j++)
 	    {
-		for(int j = 0; j < numEvents[i]; j++)
+		InteractionEvent * ie = loadEventWithType((InteractionEvent *)eventptr,(InteractionEventType)i);
+		if(ie)
 		{
-		    TrackingInteractionEvent * tie = new TrackingInteractionEvent;
-		    *tie = *((TrackingInteractionEvent*)eventptr);
-		    InteractionManager::instance()->addEvent(tie);
-		    eventptr += sizeof(struct TrackingInteractionEvent);
+		    InteractionManager::instance()->addEvent(ie);
 		}
-	    }
-	    if(i == MOUSE_INTER_EVENT)
-	    {
-		for(int j = 0; j < numEvents[i]; j++)
-		{
-		    MouseInteractionEvent * mie = new MouseInteractionEvent;
-		    *mie = *((MouseInteractionEvent*)eventptr);
-		    InteractionManager::instance()->addEvent(mie);
-		    eventptr += sizeof(struct MouseInteractionEvent);
-		}
+		eventptr += getEventSize((InteractionEventType)i);
 	    }
 	}
     }
@@ -1131,52 +1121,6 @@ void TrackingManager::flushEvents()
     {
 	delete[] numEvents;
     }
-
-    /*int numEvents;
-    if(ComController::instance()->isMaster())
-    {
-        numEvents = _threadEvents.size();
-        ComController::instance()->sendSlaves(&numEvents, sizeof(int));
-        if(numEvents)
-        {
-            _currentEvents = new TrackingInteractionEvent[_threadEvents.size()];
-            int index = 0;
-            while(_threadEvents.size())
-            {
-                _currentEvents[index]
-                        = *((TrackingInteractionEvent*)_threadEvents.front());
-                delete _threadEvents.front();
-                _threadEvents.pop();
-                index++;
-            }
-            ComController::instance()->sendSlaves(_currentEvents, numEvents
-                    * sizeof(struct TrackingInteractionEvent));
-        }
-    }
-    else
-    {
-        ComController::instance()->readMaster(&numEvents, sizeof(int));
-        if(numEvents)
-        {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(_currentEvents, numEvents
-                    * sizeof(struct TrackingInteractionEvent));
-        }
-    }
-
-    TrackingInteractionEvent * ie;
-    for(int i = 0; i < numEvents; i++)
-    {
-        ie = new TrackingInteractionEvent;
-        *ie = _currentEvents[i];
-        InteractionManager::instance()->addEvent(ie);
-    }
-
-    if(_currentEvents)
-    {
-        delete[] _currentEvents;
-        _currentEvents = NULL;
-    }*/
 }
 
 void TrackingManager::setGenHandDefaultButtonEvents()
@@ -1228,17 +1172,17 @@ GenComplexTrackingEvents::~GenComplexTrackingEvents()
 {
 }
 
-void GenComplexTrackingEvents::processEvent(TrackingInteractionEvent * tie)
+void GenComplexTrackingEvents::processEvent(TrackedButtonInteractionEvent * tie)
 {
-    if(tie->type == BUTTON_DOWN)
+    if(tie->getInteraction() == BUTTON_DOWN)
     {
-        if(!_lastClick[tie->hand][tie->button])
+        if(!_lastClick[tie->getHand()][tie->getButton()])
         {
             struct timeval * tv = new struct timeval;
             gettimeofday(tv, NULL);
-            _lastClick[tie->hand][tie->button] = tv;
+            _lastClick[tie->getHand()][tie->getButton()] = tv;
 
-            _doubleClicked[tie->hand][tie->button] = false;
+            _doubleClicked[tie->getHand()][tie->getButton()] = false;
         }
         else
         {
@@ -1247,29 +1191,28 @@ void GenComplexTrackingEvents::processEvent(TrackingInteractionEvent * tie)
             gettimeofday(&now, NULL);
 
             float interval = (now.tv_sec
-                    - _lastClick[tie->hand][tie->button]->tv_sec)
+                    - _lastClick[tie->getHand()][tie->getButton()]->tv_sec)
                     + ((now.tv_usec
-                            - _lastClick[tie->hand][tie->button]->tv_usec)
+                            - _lastClick[tie->getHand()][tie->getButton()]->tv_usec)
                             / 1000000.0);
 
             if(interval < _doubleClickTimeout
-                    && !_doubleClicked[tie->hand][tie->button])
+                    && !_doubleClicked[tie->getHand()][tie->getButton()])
             {
-                tie->type = BUTTON_DOUBLE_CLICK;
-                _doubleClicked[tie->hand][tie->button] = true;
+                tie->setInteraction(BUTTON_DOUBLE_CLICK);
+                _doubleClicked[tie->getHand()][tie->getButton()] = true;
             }
             else
             {
-                *_lastClick[tie->hand][tie->button] = now;
-                _doubleClicked[tie->hand][tie->button] = false;
+                *_lastClick[tie->getHand()][tie->getButton()] = now;
+                _doubleClicked[tie->getHand()][tie->getButton()] = false;
             }
         }
 
-        TrackingManager::instance()->_eventMap[(int)TRACKING_INTER_EVENT].push_back(
-                                                        (InteractionEvent *)tie);
+        TrackingManager::instance()->_eventMap[tie->getEventType()].push_back(tie);
     }
     else
     {
-        TrackingManager::instance()->_eventMap[(int)TRACKING_INTER_EVENT].push_back((InteractionEvent *)tie);
+        TrackingManager::instance()->_eventMap[tie->getEventType()].push_back(tie);
     }
 }

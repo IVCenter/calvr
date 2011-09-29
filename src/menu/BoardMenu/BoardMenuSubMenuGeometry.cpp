@@ -185,7 +185,7 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
 void BoardMenuSubMenuGeometry::processEvent(InteractionEvent * event)
 {
-    if(event->type == BUTTON_DOWN || event->type == MOUSE_BUTTON_DOWN)
+    if(event->getInteraction() == BUTTON_DOWN)
     {
         if(_item->getCallback())
         {

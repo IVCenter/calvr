@@ -30,8 +30,8 @@ struct timeval;
 namespace cvr
 {
 
-struct InteractionEvent;
-struct TrackingInteractionEvent;
+class InteractionEvent;
+class TrackedButtonInteractionEvent;
 class GenComplexTrackingEvents;
 
 /**
@@ -126,6 +126,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         int getNumTrackingSystems();
 
         TrackerBase::TrackerType getHandTrackerType(int hand);
+
+        Navigation::NavImplementation getHandNavType(int hand);
 
         /**
          * @brief Returns number of buttons present in a given button station
@@ -229,7 +231,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         OpenThreads::Mutex _quitLock;
         OpenThreads::Mutex _updateLock; ///< lock to protect multi-threaded operations
         std::vector<unsigned int> _threadHandButtonMasks;
-        std::vector<osg::Matrix> _threadHeadMatList;
+        std::vector<unsigned int> _threadLastHandButtonMask; ///< list of last sampled button mask for each hand
+        //std::vector<osg::Matrix> _threadHeadMatList;
         std::vector<osg::Matrix> _threadHandMatList;
 
         int _numHands; ///< number of hands in system
@@ -261,8 +264,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 
         //trackedBody * _defaultHead; ///< default value for head orientation
         //trackedBody * _defaultHand; ///< default value for hand orientation
-
-        TrackingInteractionEvent * _currentEvents;
 };
 
 /**
@@ -274,7 +275,7 @@ class CVRINPUT_EXPORT GenComplexTrackingEvents
         GenComplexTrackingEvents();
         ~GenComplexTrackingEvents();
 
-        void processEvent(TrackingInteractionEvent * tie);
+        void processEvent(TrackedButtonInteractionEvent * tie);
     protected:
 
         float _doubleClickTimeout;

@@ -49,7 +49,7 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         /**
          * @brief Move menu based on an interaction
          */
-        void updateMovement(InteractionEvent * event);
+        void updateMovement(TrackedButtonInteractionEvent * tie);
 
         float _moveDistance;
         osg::Vec3 _currentPoint;

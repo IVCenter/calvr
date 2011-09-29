@@ -527,167 +527,31 @@ osg::Matrix SceneObject::getWorldToObjectMatrix()
 
 bool SceneObject::processEvent(InteractionEvent * ie)
 {
-    MouseInteractionEvent * mie = NULL;// = dynamic_cast<MouseInteractionEvent*>(ie);
-
-    if(ie->type == MOUSE_BUTTON_DOWN || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG)
-    {
-	mie = (MouseInteractionEvent*)ie;
-    }
-
-    if(mie)
-    {
-	if(_eventActive && _activeHand != -1)
-	{
-	    return false;
-	}
-
-	if(_movable && mie->button == _moveMouseButton)
-	{
-	    if(mie->type == MOUSE_BUTTON_DOWN)
-	    {
-		_lastHandInv = osg::Matrix::inverse(mie->transform);
-		_lastHandMat = mie->transform;
-		_lastobj2world = getObjectToWorldMatrix();
-		_eventActive = true;
-		_moving = true;
-		_activeHand = -1;
-		return true;
-	    }
-	    else if(_moving && (mie->type == MOUSE_DRAG || mie->type == MOUSE_BUTTON_UP))
-	    {
-		processMove(mie->transform);
-		if(mie->type == MOUSE_BUTTON_UP)
-		{
-		    _eventActive = false;
-		    _moving = false;
-		    _activeHand = -2;
-		}
-		return true;
-	    }
-	}
-
-	if(_contextMenu && mie->button == _menuMouseButton)
-	{
-	    if(mie->type == MOUSE_BUTTON_DOWN)
-	    {
-		if(!_myMenu->isVisible())
-		{
-		    _myMenu->setVisible(true);
-		    osg::Vec3 start(0,0,0), end(0,1000,0);
-		    start = start * mie->transform;
-		    end = end * mie->transform;
-
-		    osg::Vec3 p1,p2;
-		    bool n1,n2;
-		    float dist = 0;
-
-		    if(intersects(start,end,p1,n1,p2,n2))
-		    {
-			float d1 = (p1 - start).length();
-			if(n1)
-			{
-			    d1 = -d1;
-			}
-
-			float d2 = (p2 - start).length();
-			if(n2)
-			{
-			    d2 = -d2;
-			}
-
-			if(d1 < d2 && d1 > 0)
-			{
-			    dist = d1;
-			}
-			else
-			{
-			    dist = d2;
-			}
-		    }
-
-		    dist = std::min(dist,SceneManager::instance()->_menuMaxDistanceMouse);
-		    dist = std::max(dist,SceneManager::instance()->_menuMinDistanceMouse);
-
-		    osg::Vec3 menuPoint(0,dist,0);
-		    menuPoint = menuPoint * mie->transform;
-		    osg::Matrix m;
-		    m.makeTranslate(menuPoint);
-		    _myMenu->setTransform(m);
-
-		    _myMenu->setScale(SceneManager::instance()->_menuScaleMouse);
-
-		    SceneManager::instance()->setMenuOpenObject(this);
-		}
-		else
-		{
-		    SceneManager::instance()->closeOpenObjectMenu();
-		}
-		//_eventActive = true;
-		//_activeHand = -1;
-		return true;
-	    }
-	    /*else if(mie->type == MOUSE_DRAG)
-	    {
-		return true;
-	    }
-	    else if(mie->type == MOUSE_BUTTON_UP)
-	    {
-		//_eventActive = false;
-		//_activeHand = -2;
-		return true;
-	    }*/
-	}
-
-	//TODO: replace button down/up active check with mask of buttons to
-	// handle multiple buttons down
-	bool retValue;
-	retValue = eventCallback(mie->type, -1, mie->button, mie->transform);
-	if(retValue && mie->type == MOUSE_BUTTON_DOWN)
-	{
-	    _activeButton = mie->button;
-	    _eventActive = true;
-	    _activeHand = -1;
-	}
-	else if(mie->type == MOUSE_BUTTON_UP && mie->button == _activeButton)
-	{
-	    _eventActive = false;
-	    _activeHand = -2;
-	}
-	return retValue;
-    }
-
-    TrackingInteractionEvent * tie = NULL; // dynamic_cast<TrackingInteractionEvent*>(ie);
-
-    if(ie->type == BUTTON_DOWN || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_UP || ie->type == BUTTON_DRAG)
-    {
-	tie = (TrackingInteractionEvent*)ie;
-    }
+    TrackedButtonInteractionEvent * tie = ie->asTrackedButtonEvent();
 
     if(tie)
     {
-	if(_eventActive && _activeHand != tie->hand)
+	if(_eventActive && _activeHand != tie->getHand())
 	{
 	    return false;
 	}
 
-	osg::Matrix transform = tie2mat(tie);
-
-	if(_movable && tie->button == _moveButton)
+	if(_movable && tie->getButton() == _moveButton)
 	{
-	    if(tie->type == BUTTON_DOWN)
+	    if(tie->getInteraction() == BUTTON_DOWN)
 	    {
-		_lastHandInv = osg::Matrix::inverse(transform);
-		_lastHandMat = transform;
+		_lastHandInv = osg::Matrix::inverse(tie->getTransform());
+		_lastHandMat = tie->getTransform();
 		_lastobj2world = getObjectToWorldMatrix();
 		_eventActive = true;
 		_moving = true;
-		_activeHand = tie->hand;
+		_activeHand = tie->getHand();
 		return true;
 	    }
-	    else if(_moving && (tie->type == BUTTON_DRAG || tie->type == BUTTON_UP))
+	    else if(_moving && (tie->getInteraction() == BUTTON_DRAG || tie->getInteraction() == BUTTON_UP))
 	    {
-		processMove(transform);
-		if(tie->type == BUTTON_UP)
+		processMove(tie->getTransform());
+		if(tie->getInteraction() == BUTTON_UP)
 		{
 		    _eventActive = false;
 		    _moving = false;
@@ -697,16 +561,16 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 	    }
 	}
 
-	if(_contextMenu && tie->button == _menuButton)
+	if(_contextMenu && tie->getButton() == _menuButton)
 	{
-	    if(tie->type == BUTTON_DOWN)
+	    if(tie->getInteraction() == BUTTON_DOWN)
 	    {
 		if(!_myMenu->isVisible())
 		{
 		    _myMenu->setVisible(true);
 		    osg::Vec3 start(0,0,0), end(0,1000,0);
-		    start = start * transform;
-		    end = end * transform;
+		    start = start * tie->getTransform();
+		    end = end * tie->getTransform();
 
 		    osg::Vec3 p1,p2;
 		    bool n1,n2;
@@ -740,7 +604,7 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 		    dist = std::max(dist,SceneManager::instance()->_menuMinDistance);
 
 		    osg::Vec3 menuPoint(0,dist,0);
-		    menuPoint = menuPoint * transform;
+		    menuPoint = menuPoint * tie->getTransform();
 
 		    osg::Vec3 viewerPoint = TrackingManager::instance()->getHeadMat(0).getTrans();
 		    osg::Vec3 viewerDir = viewerPoint - menuPoint;
@@ -765,23 +629,13 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 		//_activeHand = tie->hand;
 		return true;
 	    }
-	    /*else if(tie->type == BUTTON_DRAG)
-	    {
-		return true;
-	    }
-	    else if(tie->type == BUTTON_UP)
-	    {
-		//_eventActive = false;
-		//_activeHand = -2;
-		return true;
-	    }*/
 	}
 
 	//TODO: replace button down/up active check with mask of buttons to
 	// handle multiple buttons down
-	bool retValue;
-	retValue = eventCallback(tie->type, tie->hand, tie->button, transform);
-	if(retValue && tie->type == BUTTON_DOWN)
+	//bool retValue;
+	//retValue = eventCallback(tie->getIntera, tie->hand, tie->button, transform);
+	/*if(retValue && tie->type == BUTTON_DOWN)
 	{
 	    _activeButton = tie->button;
 	    _eventActive = true;
@@ -791,11 +645,26 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 	{
 	    _eventActive = false;
 	    _activeHand = -2;
-	}
-	return retValue;
+	}*/
+	//return retValue;
     }
 
-    return false;
+    bool ret = eventCallback(ie);
+    if(ret)
+    {
+	return true;
+    }
+    else
+    {
+	if(_parent)
+	{
+	    return _parent->processEvent(ie);
+	}
+	else
+	{
+	    return false;
+	}
+    }
 }
 
 void SceneObject::menuCallback(MenuItem * item)

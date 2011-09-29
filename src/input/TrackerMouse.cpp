@@ -85,7 +85,7 @@ void TrackerMouse::update(std::map<int,std::list<InteractionEvent*> > & eventMap
     //std::cerr << "Mouse queue size: " << InteractionManager::instance()->_mouseQueue.size() << std::endl;
     while(InteractionManager::instance()->_mouseQueue.size())
     {
-	eventMap[MOUSE_INTER_EVENT].push_back(InteractionManager::instance()->_mouseQueue.front());
+	eventMap[InteractionManager::instance()->_mouseQueue.front()->getEventType()].push_back(InteractionManager::instance()->_mouseQueue.front());
 	InteractionManager::instance()->_mouseQueue.pop();
     }
 }

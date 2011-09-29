@@ -215,148 +215,127 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
 void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 {
-    if(event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK)
-	//|| (TrackingManager::instance()->getUsingMouseTracker() && 
-	//(event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)))
+    if(event->asMouseEvent())
     {
-	int x,y;
+	MouseInteractionEvent * mie = event->asMouseEvent();
+	if(event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
+	{
+	    int x,y;
 
-	if(event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK)
-	{
-	    MouseInteractionEvent* mie = (MouseInteractionEvent*)event;
-	    x = mie->x;
-	    y = mie->y;
-	}
-	else
-	{
-	    x = InteractionManager::instance()->getMouseX();
-	    y = InteractionManager::instance()->getMouseY();
-	}
+	    x = mie->getX();
+	    y = mie->getY();
 
-        _lastMouseX = x;
-        _lastMouseY = y;
-        return;
-    }
-    if(event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)
-	//|| (TrackingManager::instance()->getUsingMouseTracker() &&
-	//(event->type == BUTTON_DRAG || event->type == BUTTON_UP)))
-    {
-	int x,y;
-	if(event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)
-	{
-	    MouseInteractionEvent* mie = (MouseInteractionEvent*)event;
-	    x = mie->x;
-	    y = mie->y;
+	    _lastMouseX = x;
+	    _lastMouseY = y;
+	    return;
 	}
-	else
+	if(event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
 	{
-	    x = InteractionManager::instance()->getMouseX();
-	    y = InteractionManager::instance()->getMouseY();
-	    if(x == _lastMouseX && y == _lastMouseY)
+	    int x,y;
+	    x = mie->getX();
+	    y = mie->getY();
+
+	    MenuRangeValue * mrv = (MenuRangeValue*)_item;
+	    float pixelRange = 400;
+
+	    bool valueUpdated = false;
+	    if(x > _lastMouseX)
 	    {
-		return;
+		if(mrv->getValue() != mrv->getMax())
+		{
+		    float change = (x - _lastMouseX) * (mrv->getMax()
+			    - mrv->getMin()) / pixelRange;
+		    float newValue = std::max(mrv->getValue() + change,
+			    mrv->getMin());
+		    mrv->setValue(newValue);
+		    valueUpdated = true;
+		}
 	    }
+	    else if(x < _lastMouseX)
+	    {
+		if(mrv->getValue() != mrv->getMin())
+		{
+		    float change = (x - _lastMouseX) * (mrv->getMax()
+			    - mrv->getMin()) / pixelRange;
+		    float newValue = std::min(mrv->getValue() + change,
+			    mrv->getMax());
+		    mrv->setValue(newValue);
+		    valueUpdated = true;
+		}
+	    }
+
+	    if(valueUpdated)
+	    {
+		if(mrv->getCallback())
+		{
+		    mrv->getCallback()->menuCallback(_item);
+		}
+	    }
+
+	    _lastMouseY = y;
+	    _lastMouseX = x;
+	    return;
 	}
-
-        MenuRangeValue * mrv = (MenuRangeValue*)_item;
-        float pixelRange = 400;
-
-        bool valueUpdated = false;
-        if(x > _lastMouseX)
-        {
-            if(mrv->getValue() != mrv->getMax())
-            {
-                float change = (x - _lastMouseX) * (mrv->getMax()
-                        - mrv->getMin()) / pixelRange;
-                float newValue = std::max(mrv->getValue() + change,
-                                          mrv->getMin());
-                mrv->setValue(newValue);
-                valueUpdated = true;
-            }
-        }
-        else if(x < _lastMouseX)
-        {
-            if(mrv->getValue() != mrv->getMin())
-            {
-                float change = (x - _lastMouseX) * (mrv->getMax()
-                        - mrv->getMin()) / pixelRange;
-                float newValue = std::min(mrv->getValue() + change,
-                                          mrv->getMax());
-                mrv->setValue(newValue);
-                valueUpdated = true;
-            }
-        }
-
-        if(valueUpdated)
-        {
-            if(mrv->getCallback())
-            {
-                mrv->getCallback()->menuCallback(_item);
-            }
-        }
-
-        _lastMouseY = y;
-        _lastMouseX = x;
-        return;
     }
-    if(event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)
+    else if(event->asTrackedButtonEvent())
     {
-        TrackingInteractionEvent * tie = (TrackingInteractionEvent*)event;
-        osg::Matrix m = tie2mat(tie);
-        _point = m.getTrans();
-        osg::Vec3 forward = osg::Vec3(0, 1.0, 0) * m;
-        forward = forward - _point;
-        _normal = forward ^ osg::Vec3(0, 0, 1.0);
-        _normal.normalize();
-        _lastDistance = 0.0;
-        return;
-    }
-    if(event->type == BUTTON_DRAG || event->type == BUTTON_UP)
-    {
-        TrackingInteractionEvent * tie = (TrackingInteractionEvent*)event;
-        MenuRangeValue * mrv = (MenuRangeValue*)_item;
-        osg::Vec3 vec(tie->xyz[0], tie->xyz[1], tie->xyz[2]);
-        vec = vec - _point;
-        float newDistance = vec * _normal;
+	TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+	if(event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
+	{
+	    _point = tie->getTransform().getTrans();
+	    osg::Vec3 forward = osg::Vec3(0, 1.0, 0) * tie->getTransform();
+	    forward = forward - _point;
+	    _normal = forward ^ osg::Vec3(0, 0, 1.0);
+	    _normal.normalize();
+	    _lastDistance = 0.0;
+	    return;
+	}
+	if(event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
+	{
+	    MenuRangeValue * mrv = (MenuRangeValue*)_item;
+	    osg::Vec3 vec = tie->getTransform().getTrans();
+	    vec = vec - _point;
+	    float newDistance = vec * _normal;
 
-        float range = 600;
+	    float range = 600;
 
-        bool valueUpdated = false;
-        if(newDistance < _lastDistance)
-        {
-            if(mrv->getValue() != mrv->getMin())
-            {
-                float change =  (newDistance - _lastDistance) * (mrv->getMax()
-                        - mrv->getMin()) / range;
-                float newValue = std::max(mrv->getValue() + change,
-                                          mrv->getMin());
-                mrv->setValue(newValue);
-                valueUpdated = true;
-            }
-        }
-        else if(newDistance > _lastDistance)
-        {
-            if(mrv->getValue() != mrv->getMax())
-            {
-                float change = (newDistance - _lastDistance) * (mrv->getMax()
-                        - mrv->getMin()) / range;
-                float newValue = std::min(mrv->getValue() + change,
-                                          mrv->getMax());
-                mrv->setValue(newValue);
-                valueUpdated = true;
-            }
-        }
+	    bool valueUpdated = false;
+	    if(newDistance < _lastDistance)
+	    {
+		if(mrv->getValue() != mrv->getMin())
+		{
+		    float change =  (newDistance - _lastDistance) * (mrv->getMax()
+			    - mrv->getMin()) / range;
+		    float newValue = std::max(mrv->getValue() + change,
+			    mrv->getMin());
+		    mrv->setValue(newValue);
+		    valueUpdated = true;
+		}
+	    }
+	    else if(newDistance > _lastDistance)
+	    {
+		if(mrv->getValue() != mrv->getMax())
+		{
+		    float change = (newDistance - _lastDistance) * (mrv->getMax()
+			    - mrv->getMin()) / range;
+		    float newValue = std::min(mrv->getValue() + change,
+			    mrv->getMax());
+		    mrv->setValue(newValue);
+		    valueUpdated = true;
+		}
+	    }
 
-        if(valueUpdated)
-        {
-            if(mrv->getCallback())
-            {
-                mrv->getCallback()->menuCallback(_item);
-            }
-        }
+	    if(valueUpdated)
+	    {
+		if(mrv->getCallback())
+		{
+		    mrv->getCallback()->menuCallback(_item);
+		}
+	    }
 
-        _lastDistance = newDistance;
+	    _lastDistance = newDistance;
 
-        return;
+	    return;
+	}
     }
 }

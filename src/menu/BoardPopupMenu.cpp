@@ -42,108 +42,67 @@ void BoardPopupMenu::updateEnd()
 
 bool BoardPopupMenu::processEvent(InteractionEvent * event)
 {
-    if(!_menuActive || !_myMenu)
+    if(!_menuActive || !_myMenu || !event->asTrackedButtonEvent())
     {
 	return false;
     }
-    else
+
+    TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+
+    /*if(event->type == MOUSE_BUTTON_DOWN)
+      {
+      std::cerr << "Mouse down." << std::endl;
+      MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
+      std::cerr << "Button: " << mie->button << std::endl;
+
+      }
+      if(event->type == MOUSE_DOUBLE_CLICK)
+      {
+      std::cerr << "Mouse double click." << std::endl;
+      MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
+      std::cerr << "Button: " << mie->button << std::endl;
+      }*/
+
+    if(_clickActive)
     {
-	/*if(event->type == MOUSE_BUTTON_DOWN)
+	if(tie->getHand() == _activeHand)
 	{
-	    std::cerr << "Mouse down." << std::endl;
-	    MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
-	    std::cerr << "Button: " << mie->button << std::endl;
-
-	}
-	if(event->type == MOUSE_DOUBLE_CLICK)
-	{
-	    std::cerr << "Mouse double click." << std::endl;
-	    MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
-	    std::cerr << "Button: " << mie->button << std::endl;
-	}*/
-
-        if(_clickActive)
-        {
-            if(_activeInteractor == HAND)
-            {
-                if(event->type == BUTTON_DRAG || event->type == BUTTON_UP)
+	    if(tie->getInteraction() == BUTTON_DRAG || tie->getInteraction() == BUTTON_UP)
+	    {
+		if(tie->getButton() == _primaryButton)
 		{
-		    TrackingInteractionEvent * tie = (TrackingInteractionEvent *)event;
-		    if(tie->hand == _primaryHand && tie->button == _primaryButton)
+		    BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+		    if(smg && smg->isMenuHead())
 		    {
-			BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-			if(smg && smg->isMenuHead())
-			{
-			    updateMovement(event);
-			}
-
-			_activeItem->processEvent(event);
-			if(event->type == BUTTON_UP)
-			{
-			    _clickActive = false;
-			}
-			return true;
+			updateMovement(tie);
 		    }
+
+		    _activeItem->processEvent(event);
+		    if(tie->getInteraction() == BUTTON_UP)
+		    {
+			_clickActive = false;
+		    }
+		    return true;
 		}
-            }
-            else if(_activeInteractor == MOUSE)
-            {
-                if(event->type == MOUSE_BUTTON_UP || event->type == MOUSE_DRAG)
-                {
-                    MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
-                    if(mie->button == _primaryMouseButton)
-                    {
-			BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-			if(smg && smg->isMenuHead())
-			{
-			    updateMovement(event);
-			}
-
-                        _activeItem->processEvent(event);
-                        if(event->type == MOUSE_BUTTON_UP)
-                        {
-                            _clickActive = false;
-                        }
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        if(((event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)
-                && ((TrackingInteractionEvent*)event)->hand == _primaryHand
-                && ((TrackingInteractionEvent*)event)->button == _primaryButton)
-                || ((event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK)
-                        && ((MouseInteractionEvent*)event)->button
-                                == _primaryMouseButton))
-        {
-            if(((event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK) && _activeInteractor != HAND)
-                    || ((event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK) && _activeInteractor
-                            != MOUSE))
-            {
-                return false;
-            }
-
-            // do click
-            if(_activeItem)
-            {
+	    }
+	}
+	return false;
+    }
+    else if(tie->getHand() == _activeHand && tie->getButton() == _primaryButton)
+    {
+	if(tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DOUBLE_CLICK)
+	{
+	    if(_activeItem)
+	    {
 		BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
 		if(smg && smg->isMenuHead())
 		{
 		    osg::Vec3 ray;
-		    if(_activeInteractor == MOUSE)
-		    {
-			ray = _currentPoint - InteractionManager::instance()->getMouseMat().getTrans();
-		    }
-		    else
-		    {
-			ray = _currentPoint - TrackingManager::instance()->getHandMat(_primaryHand).getTrans();
-		    }
+		    ray = _currentPoint - tie->getTransform().getTrans();
+
 		    _moveDistance = ray.length();
 		    _menuPoint = _currentPoint * osg::Matrix::inverse(_menuRoot->getMatrix());
-		    updateMovement(event);
+		    updateMovement(tie);
 		}
 		else if(smg && !smg->isMenuHead())
 		{
@@ -156,14 +115,15 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 			openMenu(smg);
 		    }
 		}
-                _activeItem->processEvent(event);
-                _clickActive = true;
-                return true;
-            }
+		_activeItem->processEvent(event);
+		_clickActive = true;
+		return true;
+	    }
 
-            return false;
-        }
+	    return false;
+	}
     }
+
     return false;
 }
 
@@ -251,29 +211,13 @@ bool BoardPopupMenu::isVisible()
     return _menuActive;
 }
 
-void BoardPopupMenu::updateMovement(InteractionEvent * event)
+void BoardPopupMenu::updateMovement(TrackedButtonInteractionEvent * tie)
 {
     osg::Vec3 menuPoint = osg::Vec3(0, _moveDistance, 0);
     //std::cerr << "move dist: " << _moveDistance << std::endl;
-    if(_activeInteractor == HAND)
-    {
-	TrackingInteractionEvent * tie =
-	    (TrackingInteractionEvent*)event;
+    menuPoint = menuPoint * tie->getTransform();
 
-	osg::Matrix r, t;
-	t.makeTranslate(tie->xyz[0], tie->xyz[1], tie->xyz[2]);
-	r.makeRotate(osg::Quat(tie->rot[0], tie->rot[1],
-		    tie->rot[2], tie->rot[3]));
-	osg::Matrix handmat = r * t;
-
-	menuPoint = menuPoint * handmat;
-    }
-    else if(_activeInteractor == MOUSE)
-    {
-	MouseInteractionEvent * mie = (MouseInteractionEvent *)event;
-	menuPoint = menuPoint * mie->transform;
-    }
-
+    //TODO: add hand/head mapping
     osg::Vec3
 	viewerPoint =
 	TrackingManager::instance()->getHeadMat(0).getTrans();
