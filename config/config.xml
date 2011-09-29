@@ -104,7 +104,7 @@
 
    <Plugin>
     <OssimPlanet value="off" />
-    <Sketch value="off" />
+    <Sketch value="on" />
     <CullingMultiGPURender value="off" >
      <Width value="1024" />
      <Height value="768" />
@@ -130,14 +130,14 @@
      <DrawLines value="false" />
     </MultiGPURender>
 
-    <ArtifactVis value="off" />
+    <ArtifactVis value="on" />
 
     <AndroidNavigator value="off" >
      <TransMult value="1.0" />
      <RotMult value="1.0" />
     </AndroidNavigator>
 
-    <SpaceNavigator value="off" >
+    <SpaceNavigator value="on" >
      <TransMult value="1.0" />
      <RotMult value="1.0" />
     </SpaceNavigator>
@@ -145,14 +145,14 @@
 
     <CudaTest value="off" />
 
-    <PanoView360 value="off" />
-    <TourCave value="off" />
+    <PanoView360 value="on" />
+    <TourCave value="on" />
 
-    <PathRecorder value="off" >
+    <PathRecorder value="on" >
       <DataDir value="/home/aprudhom/data/PathRecorder/" />
     </PathRecorder>
 
-    <StructView value="off">
+    <StructView value="on">
       <Layer0File value="/home/aprudhom/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
       <Layer1File value="/home/aprudhom/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
       <Layer2File value="/home/aprudhom/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
@@ -202,7 +202,7 @@
         <Head1 value="on" x="0" y="-100" z="0" rotate="90" sim="0" />
     </MVSim>
 
-    <OsgPathRecorder value="off">
+    <OsgPathRecorder value="on">
       <DataDir value="/home/aprudhom/data/OsgPathRecorder" />
     </OsgPathRecorder>
 

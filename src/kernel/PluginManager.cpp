@@ -131,7 +131,10 @@ bool PluginManager::processEvent(InteractionEvent * event)
 {
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	return _loadedPluginList[i]->ptr->processEvent(event);
+	if(_loadedPluginList[i]->ptr->processEvent(event))
+	{
+	    return true;
+	}
     }
     return false;
 }
