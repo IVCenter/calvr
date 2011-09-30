@@ -13,6 +13,8 @@
 #include <csignal>
 #include <vector>
 #include <string>
+#include <cstdio>
+#include <cstdlib>
 
 #ifdef WIN32
 #pragma comment(lib, "wsock32.lib")

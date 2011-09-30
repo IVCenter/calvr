@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <cstring>
 
 #ifdef WIN32
 #pragma comment(lib, "Opengl32.lib")

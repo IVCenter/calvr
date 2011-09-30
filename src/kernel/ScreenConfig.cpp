@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #ifdef WITH_INTERLEAVER
 #include <kernel/ScreenLenticular.h>

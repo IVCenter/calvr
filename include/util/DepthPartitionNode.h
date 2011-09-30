@@ -25,6 +25,8 @@
 #include <util/DistanceAccumulator.h>
 #include <osg/Camera>
 
+#include <cstdio>
+
 #define CURRENT_CLASS DepthPartitionNode
 /**********************************************************
  * Ravi Mathur

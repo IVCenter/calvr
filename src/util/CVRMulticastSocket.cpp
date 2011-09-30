@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
+#include <cstdio>
 
 using namespace cvr;
 
