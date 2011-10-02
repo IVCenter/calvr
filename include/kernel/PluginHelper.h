@@ -111,25 +111,21 @@ class CVRKERNEL_EXPORT PluginHelper
          */
         static osg::Matrix & getHeadMat(int head = 0);
 
-        /**
-         * @brief Get the number of button stations present in
-         *        the tracking system
-         */
-        static int getNumButtonStations();
+        static int getNumTrackingSystems();
 
         /**
-         * @brief Get the number of buttons in a given button station
+         * @brief Get the number of buttons in a given tracking system
          */
-        static int getNumButtons(int station = 0);
+        static int getNumButtons(int system = 0);
 
         /**
          * @brief Get the mask repesenting the current button state
-         * @param station Station to get mask for
+         * @param system Tracking system to get mask for
          *
          * Each bit represents a button state with the least significant 
          * being button 0. ie a value of 5 means buttons 0 and 2 are down
          */
-        static unsigned int getRawButtonMask(int station = 0);
+        static unsigned int getRawButtonMask(int system = 0);
 
         /**
          * @brief Get the mask repesenting the current button state for each
@@ -143,22 +139,16 @@ class CVRKERNEL_EXPORT PluginHelper
         static unsigned int getHandButtonMask(int hand = 0);
 
         /**
-         * @brief Get the number of valuator stations present in the tracking 
-         *        system
+         * @brief Get the number of valuator values in a given tracking system
          */
-        static int getNumValuatorStations();
-
-        /**
-         * @brief Get the number of valuator values in a given station
-         */
-        static int getNumValuators(int station = 0);
+        static int getNumValuators(int system = 0);
 
         /**
          * @brief Get the current value of a valuator
-         * @param station Station containing valuator
+         * @param system Tracking system containing valuator
          * @param index Index of valuator within the station
          */
-        static float getValuator(int station, int index);
+        static float getValuator(int system, int index);
 
         //mouse
         /**

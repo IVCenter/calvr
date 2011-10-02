@@ -309,7 +309,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          * @param mat Current orientation of the pointer
          * @return Return true if the event is consumed
          */
-        virtual bool eventCallback(int type, int hand, int button, const osg::Matrix & mat) { return false; }
+        virtual bool eventCallback(InteractionEvent * ie) { return false; }
 
         /**
          * @brief Set the bounding box for this object

@@ -316,16 +316,10 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     int hand = -2;
     int button = -1;
 
-    if(ie->type == BUTTON_UP || ie->type == BUTTON_DRAG || ie->type == BUTTON_DOUBLE_CLICK || ie->type == BUTTON_DOWN)
+    if(ie->asTrackedButtonEvent())
     {
-	TrackingInteractionEvent * tie = (TrackingInteractionEvent*)ie;
-	hand = tie->hand;
-	button = tie->button;
-    }
-    else if(ie->type == MOUSE_BUTTON_UP || ie->type == MOUSE_DRAG || ie->type == MOUSE_DOUBLE_CLICK || ie->type == MOUSE_BUTTON_DOWN)
-    {
-	hand = -1;
-	button = ((MouseInteractionEvent*)ie)->button;
+	hand = ie->asTrackedButtonEvent()->getHand();
+	button = ie->asTrackedButtonEvent()->getButton();
     }
 
     if(hand == -2)
@@ -339,11 +333,7 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     }
     else if(_menuOpenObject)
     {
-	if(ie->type == MOUSE_BUTTON_DOWN && button == _menuOpenObject->_menuMouseButton)
-	{
-	    return _menuOpenObject->processEvent(ie);
-	}
-	else if(ie->type == BUTTON_DOWN && button == _menuOpenObject->_menuButton)
+	if(ie->getInteraction() == BUTTON_DOWN && _menuOpenObject->_menuButton)
 	{
 	    return _menuOpenObject->processEvent(ie);
 	}
@@ -427,20 +417,25 @@ void SceneManager::initPointers()
         _handTransforms[i]->setMatrix(
                                       TrackingManager::instance()->getHandMat(i));
 
-        if(!TrackingManager::instance()->getShowWand())
-        {
-            continue;
-        }
-
-        // TODO: get a hand model to add
-        osg::Cone * cone = new osg::Cone(osg::Vec3(0, 500, 0), 10, 2000);
-        osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
-        cone->setRotation(q);
-        osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
-        osg::Geode * geode = new osg::Geode();
-        geode->addDrawable(sd);
-        geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
-        _handTransforms[i]->addChild(geode);
+	switch(TrackingManager::instance()->getPointerGraphicType(i))
+	{
+	    case CONE:
+		{
+		    osg::Cone * cone = new osg::Cone(osg::Vec3(0, 500, 0), 10, 2000);
+		    osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
+		    cone->setRotation(q);
+		    osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
+		    osg::Geode * geode = new osg::Geode();
+		    geode->addDrawable(sd);
+		    geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
+		    _handTransforms[i]->addChild(geode);
+		    break;
+		}
+	    case NONE:
+		break;
+	    default:
+		break;
+	}
     }
 }
 
@@ -615,20 +610,12 @@ void SceneManager::updateActiveObject()
 {
     osg::Vec3 start, end;
 
-    for(int i = 0; i <= TrackingManager::instance()->getNumHands(); i++)
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
 	int hand;
 	osg::Matrix handMatrix;
-	if(i == TrackingManager::instance()->getNumHands())
-	{
-	    hand = -1;
-	    handMatrix = InteractionManager::instance()->getMouseMat();
-	}
-	else
-	{
-	    hand = i;
-	    handMatrix = TrackingManager::instance()->getHandMat(i);
-	}
+	hand = i;
+	handMatrix = TrackingManager::instance()->getHandMat(i);
 
 	if(_activeObjects[hand])
 	{
@@ -668,7 +655,7 @@ void SceneManager::updateActiveObject()
 	    }
 	}
 
-	if(hand == -1)
+	if(TrackingManager::instance()->getHandTrackerType(hand) == TrackerBase::MOUSE)
 	{
 	    if(!InteractionManager::instance()->mouseActive())
 	    {

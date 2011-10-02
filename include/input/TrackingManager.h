@@ -9,6 +9,8 @@
 #include <input/Export.h>
 #include <input/TrackerBase.h>
 #include <kernel/CalVR.h>
+#include <kernel/Navigation.h>
+#include <kernel/SceneManager.h>
 
 #include <osg/Matrix>
 #include <osg/Vec3>
@@ -28,8 +30,8 @@ struct timeval;
 namespace cvr
 {
 
-struct InteractionEvent;
-struct TrackingInteractionEvent;
+class InteractionEvent;
+class TrackedButtonInteractionEvent;
 class GenComplexTrackingEvents;
 
 /**
@@ -85,9 +87,9 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         }
 
         /**
-         * @brief Return if wand graphic should be visible
+         * @brief Return which graphic type to use for a hand
          */
-        bool getShowWand();
+        SceneManager::PointerGraphicType getPointerGraphicType(int hand);
 
         /**
          * @brief Number of head bodies being tracked by the system
@@ -121,20 +123,21 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         osg::Matrix & getUnfrozenHeadMat(int head = 0);
 
-        /**
-         * @brief Returns number of button stations provided by the button tracker
-         */
-        int getNumButtonStations();
+        int getNumTrackingSystems();
+
+        TrackerBase::TrackerType getHandTrackerType(int hand);
+
+        Navigation::NavImplementation getHandNavType(int hand);
 
         /**
          * @brief Returns number of buttons present in a given button station
          */
-        int getNumButtons(int station = 0);
+        int getNumButtons(int system = 0);
 
         /**
          * @brief Returns the raw button mask for a given button station
          */
-        unsigned int getRawButtonMask(int station = 0);
+        unsigned int getRawButtonMask(int system = 0);
 
         /**
          * @brief Returns the button mask for a given hand, which is processed from the raw mask(s)
@@ -142,19 +145,14 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         unsigned int getHandButtonMask(int hand = 0);
 
         /**
-         * @brief Returns the number of valuator stations provided by the tracker
-         */
-        int getNumValuatorStations();
-
-        /**
          * @brief Returns the number of valuators in a given valuator station
          */
-        int getNumValuators(int station = 0);
+        int getNumValuators(int system = 0);
 
         /**
          * @brief Returns the value of the valuator in a given station with a given index
          */
-        float getValuator(int station, int index);
+        float getValuator(int system, int index);
 
         /**
          * @brief Set if head matrix should be updated
@@ -165,8 +163,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          * @brief Get if head matrix is being updated
          */
         bool getUpdateHeadTracking();
-
-        bool getUsingMouseTracker();
 
         void cleanupCurrentEvents();
 
@@ -204,73 +200,70 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void flushEvents();
 
-        /**
-         * @brief Infomation sent to render nodes during \c TrackingManager init
-         */
-        struct TrackingManInit
+        void setGenHandDefaultButtonEvents();
+
+        struct TrackingSystemInfo
         {
-                int numHands; ///< number of hands being tracked
-                int numHeads; ///< number of heads being tracked
-                int totalBodies; ///< total number of 6dof bodies being tracked
-                int buttonStations; ///< number of tracker button stations
-                int valStations; ///< number of tracker valuator stations
-                bool showWand; ///< should wand graphics be visible
+            int numBodies;
+            int numButtons;
+            int numVal;
+            osg::Matrix systemTransform;
+            std::vector<osg::Matrix> bodyRotations;
+            std::vector<osg::Vec3> bodyTranslations;
+            Navigation::NavImplementation navImp;
+            TrackerBase::TrackerType trackerType;
+            SceneManager::PointerGraphicType defaultPointerType;
+            bool genDefaultButtonEvents;
+            bool thread;
         };
 
         static TrackingManager * _myPtr; ///< Static self pointer
 
-        bool _threaded; ///< is there a thread polling the tracker
-        OpenThreads::Mutex _updateLock; ///< lock to protect multi-threaded operations
-        std::queue<InteractionEvent *,std::list<InteractionEvent *> >
-                _threadEvents; ///< queue of interaction events generated in threaded mode
-        GenComplexTrackingEvents * genComTrackEvents; ///< class used to create complex interaction events by processing simple ones
-
-        std::vector<osg::Matrix> _headMatList; ///< list of current head matrix transforms
-        std::vector<int> _headStations; ///< list of tracker station numbers used for head bodies
-        std::vector<osg::Matrix> _handMatList; ///< list of current hand matrix transforms
-        std::vector<int> _handStations; ///< list of tracker station numbers used for hand bodies
-        std::vector<int> _handButtonStations;
-        std::vector<int> _handButtonOffsets;
-        std::vector<unsigned int> _handButtonMask; ///< list of current button mask for each hand
-        std::vector<unsigned int> _lastHandButtonMask; ///< list of last sampled button mask for each hand
-        std::vector<unsigned int> _rawButtonMask; ///< list of current raw button masks from tracker
-        std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
-        std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
-
-        bool _updateHeadTracking;
-        std::vector<osg::Matrix> _lastUpdatedHeadMatList; ///< used to hold the frozen head positition when head tracking is stopped
-
-        int _numHands; ///< number of hands in system
-        int _numHeads; ///< number of heads in system
-        bool _showWand; ///< should wand graphic be visible
-
-        bool _mouseTracker;
-
-        TrackerBase * _buttonTracker; ///< tracking system that provides the button information
-        TrackerBase * _bodyTracker; ///< tracking system that provides the body tracking information
-
-        //trackedBody * _defaultHead; ///< default value for head orientation
-        //trackedBody * _defaultHand; ///< default value for hand orientation
-
-        osg::Matrix _systemTransform; ///< transform for the entire tracking system
-        std::vector<osg::Matrix> _handTransformsRot;
-        std::vector<osg::Vec3> _handTransformsTrans;
-        std::vector<osg::Matrix> _headTransformsRot;
-        std::vector<osg::Vec3> _headTransformsTrans;
+        std::vector<TrackerBase*> _systems; ///< List of all tracking systems
+        std::vector<TrackingSystemInfo*> _systemInfo;
 
         bool _debugOutput;
+        bool _updateHeadTracking;
 
-        int _totalButtons;
-        int _totalValuators;
-
+        bool _threaded; ///< is there a thread polling the tracker
         float _threadFPS;
         bool _threadQuit;
         OpenThreads::Mutex _quitLock;
+        OpenThreads::Mutex _updateLock; ///< lock to protect multi-threaded operations
         std::vector<unsigned int> _threadHandButtonMasks;
-        std::vector<osg::Matrix> _threadHeadMatList;
+        std::vector<unsigned int> _threadLastHandButtonMask; ///< list of last sampled button mask for each hand
+        //std::vector<osg::Matrix> _threadHeadMatList;
         std::vector<osg::Matrix> _threadHandMatList;
 
-        TrackingInteractionEvent * _currentEvents;
+        int _numHands; ///< number of hands in system
+        int _numHeads; ///< number of heads in system
+        std::vector<std::pair<int,int> > _handAddress;
+        std::vector<std::pair<int,int> > _headAddress;
+
+        int _totalBodies;
+        int _totalButtons;
+        int _totalValuators;
+
+        std::vector<osg::Matrix> _headMatList; ///< list of current head matrix transforms
+        std::vector<osg::Matrix> _lastUpdatedHeadMatList; ///< used to hold the frozen head positition when head tracking is stopped
+        std::vector<osg::Matrix> _handMatList; ///< list of current hand matrix transforms
+        std::vector<unsigned int> _handButtonMask; ///< list of current button mask for each hand
+        std::vector<unsigned int> _lastHandButtonMask; ///< list of last sampled button mask for each hand
+        std::vector<unsigned int> _rawButtonMask; ///< list of current raw button masks from tracker
+        std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
+        std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
+
+        std::vector<std::vector<bool> > _genHandDefaultButtonEvents;
+
+        GenComplexTrackingEvents * genComTrackEvents; ///< class used to create complex interaction events by processing simple ones
+
+
+        std::map<int,std::list<InteractionEvent*> > _eventMap;
+        //std::queue<InteractionEvent *,std::list<InteractionEvent *> > _threadEvents; ///< queue of interaction events generated in threaded mode
+        
+
+        //trackedBody * _defaultHead; ///< default value for head orientation
+        //trackedBody * _defaultHand; ///< default value for hand orientation
 };
 
 /**
@@ -282,7 +275,7 @@ class CVRINPUT_EXPORT GenComplexTrackingEvents
         GenComplexTrackingEvents();
         ~GenComplexTrackingEvents();
 
-        void processEvent(TrackingInteractionEvent * tie);
+        void processEvent(TrackedButtonInteractionEvent * tie);
     protected:
 
         float _doubleClickTimeout;

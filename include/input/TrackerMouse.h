@@ -14,20 +14,24 @@ class TrackerMouse : public cvr::TrackerBase
         TrackerMouse();
         virtual ~TrackerMouse();
 
-        virtual bool initBodyTrack();
-        virtual bool initButtonTrack();
+        virtual bool init(std::string tag);
 
-        virtual trackedBody * getBody(int station);
-        virtual unsigned int getButtonMask(int station = 0);
-        virtual float getValuator(int station, int index);
+        virtual trackedBody * getBody(int index);
+        virtual unsigned int getButtonMask();
+        virtual float getValuator(int index);
 
         virtual int getNumBodies();
-        virtual int getNumValuators(int station = 0);
-        virtual int getNumValuatorStations();
-        virtual int getNumButtons(int station = 0);
-        virtual int getNumButtonStations();
+        virtual int getNumValuators();
+        virtual int getNumButtons();
 
-        virtual void update();
+        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
+
+        virtual TrackerType getTrackerType() { return MOUSE; }
+        virtual Navigation::NavImplementation getNavImplementation() { return Navigation::MOUSE_NAV; }
+        virtual SceneManager::PointerGraphicType getPointerType() { return SceneManager::NONE; }
+
+        virtual bool thread() { return false; }
+        virtual bool genDefaultButtonEvents() { return false; }
 
     protected:
         trackedBody _mouseBody;

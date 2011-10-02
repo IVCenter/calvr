@@ -1,8 +1,9 @@
 #include <input/TrackerMouse.h>
-
 #include <kernel/InteractionManager.h>
 
 #include <osg/Quat>
+
+#include <iostream>
 
 using namespace cvr;
 
@@ -14,7 +15,7 @@ TrackerMouse::~TrackerMouse()
 {
 }
 
-bool TrackerMouse::initBodyTrack()
+bool TrackerMouse::init(std::string tag)
 {
     _mouseBody.x = 0;
     _mouseBody.y = 0;
@@ -25,19 +26,14 @@ bool TrackerMouse::initBodyTrack()
     _mouseBody.qz = q.z();
     _mouseBody.qw = q.w();
 
-    return true;
-}
-
-bool TrackerMouse::initButtonTrack()
-{
     _mouseButtonMask = 0;
 
     return true;
 }
 
-trackedBody * TrackerMouse::getBody(int station)
+trackedBody * TrackerMouse::getBody(int index)
 {
-    if(station != 0)
+    if(index != 0)
     {
 	return NULL;
     }
@@ -45,17 +41,12 @@ trackedBody * TrackerMouse::getBody(int station)
     return &_mouseBody;
 }
 
-unsigned int TrackerMouse::getButtonMask(int station)
+unsigned int TrackerMouse::getButtonMask()
 {
-    if(station != 0)
-    {
-	return 0;
-    }
-
     return _mouseButtonMask;
 }
 
-float TrackerMouse::getValuator(int station, int index)
+float TrackerMouse::getValuator(int index)
 {
     return 0;
 }
@@ -65,27 +56,17 @@ int TrackerMouse::getNumBodies()
     return 1;
 }
 
-int TrackerMouse::getNumValuators(int station)
+int TrackerMouse::getNumValuators()
 {
     return 0;
 }
 
-int TrackerMouse::getNumValuatorStations()
-{
-    return 0;
-}
-
-int TrackerMouse::getNumButtons(int station)
+int TrackerMouse::getNumButtons()
 {
     return CVR_NUM_MOUSE_BUTTONS;
 }
 
-int TrackerMouse::getNumButtonStations()
-{
-    return 1;
-}
-
-void TrackerMouse::update()
+void TrackerMouse::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
     osg::Matrix m = InteractionManager::instance()->getMouseMat();
 
@@ -100,4 +81,11 @@ void TrackerMouse::update()
     _mouseBody.qw = rot.w();
 
     _mouseButtonMask = InteractionManager::instance()->getMouseButtonMask();
+
+    //std::cerr << "Mouse queue size: " << InteractionManager::instance()->_mouseQueue.size() << std::endl;
+    while(InteractionManager::instance()->_mouseQueue.size())
+    {
+	eventMap[InteractionManager::instance()->_mouseQueue.front()->getEventType()].push_back(InteractionManager::instance()->_mouseQueue.front());
+	InteractionManager::instance()->_mouseQueue.pop();
+    }
 }

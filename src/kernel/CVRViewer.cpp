@@ -749,30 +749,20 @@ void CVRViewer::eventTraversal()
             }
             case (osgGA::GUIEventAdapter::KEYDOWN):
             {
-                KeyboardInteractionEvent * kie = new KeyboardInteractionEvent;
-                kie->type = KEY_DOWN;
-                kie->key = events[i].param1;
-                kie->mod = events[i].param2;
+                KeyboardInteractionEvent * kie = new KeyboardInteractionEvent();
+                kie->setInteraction(KEY_DOWN);
+                kie->setKey(events[i].param1);
+                kie->setMod(events[i].param2);
                 InteractionManager::instance()->addEvent(kie);
                 break;
             }
             case (osgGA::GUIEventAdapter::KEYUP):
             {
-                KeyboardInteractionEvent * kie = new KeyboardInteractionEvent;
-                kie->type = KEY_UP;
-                kie->key = events[i].param1;
-                kie->mod = events[i].param2;
+                KeyboardInteractionEvent * kie = new KeyboardInteractionEvent();
+                kie->setInteraction(KEY_UP);
+                kie->setKey(events[i].param1);
+                kie->setMod(events[i].param2);
                 InteractionManager::instance()->addEvent(kie);
-                /*osgGA::GUIEventAdapter * ea = new osgGA::GUIEventAdapter();
-                 ea->setEventType((osgGA::GUIEventAdapter::EventType)(events[i].eventType));
-                 ea->setKey(events[i].param1);
-                 ea->setModKeyMask(events[i].param2);
-                 ea->setHandled(false);
-                 for(EventHandlers::iterator hitr = _eventHandlers.begin(); hitr != _eventHandlers.end(); ++hitr)
-                 {
-                 (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *ea, *this, 0, 0);
-                 }
-                 ea->unref();*/
                 break;
             }
 	    case (UPDATE_ACTIVE_SCREEN):
@@ -1622,16 +1612,16 @@ void CVRViewer::removeUpdateTraversal(UpdateTraversal * ut)
 
 bool CVRViewer::processEvent(InteractionEvent * event)
 {
-    if(event->type != KEY_UP && event->type != KEY_DOWN)
+    bool ret;
+    KeyboardInteractionEvent * kevent = event->asKeyboardEvent();
+
+    if(!kevent)
     {
-        return false;
+	return false;
     }
 
-    bool ret;
-    KeyboardInteractionEvent * kevent = (KeyboardInteractionEvent*)event;
-
     osgGA::GUIEventAdapter * ea = new osgGA::GUIEventAdapter();
-    if(kevent->type == KEY_UP)
+    if(kevent->getInteraction() == KEY_UP)
     {
         ea->setEventType(osgGA::GUIEventAdapter::KEYUP);
     }
@@ -1640,8 +1630,8 @@ bool CVRViewer::processEvent(InteractionEvent * event)
         ea->setEventType(osgGA::GUIEventAdapter::KEYDOWN);
     }
 
-    ea->setKey(kevent->key);
-    ea->setModKeyMask(kevent->mod);
+    ea->setKey(kevent->getKey());
+    ea->setModKeyMask(kevent->getMod());
     ea->setHandled(false);
     for(EventHandlers::iterator hitr = _eventHandlers.begin(); hitr
             != _eventHandlers.end(); ++hitr)

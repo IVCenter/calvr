@@ -170,7 +170,7 @@ void BoardMenuListGeometry::updateGeometry()
 
 void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 {
-    if (event->type == MOUSE_BUTTON_UP || event->type == BUTTON_UP)
+    if (event->getInteraction() == BUTTON_UP)
     {
         _geodeSelected->removeDrawables(0,_geodeSelected->getNumDrawables());
         _geodeSelected->addDrawable(_valuesSelected[_listItem->getFocus()]);
@@ -178,134 +178,110 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         _listItem->setDirty(true);
     }
 
-    if (event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK
-	|| (TrackingManager::instance()->getUsingMouseTracker() && 
-	(event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)))
+    if(event->asMouseEvent())
     {
-	int y;
-
-	if (event->type == MOUSE_BUTTON_DOWN || event->type == MOUSE_DOUBLE_CLICK)
+	MouseInteractionEvent * mie = event->asMouseEvent();
+	if (event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
 	{
-	    MouseInteractionEvent* mie = (MouseInteractionEvent*)event;
-	    y = mie->y;
+	    int y = mie->getY();
+
+	    _lastMouseY = y;
+
+	    _clicked = true;
+	    _listItem->setDirty(true);
+	    return;
 	}
-	else
-	{
-	    y = InteractionManager::instance()->getMouseY();
-	}
 
-        _lastMouseY = y;
-
-        _clicked = true;
-        _listItem->setDirty(true);
-        return;
-    }
-
-    if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP
-	|| (TrackingManager::instance()->getUsingMouseTracker() &&
-	(event->type == BUTTON_DRAG || event->type == BUTTON_UP)))
-    {
-	int y;
-	if (event->type == MOUSE_DRAG || event->type == MOUSE_BUTTON_UP)
+	if (event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
 	{
-	    MouseInteractionEvent* mie = (MouseInteractionEvent*)event;
-	    y = mie->y;
-	}
-	else
-	{
-	    y = InteractionManager::instance()->getMouseY();
-	    if (y == _lastMouseY)
+	    int y = mie->getY();
+	    float pixelRange = 400;
+
+	    bool valueUpdated = false;
+	    int valueMax = _listItem->getListSize();
+	    int index = _listItem->getIndex();
+	    if (y != _lastMouseY)
 	    {
-		return;
+		int change = (int)((y - _lastMouseY) * _listItem->getSensitivity() / pixelRange);
+		if (change)
+		{
+		    index -= change;
+		    if (index > valueMax)
+			index = valueMax;
+		    else if (index < 0)
+			index = 0;
+
+		    _listItem->setIndex(index);
+		    valueUpdated = true;
+		}
 	    }
+
+	    if (valueUpdated)
+	    {
+		if (_listItem->getCallback())
+		{
+		    _listItem->getCallback()->menuCallback(_item);
+		}
+
+		_lastMouseY = y;
+	    }
+
+	    return;
+	}
+    }
+    else if(event->asTrackedButtonEvent())
+    {
+	TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+	if (event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
+	{
+	    _point = tie->getTransform().getTrans();
+	    _lastDistance = 0.0;
+
+	    _clicked = true;
+	    _listItem->setDirty(true);
+	    return;
 	}
 
-        float pixelRange = 400;
+	if (event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
+	{
+	    MenuList * _listItem = (MenuList*)_item;
+	    osg::Vec3 vec = tie->getTransform().getTrans();;
+	    vec = vec - _point;
+	    float newDistance = vec.z();
 
-        bool valueUpdated = false;
-        int valueMax = _listItem->getListSize();
-        int index = _listItem->getIndex();
-        if (y != _lastMouseY)
-        {
-            int change = (int)((y - _lastMouseY) * _listItem->getSensitivity() / pixelRange);
-            if (change)
-            {
-                index -= change;
-                if (index > valueMax)
-                    index = valueMax;
-                else if (index < 0)
-                    index = 0;
+	    float range = 400;
 
-                _listItem->setIndex(index);
-                valueUpdated = true;
-            }
-        }
+	    bool valueUpdated = false;
+	    int valueMax = _listItem->getListSize();
+	    int index = _listItem->getIndex();
+	    if (newDistance != _lastDistance)
+	    {
+		int change = (int)((newDistance - _lastDistance) * _listItem->getSensitivity() / range);
+		if (change)
+		{
+		    index -= change;
+		    if (index > valueMax)
+			index = valueMax;
+		    else if (index < 0)
+			index = 0;
 
-        if (valueUpdated)
-        {
-            if (_listItem->getCallback())
-            {
-                _listItem->getCallback()->menuCallback(_item);
-            }
+		    _listItem->setIndex(index);
+		    valueUpdated = true;
+		}
+	    }
 
-            _lastMouseY = y;
-        }
+	    if (valueUpdated)
+	    {
+		if (_listItem->getCallback())
+		{
+		    _listItem->getCallback()->menuCallback(_item);
+		}
 
-        return;
-    }
+		_lastDistance = newDistance;
+	    }
 
-    if (event->type == BUTTON_DOWN || event->type == BUTTON_DOUBLE_CLICK)
-    {
-        TrackingInteractionEvent * tie = (TrackingInteractionEvent*)event;
-        osg::Matrix m = tie2mat(tie);
-        _point = m.getTrans();
-        _lastDistance = 0.0;
-
-        _clicked = true;
-        _listItem->setDirty(true);
-        return;
-    }
-
-    if (event->type == BUTTON_DRAG || event->type == BUTTON_UP)
-    {
-        TrackingInteractionEvent * tie = (TrackingInteractionEvent*)event;
-        MenuList * _listItem = (MenuList*)_item;
-        osg::Vec3 vec(tie->xyz[0], tie->xyz[1], tie->xyz[2]);
-        vec = vec - _point;
-        float newDistance = vec.z();
-
-        float range = 400;
-
-        bool valueUpdated = false;
-        int valueMax = _listItem->getListSize();
-        int index = _listItem->getIndex();
-        if (newDistance != _lastDistance)
-        {
-            int change = (int)((newDistance - _lastDistance) * _listItem->getSensitivity() / range);
-            if (change)
-            {
-                index -= change;
-                if (index > valueMax)
-                    index = valueMax;
-                else if (index < 0)
-                    index = 0;
-
-                _listItem->setIndex(index);
-                valueUpdated = true;
-            }
-        }
-
-        if (valueUpdated)
-        {
-            if (_listItem->getCallback())
-            {
-                _listItem->getCallback()->menuCallback(_item);
-            }
-
-            _lastDistance = newDistance;
-        }
-
-        return;
+	    return;
+	}
     }
 }
 

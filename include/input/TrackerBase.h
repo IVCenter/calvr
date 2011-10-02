@@ -5,6 +5,9 @@
 #ifndef CALVR_TRACKER_BASE_H
 #define CALVR_TRACKER_BASE_H
 
+#include <kernel/Navigation.h>
+#include <kernel/SceneManager.h>
+
 #include <osg/Matrix>
 
 #define CVR_MAX_BUTTONS 32
@@ -12,6 +15,7 @@
 namespace cvr
 {
 
+struct InteractionEvent;
 
 /**
  * @brief Internal representation of a tracked body position and rotation
@@ -43,21 +47,20 @@ class TrackerBase
         {
         }
 
-        /**
-         * @brief Init function called if this system is to track 6dof bodies
-         */
-        virtual bool initBodyTrack() = 0;
+        enum TrackerType
+        {
+            TRACKER = 0,
+            MOUSE,
+            INVALID
+        };
 
-        /**
-         * @brief Init function called if this system manages buttons
-         */
-        virtual bool initButtonTrack() = 0;
+        virtual bool init(std::string tag) = 0;
 
         /**
          * @brief Get the current value of a tracked body with a given station number
-         * @param station Index of tracked body
+         * @param index Index of tracked body
          */
-        virtual trackedBody * getBody(int station) = 0;
+        virtual trackedBody * getBody(int index) = 0;
 
         /**
          * @brief Get the mask representing the current button state for a button station
@@ -65,14 +68,13 @@ class TrackerBase
          * Buttons start with least significant bit.  Value of 1 means the button
          * is down
          */
-        virtual unsigned int getButtonMask(int station = 0) = 0;
+        virtual unsigned int getButtonMask() = 0;
 
         /**
          * @brief Get the value of a valuator
-         * @param station valuator group number
          * @param index index of valuator in group
          */
-        virtual float getValuator(int station, int index) = 0;
+        virtual float getValuator(int index) = 0;
 
         /**
          * @brief Get the number of bodies tracked by this system
@@ -80,39 +82,26 @@ class TrackerBase
         virtual int getNumBodies() = 0;
 
         /**
-         * @brief Get the number of valuators in a station
+         * @brief Get the number of valuators
          */
-        virtual int getNumValuators(int station = 0) = 0;
+        virtual int getNumValuators() = 0;
 
         /**
-         * @brief Get the number of valuator stations in this tracker
+         * @brief Get the number of buttons
          */
-        virtual int getNumValuatorStations() = 0;
-
-        /**
-         * @brief Get the number of buttons in a button station
-         */
-        virtual int getNumButtons(int station = 0) = 0;
-
-        /**
-         * @brief Get the number of button stations in this tracker
-         */
-        virtual int getNumButtonStations() = 0;
+        virtual int getNumButtons() = 0;
 
         /**
          * @brief Update body/button information 
          */
-        virtual void update() = 0;
+        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap) = 0;
 
-        /**
-         * @brief Check if this tracker has any buttons
-         */
-        bool hasButtons();
+        virtual TrackerType getTrackerType() { return TRACKER; }
+        virtual Navigation::NavImplementation getNavImplementation() { return Navigation::TRACKER_NAV; }
+        virtual SceneManager::PointerGraphicType getPointerType() { return SceneManager::CONE; }
 
-        /**
-         * @brief Check if this tracker has any valuators
-         */
-        bool hasValuators();
+        virtual bool thread() { return true; }
+        virtual bool genDefaultButtonEvents() { return true; }
 };
 
 }

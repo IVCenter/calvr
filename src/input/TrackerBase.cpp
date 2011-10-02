@@ -2,7 +2,7 @@
 
 using namespace cvr;
 
-bool TrackerBase::hasButtons()
+/*bool TrackerBase::hasButtons()
 {
     for(int i = 0; i < getNumButtonStations(); i++)
     {
@@ -24,4 +24,4 @@ bool TrackerBase::hasValuators()
         }
     }
     return false;
-}
+}*/

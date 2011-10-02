@@ -34,7 +34,6 @@ Navigation * Navigation::instance()
 bool Navigation::init()
 {
     _eventActive = false;
-    _mouseEventActive = false;
 
     // TODO: read button mapping from config file
     for(int i = 0; i < TrackingManager::instance()->getNumButtons(); i++)
@@ -79,88 +78,47 @@ void Navigation::update()
 	return;
     }
 
-    if(_eventActive && !TrackingManager::instance()->isThreaded())
+    if(_eventActive && TrackingManager::instance()->getHandNavType(_activeHand) == MOUSE_NAV)
     {
-        //processNav(_eventMode,TrackingManager::instance()->getHandMat(_activeHand));
-    }
-    else if(_mouseEventActive)
-    {
-        processMouseNav(_eventMode);
+	processMouseNav(_eventMode,NULL);
     }
 }
 
 void Navigation::processEvent(InteractionEvent * iEvent)
 {
-    switch(iEvent->type)
+
+    //TODO: use tracking system nav type to allow custom nav systems
+    
+    if(iEvent->asMouseEvent())
     {
-        case MOUSE_BUTTON_UP:
-        case MOUSE_BUTTON_DOWN:
-            processMouseEvent((MouseInteractionEvent *)iEvent);
-            return;
-        case BUTTON_UP:
-        case BUTTON_DOWN:
-        case BUTTON_DRAG:
-            break;
-        default:
-            return;
-    }
-
-    if(TrackingManager::instance()->getUsingMouseTracker())
-    {
-	if(iEvent->type != BUTTON_UP && iEvent->type != BUTTON_DOWN)
-	{
-	    return;
-	}
-	//MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
-
-	//if(mi)
-	//{
-	    MouseInteractionEvent mie;
-
-	    if(iEvent->type == BUTTON_DOWN)
-	    {
-		mie.type = MOUSE_BUTTON_DOWN;
-	    }
-	    else
-	    {
-		mie.type = MOUSE_BUTTON_UP;
-	    }
-
-	    mie.x = InteractionManager::instance()->getMouseX();
-	    mie.y = InteractionManager::instance()->getMouseY();
-	    mie.transform = InteractionManager::instance()->getMouseMat();
-
-	    processMouseEvent(&mie);
-	//}
-
+	processMouseEvent(iEvent->asMouseEvent());
 	return;
     }
 
-    TrackingInteractionEvent * event = (TrackingInteractionEvent *)iEvent;
+    TrackedButtonInteractionEvent * event = iEvent->asTrackedButtonEvent();
 
-    if(_mouseEventActive)
+    if(!event)
     {
         return;
     }
 
-    if(event->type == BUTTON_UP && !_eventActive)
+    if(event->getInteraction() == BUTTON_UP && !_eventActive)
     {
         return;
     }
 
-    if(_eventActive
-            && (_eventID != event->button || _activeHand != event->hand))
+    if(_eventActive && (_eventID != event->getButton() || _activeHand != event->getHand()))
     {
         return;
     }
 
     //std::cerr << "Event type " << event->type << std::endl;
 
-    if(!_eventActive && event->type == BUTTON_DOWN)
+    if(!_eventActive && (event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK))
     {
         //std::cerr << "In button down." << std::endl;
-        _eventMode = _buttonMap[event->button];
-        _eventID = event->button;
+        _eventMode = _buttonMap[event->getButton()];
+        _eventID = event->getButton();
         _startScale = SceneManager::instance()->getObjectScale();
         _startXForm
                 = SceneManager::instance()->getObjectTransform()->getMatrix();
@@ -173,79 +131,45 @@ void Navigation::processEvent(InteractionEvent * iEvent)
             case SCALE:
                 //std::cerr << "Starting event." << std::endl;
                 _eventActive = true;
-                _activeHand = event->hand;
-                _eventPos.x() = event->xyz[0];
-                _eventPos.y() = event->xyz[1];
-                _eventPos.z() = event->xyz[2];
-                _eventRot.x() = event->rot[0];
-                _eventRot.y() = event->rot[1];
-                _eventRot.z() = event->rot[2];
-                _eventRot.w() = event->rot[3];
+                _activeHand = event->getHand();
+		_eventPos = event->getTransform().getTrans();
+		_eventRot = event->getTransform().getRotate();
                 break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(_eventActive && event->type == BUTTON_UP)
+    else if(_eventActive && event->getInteraction() == BUTTON_UP)
     {
-        osg::Matrix m;
-        osg::Vec3 pos;
-        osg::Quat rot;
-        pos.x() = event->xyz[0];
-        pos.y() = event->xyz[1];
-        pos.z() = event->xyz[2];
-        rot.x() = event->rot[0];
-        rot.y() = event->rot[1];
-        rot.z() = event->rot[2];
-        rot.w() = event->rot[3];
-        m.makeRotate(rot);
-        m.setTrans(pos);
-        processNav(_eventMode, m);
+        processNav(_eventMode, event->getTransform());
         _eventActive = false;
     }
-    else if(_eventActive && event->type == BUTTON_DRAG)
+    else if(_eventActive && event->getInteraction() == BUTTON_DRAG)
     {
-        osg::Matrix m;
-        osg::Vec3 pos;
-        osg::Quat rot;
-        pos.x() = event->xyz[0];
-        pos.y() = event->xyz[1];
-        pos.z() = event->xyz[2];
-        rot.x() = event->rot[0];
-        rot.y() = event->rot[1];
-        rot.z() = event->rot[2];
-        rot.w() = event->rot[3];
-        m.makeRotate(rot);
-        m.setTrans(pos);
-        processNav(_eventMode, m);
+        processNav(_eventMode, event->getTransform());
     }
 }
 
 void Navigation::processMouseEvent(MouseInteractionEvent * event)
 {
-    if(_eventActive)
+    if(event->getInteraction() == BUTTON_UP && !_eventActive)
     {
         return;
     }
 
-    if(event->type == MOUSE_BUTTON_UP && !_mouseEventActive)
-    {
-        return;
-    }
-
-    if(_mouseEventActive && _eventID != event->button)
+    if(_eventActive && (_eventID != event->getButton() || _activeHand != event->getHand()))
     {
         return;
     }
 
     //std::cerr << "Event type " << event->type << std::endl;
 
-    if(!_mouseEventActive && event->type == MOUSE_BUTTON_DOWN)
+    if(!_eventActive && (event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK))
     {
         //std::cerr << "In button down." << std::endl;
-        _eventMode = _buttonMap[event->button];
-        _eventID = event->button;
+        _eventMode = _buttonMap[event->getButton()];
+        _eventID = event->getButton();
         _startScale = SceneManager::instance()->getObjectScale();
         _startXForm
                 = SceneManager::instance()->getObjectTransform()->getMatrix();
@@ -257,19 +181,20 @@ void Navigation::processMouseEvent(MouseInteractionEvent * event)
             case MOVE_WORLD:
             case SCALE:
                 //std::cerr << "Starting event." << std::endl;
-                _eventX = InteractionManager::instance()->getMouseX();
-                _eventY = InteractionManager::instance()->getMouseY();
-                _mouseEventActive = true;
+                _eventX = event->getX();
+                _eventY = event->getY();
+		_activeHand = event->getHand();
+                _eventActive = true;
                 break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(_mouseEventActive && event->type == MOUSE_BUTTON_UP)
+    else if(_eventActive && event->getInteraction() == BUTTON_UP)
     {
-        processMouseNav(_eventMode);
-        _mouseEventActive = false;
+        processMouseNav(_eventMode,event);
+        _eventActive = false;
     }
 }
 
@@ -281,13 +206,9 @@ void Navigation::processNav(NavMode nm, osg::Matrix & mat)
         case WALK:
         case DRIVE:
         {
-            //osg::Vec3 objectPosInit = (_eventPos * osg::Matrix::inverse(SceneManager::instance()->getObjectTransform()->getMatrix())) / SceneManager::instance()->getObjectScale();
-            //osg::Vec3 objectPosNow = (mat.getTrans() * osg::Matrix::inverse(SceneManager::instance()->getObjectTransform()->getMatrix())) / SceneManager::instance()->getObjectScale();
-            //osg::Vec3 offset = -(objectPosNow - objectPosInit) / 10.0;
             osg::Vec3 offset = -(mat.getTrans() - _eventPos) / 10.0;
 	    offset = offset * _scale;
             osg::Matrix m;
-            //m.makeTranslate(offset);
 
             osg::Matrix r;
             r.makeRotate(_eventRot);
@@ -320,10 +241,7 @@ void Navigation::processNav(NavMode nm, osg::Matrix & mat)
 
 	    osg::Matrix objmat = SceneManager::instance()->getObjectTransform()->getMatrix();
 
-            //osg::Vec3 origin = osg::Vec3(0,0,0) * SceneManager::instance()->getObjectScale() * mt->getMatrix();
-	    // TODO: check this, orgin is ignored
             osg::Vec3 origin = mat.getTrans();
-            //origin = mat.getTrans() - origin;
             m.makeTranslate(offset + origin);
             m = objmat * osg::Matrix::translate(-origin) * turn * m;
             SceneManager::instance()->setObjectMatrix(m);
@@ -391,8 +309,19 @@ void Navigation::processNav(NavMode nm, osg::Matrix & mat)
     }
 }
 
-void Navigation::processMouseNav(NavMode nm)
+void Navigation::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
 {
+    float localX, localY;
+    if(mie)
+    {
+	localX = mie->getX();
+	localY = mie->getY();
+    }
+    else
+    {
+	localX = InteractionManager::instance()->getMouseX();
+	localY = InteractionManager::instance()->getMouseY();
+    }
 
     switch(nm)
     {
@@ -400,9 +329,8 @@ void Navigation::processMouseNav(NavMode nm)
         case WALK:
         case DRIVE:
         {
-            //MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
-            float xOffset = InteractionManager::instance()->getMouseX() - _eventX;
-            float yOffset = InteractionManager::instance()->getMouseY() - _eventY;
+            float xOffset = localX - _eventX;
+            float yOffset = localY - _eventY;
 
             osg::Matrix m;
             m.makeRotate(xOffset / 7000.0, osg::Vec3(0, 0, 1));
@@ -418,53 +346,20 @@ void Navigation::processMouseNav(NavMode nm)
             objmat = objmat * osg::Matrix::translate(-viewerPos)
                     * m * m2 * osg::Matrix::translate(viewerPos);
 	    SceneManager::instance()->setObjectMatrix(objmat);
-
-            /*osg::Vec3 offset = (mat.getTrans() - _eventPos) / 10.0;
-             osg::Matrix m;
-
-             osg::Matrix r;
-             r.makeRotate(_eventRot);
-             osg::Vec3 pointInit = osg::Vec3(0,1,0);
-             pointInit = pointInit * r;
-             pointInit.z() = 0.0;
-
-             r.makeRotate(mat.getRotate());
-             osg::Vec3 pointFinal = osg::Vec3(0,1,0);
-             pointFinal = pointFinal * r;
-             pointFinal.z() = 0.0;
-
-             osg::Matrix turn;
-             if(pointInit.length2() > 0 && pointFinal.length2() > 0)
-             {
-             pointInit.normalize();
-             pointFinal.normalize();
-             float dot = pointInit * pointFinal;
-             float angle = acos(dot) / 15.0;
-             if(dot > 1.0 || dot < -1.0)
-             {
-             angle = 0.0;
-             }
-             else if( (pointInit ^ pointFinal).z() < 0)
-             {
-             angle = -angle;
-             }
-             turn.makeRotate(-angle,osg::Vec3(0,0,1));
-             }
-
-             osg::MatrixTransform * mt = SceneManager::instance()->getObjectTransform();
-             //osg::Vec3 origin = osg::Vec3(0,0,0) * SceneManager::instance()->getObjectScale() * mt->getMatrix();
-             osg::Vec3 origin = mat.getTrans();
-             origin = mat.getTrans() - origin;
-             m.makeTranslate(offset + origin);
-             m = mt->getMatrix()* osg::Matrix::translate(-origin) * turn * m;
-             mt->setMatrix(m);*/
             break;
         }
         case MOVE_WORLD:
         {
 	    //TODO use screen transform in trackball calc
-            //MouseInfo * mi = InteractionManager::instance()->getMouseInfo();
-	    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+	    ScreenInfo * si;
+	    if(mie)
+	    {
+		si = ScreenConfig::instance()->getMasterScreenInfo(mie->getMasterScreenNum());
+	    }
+	    else
+	    {
+		si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+	    }
 
 	    if(!si)
 	    {
@@ -504,7 +399,6 @@ void Navigation::processMouseNav(NavMode nm)
             z = (currentY) / (vwidth / 2.0);
 
             x = x - 1.0;
-            //z = 1.0 - z;
 	    z = z - 1.0;
 
             y = 1.0 - x * x - z * z;
@@ -513,8 +407,8 @@ void Navigation::processMouseNav(NavMode nm)
             osg::Vec3 originalPos = osg::Vec3(x, y, z);
             originalPos.normalize();
 
-            currentX = InteractionManager::instance()->getMouseX() - widthOffset;
-            currentY = InteractionManager::instance()->getMouseY() - heightOffset;
+            currentX = localX - widthOffset;
+            currentY = localY - heightOffset;
 
             if(currentX < 0)
             {
@@ -537,7 +431,6 @@ void Navigation::processMouseNav(NavMode nm)
             x = (currentX) / (vwidth / 2.0);
             z = (currentY) / (vwidth / 2.0);
             x = x - 1.0;
-            //z = 1.0 - z;
 	    z = z - 1.0;
 
             y = 1.0 - x * x - z * z;
@@ -545,9 +438,6 @@ void Navigation::processMouseNav(NavMode nm)
 
             osg::Vec3 currentPos = osg::Vec3(x, y, z);
             currentPos.normalize();
-
-            //osg::Vec3 rotAxis = originalPos ^ currentPos;
-            //float angle = acos(originalPos * currentPos);
 
 	    osg::Vec3 screenCenter = si->xyz;
 
@@ -560,17 +450,25 @@ void Navigation::processMouseNav(NavMode nm)
                     SceneManager::instance()->getObjectTransform()->getMatrix();
             objmat = (objmat
                     * osg::Matrix::translate(-screenCenter)
-                    //* osg::Matrix::rotate(angle, rotAxis)
 		    * osg::Matrix::rotate(originalPos, currentPos)
                     * osg::Matrix::translate(screenCenter));
 	    SceneManager::instance()->setObjectMatrix(objmat);
-            _eventX = InteractionManager::instance()->getMouseX();
-            _eventY = InteractionManager::instance()->getMouseY();
+            _eventX = (int)localX;
+            _eventY = (int)localY;
             break;
         }
         case SCALE:
         {
-	    ScreenInfo * si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+	    ScreenInfo * si;
+	    if(mie)
+	    {
+		si = ScreenConfig::instance()->getMasterScreenInfo(mie->getMasterScreenNum());
+	    }
+	    else
+	    {
+		si = ScreenConfig::instance()->getMasterScreenInfo(CVRViewer::instance()->getActiveMasterScreen());
+	    }
+
 	    if(!si)
 	    {
 		break;
@@ -584,7 +482,7 @@ void Navigation::processMouseNav(NavMode nm)
 	    }
 
             osg::Vec3 pos = screenCenter;
-            float xdiff = _eventY - InteractionManager::instance()->getMouseY();
+            float xdiff = _eventY - localY;
             xdiff = -xdiff / 150.0;
             float newScale;
             osg::Vec3 objectPos = (pos * osg::Matrix::inverse(_startXForm))

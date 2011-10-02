@@ -79,11 +79,11 @@ bool MenuSystem::processEvent(InteractionEvent * event)
     return false;
 }
 
-bool MenuSystem::processIsect(IsectInfo & isect, bool mouse)
+bool MenuSystem::processIsect(IsectInfo & isect, int hand)
 {
     if(_menu)
     {
-	return _menu->processIsect(isect,mouse);
+	return _menu->processIsect(isect,hand);
     }
     return false;
 }

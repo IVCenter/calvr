@@ -11,35 +11,29 @@ namespace cvr
 class TrackerSlave : public TrackerBase
 {
     public:
-        TrackerSlave(int bodies, int buttonStations, int * buttons,
-                     int valStations, int * vals);
-        ~TrackerSlave();
+        TrackerSlave(int bodies, int buttons, int vals);
+        virtual ~TrackerSlave();
 
-        virtual bool initBodyTrack();
-        virtual bool initButtonTrack();
+        virtual bool init(std::string tag);
 
-        virtual trackedBody * getBody(int station);
-        virtual unsigned int getButtonMask(int station);
-        virtual float getValuator(int station, int index);
+        virtual trackedBody * getBody(int index);
+        virtual unsigned int getButtonMask();
+        virtual float getValuator(int index);
 
         virtual int getNumBodies();
-        virtual int getNumValuators(int station);
-        virtual int getNumValuatorStations();
-        virtual int getNumButtons(int station);
-        virtual int getNumButtonStations();
+        virtual int getNumValuators();
+        virtual int getNumButtons();
 
-        virtual void update();
+        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
 
         void readValues(trackedBody * tb, unsigned int * buttons, float * vals);
     protected:
         int _numBodies;
-        std::vector<int> _numButtons;
-        std::vector<int> _numVals;
+        int _numButtons;
+        int _numVals;
 
         trackedBody * _bodyArray;
-        std::vector<unsigned int> _buttonMaskList;
-        std::vector<int> _valArrayIndex;
-        int _totalvals;
+        unsigned int _buttonMask;
         float * _valArray;
 };
 

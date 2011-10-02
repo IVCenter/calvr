@@ -32,6 +32,12 @@ class CVRKERNEL_EXPORT SceneManager
     public:
         virtual ~SceneManager();
 
+        enum PointerGraphicType
+        {
+            CONE = 0,
+            NONE
+        };
+
         /**
          * @brief Get pointer to static class instance
          */

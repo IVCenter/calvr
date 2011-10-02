@@ -7,6 +7,7 @@
 #include <menu/Export.h>
 
 #include <list>
+#include <vector>
 
 class IsectInfo;
 
@@ -66,6 +67,7 @@ class CVRMENU_EXPORT MenuManager
         void itemDelete(MenuItem * item);
 
         std::list<MenuSystemBase *> _menuSystemList;
+        std::vector<MenuSystemBase*> _handLastMenuSystem;
 
         int _primaryHand;
 };

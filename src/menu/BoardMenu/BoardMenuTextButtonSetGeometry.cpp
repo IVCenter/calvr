@@ -85,12 +85,10 @@ void BoardMenuTextButtonSetGeometry::processEvent(InteractionEvent * event)
 {
     MenuTextButtonSet * mb = dynamic_cast<MenuTextButtonSet*> (_item);
 
-    switch(event->type)
+    switch(event->getInteraction())
     {
 	case BUTTON_DOWN:
 	case BUTTON_DOUBLE_CLICK:
-	case MOUSE_BUTTON_DOWN:
-	case MOUSE_DOUBLE_CLICK:
 	    {
 		std::map<std::string,TextButtonGeometry*>::iterator currentButton = _buttonMap.find(_intersectedButton);
 		if(currentButton != _buttonMap.end())

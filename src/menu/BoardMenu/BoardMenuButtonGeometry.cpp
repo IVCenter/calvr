@@ -104,12 +104,10 @@ void BoardMenuButtonGeometry::updateGeometry()
 
 void BoardMenuButtonGeometry::processEvent(InteractionEvent * event)
 {
-    switch(event->type)
+    switch(event->getInteraction())
     {
 	case BUTTON_DOWN:
 	case BUTTON_DOUBLE_CLICK:
-	case MOUSE_BUTTON_DOWN:
-	case MOUSE_DOUBLE_CLICK:
 	    if(_item->getCallback())
 	    {
 		_item->getCallback()->menuCallback(_item);

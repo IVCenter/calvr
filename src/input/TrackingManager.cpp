@@ -28,15 +28,22 @@
 
 using namespace cvr;
 
+struct TrackingSystemInit
+{
+    Navigation::NavImplementation nav;
+    TrackerBase::TrackerType type;
+    SceneManager::PointerGraphicType defaultPointerType;
+    bool thread;
+    bool genDefaultButtonEvents;
+    bool initOK;
+};
+
 TrackingManager * TrackingManager::_myPtr = NULL;
 
 TrackingManager::TrackingManager()
 {
-    _bodyTracker = NULL;
-    _buttonTracker = NULL;
     _debugOutput = false;
     _threadQuit = false;
-    _currentEvents = NULL;
 }
 
 TrackingManager::~TrackingManager()
@@ -60,488 +67,229 @@ TrackingManager * TrackingManager::instance()
 bool TrackingManager::init()
 {
     _debugOutput = ConfigManager::getBool("Input.TrackingDebug", false);
-    std::string bodySystem = ConfigManager::getEntry("value",
-                                                     "Input.TrackingSystem",
-                                                     "NONE");
-    std::string buttonSystem =
-                ConfigManager::getEntry("value", "Input.ButtonSystem", "NONE");
-
     _updateHeadTracking = !ConfigManager::getBool("Freeze", false);
 
-    if(bodySystem == "MOUSE" || buttonSystem == "MOUSE")
-    {
-	bodySystem = "MOUSE";
-	buttonSystem = "MOUSE";
-	_mouseTracker = true;
-    }
-    else
-    {
-	_mouseTracker = false;
-    }
+    int system = 0;
+    bool found = false;
 
-    if(!_mouseTracker)
-    {
-	_threaded = ConfigManager::getBool("Input.Threaded", false);
-	_threadFPS = ConfigManager::getFloat("FPS", "Input.Threaded", 60.0);
-    }
-    else
-    {
-	_threaded = false;
-    }
+    std::stringstream sss;
+    sss << "Input.TrackingSystem" << system;
+    ConfigManager::getEntry("value",sss.str(),"",&found);
 
-    TrackingManInit tmi;
-    if(ComController::instance()->isMaster())
+    std::string configStr = sss.str();
+    while(found)
     {
-	if(!_mouseTracker)
+	TrackingSystemInfo * tsi = new TrackingSystemInfo;
+	tsi->numBodies = ConfigManager::getInt("value",configStr + ".NumBodies",0);
+	tsi->numButtons = ConfigManager::getInt("value",configStr + ".NumButtons",0);
+	tsi->numVal = ConfigManager::getInt("value",configStr + ".NumValuators",0);
+
+	float x, y, z, h, p, r;
+	x = ConfigManager::getFloat("x", configStr + ".Offset", 0.0);
+	y = ConfigManager::getFloat("y", configStr + ".Offset", 0.0);
+	z = ConfigManager::getFloat("z", configStr + ".Offset", 0.0);
+	h = ConfigManager::getFloat("h", configStr + ".Orientation", 0.0);
+	p = ConfigManager::getFloat("p", configStr + ".Orientation", 0.0);
+	r = ConfigManager::getFloat("r", configStr + ".Orientation", 0.0);
+	osg::Matrix m;
+	m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+		osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
+	m.setTrans(osg::Vec3(x, y, z));
+	tsi->systemTransform = m;
+
+	for(int i = 0; i < tsi->numBodies; i++)
 	{
-	    _numHands = ConfigManager::getInt("Input.NumHands", 1);
-	    _numHeads = ConfigManager::getInt("Input.NumHeads", 1);
+	    std::stringstream bodyss;
+	    bodyss << ".Body" << i;
+	    x = ConfigManager::getFloat("x", configStr + bodyss.str() + ".Offset", 0.0);
+	    y = ConfigManager::getFloat("y", configStr + bodyss.str() + ".Offset", 0.0);
+	    z = ConfigManager::getFloat("z", configStr + bodyss.str() + ".Offset", 0.0);
+	    h = ConfigManager::getFloat("h", configStr + bodyss.str() + ".Orientation", 0.0);
+	    p = ConfigManager::getFloat("p", configStr + bodyss.str() + ".Orientation", 0.0);
+	    r = ConfigManager::getFloat("r", configStr + bodyss.str() + ".Orientation", 0.0);
+	    m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
+		    osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
+	    tsi->bodyTranslations.push_back(osg::Vec3(x, y, z));
+	    tsi->bodyRotations.push_back(m);
+	}
+
+	TrackingSystemInit trackInit;
+	TrackerBase * tracker;
+	if(ComController::instance()->isMaster())
+	{
+	    std::string systemName = ConfigManager::getEntry("value",configStr,"NONE");
+	    if(systemName == "SHMEM")
+	    {
+		tracker = new TrackerShmem();
+	    }
+#ifdef WITH_VRPN
+	    else if(systemName == "VRPN")
+	    {
+		tracker = new TrackerVRPN();
+	    }
+#endif
+	    else if(systemName == "MOUSE")
+	    {
+		tracker = new TrackerMouse();
+	    }
+	    else
+	    {
+		std::cerr << "TrackingManager Error: Unknown system: " << systemName << std::endl;
+		tracker = NULL;
+	    }
+
+	    if(tracker && tracker->init(configStr))
+	    {
+		trackInit.thread = tracker->thread();
+		trackInit.nav = tracker->getNavImplementation();
+		trackInit.type = tracker->getTrackerType();
+		trackInit.defaultPointerType = tracker->getPointerType();
+		trackInit.genDefaultButtonEvents = tracker->genDefaultButtonEvents();
+		trackInit.initOK = true;
+	    }
+	    else
+	    {
+		trackInit.thread = false;
+		trackInit.nav = Navigation::NONE_NAV;
+		trackInit.type = TrackerBase::TRACKER;
+		trackInit.defaultPointerType = SceneManager::NONE;
+		trackInit.genDefaultButtonEvents = false;
+		trackInit.initOK = false;
+		if(tracker)
+		{
+		    delete tracker;
+		    tracker = NULL;
+		}
+	    }
+
+	    ComController::instance()->sendSlaves(&trackInit, sizeof(struct TrackingSystemInit));
 	}
 	else
 	{
-	    _numHands = 1;
-	    _numHeads = 1;
-	}
-
-	if(bodySystem == "NONE")
-	{
-	    _numHands = 0;
-	}
-
-	// TODO: I think the handButtonStation and handButtonOffsets are not used anymore, check and remove
-        if(_numHands > 0)
-        {
-	    if(!_mouseTracker)
+	    ComController::instance()->readMaster(&trackInit, sizeof(struct TrackingSystemInit));
+	    if(trackInit.initOK)
 	    {
-		_handStations.push_back(ConfigManager::getInt("Input.HandAddress",
-                                                          0));
+		tracker = new TrackerSlave(tsi->numBodies, tsi->numButtons, tsi->numVal);
 	    }
 	    else
 	    {
-		_handStations.push_back(0);
+		tracker = NULL;
 	    }
-
-            _handButtonStations.push_back(
-                                          ConfigManager::getInt(
-                                                                "Input.HandButtonAddress",
-                                                                0));
-            _handButtonOffsets.push_back(
-                                         ConfigManager::getInt(
-                                                               "Input.HandButtonOffset",
-                                                               0));
-        }
-        for(int i = 1; i < _numHands; i++)
-        {
-            std::stringstream ss;
-            ss << "Input.Hand" << i + 1 << "Address";
-            _handStations.push_back(ConfigManager::getInt(ss.str(), 0));
-
-            std::stringstream ss1;
-            ss1 << "Input.Hand" << i + 1 << "ButtonAddress";
-            _handButtonStations.push_back(ConfigManager::getInt(ss1.str(), 0));
-
-            std::stringstream ss2;
-            ss2 << "Input.Hand" << i + 1 << "ButtonOffset";
-            _handButtonOffsets.push_back(ConfigManager::getInt(ss2.str(), 0));
-        }
-
-        if(_numHeads > 0)
-        {
-	    if(!_mouseTracker)
-	    {
-		_headStations.push_back(ConfigManager::getInt("Input.HeadAddress",
-                                                          1));
-	    }
-	    else
-	    {
-		_headStations.push_back(-1);
-	    }
-        }
-        for(int i = 1; i < _numHeads; i++)
-        {
-            std::stringstream ss;
-            ss << "Input.Head" << i + 1 << "Address";
-            _headStations.push_back(ConfigManager::getInt(ss.str(), 1));
-        }
-
-        bool initGood = true;
-
-        if(bodySystem == "SHMEM")
-        {
-            _bodyTracker = new TrackerShmem();
-        }
-#ifdef WITH_VRPN
-        else if(bodySystem == "VRPN")
-        {
-            _bodyTracker = new TrackerVRPN();
-        }
-#endif
-	else if(bodySystem == "MOUSE")
-	{
-	    _bodyTracker = new TrackerMouse();
+	    
 	}
-        else
-        {
-            _bodyTracker = NULL;
-        }
 
-        if(_bodyTracker)
-        {
-            if(!_bodyTracker->initBodyTrack())
-            {
-                std::cerr << "Error on body tracker init." << std::endl;
-                delete _bodyTracker;
-                _bodyTracker = NULL;
-                initGood = false;
-            }
-        }
+	tsi->navImp = trackInit.nav;
+	tsi->trackerType = trackInit.type;
+	tsi->defaultPointerType = trackInit.defaultPointerType;
+	tsi->thread = trackInit.thread;
+	tsi->genDefaultButtonEvents = trackInit.genDefaultButtonEvents;
 
-        if(_bodyTracker && !_bodyTracker->getNumBodies())
-        {
-            delete _bodyTracker;
-            _bodyTracker = NULL;
-        }
+	_systems.push_back(tracker);
+	_systemInfo.push_back(tsi);
 
-        if(buttonSystem == bodySystem && _bodyTracker)
-        {
-            _buttonTracker = _bodyTracker;
+	system++;
+	std::stringstream sss2;
+	sss2 << "Input.TrackingSystem" << system;
+	ConfigManager::getEntry("value",sss2.str(),"",&found);
+	configStr = sss2.str();
+    }
 
-        }
-        else if(buttonSystem == "SHMEM")
-        {
-            _buttonTracker = new TrackerShmem();
-        }
-#ifdef WITH_VRPN
-        else if(buttonSystem == "VRPN")
-        {
-            _buttonTracker = new TrackerVRPN();
-        }
-#endif
-	// should not hit this since mouse should be used for body system
-	else if(buttonSystem == "MOUSE")
+    _threaded = false;
+    for(int i = 0; i < _systemInfo.size(); i++)
+    {
+	if(_systemInfo[i]->thread)
 	{
-	    _buttonTracker = new TrackerMouse();
+	    _threaded = true;
 	}
-        else
-        {
-            _buttonTracker = NULL;
-        }
-
-        if(_buttonTracker)
-        {
-            if(!_buttonTracker->initButtonTrack())
-            {
-                std::cerr << "Error on button tracker init." << std::endl;
-                if(_buttonTracker != _bodyTracker)
-                {
-                    delete _buttonTracker;
-                }
-                _buttonTracker = NULL;
-                initGood = false;
-            }
-            else if(!_buttonTracker->hasButtons()
-                    && !_buttonTracker->hasValuators())
-            {
-                if(_buttonTracker != _bodyTracker)
-                {
-                    delete _buttonTracker;
-                }
-                _buttonTracker = NULL;
-            }
-        }
-
-        if(_numHands > 0 && _bodyTracker)
-        {
-            if(bodySystem == "SHMEM"
-#ifdef WITH_VRPN
-            || bodySystem == "VRPN"
-#endif
-            )
-            {
-                _showWand = true;
-            }
-            else
-            {
-                _showWand = false;
-            }
-        }
-        else
-        {
-            _showWand = false;
-        }
-
-        for(int i = 0; i < _numHands; i++)
-        {
-            _threadHandButtonMasks.push_back(0);
-            _threadHandMatList.push_back(osg::Matrix());
-        }
-
-        for(int i = 0; i < _numHeads; i++)
-        {
-            _threadHeadMatList.push_back(osg::Matrix());
-        }
-
-        tmi.numHands = _numHands;
-        tmi.numHeads = _numHeads;
-        tmi.showWand = _showWand;
-        tmi.totalBodies = _bodyTracker ? _bodyTracker->getNumBodies() : 0;
-        tmi.buttonStations
-                = _buttonTracker ? _buttonTracker->getNumButtonStations() : 0;
-        tmi.valStations
-                = _buttonTracker ? _buttonTracker->getNumValuatorStations() : 0;
-
-        if(_debugOutput)
-        {
-            std::cerr << "Body System: " << bodySystem << std::endl;
-            std::cerr << "Num Bodies: "
-                    << (_bodyTracker ? _bodyTracker->getNumBodies() : 0)
-                    << std::endl;
-            std::cerr << "Number of heads: " << _numHeads << std::endl;
-            for(int i = 0; i < _numHeads; i++)
-            {
-                std::cerr << "Head Station: " << _headStations[i] << std::endl;
-            }
-            std::cerr << "Number of hands: " << _numHands << std::endl;
-            for(int i = 0; i < _numHands; i++)
-            {
-                std::cerr << "Hand Station: " << _handStations[i] << std::endl;
-            }
-            std::cerr << "Button System: " << buttonSystem << std::endl;
-            std::cerr << "Num Button Stations: "
-                    << (_buttonTracker ? _buttonTracker->getNumButtonStations()
-                            : 0) << std::endl;
-            for(int i = 0; i
-                    < (_buttonTracker ? _buttonTracker->getNumButtonStations()
-                            : 0); i++)
-            {
-                std::cerr << "Num Buttons: "
-                        << _buttonTracker->getNumButtons(i) << std::endl;
-            }
-            std::cerr << "Num Valuator Stations: "
-                    << (_buttonTracker ? _buttonTracker->getNumValuatorStations()
-                            : 0) << std::endl;
-            for(int i = 0; i
-                    < (_buttonTracker ? _buttonTracker->getNumValuatorStations()
-                            : 0); i++)
-            {
-                std::cerr << "Num Valuators: "
-                        << (_buttonTracker ? _buttonTracker->getNumValuators(i)
-                                : 0) << std::endl;
-            }
-        }
-
-        ComController::instance()->sendSlaves(&tmi,
-                                              sizeof(struct TrackingManInit));
-
-        int * numButtons = new int[tmi.buttonStations];
-        for(int i = 0; i < tmi.buttonStations; i++)
-        {
-            numButtons[i] = _buttonTracker->getNumButtons(i);
-        }
-        ComController::instance()->sendSlaves(numButtons, tmi.buttonStations
-                * sizeof(int));
-        delete[] numButtons;
-
-        int * numVals = new int[tmi.valStations];
-        for(int i = 0; i < tmi.valStations; i++)
-        {
-            numVals[i] = _buttonTracker->getNumValuators(i);
-        }
-        ComController::instance()->sendSlaves(numVals, tmi.valStations
-                * sizeof(int));
-        delete[] numVals;
-
-        int * handstations = new int[_numHands];
-        for(int i = 0; i < _numHands; i++)
-        {
-            handstations[i] = _handStations[i];
-        }
-        ComController::instance()->sendSlaves(handstations, _numHands
-                * sizeof(int));
-        delete[] handstations;
-
-        int * handbuttonstations = new int[_numHands];
-        for(int i = 0; i < _numHands; i++)
-        {
-            handbuttonstations[i] = _handButtonStations[i];
-        }
-        ComController::instance()->sendSlaves(handbuttonstations, _numHands
-                * sizeof(int));
-        delete[] handbuttonstations;
-
-        int * handbuttonoffsets = new int[_numHands];
-        for(int i = 0; i < _numHands; i++)
-        {
-            handbuttonoffsets[i] = _handButtonOffsets[i];
-        }
-        ComController::instance()->sendSlaves(handbuttonoffsets, _numHands
-                * sizeof(int));
-        delete[] handbuttonoffsets;
-
-        int * headstations = new int[_numHeads];
-        for(int i = 0; i < _numHeads; i++)
-        {
-            headstations[i] = _headStations[i];
-        }
-        ComController::instance()->sendSlaves(headstations, _numHeads
-                * sizeof(int));
-        delete[] headstations;
     }
-    else
+
+    if(_threaded)
     {
-        ComController::instance()->readMaster(&tmi,
-                                              sizeof(struct TrackingManInit));
-
-        int * numButtons = new int[tmi.buttonStations];
-        ComController::instance()->readMaster(numButtons, tmi.buttonStations
-                * sizeof(int));
-        int * numVals = new int[tmi.valStations];
-        ComController::instance()->readMaster(numVals, tmi.valStations
-                * sizeof(int));
-
-        int * handstations = new int[tmi.numHands];
-        ComController::instance()->readMaster(handstations, tmi.numHands
-                * sizeof(int));
-        int * handbuttonstations = new int[tmi.numHands];
-        ComController::instance()->readMaster(handbuttonstations, tmi.numHands
-                * sizeof(int));
-        int * handbuttonoffsets = new int[tmi.numHands];
-        ComController::instance()->readMaster(handbuttonoffsets, tmi.numHands
-                * sizeof(int));
-        int * headstations = new int[tmi.numHeads];
-        ComController::instance()->readMaster(headstations, tmi.numHeads
-                * sizeof(int));
-
-        _numHeads = tmi.numHeads;
-        _numHands = tmi.numHands;
-        _showWand = tmi.showWand;
-        for(int i = 0; i < _numHands; i++)
-        {
-            _handStations.push_back(handstations[i]);
-            _handButtonStations.push_back(handbuttonstations[i]);
-            _handButtonOffsets.push_back(handbuttonoffsets[i]);
-        }
-
-        for(int i = 0; i < _numHeads; i++)
-        {
-            _headStations.push_back(headstations[i]);
-        }
-
-        if(tmi.totalBodies)
-        {
-            _bodyTracker = new TrackerSlave(tmi.totalBodies,
-                                            tmi.buttonStations, numButtons,
-                                            tmi.valStations, numVals);
-            if(_bodyTracker->hasButtons() || _bodyTracker->hasValuators())
-            {
-                _buttonTracker = _bodyTracker;
-            }
-            else
-            {
-                _buttonTracker = NULL;
-            }
-        }
-        else
-        {
-            _bodyTracker = NULL;
-            _buttonTracker = new TrackerSlave(tmi.totalBodies,
-                                              tmi.buttonStations, numButtons,
-                                              tmi.valStations, numVals);
-            if(!_buttonTracker->hasButtons() && !_buttonTracker->hasValuators())
-            {
-                delete _buttonTracker;
-                _buttonTracker = NULL;
-            }
-        }
-
-        delete[] handstations;
-        delete[] handbuttonstations;
-        delete[] handbuttonoffsets;
-        delete[] headstations;
-        delete[] numButtons;
-        delete[] numVals;
+	_threadFPS = ConfigManager::getFloat("FPS", "Input.Threaded", 60.0);
     }
 
-    _totalButtons = 0;
-    _totalValuators = 0;
-
-    if(_buttonTracker)
+    _numHands = ConfigManager::getInt("Input.NumHands", 1);
+    _numHeads = ConfigManager::getInt("Input.NumHeads", 1);
+    if(_numHands < 0)
     {
-        for(int i = 0; i < _numHands; i++)
-        {
-            _handStationFilterMask.push_back(std::vector<unsigned int>());
-        }
-
-        for(int i = 0; i < _buttonTracker->getNumButtonStations(); i++)
-        {
-            _totalButtons += _buttonTracker->getNumButtons(i);
-            for(int j = 0; j < _numHands; j++)
-            {
-                std::stringstream hss, sss;
-                hss << "Input.Hand" << j + 1 << "ButtonMask";
-                sss << "station" << i + 1;
-                std::string mask;
-		if(!_mouseTracker)
-		{
-		     mask = ConfigManager::getEntry(sss.str(), hss.str(), j ? "0x0"
-                                : "0xFFFFFFFF");
-		}
-		else
-		{
-		    mask = "0xFFFFFFFF";
-		}
-
-                char * eptr;
-                unsigned long int imask = strtol(mask.c_str(), &eptr, 0);
-                _handStationFilterMask[j].push_back((unsigned int)imask);
-            }
-            _rawButtonMask.push_back(0);
-        }
-        for(int i = 0; i < _buttonTracker->getNumValuatorStations(); i++)
-        {
-            _totalValuators += _buttonTracker->getNumValuators(i);
-            _valuatorList.push_back(std::vector<float>());
-            for(int j = 0; j < _buttonTracker->getNumValuators(i); j++)
-            {
-                _valuatorList[i].push_back(0.0);
-            }
-        }
-
-        if(_debugOutput)
-        {
-            for(int i = 0; i < _numHands; i++)
-            {
-                std::cerr << "Hand " << i + 1 << ": ";
-                for(int j = 0; j < _buttonTracker->getNumButtonStations(); j++)
-                {
-                    std::cerr << "Station" << j + 1 << "Mask: "
-                            << _handStationFilterMask[i][j] << " ";
-                }
-                std::cerr << std::endl;
-            }
-        }
+	_numHands = 0;
     }
-
-    //std::cerr << "Bodies -------------- " << tmi.totalBodies << std::endl;
+    if(_numHeads < 0)
+    {
+	_numHeads = 0;
+    }
 
     for(int i = 0; i < _numHands; i++)
     {
-        _handMatList.push_back(osg::Matrix());
+	std::stringstream handss;
+	handss << "Input.Hand" << i;
+
+	_handAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",handss.str(),0),
+	                                          ConfigManager::getInt("body",handss.str(),0)));
+	_threadHandButtonMasks.push_back(0);
+	_threadLastHandButtonMask.push_back(0);
+        _threadHandMatList.push_back(osg::Matrix());
+	_handMatList.push_back(osg::Matrix());
         _handButtonMask.push_back(0);
         _lastHandButtonMask.push_back(0);
+
+	_genHandDefaultButtonEvents.push_back(std::vector<bool>());
+	_handStationFilterMask.push_back(std::vector<unsigned int>());
+
+	std::string maskTag = handss.str() + ".ButtonMask";
+	for(int j = 0; j < _systems.size(); j++)
+	{
+	    std::stringstream maskss;
+	    maskss << "system" << j;
+	    std::string mask;
+	    mask = ConfigManager::getEntry(maskss.str(), maskTag, i ? "0x0" : "0xFFFFFFFF");
+
+	    char * eptr;
+	    unsigned long int imask = strtol(mask.c_str(), &eptr, 0);
+	    _handStationFilterMask[i].push_back((unsigned int)imask);
+	}
     }
+
+    setGenHandDefaultButtonEvents();
 
     for(int i = 0; i < _numHeads; i++)
     {
-        _headMatList.push_back(osg::Matrix());
+	std::stringstream headss;
+	headss << "Input.Head" << i;
+
+	_headAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",headss.str(),0),
+	                                          ConfigManager::getInt("body",headss.str(),0)));
+	//_threadHeadMatList.push_back(osg::Matrix());
+	_headMatList.push_back(osg::Matrix());
 	_lastUpdatedHeadMatList.push_back(osg::Matrix());
     }
 
-    
+    if(!_numHeads)
+    {
+	_headMatList.push_back(osg::Matrix());
+	_lastUpdatedHeadMatList.push_back(osg::Matrix());
+    }
+
+    _totalBodies = 0;
+    _totalButtons = 0;
+    _totalValuators = 0;
+
+    for(int i = 0; i < _systems.size(); i++)
+    {
+	_valuatorList.push_back(std::vector<float>());
+	_totalBodies += _systemInfo[i]->numBodies;
+	_totalButtons += _systemInfo[i]->numButtons;
+	_totalValuators += _systemInfo[i]->numVal;
+	for(int j = 0; j < _systemInfo[i]->numVal; j++)
+	{
+	    _valuatorList[i].push_back(0.0);
+	}
+	_rawButtonMask.push_back(0);
+    }
 
     float vx, vy, vz, vh, vp, vr;
     osg::Matrix vTrans, vRot;
-    if(_numHeads)
+    //if(_numHeads)
     {
 	vx = ConfigManager::getFloat("x", "ViewerPosition", 0);
 	vy = ConfigManager::getFloat("y", "ViewerPosition", 0);
@@ -579,100 +327,14 @@ bool TrackingManager::init()
 	_lastUpdatedHeadMatList[i] = _headMatList[i];
     }
 
-    //_headMat.setTrans(vx,vy,vz);
-
-    /*_defaultHead = new trackedBody;
-    _defaultHead->x = vx;
-    _defaultHead->y = vy;
-    _defaultHead->z = vz;
-    _defaultHead->qx = _defaultHead->qy = _defaultHead->qz = _defaultHead->qw
-            = 0.0;
-
-    _defaultHand = new trackedBody;
-    _defaultHand->x = _defaultHand->y = _defaultHand->z = _defaultHand->qx
-            = _defaultHand->qy = _defaultHand->qz = _defaultHand->qw = 0.0;*/
-
-    if(_numHands > 0)
-    {
-        float x, y, z, h, p, r;
-        x = ConfigManager::getFloat("x", "Input.HandDevice.Offset", 0.0);
-        y = ConfigManager::getFloat("y", "Input.HandDevice.Offset", 0.0);
-        z = ConfigManager::getFloat("z", "Input.HandDevice.Offset", 0.0);
-        h = ConfigManager::getFloat("h", "Input.HandDevice.Orientation", 0.0);
-        p = ConfigManager::getFloat("p", "Input.HandDevice.Orientation", 0.0);
-        r = ConfigManager::getFloat("r", "Input.HandDevice.Orientation", 0.0);
-        osg::Matrix m;
-        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
-                       osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
-        _handTransformsTrans.push_back(osg::Vec3(x, y, z));
-        _handTransformsRot.push_back(m);
-    }
-    for(int i = 1; i < _numHands; i++)
-    {
-        std::stringstream ss;
-        ss << "Input.HandDevice" << i + 1;
-        float x, y, z, h, p, r;
-        x = ConfigManager::getFloat("x", ss.str() + ".Offset", 0.0);
-        y = ConfigManager::getFloat("y", ss.str() + ".Offset", 0.0);
-        z = ConfigManager::getFloat("z", ss.str() + ".Offset", 0.0);
-        h = ConfigManager::getFloat("h", ss.str() + ".Orientation", 0.0);
-        p = ConfigManager::getFloat("p", ss.str() + ".Orientation", 0.0);
-        r = ConfigManager::getFloat("r", ss.str() + ".Orientation", 0.0);
-        osg::Matrix m;
-        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
-        _handTransformsTrans.push_back(osg::Vec3(x, y, z));
-        _handTransformsRot.push_back(m);
-    }
-
-    float x, y, z, h, p, r;
-    x = ConfigManager::getFloat("x", "Input.TrackingSystem.Offset", 0.0);
-    y = ConfigManager::getFloat("y", "Input.TrackingSystem.Offset", 0.0);
-    z = ConfigManager::getFloat("z", "Input.TrackingSystem.Offset", 0.0);
-    h = ConfigManager::getFloat("h", "Input.TrackingSystem.Orientation", 0.0);
-    p = ConfigManager::getFloat("p", "Input.TrackingSystem.Orientation", 0.0);
-    r = ConfigManager::getFloat("r", "Input.TrackingSystem.Orientation", 0.0);
-    osg::Matrix m;
-    m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
-                 osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
-    m.setTrans(osg::Vec3(x, y, z));
-    _systemTransform = m;
-
-    if(_numHeads)
-    {
-        x = ConfigManager::getFloat("x", "Input.HeadDevice.Offset", 0.0);
-        y = ConfigManager::getFloat("y", "Input.HeadDevice.Offset", 0.0);
-        z = ConfigManager::getFloat("z", "Input.HeadDevice.Offset", 0.0);
-        h = ConfigManager::getFloat("h", "Input.HeadDevice.Orientation", 0.0);
-        p = ConfigManager::getFloat("p", "Input.HeadDevice.Orientation", 0.0);
-        r = ConfigManager::getFloat("r", "Input.HeadDevice.Orientation", 0.0);
-
-        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
-        _headTransformsTrans.push_back(osg::Vec3(x, y, z));
-        _headTransformsRot.push_back(m);
-    }
-
-    for(int i = 1; i < _numHeads; i++)
-    {
-        std::stringstream ss;
-        ss << "Input.HeadDevice" << i + 1;
-        x = ConfigManager::getFloat("x", ss.str() + ".Offset", 0.0);
-        y = ConfigManager::getFloat("y", ss.str() + ".Offset", 0.0);
-        z = ConfigManager::getFloat("z", ss.str() + ".Offset", 0.0);
-        h = ConfigManager::getFloat("h", ss.str() + ".Orientation", 0.0);
-        p = ConfigManager::getFloat("p", ss.str() + ".Orientation", 0.0);
-        r = ConfigManager::getFloat("r", ss.str() + ".Orientation", 0.0);
-
-        m.makeRotate(r * M_PI / 180.0, osg::Vec3(0, 1, 0), p * M_PI / 180.0,
-                     osg::Vec3(1, 0, 0), h * M_PI / 180.0, osg::Vec3(0, 0, 1));
-        _headTransformsTrans.push_back(osg::Vec3(x, y, z));
-        _headTransformsRot.push_back(m);
-    }
-
-    if(!_bodyTracker || !_bodyTracker->getNumBodies())
+    /*if(!_bodyTracker || !_bodyTracker->getNumBodies())
     {
         update();
+    }*/
+
+    for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
+    {
+	_eventMap[i] = std::list<InteractionEvent*>();
     }
 
     if(_threaded && ComController::instance()->isMaster())
@@ -693,144 +355,124 @@ void TrackingManager::update()
 
     _updateLock.lock();
 
+    int totalData = _totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int) + _totalValuators * sizeof(float);
+    char * data = NULL;
+    if(totalData)
+    {
+	data = new char[totalData];
+    }
+
     //std::cerr << "Update Called." << std::endl;
     if(ComController::instance()->isMaster())
     {
-        if(!_threaded)
-        {
-            if(_bodyTracker)
-            {
-                _bodyTracker->update();
-            }
-            if(_buttonTracker && _buttonTracker != _bodyTracker)
-            {
-                _buttonTracker->update();
-            }
-        }
+	static trackedBody * zeroBody = NULL;
+	if(!zeroBody)
+	{
+	    zeroBody = new trackedBody;
+	    zeroBody->x = 0;
+	    zeroBody->y = 0;
+	    zeroBody->z = 0;
+	    osg::Quat q;
+	    zeroBody->qx = q.x();
+	    zeroBody->qy = q.y();
+	    zeroBody->qz = q.z();
+	    zeroBody->qw = q.w();
+	}
 
-        if(_bodyTracker && _bodyTracker->getNumBodies() > 0)
-        {
-            trackedBody * tbsend =
-                    new trackedBody[_bodyTracker->getNumBodies()];
-            for(int i = 0; i < _bodyTracker->getNumBodies(); i++)
-            {
-                tbsend[i] = *_bodyTracker->getBody(i);
-            }
-            ComController::instance()->sendSlaves(
-                                                  tbsend,
-                                                  _bodyTracker->getNumBodies()
-                                                          * sizeof(struct trackedBody));
-            delete[] tbsend;
-        }
+	trackedBody * tbptr = (trackedBody*)data;
+	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct trackedBody)));
+	float * valptr = (float *)(data + (_totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int)));
+	for(int i = 0; i < _systems.size(); i++)
+	{
+	    if(_systems[i])
+	    {
+		if(!_systemInfo[i]->thread)
+		{
+		    _systems[i]->update(_eventMap);
+		}
+		for(int j = 0; j < _systemInfo[i]->numBodies; j++)
+		{
+		    trackedBody * tb = _systems[i]->getBody(j);
+		    if(tb)
+		    {
+			*tbptr = *tb;
+		    }
+		    else
+		    {
+			*tbptr = *zeroBody;
+		    }
+		    tbptr++;
+		}
 
-        if(_buttonTracker)
-        {
-            char * sendarray = new char[(sizeof(unsigned int)
-                    * _buttonTracker->getNumButtonStations())
-                    + (_totalValuators * sizeof(float))];
-            for(int i = 0; i < _buttonTracker->getNumButtonStations(); i++)
-            {
-                ((unsigned int*)sendarray)[i]
-                        = _buttonTracker->getButtonMask(i);
-            }
-            int index = 0;
-            float * valarray = (float *)(sendarray + (sizeof(unsigned int)
-                    * _buttonTracker->getNumButtonStations()));
-            for(int j = 0; j < _buttonTracker->getNumValuatorStations(); j++)
-            {
-                for(int i = 0; i < _buttonTracker->getNumValuators(j); i++)
-                {
-                    valarray[index] = _buttonTracker->getValuator(j, i);
-                    index++;
-                }
-            }
-            ComController::instance()->sendSlaves(
-                                                  sendarray,
-                                                  (sizeof(unsigned int)
-                                                          * _buttonTracker->getNumButtonStations())
-                                                          + (_totalValuators
-                                                                  * sizeof(float)));
+		*buttonptr = _systems[i]->getButtonMask();
+		buttonptr++;
 
-            delete[] sendarray;
+		for(int j = 0; j < _systemInfo[i]->numVal; j++)
+		{
+		    *valptr = _systems[i]->getValuator(j);
+		    valptr++;
+		}
+	    }
+	    else
+	    {
+		for(int j = 0; j < _systemInfo[i]->numBodies; j++)
+		{
+		    *tbptr = *zeroBody;
+		    tbptr++;
+		}
+		
+		*buttonptr = 0;
+		buttonptr++;
+
+		for(int j = 0; j < _systemInfo[i]->numVal; j++)
+		{
+		    *valptr = 0.0;
+		    valptr++;
+		}
+	    }
         }
+	ComController::instance()->sendSlaves(data,totalData);
     }
     else
     {
-        trackedBody * tbRecv = NULL;
-        unsigned int * buttonRecv = NULL;
-        float * valRecv = NULL;
-        if(_bodyTracker && _bodyTracker->getNumBodies())
-        {
-            tbRecv = new trackedBody[_bodyTracker->getNumBodies()];
-            ComController::instance()->readMaster(
-                                                  tbRecv,
-                                                  _bodyTracker->getNumBodies()
-                                                          * sizeof(struct trackedBody));
-        }
+	ComController::instance()->readMaster(data,totalData);
+	trackedBody * tbptr = (trackedBody*)data;
+	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct trackedBody)));
+	float * valptr = (float *)(data + (_totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int)));
 
-        char * recvarray = NULL;
-        if(_buttonTracker)
-        {
-            recvarray = new char[(sizeof(unsigned int)
-                    * _buttonTracker->getNumButtonStations())
-                    + (_totalValuators * sizeof(float))];
-            ComController::instance()->readMaster(
-                                                  recvarray,
-                                                  (sizeof(unsigned int)
-                                                          * _buttonTracker->getNumButtonStations())
-                                                          + (_totalValuators
-                                                                  * sizeof(float)));
-            buttonRecv = (unsigned int *)recvarray;
-            if(_buttonTracker->getNumValuators())
-            {
-                valRecv = (float *)(recvarray + (sizeof(unsigned int)
-                        * _buttonTracker->getNumButtonStations()));
-            }
-        }
+	for(int i = 0; i < _systems.size(); i++)
+	{
+	    TrackerSlave * sTracker = NULL;
+	    sTracker = dynamic_cast<TrackerSlave*>(_systems[i]);
+	    if(sTracker)
+	    {
+		sTracker->readValues(tbptr, buttonptr, valptr);
+	    }
+	    tbptr += _systemInfo[i]->numBodies;
+	    buttonptr++;
+	    valptr += _systemInfo[i]->numVal;
+	}
+    }
 
-        TrackerSlave * sTracker = NULL;
-        if(_bodyTracker)
-        {
-            sTracker = dynamic_cast<TrackerSlave *> (_bodyTracker);
-        }
-        else if(_buttonTracker)
-        {
-            sTracker = dynamic_cast<TrackerSlave *> (_buttonTracker);
-        }
-
-        if(sTracker)
-        {
-            sTracker->readValues(tbRecv, buttonRecv, valRecv);
-        }
-
-        if(recvarray)
-        {
-            delete[] recvarray;
-        }
-
-        if(tbRecv)
-        {
-            delete[] tbRecv;
-        }
+    if(data)
+    {
+	delete[] data;
     }
 
     trackedBody * tb;
     for(int i = 0; i < _numHeads; i++)
     {
-        if(_bodyTracker && _bodyTracker->getBody(_headStations[i]))
+        if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))
         {
-            tb = _bodyTracker->getBody(_headStations[i]);
+            tb = _systems[_headAddress[i].first]->getBody(_headAddress[i].second);
             if(tb)
             {
                 osg::Vec3 pos(tb->x, tb->y, tb->z);
                 osg::Matrix rot;
-                //float deg2rad = M_PI / 180.0;
-                //rot.makeRotate(tb->r * deg2rad, osg::Vec3(0,0,1), tb->p * deg2rad, osg::Vec3(1,0,0), tb->h * deg2rad, osg::Vec3(0,1,0));
                 rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
-                // TODO: check translation stuff
-                _headMatList[i] = _headTransformsRot[i] * rot
-                        * osg::Matrix::translate(pos) * _systemTransform
-                        * osg::Matrix::translate(_headTransformsTrans[i]);
+                _headMatList[i] = _systemInfo[_headAddress[i].first]->bodyRotations[_headAddress[i].second] * rot
+                        * osg::Matrix::translate(pos) * _systemInfo[_headAddress[i].first]->systemTransform
+                        * osg::Matrix::translate(_systemInfo[_headAddress[i].first]->bodyTranslations[_headAddress[i].second]);
 			
 		if(_updateHeadTracking)
 		{
@@ -838,65 +480,61 @@ void TrackingManager::update()
 		}
             }
         }
-        /*else
-        {
-            //std::cerr << "Setting Head Position to x: " << _defaultHead->x << " y: " << _defaultHead->y << " z: " << _defaultHead->z << std::endl;
-            _headMatList[i].setTrans(_defaultHead->x, _defaultHead->y,
-                                     _defaultHead->z);
-            //_headMat =  _headTransformRot * osg::Matrix::translate(osg::Vec3(_defaultHead->x,_defaultHead->y,_defaultHead->z)) * _systemTransform * osg::Matrix::translate(_headTransformTrans);
-        }*/
     }
 
     for(int i = 0; i < _numHands; i++)
     {
-        if(_bodyTracker && _bodyTracker->getBody(_handStations[i]))
+	if(_systems[_handAddress[i].first] && _systems[_handAddress[i].first]->getBody(_handAddress[i].second))
         {
-            tb = _bodyTracker->getBody(_handStations[i]);
-        }
-        /*else
-        {
-            tb = _defaultHand;
-        }*/
-
-        if(tb)
-        {
-            osg::Vec3 pos(tb->x, tb->y, tb->z);
-            osg::Matrix rot;
-            //float deg2rad = M_PI / 180.0;
-            //rot.makeRotate(tb->r * deg2rad, osg::Vec3(0,0,1), tb->p * deg2rad, osg::Vec3(1,0,0), tb->h * deg2rad, osg::Vec3(0,1,0));
-            rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
-            // TODO: check translation stuff
-            _handMatList[i] = _handTransformsRot[i] * rot
-                    * osg::Matrix::translate(pos) * _systemTransform
-                    * osg::Matrix::translate(_handTransformsTrans[i]);
+            tb = _systems[_handAddress[i].first]->getBody(_handAddress[i].second);
+            if(tb)
+            {
+                osg::Vec3 pos(tb->x, tb->y, tb->z);
+                osg::Matrix rot;
+                rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
+                _handMatList[i] = _systemInfo[_handAddress[i].first]->bodyRotations[_handAddress[i].second] * rot
+                        * osg::Matrix::translate(pos) * _systemInfo[_handAddress[i].first]->systemTransform
+                        * osg::Matrix::translate(_systemInfo[_handAddress[i].first]->bodyTranslations[_handAddress[i].second]);
+            }
         }
     }
 
     for(int i = 0; i < _rawButtonMask.size(); i++)
     {
-        _rawButtonMask[i] = _buttonTracker->getButtonMask();
+	if(_systems[i])
+	{
+	    _rawButtonMask[i] = _systems[i]->getButtonMask();
+	}
+	else
+	{
+	    _rawButtonMask[i] = 0;
+	}
     }
 
     for(int i = 0; i < _valuatorList.size(); i++)
     {
         for(int j = 0; j < _valuatorList[i].size(); j++)
         {
-            _valuatorList[i][j] = _buttonTracker->getValuator(i, j);
+	    if(_systems[i])
+	    {
+		_valuatorList[i][j] = _systems[i]->getValuator(j);
+	    }
+	    else
+	    {
+		_valuatorList[i][j] = 0;
+	    }
         }
     }
 
     updateHandMask();
 
-    if(!_threaded)
+    generateButtonEvents();
+    flushEvents();
+
+    // merge threaded and non-threaded hand masks
+    for(int i = 0; i < _handButtonMask.size(); i++)
     {
-	if(!_mouseTracker)
-	{
-	    generateButtonEvents();
-	}
-    }
-    else
-    {
-        flushEvents();
+	_handButtonMask[i] |= _threadHandButtonMasks[i];
     }
 
     _updateLock.unlock();
@@ -915,14 +553,13 @@ void TrackingManager::run()
         gettimeofday(&start, NULL);
         _updateLock.lock();
 
-        if(_bodyTracker)
-        {
-            _bodyTracker->update();
-        }
-        if(_buttonTracker && _buttonTracker != _bodyTracker)
-        {
-            _buttonTracker->update();
-        }
+	for(int i = 0; i < _systems.size(); i++)
+	{
+	    if(_systems[i] && _systemInfo[i]->thread)
+	    {
+		_systems[i]->update(_eventMap);
+	    }
+	}
 
         updateThreadMats();
         updateThreadHandMask();
@@ -958,6 +595,8 @@ void TrackingManager::run()
 #endif
         }
         readings++;
+
+	//TODO: add to debug
         gettimeofday(&printEnd, NULL);
         interval = (printEnd.tv_sec - printStart.tv_sec) + ((printEnd.tv_usec
                 - printStart.tv_usec) / 1000000.0);
@@ -980,9 +619,20 @@ void TrackingManager::quitThread()
     _quitLock.unlock();
 }
 
-bool TrackingManager::getShowWand()
+SceneManager::PointerGraphicType TrackingManager::getPointerGraphicType(int hand)
 {
-    return _showWand;
+    if(hand >= 0 && hand < _numHands)
+    {
+	if(_handAddress[hand].first >= 0 && _handAddress[hand].first < _systemInfo.size())
+	{
+	    if(_handAddress[hand].second >= 0 && _handAddress[hand].second < _systemInfo[_handAddress[hand].first]->numBodies)
+	    {
+		return _systemInfo[_handAddress[hand].first]->defaultPointerType;
+	    }
+	}
+    }
+
+    return SceneManager::NONE;
 }
 
 int TrackingManager::getNumHands()
@@ -1007,6 +657,11 @@ osg::Matrix & TrackingManager::getHandMat(int hand)
 
 osg::Matrix & TrackingManager::getHeadMat(int head)
 {
+    if(!_numHeads && !head)
+    {
+	return _lastUpdatedHeadMatList[head];
+    }
+
     if(head < 0 || head >= _lastUpdatedHeadMatList.size())
     {
         static osg::Matrix m;
@@ -1017,6 +672,11 @@ osg::Matrix & TrackingManager::getHeadMat(int head)
 
 osg::Matrix & TrackingManager::getUnfrozenHeadMat(int head)
 {
+    if(!_numHeads && !head)
+    {
+	return _headMatList[head];
+    }
+
     if(head < 0 || head >= _headMatList.size())
     {
         static osg::Matrix m;
@@ -1025,34 +685,51 @@ osg::Matrix & TrackingManager::getUnfrozenHeadMat(int head)
     return _headMatList[head];
 }
 
-int TrackingManager::getNumButtonStations()
+int TrackingManager::getNumTrackingSystems()
 {
-    if(_buttonTracker)
+    return _systems.size();
+}
+
+TrackerBase::TrackerType TrackingManager::getHandTrackerType(int hand)
+{
+    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0 || 
+	_handAddress[hand].first >= _systemInfo.size() || 
+	_handAddress[hand].second < 0 || 
+	_handAddress[hand].second >= _systemInfo[_handAddress[hand].first]->numBodies)
     {
-        return _buttonTracker->getNumButtonStations();
+	return TrackerBase::INVALID;
+    }
+
+    return _systemInfo[_handAddress[hand].first]->trackerType;
+}
+
+Navigation::NavImplementation TrackingManager::getHandNavType(int hand)
+{
+    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0 || 
+	_handAddress[hand].first >= _systemInfo.size() || 
+	_handAddress[hand].second < 0 || 
+	_handAddress[hand].second >= _systemInfo[_handAddress[hand].first]->numBodies)
+    {
+	return Navigation::NONE_NAV;
+    }
+
+    return _systemInfo[_handAddress[hand].first]->navImp;
+}
+
+int TrackingManager::getNumButtons(int system)
+{
+    if(system >= 0 && system < _systems.size() && _systems[system])
+    {
+	return _systemInfo[system]->numButtons;
     }
     return 0;
 }
 
-int TrackingManager::getNumButtons(int station)
+unsigned int TrackingManager::getRawButtonMask(int system)
 {
-    if(_buttonTracker)
+    if(system >= 0 && system < _rawButtonMask.size())
     {
-        return _buttonTracker->getNumButtons(station);
-    }
-    return 0;
-}
-
-unsigned int TrackingManager::getRawButtonMask(int station)
-{
-    /*if(_buttonTracker)
-     {
-     return _buttonTracker->getButtonMask(station);
-     }
-     return 0;*/
-    if(station >= 0 && station < _rawButtonMask.size())
-    {
-        return _rawButtonMask[station];
+        return _rawButtonMask[system];
     }
     return 0;
 }
@@ -1066,26 +743,21 @@ unsigned int TrackingManager::getHandButtonMask(int hand)
     return 0;
 }
 
-int TrackingManager::getNumValuatorStations()
+int TrackingManager::getNumValuators(int system)
 {
-    return _valuatorList.size();
-}
-
-int TrackingManager::getNumValuators(int station)
-{
-    if(station >= 0 && station < _valuatorList.size())
+    if(system >= 0 && system < _valuatorList.size())
     {
-        return _valuatorList[station].size();
+        return _valuatorList[system].size();
     }
     return 0;
 }
 
-float TrackingManager::getValuator(int station, int index)
+float TrackingManager::getValuator(int system, int index)
 {
-    if(station >= 0 && station < _valuatorList.size() && index >= 0 && index
-            < _valuatorList[station].size())
+    if(system >= 0 && system < _valuatorList.size() && index >= 0 && index
+            < _valuatorList[system].size())
     {
-        return _valuatorList[station][index];
+        return _valuatorList[system][index];
     }
     return 0.0;
 }
@@ -1100,11 +772,6 @@ bool TrackingManager::getUpdateHeadTracking()
     return _updateHeadTracking;
 }
 
-bool TrackingManager::getUsingMouseTracker()
-{
-    return _mouseTracker;
-}
-
 void TrackingManager::cleanupCurrentEvents()
 {
     /*if(_currentEvents)
@@ -1116,11 +783,6 @@ void TrackingManager::cleanupCurrentEvents()
 
 void TrackingManager::updateHandMask()
 {
-    if(!_buttonTracker)
-    {
-        return;
-    }
-
     for(int i = 0; i < _numHands; i++)
     {
         _handButtonMask[i] = 0;
@@ -1128,14 +790,17 @@ void TrackingManager::updateHandMask()
         for(int j = 0; j < _handStationFilterMask[i].size(); j++)
         {
             unsigned int stationMask = 1;
-            for(int k = 0; k < CVR_MAX_BUTTONS; k++)
+            for(int k = 0; k < _systemInfo[j]->numButtons; k++)
             {
                 if(_handStationFilterMask[i][j] & stationMask)
                 {
-                    unsigned int value =
-                            (getRawButtonMask(j) & stationMask) ? 1 : 0;
-                    value = value << handMaskOffset;
-                    _handButtonMask[i] |= value;
+		    if(!_systemInfo[j]->thread)
+		    {
+			unsigned int value =
+			    (getRawButtonMask(j) & stationMask) ? 1 : 0;
+			value = value << handMaskOffset;
+			_handButtonMask[i] |= value;
+		    }
 
                     handMaskOffset++;
                     if(handMaskOffset == CVR_MAX_BUTTONS)
@@ -1156,26 +821,24 @@ void TrackingManager::updateHandMask()
 
 void TrackingManager::updateThreadHandMask()
 {
-    if(!_buttonTracker)
-    {
-        return;
-    }
-
     for(int i = 0; i < _numHands; i++)
     {
         _threadHandButtonMasks[i] = 0;
         int handMaskOffset = 0;
-        for(int j = 0; j < _handStationFilterMask[i].size(); j++)
+        for(int j = 0; j < _systems.size(); j++)
         {
             unsigned int stationMask = 1;
-            for(int k = 0; k < CVR_MAX_BUTTONS; k++)
+            for(int k = 0; k < _systemInfo[j]->numButtons; k++)
             {
                 if(_handStationFilterMask[i][j] & stationMask)
                 {
-                    unsigned int value = (_buttonTracker->getButtonMask(j)
-                            & stationMask) ? 1 : 0;
-                    value = value << handMaskOffset;
-                    _threadHandButtonMasks[i] |= value;
+		    if(_systems[j] && _systemInfo[j]->thread)
+		    {
+			unsigned int value = (_systems[j]->getButtonMask()
+				& stationMask) ? 1 : 0;
+			value = value << handMaskOffset;
+			_threadHandButtonMasks[i] |= value;
+		    }
 
                     handMaskOffset++;
                     if(handMaskOffset == CVR_MAX_BUTTONS)
@@ -1197,46 +860,46 @@ void TrackingManager::updateThreadHandMask()
 void TrackingManager::generateButtonEvents()
 {
     int numEvents;
+    TrackedButtonInteractionEvent * events = NULL;
     if(ComController::instance()->isMaster())
     {
-        std::vector<TrackingInteractionEvent> eventList;
+        std::vector<TrackedButtonInteractionEvent*> eventList;
         for(int j = 0; j < _numHands; j++)
         {
             unsigned int bit = 1;
             unsigned int newMask = getHandButtonMask(j);
             //std::cerr << "ButtonMask: " << newMask << std::endl;
-            for(int i = 0; i < CVR_MAX_BUTTONS; i++)
+            for(int i = 0; i < _genHandDefaultButtonEvents[j].size(); i++)
             {
+		if(!_genHandDefaultButtonEvents[j][i])
+		{
+		    bit = bit << 1;
+		    continue;
+		}
                 //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << " bit: " << bit << " " << (newMask & bit) << " " << (_lastButtonMask & bit) << std::endl;
                 if(((_lastHandButtonMask[j] & bit) != (newMask & bit))
                         || ((_lastHandButtonMask[j] & bit) && (newMask & bit)))
                 {
                     //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-                    TrackingInteractionEvent buttonEvent;
+
+		    TrackedButtonInteractionEvent * buttonEvent = new TrackedButtonInteractionEvent();
+
                     if((_lastHandButtonMask[j] & bit) && (newMask & bit))
                     {
-                        buttonEvent.type = BUTTON_DRAG;
+                        buttonEvent->setInteraction(BUTTON_DRAG);
                     }
                     else if(_lastHandButtonMask[j] & bit)
                     {
-                        buttonEvent.type = BUTTON_UP;
+                        buttonEvent->setInteraction(BUTTON_UP);
                     }
                     else
                     {
-                        buttonEvent.type = BUTTON_DOWN;
+                        buttonEvent->setInteraction(BUTTON_DOWN);
                     }
-                    buttonEvent.button = i;
+                    buttonEvent->setButton(i);
                     // set current pointer info
-                    osg::Quat q = _handMatList[j].getRotate();
-                    osg::Vec3 pos = _handMatList[j].getTrans();
-                    buttonEvent.xyz[0] = pos.x();
-                    buttonEvent.xyz[1] = pos.y();
-                    buttonEvent.xyz[2] = pos.z();
-                    buttonEvent.rot[0] = q.x();
-                    buttonEvent.rot[1] = q.y();
-                    buttonEvent.rot[2] = q.z();
-                    buttonEvent.rot[3] = q.w();
-                    buttonEvent.hand = j;
+		    buttonEvent->setTransform(_handMatList[j]);
+                    buttonEvent->setHand(j);
                     eventList.push_back(buttonEvent);
                 }
                 bit = bit << 1;
@@ -1247,13 +910,14 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->sendSlaves(&numEvents, sizeof(int));
         if(numEvents)
         {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
+            events = new TrackedButtonInteractionEvent[numEvents];
             for(int i = 0; i < numEvents; i++)
             {
-                _currentEvents[i] = eventList[i];
+                events[i] = *eventList[i];
+		delete eventList[i];
             }
-            ComController::instance()->sendSlaves(_currentEvents, numEvents
-                    * sizeof(TrackingInteractionEvent));
+            ComController::instance()->sendSlaves(events, numEvents
+                    * sizeof(TrackedButtonInteractionEvent));
         }
     }
     else
@@ -1261,194 +925,235 @@ void TrackingManager::generateButtonEvents()
         ComController::instance()->readMaster(&numEvents, sizeof(int));
         if(numEvents)
         {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(_currentEvents, numEvents
-                    * sizeof(TrackingInteractionEvent));
+            events = new TrackedButtonInteractionEvent[numEvents];
+            ComController::instance()->readMaster(events, numEvents
+                    * sizeof(TrackedButtonInteractionEvent));
         }
     }
 
-    TrackingInteractionEvent * ie;
+    TrackedButtonInteractionEvent * ie;
     for(int i = 0; i < numEvents; i++)
     {
-        ie = new TrackingInteractionEvent;
-        *ie = _currentEvents[i];
+        ie = new TrackedButtonInteractionEvent();
+        *ie = events[i];
         InteractionManager::instance()->addEvent(ie);
     }
 
-    if(_currentEvents)
+    if(events)
     {
-        delete[] _currentEvents;
-        _currentEvents = NULL;
+	delete[] events;
     }
 }
 
 void TrackingManager::generateThreadButtonEvents()
 {
-    TrackingInteractionEvent * buttonEvent;
+    TrackedButtonInteractionEvent * buttonEvent;
     for(int j = 0; j < _numHands; j++)
     {
         unsigned int bit = 1;
         unsigned int newMask = _threadHandButtonMasks[j];
         //std::cerr << "ButtonMask: " << newMask << std::endl;
-        for(int i = 0; i < CVR_MAX_BUTTONS; i++)
+        for(int i = 0; i < _genHandDefaultButtonEvents[j].size(); i++)
         {
+	    if(!_genHandDefaultButtonEvents[j][i])
+	    {
+		bit = bit << 1;
+		continue;
+	    }
             //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << " bit: " << bit << " " << (newMask & bit) << " " << (_lastButtonMask & bit) << std::endl;
-            if((_lastHandButtonMask[j] & bit) != (newMask & bit))
+            if((_threadLastHandButtonMask[j] & bit) != (newMask & bit))
             {
-                buttonEvent = new TrackingInteractionEvent;
+                buttonEvent = new TrackedButtonInteractionEvent();
                 //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-                if(_lastHandButtonMask[j] & bit)
+                if(_threadLastHandButtonMask[j] & bit)
                 {
-                    buttonEvent->type = BUTTON_UP;
+                    buttonEvent->setInteraction(BUTTON_UP);
                 }
                 else
                 {
-                    buttonEvent->type = BUTTON_DOWN;
+                    buttonEvent->setInteraction(BUTTON_DOWN);
                 }
-                buttonEvent->button = i;
+                buttonEvent->setButton(i);
                 // set current pointer info
-                osg::Quat q = _threadHandMatList[j].getRotate();
-                osg::Vec3 pos = _threadHandMatList[j].getTrans();
-                buttonEvent->xyz[0] = pos.x();
-                buttonEvent->xyz[1] = pos.y();
-                buttonEvent->xyz[2] = pos.z();
-                buttonEvent->rot[0] = q.x();
-                buttonEvent->rot[1] = q.y();
-                buttonEvent->rot[2] = q.z();
-                buttonEvent->rot[3] = q.w();
-                buttonEvent->hand = j;
+		buttonEvent->setTransform(_threadHandMatList[j]);
+                buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
             }
-            else if((_lastHandButtonMask[j] & bit) && (newMask & bit))
+            else if((_threadLastHandButtonMask[j] & bit) && (newMask & bit))
             {
-                buttonEvent = new TrackingInteractionEvent;
-                buttonEvent->type = BUTTON_DRAG;
-                buttonEvent->button = i;
+                buttonEvent = new TrackedButtonInteractionEvent();
+                buttonEvent->setInteraction(BUTTON_DRAG);
+                buttonEvent->setButton(i);
                 // set current pointer info
-                osg::Quat q = _threadHandMatList[j].getRotate();
-                osg::Vec3 pos = _threadHandMatList[j].getTrans();
-                buttonEvent->xyz[0] = pos.x();
-                buttonEvent->xyz[1] = pos.y();
-                buttonEvent->xyz[2] = pos.z();
-                buttonEvent->rot[0] = q.x();
-                buttonEvent->rot[1] = q.y();
-                buttonEvent->rot[2] = q.z();
-                buttonEvent->rot[3] = q.w();
-                buttonEvent->hand = j;
+		buttonEvent->setTransform(_threadHandMatList[j]);
+                buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
             }
             bit = bit << 1;
         }
-        _lastHandButtonMask[j] = newMask;
+        _threadLastHandButtonMask[j] = newMask;
     }
 }
 
 void TrackingManager::updateThreadMats()
 {
     trackedBody * tb;
-    for(int i = 0; i < _numHeads; i++)
+    /*for(int i = 0; i < _numHeads; i++)
     {
-        if(_bodyTracker && _bodyTracker->getBody(_headStations[i]))
+	if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))
         {
-            tb = _bodyTracker->getBody(_headStations[i]);
+            tb = _systems[_headAddress[i].first]->getBody(_headAddress[i].second);
             if(tb)
             {
                 osg::Vec3 pos(tb->x, tb->y, tb->z);
                 osg::Matrix rot;
-                //float deg2rad = M_PI / 180.0;
-                //rot.makeRotate(tb->r * deg2rad, osg::Vec3(0,0,1), tb->p * deg2rad, osg::Vec3(1,0,0), tb->h * deg2rad, osg::Vec3(0,1,0));
                 rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
-                // TODO: check translation stuff
-                _threadHeadMatList[i] = _headTransformsRot[i] * rot
-                        * osg::Matrix::translate(pos) * _systemTransform
-                        * osg::Matrix::translate(_headTransformsTrans[i]);
+                _threadHeadMatList[i] = _systemInfo[_headAddress[i].first]->bodyRotations[_headAddress[i].second] * rot
+                        * osg::Matrix::translate(pos) * _systemInfo[_headAddress[i].first]->systemTransform
+                        * osg::Matrix::translate(_systemInfo[_headAddress[i].first]->bodyTranslations[_headAddress[i].second]);
             }
         }
-        /*else
-        {
-            //std::cerr << "Setting Head Position to x: " << _defaultHead->x << " y: " << _defaultHead->y << " z: " << _defaultHead->z << std::endl;
-            _threadHeadMatList[i].setTrans(_defaultHead->x, _defaultHead->y,
-                                           _defaultHead->z);
-            //_headMat =  _headTransformRot * osg::Matrix::translate(osg::Vec3(_defaultHead->x,_defaultHead->y,_defaultHead->z)) * _systemTransform * osg::Matrix::translate(_headTransformTrans);
-        }*/
-    }
+    }*/
 
     for(int i = 0; i < _numHands; i++)
     {
-        if(_bodyTracker && _bodyTracker->getBody(_handStations[i]))
+	if(_systems[_handAddress[i].first] && _systems[_handAddress[i].first]->getBody(_handAddress[i].second))
         {
-            tb = _bodyTracker->getBody(_handStations[i]);
-        }
-        /*else
-        {
-            tb = _defaultHand;
-        }*/
+	    if(!_systemInfo[_handAddress[i].first]->thread)
+	    {
+		continue;
+	    }
 
-        if(tb)
-        {
-            osg::Vec3 pos(tb->x, tb->y, tb->z);
-            osg::Matrix rot;
-            //float deg2rad = M_PI / 180.0;
-            //rot.makeRotate(tb->r * deg2rad, osg::Vec3(0,0,1), tb->p * deg2rad, osg::Vec3(1,0,0), tb->h * deg2rad, osg::Vec3(0,1,0));
-            rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
-            // TODO: check translation stuff
-            _threadHandMatList[i] = _handTransformsRot[i] * rot
-                    * osg::Matrix::translate(pos) * _systemTransform
-                    * osg::Matrix::translate(_handTransformsTrans[i]);
+            tb = _systems[_handAddress[i].first]->getBody(_handAddress[i].second);
+            if(tb)
+            {
+                osg::Vec3 pos(tb->x, tb->y, tb->z);
+                osg::Matrix rot;
+                rot.makeRotate(osg::Quat(tb->qx, tb->qy, tb->qz, tb->qw));
+                _threadHandMatList[i] = _systemInfo[_handAddress[i].first]->bodyRotations[_handAddress[i].second] * rot
+                        * osg::Matrix::translate(pos) * _systemInfo[_handAddress[i].first]->systemTransform
+                        * osg::Matrix::translate(_systemInfo[_handAddress[i].first]->bodyTranslations[_handAddress[i].second]);
+            }
         }
     }
 }
 
 void TrackingManager::flushEvents()
 {
-    int numEvents;
+    int * numEvents = new int[NUM_INTER_EVENT_TYPES];
     if(ComController::instance()->isMaster())
     {
-        numEvents = _threadEvents.size();
-        ComController::instance()->sendSlaves(&numEvents, sizeof(int));
-        if(numEvents)
-        {
-            _currentEvents = new TrackingInteractionEvent[_threadEvents.size()];
-            int index = 0;
-            while(_threadEvents.size())
-            {
-                _currentEvents[index]
-                        = *((TrackingInteractionEvent*)_threadEvents.front());
-                delete _threadEvents.front();
-                _threadEvents.pop();
-                index++;
-            }
-            ComController::instance()->sendSlaves(_currentEvents, numEvents
-                    * sizeof(struct TrackingInteractionEvent));
-        }
+	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
+	{
+	    numEvents[i] = _eventMap[i].size();
+	}
+	ComController::instance()->sendSlaves(numEvents,NUM_INTER_EVENT_TYPES * sizeof(int));
     }
     else
     {
-        ComController::instance()->readMaster(&numEvents, sizeof(int));
-        if(numEvents)
-        {
-            _currentEvents = new TrackingInteractionEvent[numEvents];
-            ComController::instance()->readMaster(_currentEvents, numEvents
-                    * sizeof(struct TrackingInteractionEvent));
-        }
+	ComController::instance()->readMaster(numEvents,NUM_INTER_EVENT_TYPES * sizeof(int));
     }
 
-    TrackingInteractionEvent * ie;
-    for(int i = 0; i < numEvents; i++)
+    int eventsDataSize = 0;
+
+    for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
     {
-        ie = new TrackingInteractionEvent;
-        *ie = _currentEvents[i];
-        InteractionManager::instance()->addEvent(ie);
+	if(numEvents[i])
+	{
+	    eventsDataSize += numEvents[i] * getEventSize((InteractionEventType)i);
+	}
     }
 
-    if(_currentEvents)
+    //std::cerr << "eventsDataSize: " << eventsDataSize << std::endl;
+    char * data = NULL;
+    if(eventsDataSize > 0)
     {
-        delete[] _currentEvents;
-        _currentEvents = NULL;
+	data = new char[eventsDataSize];
+    }
+    if(ComController::instance()->isMaster())
+    {
+	char * eventptr = data;
+	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
+	{
+	    for(std::list<InteractionEvent*>::iterator it = _eventMap[i].begin(); it != _eventMap[i].end(); it++)
+	    {
+		storeEvent(*it,eventptr);
+		eventptr += getEventSize((InteractionEventType)i);
+		InteractionManager::instance()->addEvent(*it);
+	    }
+	}
+	ComController::instance()->sendSlaves(data,eventsDataSize);
+    }
+    else
+    {
+	ComController::instance()->readMaster(data,eventsDataSize);
+	char * eventptr = data;
+	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
+	{
+	    for(int j = 0; j < numEvents[i]; j++)
+	    {
+		InteractionEvent * ie = loadEventWithType((InteractionEvent *)eventptr,(InteractionEventType)i);
+		if(ie)
+		{
+		    InteractionManager::instance()->addEvent(ie);
+		}
+		eventptr += getEventSize((InteractionEventType)i);
+	    }
+	}
+    }
+
+    if(ComController::instance()->isMaster())
+    {
+	for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
+	{
+	    _eventMap[i].clear();
+	}
+    }
+
+    if(data)
+    {
+	delete[] data;
+    }
+
+    if(numEvents)
+    {
+	delete[] numEvents;
     }
 }
+
+void TrackingManager::setGenHandDefaultButtonEvents()
+{
+    for(int i = 0; i < _numHands; i++)
+    {
+        int handMaskOffset = 0;
+        for(int j = 0; j < _handStationFilterMask[i].size(); j++)
+        {
+            unsigned int stationMask = 1;
+            for(int k = 0; k < _systemInfo[j]->numButtons; k++)
+            {
+                if(_handStationFilterMask[i][j] & stationMask)
+                {
+		    _genHandDefaultButtonEvents[i].push_back(_systemInfo[j]->genDefaultButtonEvents);
+
+                    handMaskOffset++;
+                    if(handMaskOffset == CVR_MAX_BUTTONS)
+                    {
+                        break;
+                    }
+                }
+                stationMask = stationMask << 1;
+            }
+
+            if(handMaskOffset == CVR_MAX_BUTTONS)
+            {
+                break;
+            }
+        }
+    }
+}
+
 
 GenComplexTrackingEvents::GenComplexTrackingEvents()
 {
@@ -1467,17 +1172,17 @@ GenComplexTrackingEvents::~GenComplexTrackingEvents()
 {
 }
 
-void GenComplexTrackingEvents::processEvent(TrackingInteractionEvent * tie)
+void GenComplexTrackingEvents::processEvent(TrackedButtonInteractionEvent * tie)
 {
-    if(tie->type == BUTTON_DOWN)
+    if(tie->getInteraction() == BUTTON_DOWN)
     {
-        if(!_lastClick[tie->hand][tie->button])
+        if(!_lastClick[tie->getHand()][tie->getButton()])
         {
             struct timeval * tv = new struct timeval;
             gettimeofday(tv, NULL);
-            _lastClick[tie->hand][tie->button] = tv;
+            _lastClick[tie->getHand()][tie->getButton()] = tv;
 
-            _doubleClicked[tie->hand][tie->button] = false;
+            _doubleClicked[tie->getHand()][tie->getButton()] = false;
         }
         else
         {
@@ -1486,30 +1191,28 @@ void GenComplexTrackingEvents::processEvent(TrackingInteractionEvent * tie)
             gettimeofday(&now, NULL);
 
             float interval = (now.tv_sec
-                    - _lastClick[tie->hand][tie->button]->tv_sec)
+                    - _lastClick[tie->getHand()][tie->getButton()]->tv_sec)
                     + ((now.tv_usec
-                            - _lastClick[tie->hand][tie->button]->tv_usec)
+                            - _lastClick[tie->getHand()][tie->getButton()]->tv_usec)
                             / 1000000.0);
 
             if(interval < _doubleClickTimeout
-                    && !_doubleClicked[tie->hand][tie->button])
+                    && !_doubleClicked[tie->getHand()][tie->getButton()])
             {
-                tie->type = BUTTON_DOUBLE_CLICK;
-                _doubleClicked[tie->hand][tie->button] = true;
+                tie->setInteraction(BUTTON_DOUBLE_CLICK);
+                _doubleClicked[tie->getHand()][tie->getButton()] = true;
             }
             else
             {
-                *_lastClick[tie->hand][tie->button] = now;
-                _doubleClicked[tie->hand][tie->button] = false;
+                *_lastClick[tie->getHand()][tie->getButton()] = now;
+                _doubleClicked[tie->getHand()][tie->getButton()] = false;
             }
         }
 
-        TrackingManager::instance()->_threadEvents.push(
-                                                        (InteractionEvent *)tie);
+        TrackingManager::instance()->_eventMap[tie->getEventType()].push_back(tie);
     }
     else
     {
-        TrackingManager::instance()->_threadEvents.push(
-                                                        (InteractionEvent *)tie);
+        TrackingManager::instance()->_eventMap[tie->getEventType()].push_back(tie);
     }
 }

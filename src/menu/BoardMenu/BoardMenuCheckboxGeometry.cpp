@@ -144,12 +144,10 @@ void BoardMenuCheckboxGeometry::updateGeometry()
 
 void BoardMenuCheckboxGeometry::processEvent(InteractionEvent * event)
 {
-    switch(event->type)
+    switch(event->getInteraction())
     {
 	case BUTTON_DOWN:
 	case BUTTON_DOUBLE_CLICK:
-	case MOUSE_BUTTON_DOWN:
-	case MOUSE_DOUBLE_CLICK:
 	    ((MenuCheckbox*)_item)->setValue(!((MenuCheckbox*)_item)->getValue());
 	    if(_item->getCallback())
 	    {

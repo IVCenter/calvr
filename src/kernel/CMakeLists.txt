@@ -38,6 +38,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/PostCullVisitor.h
     ${HEADER_PATH}/ThreadedLoader.h
     ${HEADER_PATH}/SceneObject.h
+    ${HEADER_PATH}/InteractionEvent.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -92,6 +93,7 @@ SET(LIB_SRC_FILES
     PostCullVisitor.cpp
     ThreadedLoader.cpp
     SceneObject.cpp
+    InteractionEvent.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES}

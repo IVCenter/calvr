@@ -84,11 +84,18 @@ class CVRKERNEL_EXPORT Navigation
          */
         float getScale();
 
+        enum NavImplementation
+        {
+            MOUSE_NAV = 0,
+            TRACKER_NAV,
+            NONE_NAV
+        };
+
     protected:
         Navigation();
         virtual ~Navigation();
         void processNav(NavMode nm, osg::Matrix & mat);
-        void processMouseNav(NavMode nm);
+        void processMouseNav(NavMode nm, MouseInteractionEvent * mie);
 
         static Navigation * _myPtr;     ///< static self pointer
 
@@ -103,7 +110,6 @@ class CVRKERNEL_EXPORT Navigation
         float _startScale;      ///< scale at start of event
         osg::Matrix _startXForm;    ///< object space transform at start of event
 
-        bool _mouseEventActive; ///< is a mouse navigation event started
         int _eventX;            ///< mouse viewport x coord at start of event
         int _eventY;            ///< mouse viewport y coord at start of event
 

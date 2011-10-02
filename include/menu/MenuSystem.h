@@ -57,7 +57,7 @@ class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
         /**
          * @brief Check the IsectInfo to see if it hit this menu
          */
-        virtual bool processIsect(IsectInfo & isect, bool mouse);
+        virtual bool processIsect(IsectInfo & isect, int hand);
 
         /**
          * @brief Function called after the Isect results are processed

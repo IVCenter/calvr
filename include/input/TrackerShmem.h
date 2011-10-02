@@ -52,28 +52,25 @@ class TrackerShmem : public TrackerBase
         TrackerShmem();
         virtual ~TrackerShmem();
 
-        virtual bool initBodyTrack();
-        virtual bool initButtonTrack();
+        virtual bool init(std::string tag);
 
-        virtual trackedBody * getBody(int station);
-        virtual unsigned int getButtonMask(int station);
-        virtual float getValuator(int station, int index);
+        virtual trackedBody * getBody(int index);
+        virtual unsigned int getButtonMask();
+        virtual float getValuator(int index);
 
         virtual int getNumBodies();
-        virtual int getNumValuators(int station = 0);
-        virtual int getNumValuatorStations();
-        virtual int getNumButtons(int station = 0);
-        virtual int getNumButtonStations();
+        virtual int getNumValuators();
+        virtual int getNumButtons();
 
-        virtual void update();
+        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
     protected:
         int _numBodies;
-        std::vector<int> _numVal;
-        std::vector<int> _numButtons;
+        int _numVal;
+        int _numButtons;
 
         std::vector<trackedBody *> _bodyList;
-        std::vector<unsigned int> _buttonMaskList;
-        std::vector<std::vector<float> > _valList;
+        unsigned int _buttonMask;
+        std::vector<float> _valList;
 
         control_header * _controller;
         tracker_header * _tracker;

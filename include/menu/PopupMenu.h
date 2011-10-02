@@ -101,7 +101,7 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
         virtual bool init();
         virtual void updateStart();
         virtual bool processEvent(InteractionEvent * event);
-        virtual bool processIsect(IsectInfo & isect, bool mouse);
+        virtual bool processIsect(IsectInfo & isect, int hand);
         virtual void updateEnd();
         virtual void itemDelete(MenuItem * item);
 

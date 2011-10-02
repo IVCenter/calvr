@@ -1,5 +1,6 @@
 #include <kernel/InteractionManager.h>
 #include <input/TrackingManager.h>
+#include <input/TrackerMouse.h>
 #include <menu/MenuManager.h>
 #include <kernel/ComController.h>
 #include <kernel/Navigation.h>
@@ -17,14 +18,6 @@
 
 using namespace cvr;
 
-osg::Matrix cvr::tie2mat(TrackingInteractionEvent * tie)
-{
-    osg::Matrix m, t;
-    t.makeTranslate(tie->xyz[0], tie->xyz[1], tie->xyz[2]);
-    m.makeRotate(osg::Quat(tie->rot[0], tie->rot[1], tie->rot[2], tie->rot[3]));
-    return m * t;
-}
-
 InteractionManager * InteractionManager::_myPtr = NULL;
 
 InteractionManager::InteractionManager()
@@ -34,21 +27,21 @@ InteractionManager::InteractionManager()
     //_mouseInfo = NULL;
     _mouseActive = false;
 
-    _mouseEvents = ConfigManager::getBool("Input.MouseEvents",true);
-    std::string tsystem = ConfigManager::getEntry("value","Input.TrackingSystem","NONE");
-    std::string bsystem = ConfigManager::getEntry("value","Input.ButtonSystem","NONE");
+    //_mouseEvents = ConfigManager::getBool("Input.MouseEvents",true);
+    //std::string tsystem = ConfigManager::getEntry("value","Input.TrackingSystem","NONE");
+    //std::string bsystem = ConfigManager::getEntry("value","Input.ButtonSystem","NONE");
 
     _mouseX = 0;
     _mouseY = 0;
 
-    if(tsystem == "MOUSE" || bsystem == "MOUSE")
+    /*if(tsystem == "MOUSE" || bsystem == "MOUSE")
     {
 	_mouseTracker = true;
     }
     else
     {
 	_mouseTracker = false;
-    }
+    }*/
 }
 
 InteractionManager::~InteractionManager()
@@ -66,6 +59,15 @@ InteractionManager * InteractionManager::instance()
 
 bool InteractionManager::init()
 {
+    _mouseHand = -1;
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+    {
+	if(TrackingManager::instance()->getHandTrackerType(i) == TrackerBase::MOUSE)
+	{
+	    _mouseHand = i;
+	    break;
+	}
+    }
     return true;
 }
 
@@ -94,6 +96,13 @@ void InteractionManager::handleEvents()
     _queueLock.unlock();
 
     TrackingManager::instance()->cleanupCurrentEvents();
+
+    //std::cerr << "Cleaning " << _mouseQueue.size() << " mouse events." << std::endl;
+    while(_mouseQueue.size())
+    {
+	delete _mouseQueue.front();
+	_mouseQueue.pop();
+    }
 }
 
 void InteractionManager::handleEvent(InteractionEvent * event)
@@ -129,38 +138,6 @@ void InteractionManager::addEvent(InteractionEvent * event)
 
     _queueLock.unlock();
 }
-
-/*void InteractionManager::setMouseInfo(MouseInfo & mi)
-{
-    if(!_mouseInfo)
-    {
-        _mouseInfo = new MouseInfo;
-        _mouseActive = true;
-    }
-    *_mouseInfo = mi;
-
-    float worldxOffset, worldyOffset;
-
-    float frac = ((float)_mouseInfo->x) / ((float)_mouseInfo->viewportX);
-    frac = frac - 0.5;
-    worldxOffset = frac * _mouseInfo->screenWidth;
-
-    frac = ((float)(_mouseInfo->viewportY - _mouseInfo->y))
-            / ((float)_mouseInfo->viewportY);
-    frac = frac - 0.5;
-    worldyOffset = frac * _mouseInfo->screenHeight;
-
-    osg::Vec3 mousePos = _mouseInfo->screenCenter + osg::Vec3(worldxOffset, 0,
-                                                              worldyOffset);
-    osg::Vec3 headPos = _mouseInfo->eyeOffset * TrackingManager::instance()->getHeadMat(mi.head);
-
-    osg::Vec3 v = mousePos - headPos;
-    v.normalize();
-
-    _mouseMat.makeRotate(osg::Vec3(0, 1, 0), v);
-    _mouseMat = _mouseMat * osg::Matrix::translate(headPos);
-
-}*/
 
 void InteractionManager::setMouse(int x, int y)
 {
@@ -238,11 +215,6 @@ osg::Matrix & InteractionManager::getMouseMat()
     return _mouseMat;
 }
 
-/*MouseInfo * InteractionManager::getMouseInfo()
-{
-    return _mouseInfo;
-}*/
-
 int InteractionManager::getMouseX()
 {
     return _mouseX;
@@ -265,49 +237,38 @@ void InteractionManager::processMouse()
     for(int i = 0; i < 10; i++)
     {
         if((_lastMouseButtonMask & bit) != (_mouseButtonMask & bit))
-        {
-	    if(_mouseTracker)
+	{
+	    MouseInteractionEvent * buttonEvent = new MouseInteractionEvent();
+	    if(_lastMouseButtonMask & bit)
 	    {
-		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
-		if(_lastMouseButtonMask & bit)
-		{
-		    tie->type = BUTTON_UP;
-		}
-		else
-		{
-		    tie->type = BUTTON_DOWN;
-		}
-		tie->button = i;
-		tie->hand = 0;
-		osg::Vec3 pos = _mouseMat.getTrans();
-		osg::Quat rot = _mouseMat.getRotate();
-		tie->xyz[0] = pos.x();
-		tie->xyz[1] = pos.y();
-		tie->xyz[2] = pos.z();
-		tie->rot[0] = rot.x();
-		tie->rot[1] = rot.y();
-		tie->rot[2] = rot.z();
-		tie->rot[3] = rot.w();
-		addEvent(tie);
+		buttonEvent->setInteraction(BUTTON_UP);
 	    }
-	    else if(_mouseEvents)
+	    else
 	    {
-		MouseInteractionEvent * buttonEvent = new MouseInteractionEvent;
-		if(_lastMouseButtonMask & bit)
-		{
-		    buttonEvent->type = MOUSE_BUTTON_UP;
-		}
-		else
-		{
-		    buttonEvent->type = MOUSE_BUTTON_DOWN;
-		}
-		buttonEvent->button = i;
-		buttonEvent->x = _mouseX;
-		buttonEvent->y = _mouseY;
-		buttonEvent->transform = _mouseMat;
-		addEvent(buttonEvent);
+		buttonEvent->setInteraction(BUTTON_DOWN);
 	    }
-        }
+
+	    //TODO: make config file flag
+	    // makes the right click button 1
+	    if(i == 1)
+	    {
+		buttonEvent->setButton(2);
+	    }
+	    else if (i == 2)
+	    {
+		buttonEvent->setButton(1);
+	    }
+	    else
+	    {
+		buttonEvent->setButton(i);
+	    }
+	    buttonEvent->setX(_mouseX);
+	    buttonEvent->setY(_mouseY);
+	    buttonEvent->setTransform(_mouseMat);
+	    buttonEvent->setHand(_mouseHand);
+	    buttonEvent->setMasterScreenNum(CVRViewer::instance()->getActiveMasterScreen());
+	    _mouseQueue.push(buttonEvent);
+	}
         bit = bit << 1;
     }
     _lastMouseButtonMask = _mouseButtonMask;
@@ -324,35 +285,30 @@ void InteractionManager::createMouseDragEvents()
     for(int i = 0; i < 10; i++)
     {
         if((_mouseButtonMask & bit))
-        {
-	    if(_mouseTracker)
+	{
+	    MouseInteractionEvent * dEvent = new MouseInteractionEvent();
+	    dEvent->setInteraction(BUTTON_DRAG);
+	    //TODO: make config file flag
+	    // makes the right click button 1
+	    if(i == 1)
 	    {
-		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
-		tie->type = BUTTON_DRAG;
-		tie->button = i;
-		tie->hand = 0;
-		osg::Vec3 pos = _mouseMat.getTrans();
-		osg::Quat rot = _mouseMat.getRotate();
-		tie->xyz[0] = pos.x();
-		tie->xyz[1] = pos.y();
-		tie->xyz[2] = pos.z();
-		tie->rot[0] = rot.x();
-		tie->rot[1] = rot.y();
-		tie->rot[2] = rot.z();
-		tie->rot[3] = rot.w();
-		addEvent(tie);
+		dEvent->setButton(2);
 	    }
-	    else if(_mouseEvents)
+	    else if (i == 2)
 	    {
-		MouseInteractionEvent * dEvent = new MouseInteractionEvent;
-		dEvent->type = MOUSE_DRAG;
-		dEvent->button = i;
-		dEvent->x = _mouseX;
-		dEvent->y = _mouseY;
-		dEvent->transform = _mouseMat;
-		addEvent(dEvent);
+		dEvent->setButton(1);
 	    }
-        }
+	    else
+	    {
+		dEvent->setButton(i);
+	    }
+	    dEvent->setX(_mouseX);
+	    dEvent->setY(_mouseY);
+	    dEvent->setTransform(_mouseMat);
+	    dEvent->setHand(_mouseHand);
+	    dEvent->setMasterScreenNum(CVRViewer::instance()->getActiveMasterScreen());
+	    _mouseQueue.push(dEvent);
+	}
         bit = bit << 1;
     }
 }
@@ -368,38 +324,34 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
     for(int i = 0; i < 10; i++)
     {
         if((button & bit))
-        {
-	    if(_mouseTracker)
+	{
+	    MouseInteractionEvent * dcEvent = new MouseInteractionEvent();
+	    dcEvent->setInteraction(BUTTON_DOUBLE_CLICK);
+	    //TODO: make config file flag
+	    // makes the right click button 1
+	    if(i == 1)
 	    {
-		TrackingInteractionEvent * tie = new TrackingInteractionEvent;
-		tie->type = BUTTON_DOUBLE_CLICK;
-		tie->button = i;
-		tie->hand = 0;
-		osg::Vec3 pos = _mouseMat.getTrans();
-		osg::Quat rot = _mouseMat.getRotate();
-		tie->xyz[0] = pos.x();
-		tie->xyz[1] = pos.y();
-		tie->xyz[2] = pos.z();
-		tie->rot[0] = rot.x();
-		tie->rot[1] = rot.y();
-		tie->rot[2] = rot.z();
-		tie->rot[3] = rot.w();
-		addEvent(tie);
+		dcEvent->setButton(2);
 	    }
-	    else if(_mouseEvents)
+	    else if (i == 2)
 	    {
-		MouseInteractionEvent * dcEvent = new MouseInteractionEvent;
-		dcEvent->type = MOUSE_DOUBLE_CLICK;
-		dcEvent->button = i;
-		dcEvent->x = _mouseX;
-		dcEvent->y = _mouseY;
-		dcEvent->transform = _mouseMat;
-		addEvent(dcEvent);
+		dcEvent->setButton(1);
 	    }
-            _mouseButtonMask |= button;
-            _lastMouseButtonMask |= button;
-            return;
-        }
+	    else
+	    {
+		dcEvent->setButton(i);
+	    }
+	    dcEvent->setX(_mouseX);
+	    dcEvent->setY(_mouseY);
+	    dcEvent->setTransform(_mouseMat);
+	    dcEvent->setHand(_mouseHand);
+	    dcEvent->setMasterScreenNum(CVRViewer::instance()->getActiveMasterScreen());
+	    _mouseQueue.push(dcEvent);
+
+	    _mouseButtonMask |= button;
+	    _lastMouseButtonMask |= button;
+	    return;
+	}
         bit = bit << 1;
     }
 }
