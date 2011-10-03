@@ -224,8 +224,8 @@ bool TrackingManager::init()
 	std::stringstream handss;
 	handss << "Input.Hand" << i;
 
-	_handAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",handss.str(),0),
-	                                          ConfigManager::getInt("body",handss.str(),0)));
+	_handAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",handss.str() + ".Address",0),
+	                                          ConfigManager::getInt("body",handss.str() + ".Address",0)));
 	_threadHandButtonMasks.push_back(0);
 	_threadLastHandButtonMask.push_back(0);
         _threadHandMatList.push_back(osg::Matrix());
@@ -255,7 +255,7 @@ bool TrackingManager::init()
     for(int i = 0; i < _numHeads; i++)
     {
 	std::stringstream headss;
-	headss << "Input.Head" << i;
+	headss << "Input.Head" << i << "Address";
 
 	_headAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",headss.str(),0),
 	                                          ConfigManager::getInt("body",headss.str(),0)));

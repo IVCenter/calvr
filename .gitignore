@@ -5,6 +5,7 @@ doc
 CMakeCache.txt
 *vcxproj*
 *~
+.*.swp
 *.opensdf
 *.sdf
 *.sln
