@@ -462,6 +462,11 @@ void TrackingManager::update()
     TrackerBase::TrackedBody * tb;
     for(int i = 0; i < _numHeads; i++)
     {
+	if(_headAddress[i].first < 0 || _headAddress[i].first >= _systems.size())
+	{
+	    continue;
+	}
+
         if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))
         {
             tb = _systems[_headAddress[i].first]->getBody(_headAddress[i].second);
@@ -484,6 +489,11 @@ void TrackingManager::update()
 
     for(int i = 0; i < _numHands; i++)
     {
+	if(_handAddress[i].first < 0 || _handAddress[i].first >= _systems.size())
+	{
+	    continue;
+	}
+
 	if(_systems[_handAddress[i].first] && _systems[_handAddress[i].first]->getBody(_handAddress[i].second))
         {
             tb = _systems[_handAddress[i].first]->getBody(_handAddress[i].second);

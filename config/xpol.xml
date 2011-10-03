@@ -1043,7 +1043,60 @@
  
     <Stereo enable="ON" value="ON" />
 
-    <Input> 
+    <Input>
+     <Threaded FPS="60.0" />
+     <TrackingSystem0 value="SHMEM">
+       <Offset x="0" y="0" z="-1663" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="4" />
+       <NumButtons value="14" />
+       <NumValuators value="8" />
+
+       <Body0>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body0>
+       <Body1>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body1>
+       <Body2>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body2>
+       <Body3>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body3>
+     </TrackingSystem0>
+
+     <TrackingSystem1 value="MOUSE">
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="0" />
+     </TrackingSystem1>
+
+     <NumHeads value="1" />
+     <Head0Address system="0" body="0" />
+     <Head1Address system="0" body="3" />
+
+     <NumHands value="2" />
+     <Hand0>
+       <Address system="0" body="1" />
+       <ButtonMask system0="0xFFFF" system1="0x0" />
+     </Hand0>
+     <Hand1>
+       <Address system="1" body="0" />
+       <ButtonMask system0="0x00" system1="0xFFFF" />
+     </Hand1>
+
+     <NumValuators value="2" />
+     <Valuator0 station="0" number="0" />
+     <Valuator1 station="0" number="1" />
+   </Input>
+
+    <!--Input> 
     
       <NumHands value="1" />
       <NumHeads value="1" />
@@ -1065,12 +1118,6 @@
       <ButtonSystem value="SHMEM" />
       <TrackingSystem value="SHMEM" />
       <MouseNav value="ON" />
-<!--
-
-      <ButtonSystem value="MOUSE" />
-      <TrackingSystem value="MOUSE" />
-      <MouseNav value="ON" />
--->
 
       <VRPN>
         <Server value="DTrack@127.0.0.1" />
@@ -1087,17 +1134,11 @@
 
       <HeadDevice>
         <Offset x="0" y="0" z="0" />
-        <!--<Orientation h="0" p="-90" r="0" />-->
-        <!-- correct odd ART orientation -->
-        <!--<Orientation h="45" p="0" r="-8" />-->
-        <!--<Orientation h="180" p="0" r="0" />-->
         <Orientation h="0" p="0" r="0" />
       </HeadDevice>
 
       <HandDevice>
         <Offset x="0" y="0" z="0" />
-        <!--<Orientation h="0" p="-90" r="0" />-->
-        <!--<Orientation h="-120" p="-50" r="0" />-->
         <Orientation h="0" p="0" r="0" />
       </HandDevice>
 
@@ -1110,7 +1151,7 @@
         <BypassButton value="1" />
       </Filter>
 
-    </Input>
+    </Input-->
  
    <MenuSystem type="BOARDMENU" useHints="false">
     <PrimaryHand value="0" />
