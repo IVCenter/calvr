@@ -84,6 +84,9 @@ class CVRKERNEL_EXPORT Navigation
          */
         float getScale();
 
+        /**
+         * @brief Navigation Implementation types
+         */
         enum NavImplementation
         {
             MOUSE_NAV = 0,

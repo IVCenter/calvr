@@ -80,7 +80,7 @@ bool TrackerShmem::init(std::string tag)
     _numBodies = _tracker->count;
     for(int i = 0; i < _numBodies; i++)
     {
-        trackedBody * tb = new trackedBody;
+        TrackedBody * tb = new TrackedBody;
         tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0;
         _bodyList.push_back(tb);
     }
@@ -136,7 +136,7 @@ bool TrackerShmem::init(std::string tag)
     return true;
 }
 
-trackedBody * TrackerShmem::getBody(int index)
+TrackerBase::TrackedBody * TrackerShmem::getBody(int index)
 {
     if(index < 0 || index >= _numBodies)
     {

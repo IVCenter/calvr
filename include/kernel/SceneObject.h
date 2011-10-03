@@ -302,11 +302,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         virtual void leaveCallback(int handID) {}
 
         /**
-         * @brief Callback for tracker/mouse events not handled by the default move/navigation operations
-         * @param type InteractionType for this event
-         * @param hand Hand number for this event, if >= 0 it is a wand, if -1 it is the mouse
-         * @param button Button for this event
-         * @param mat Current orientation of the pointer
+         * @brief Callback for events not handled by the default move/navigation operations
          * @return Return true if the event is consumed
          */
         virtual bool eventCallback(InteractionEvent * ie) { return false; }

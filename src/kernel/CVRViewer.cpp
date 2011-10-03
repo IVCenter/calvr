@@ -3,10 +3,9 @@
 #include <kernel/ScreenConfig.h>
 #include <kernel/InteractionManager.h>
 #include <kernel/SceneManager.h>
-#include <kernel/PreCullVisitor.h>
-#include <kernel/PostCullVisitor.h>
 #include <kernel/NodeMask.h>
 #include <kernel/ScreenBase.h>
+#include <kernel/CVRCullVisitor.h>
 #include <config/ConfigManager.h>
 
 #include <osg/Version>
@@ -1053,7 +1052,7 @@ void CVRViewer::renderingTraversals()
 
     if(_cullMode == CALVR)
     {
-	PreCullVisitor precv;
+	CVRCullVisitor::PreCullVisitor precv;
 	SceneManager::instance()->getScene()->accept(precv);
     }
 
@@ -1154,7 +1153,7 @@ void CVRViewer::renderingTraversals()
 
     if(_cullMode == CALVR)
     {
-	PostCullVisitor postcv;
+	CVRCullVisitor::PostCullVisitor postcv;
 	SceneManager::instance()->getScene()->accept(postcv);
     }
 

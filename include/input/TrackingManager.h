@@ -123,10 +123,20 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         osg::Matrix & getUnfrozenHeadMat(int head = 0);
 
+        /**
+         * @brief Get the number of tracking systems that are being managed
+         */
         int getNumTrackingSystems();
 
+        /**
+         * @brief Get the tracker type used by the tracking system driving
+         * the given hand
+         */
         TrackerBase::TrackerType getHandTrackerType(int hand);
 
+        /**
+         * @brief Get the navigation type to use for a given hand
+         */
         Navigation::NavImplementation getHandNavType(int hand);
 
         /**
@@ -164,8 +174,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         bool getUpdateHeadTracking();
 
-        void cleanupCurrentEvents();
-
     protected:
         TrackingManager();
         virtual ~TrackingManager();
@@ -200,49 +208,55 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void flushEvents();
 
+        /**
+         * @brief Init which hand buttons should have default button events
+         * generated
+         */
         void setGenHandDefaultButtonEvents();
 
+        /**
+         * @brief The information associated with a tracking system
+         */
         struct TrackingSystemInfo
         {
-            int numBodies;
-            int numButtons;
-            int numVal;
-            osg::Matrix systemTransform;
-            std::vector<osg::Matrix> bodyRotations;
-            std::vector<osg::Vec3> bodyTranslations;
-            Navigation::NavImplementation navImp;
-            TrackerBase::TrackerType trackerType;
-            SceneManager::PointerGraphicType defaultPointerType;
-            bool genDefaultButtonEvents;
-            bool thread;
+            int numBodies; ///< number of tracked bodies
+            int numButtons; ///< number of buttons
+            int numVal; ///< number of valuators
+            osg::Matrix systemTransform; ///< transform on the entire tracking system
+            std::vector<osg::Matrix> bodyRotations; ///< rotation adjustment for each tracked body
+            std::vector<osg::Vec3> bodyTranslations; ///< position adjustment for each tracked body
+            Navigation::NavImplementation navImp; ///< navigation type for the system
+            TrackerBase::TrackerType trackerType; ///< system type
+            SceneManager::PointerGraphicType defaultPointerType; ///< type of graphic to use for pointer
+            bool genDefaultButtonEvents; ///< should default buttons events be generated
+            bool thread; ///< should this system be polled in a thread
         };
 
         static TrackingManager * _myPtr; ///< Static self pointer
 
         std::vector<TrackerBase*> _systems; ///< List of all tracking systems
-        std::vector<TrackingSystemInfo*> _systemInfo;
+        std::vector<TrackingSystemInfo*> _systemInfo; ///< List of information for each system
 
-        bool _debugOutput;
-        bool _updateHeadTracking;
+        bool _debugOutput; ///< should debug output be printed
+        bool _updateHeadTracking; ///< is head tracking being updated
 
         bool _threaded; ///< is there a thread polling the tracker
-        float _threadFPS;
-        bool _threadQuit;
-        OpenThreads::Mutex _quitLock;
+        float _threadFPS; ///< target frames per second of thread polling a tracking system
+        bool _threadQuit; ///< quit flag for thread
+        OpenThreads::Mutex _quitLock; ///< lock to protect quit flag
         OpenThreads::Mutex _updateLock; ///< lock to protect multi-threaded operations
-        std::vector<unsigned int> _threadHandButtonMasks;
-        std::vector<unsigned int> _threadLastHandButtonMask; ///< list of last sampled button mask for each hand
-        //std::vector<osg::Matrix> _threadHeadMatList;
-        std::vector<osg::Matrix> _threadHandMatList;
+        std::vector<unsigned int> _threadHandButtonMasks; ///< list of button mask for each hand in threaded update
+        std::vector<unsigned int> _threadLastHandButtonMask; ///< list of last sampled button mask for each hand in threaded update
+        std::vector<osg::Matrix> _threadHandMatList; ///< list of hand transforms for each hand in threaded update
 
         int _numHands; ///< number of hands in system
         int _numHeads; ///< number of heads in system
-        std::vector<std::pair<int,int> > _handAddress;
-        std::vector<std::pair<int,int> > _headAddress;
+        std::vector<std::pair<int,int> > _handAddress; ///< address of each hand - system, index pair
+        std::vector<std::pair<int,int> > _headAddress; ///< address of each head - system, index pair
 
-        int _totalBodies;
-        int _totalButtons;
-        int _totalValuators;
+        int _totalBodies; ///< total number of all tracked bodies in all systems
+        int _totalButtons; ///< total number of buttons in all systems
+        int _totalValuators; ///< total number of valuators in all systems
 
         std::vector<osg::Matrix> _headMatList; ///< list of current head matrix transforms
         std::vector<osg::Matrix> _lastUpdatedHeadMatList; ///< used to hold the frozen head positition when head tracking is stopped
@@ -253,17 +267,11 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
 
-        std::vector<std::vector<bool> > _genHandDefaultButtonEvents;
+        std::vector<std::vector<bool> > _genHandDefaultButtonEvents; ///< lookup to see if a hand button should have default events generated
 
         GenComplexTrackingEvents * genComTrackEvents; ///< class used to create complex interaction events by processing simple ones
 
-
-        std::map<int,std::list<InteractionEvent*> > _eventMap;
-        //std::queue<InteractionEvent *,std::list<InteractionEvent *> > _threadEvents; ///< queue of interaction events generated in threaded mode
-        
-
-        //trackedBody * _defaultHead; ///< default value for head orientation
-        //trackedBody * _defaultHand; ///< default value for hand orientation
+        std::map<int,std::list<InteractionEvent*> > _eventMap; ///< map of events generated by the tracking system, used for cluster distribution
 };
 
 /**
@@ -275,13 +283,17 @@ class CVRINPUT_EXPORT GenComplexTrackingEvents
         GenComplexTrackingEvents();
         ~GenComplexTrackingEvents();
 
+        /**
+         * @brief Takes in tracking events and generated more complex events,
+         * like double clicks
+         */
         void processEvent(TrackedButtonInteractionEvent * tie);
     protected:
 
-        float _doubleClickTimeout;
+        float _doubleClickTimeout; ///< time to wait for a double click
 
-        std::vector<std::map<int,timeval *> > _lastClick;
-        std::vector<std::map<int,bool> > _doubleClicked;
+        std::vector<std::map<int,timeval *> > _lastClick; ///< time of last click
+        std::vector<std::map<int,bool> > _doubleClicked; ///< double click state
 };
 
 }

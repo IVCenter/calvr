@@ -32,6 +32,9 @@ class CVRKERNEL_EXPORT SceneManager
     public:
         virtual ~SceneManager();
 
+        /**
+         * @brief Types of graphics to use to represent a pointer
+         */
         enum PointerGraphicType
         {
             CONE = 0,

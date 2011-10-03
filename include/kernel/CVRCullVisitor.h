@@ -5,6 +5,7 @@
 
 #include <osgUtil/CullVisitor>
 #include <osg/BoundingBox>
+#include <osg/NodeVisitor>
 
 #include <iostream>
 
@@ -63,6 +64,27 @@ class CVRCullVisitor : public osgUtil::CullVisitor
             }
             return CullStack::isCulled(bb);
         }
+
+        class PreCullVisitor : public osg::NodeVisitor
+        {
+            public:
+                PreCullVisitor();
+
+                virtual void apply(osg::Node& node);
+                virtual void apply(osg::Group& group);
+
+            protected:
+                bool _setMask;
+        };
+
+        class PostCullVisitor : public osg::NodeVisitor
+        {
+            public:
+                PostCullVisitor();
+
+                virtual void apply(osg::Node& node);
+                virtual void apply(osg::Group& group);
+        };
 
     protected:
         bool _cullingStatus;

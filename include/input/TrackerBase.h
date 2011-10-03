@@ -18,20 +18,6 @@ namespace cvr
 struct InteractionEvent;
 
 /**
- * @brief Internal representation of a tracked body position and rotation
- */
-struct trackedBody
-{
-        float x; ///< position x
-        float y; ///< position y
-        float z; ///< position z
-        float qx; ///< rotation x (quat)
-        float qy; ///< rotation y (quat)
-        float qz; ///< rotation z (quat)
-        float qw; ///< rotation w (quat)
-};
-
-/**
  * @brief Virtual base class for a tracker.
  *
  * Handles tracking of 6dof bodies and button updates.
@@ -47,6 +33,23 @@ class TrackerBase
         {
         }
 
+        /**
+         * @brief Internal representation of a tracked body position and rotation
+         */
+        struct TrackedBody
+        {
+            float x; ///< position x
+            float y; ///< position y
+            float z; ///< position z
+            float qx; ///< rotation x (quat)
+            float qy; ///< rotation y (quat)
+            float qz; ///< rotation z (quat)
+            float qw; ///< rotation w (quat)
+        };
+
+        /**
+         * @brief Types for tracking systems
+         */
         enum TrackerType
         {
             TRACKER = 0,
@@ -54,13 +57,18 @@ class TrackerBase
             INVALID
         };
 
+        /**
+         * @brief Initialization funtion for the tracking system
+         * @param tag Base path to the tracking systems xml tag
+         * @return Returns true if init went ok
+         */
         virtual bool init(std::string tag) = 0;
 
         /**
          * @brief Get the current value of a tracked body with a given station number
          * @param index Index of tracked body
          */
-        virtual trackedBody * getBody(int index) = 0;
+        virtual TrackedBody * getBody(int index) = 0;
 
         /**
          * @brief Get the mask representing the current button state for a button station
@@ -93,14 +101,33 @@ class TrackerBase
 
         /**
          * @brief Update body/button information 
+         * @param eventMap map to add any extra events into, indexed by cvr::InteractionEventType
          */
         virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap) = 0;
 
+        /**
+         * @brief Get the type for this tracking system
+         */
         virtual TrackerType getTrackerType() { return TRACKER; }
+
+        /**
+         * @brief Get the navigation type for this tracking system
+         */
         virtual Navigation::NavImplementation getNavImplementation() { return Navigation::TRACKER_NAV; }
+
+        /**
+         * @brief Get the type for pointer graphic to use for this system
+         */
         virtual SceneManager::PointerGraphicType getPointerType() { return SceneManager::CONE; }
 
+        /**
+         * @brief Get if this tracking system should be polled in a thread
+         */
         virtual bool thread() { return true; }
+
+        /**
+         * @brief Get if default button events should be generated for this system
+         */
         virtual bool genDefaultButtonEvents() { return true; }
 };
 

@@ -41,6 +41,8 @@ class MenuBase
 
         /**
          * @brief Check to see if this isect is with an item in this menu
+         * @param isect hit information from the intersection
+         * @param hand Hand number for this intersection
          * @return true if the isect is in the menu, makes this menu the active menu
          */
         virtual bool processIsect(IsectInfo & isect, int hand) = 0;

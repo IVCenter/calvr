@@ -1,3 +1,6 @@
+/**
+ * @file TrackerSlave.h
+ */
 #ifndef CALVR_TRACKER_SLAVE_H
 #define CALVR_TRACKER_SLAVE_H
 
@@ -8,6 +11,9 @@
 namespace cvr
 {
 
+/**
+ * @brief Tracker that runs on the slave nodes
+ */
 class TrackerSlave : public TrackerBase
 {
     public:
@@ -16,7 +22,7 @@ class TrackerSlave : public TrackerBase
 
         virtual bool init(std::string tag);
 
-        virtual trackedBody * getBody(int index);
+        virtual TrackedBody * getBody(int index);
         virtual unsigned int getButtonMask();
         virtual float getValuator(int index);
 
@@ -26,15 +32,15 @@ class TrackerSlave : public TrackerBase
 
         virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
 
-        void readValues(trackedBody * tb, unsigned int * buttons, float * vals);
+        void readValues(TrackedBody * tb, unsigned int * buttons, float * vals);
     protected:
-        int _numBodies;
-        int _numButtons;
-        int _numVals;
+        int _numBodies; ///< number of bodies
+        int _numButtons; ///< number of buttons
+        int _numVals; ///< number of valuators
 
-        trackedBody * _bodyArray;
-        unsigned int _buttonMask;
-        float * _valArray;
+        TrackedBody * _bodyArray; ///< array of tracked body info
+        unsigned int _buttonMask; ///< current button mask
+        float * _valArray; ///< array of valuator values
 };
 
 }

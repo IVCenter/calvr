@@ -21,7 +21,7 @@ bool buttonDebug;
 bool bodyDebug;
 int debugStation;
 
-struct cvr::DeviceInfo
+struct cvr::TrackerVRPN::DeviceInfo
 {
         std::string name;
         vrpn_Tracker_Remote *tkr;
@@ -49,11 +49,16 @@ void VRPN_CALLBACK handleBodyInfo (void *userdata, const vrpn_TRACKERCB t)
      t.quat[0], t.quat[1], t.quat[2], t.quat[3]);
      }*/
 
-    std::vector<trackedBody *> * tbList = (std::vector<trackedBody *> *) userdata;
+    std::vector<TrackerBase::TrackedBody *> * tbList = (std::vector<TrackerBase::TrackedBody *> *) userdata;
+
+    if(t.sensor >= tbList->size())
+    {
+	return;
+    }
 
     static const float m2mm = 1000.0;
 
-    trackedBody * tb = tbList->at(t.sensor);
+    TrackerBase::TrackedBody * tb = tbList->at(t.sensor);
     tb->x = t.pos[0] * m2mm;
     tb->y = t.pos[1] * m2mm;
     tb->z = t.pos[2] * m2mm;
@@ -151,7 +156,7 @@ TrackerVRPN::~TrackerVRPN()
 {
 }
 
-bool TrackerVRPN::initBodyTrack()
+bool TrackerVRPN::init(std::string tag)
 {
     if(!_device)
     {
@@ -161,7 +166,11 @@ bool TrackerVRPN::initBodyTrack()
         _device->ana = NULL;
     }
 
-    _device->name = ConfigManager::getEntry("Input.VRPN.Server");
+    _numBodies = ConfigManager::getInt("value",tag + ".NumBodies",0);
+    _numButtons = ConfigManager::getInt("value",tag + ".NumButtons",0);
+    _numVal = ConfigManager::getInt("value",tag + ".NumValuators",0);
+
+    _device->name = ConfigManager::getEntry(tag + ".VRPN.Server");
     if(_device->name.empty())
     {
         std::cerr << "No VRPN server specified." << std::endl;
@@ -176,34 +185,13 @@ bool TrackerVRPN::initBodyTrack()
         return false;
     }
 
-    _numBodies = ConfigManager::getInt("Input.VRPN.NumBodies", 2);
     _device->tkr->register_change_handler(&_bodyList, handleBodyInfo);
 
     for(int i = 0; i < _numBodies; i++)
     {
-        trackedBody * tb = new trackedBody;
+        TrackedBody * tb = new TrackedBody;
         tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0.0;
         _bodyList.push_back(tb);
-    }
-
-    return true;
-}
-
-bool TrackerVRPN::initButtonTrack()
-{
-    if(!_device)
-    {
-        _device = new DeviceInfo;
-        _device->tkr = NULL;
-        _device->btn = NULL;
-        _device->ana = NULL;
-    }
-
-    _device->name = ConfigManager::getEntry("Input.VRPN.Server");
-    if(_device->name.empty())
-    {
-        std::cerr << "No VRPN server specified." << std::endl;
-        return false;
     }
 
     _device->btn = new vrpn_Button_Remote(_device->name.c_str());
@@ -214,9 +202,6 @@ bool TrackerVRPN::initButtonTrack()
         std::cerr << "Error setting up VRPN Controller." << std::endl;
         return false;
     }
-
-    _numButtons = ConfigManager::getInt("Input.VRPN.NumButtons", 3);
-    _numVal = ConfigManager::getInt("Input.VRPN.NumValuators", 2);
 
     _device->btn->register_change_handler(&_buttonMask, handleButton);
     _device->ana->register_change_handler(&_valList, handleAnalog);
@@ -229,23 +214,22 @@ bool TrackerVRPN::initButtonTrack()
     return true;
 }
 
-trackedBody * TrackerVRPN::getBody(int station)
+TrackerBase::TrackedBody * TrackerVRPN::getBody(int index)
 {
-    if(station < 0 || station >= _numBodies)
+    if(index < 0 || index >= _numBodies)
     {
         return NULL;
     }
 
-    return _bodyList[station];
+    return _bodyList[index];
 }
 
-unsigned int TrackerVRPN::getButtonMask(int station)
+unsigned int TrackerVRPN::getButtonMask()
 {
-    (void)station;
     return _buttonMask;
 }
 
-float TrackerVRPN::getValuator(int station, int index)
+float TrackerVRPN::getValuator(int index)
 {
     if(index < 0 || index >= _numVal)
     {
@@ -260,27 +244,17 @@ int TrackerVRPN::getNumBodies()
     return _numBodies;
 }
 
-int TrackerVRPN::getNumValuators(int station)
+int TrackerVRPN::getNumValuators()
 {
     return _numVal;
 }
 
-int TrackerVRPN::getNumValuatorStations()
-{
-    return 1;
-}
-
-int TrackerVRPN::getNumButtons(int station)
+int TrackerVRPN::getNumButtons()
 {
     return _numButtons;
 }
 
-int TrackerVRPN::getNumButtonStations()
-{
-    return 1;
-}
-
-void TrackerVRPN::update()
+void TrackerVRPN::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
     if(_device)
     {

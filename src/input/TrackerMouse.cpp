@@ -31,7 +31,7 @@ bool TrackerMouse::init(std::string tag)
     return true;
 }
 
-trackedBody * TrackerMouse::getBody(int index)
+TrackerBase::TrackedBody * TrackerMouse::getBody(int index)
 {
     if(index != 0)
     {

@@ -69,7 +69,7 @@ class BoardMenu : public MenuBase
         /**
          * @brief Check to see if this isect is with an item in this menu
          * @param isect geometry intersection to check
-         * @param mouse is this intersection from the mouse
+         * @param hand Hand for this intersection
          */
         virtual bool processIsect(IsectInfo & isect, int hand);
 

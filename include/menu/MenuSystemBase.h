@@ -47,7 +47,7 @@ class MenuSystemBase
         /**
          * @brief Check the IsectInfo to see if it hit this menu
          * @param isect geometry intersection to process
-         * @param mouse is this a mouse intersection
+         * @param hand Hand for this intersection
          * @return return true if this menu claims the intersect
          */
         virtual bool processIsect(IsectInfo & isect, int hand) = 0;

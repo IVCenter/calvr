@@ -355,7 +355,7 @@ void TrackingManager::update()
 
     _updateLock.lock();
 
-    int totalData = _totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int) + _totalValuators * sizeof(float);
+    int totalData = _totalBodies * sizeof(struct TrackerBase::TrackedBody) + _systemInfo.size() * sizeof(unsigned int) + _totalValuators * sizeof(float);
     char * data = NULL;
     if(totalData)
     {
@@ -365,10 +365,10 @@ void TrackingManager::update()
     //std::cerr << "Update Called." << std::endl;
     if(ComController::instance()->isMaster())
     {
-	static trackedBody * zeroBody = NULL;
+	static TrackerBase::TrackedBody * zeroBody = NULL;
 	if(!zeroBody)
 	{
-	    zeroBody = new trackedBody;
+	    zeroBody = new TrackerBase::TrackedBody;
 	    zeroBody->x = 0;
 	    zeroBody->y = 0;
 	    zeroBody->z = 0;
@@ -379,9 +379,9 @@ void TrackingManager::update()
 	    zeroBody->qw = q.w();
 	}
 
-	trackedBody * tbptr = (trackedBody*)data;
-	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct trackedBody)));
-	float * valptr = (float *)(data + (_totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int)));
+	TrackerBase::TrackedBody * tbptr = (TrackerBase::TrackedBody*)data;
+	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct TrackerBase::TrackedBody)));
+	float * valptr = (float *)(data + (_totalBodies * sizeof(struct TrackerBase::TrackedBody) + _systemInfo.size() * sizeof(unsigned int)));
 	for(int i = 0; i < _systems.size(); i++)
 	{
 	    if(_systems[i])
@@ -392,7 +392,7 @@ void TrackingManager::update()
 		}
 		for(int j = 0; j < _systemInfo[i]->numBodies; j++)
 		{
-		    trackedBody * tb = _systems[i]->getBody(j);
+		    TrackerBase::TrackedBody * tb = _systems[i]->getBody(j);
 		    if(tb)
 		    {
 			*tbptr = *tb;
@@ -436,9 +436,9 @@ void TrackingManager::update()
     else
     {
 	ComController::instance()->readMaster(data,totalData);
-	trackedBody * tbptr = (trackedBody*)data;
-	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct trackedBody)));
-	float * valptr = (float *)(data + (_totalBodies * sizeof(struct trackedBody) + _systemInfo.size() * sizeof(unsigned int)));
+	TrackerBase::TrackedBody * tbptr = (TrackerBase::TrackedBody*)data;
+	unsigned int * buttonptr = (unsigned int *)(data + (_totalBodies * sizeof(struct TrackerBase::TrackedBody)));
+	float * valptr = (float *)(data + (_totalBodies * sizeof(struct TrackerBase::TrackedBody) + _systemInfo.size() * sizeof(unsigned int)));
 
 	for(int i = 0; i < _systems.size(); i++)
 	{
@@ -459,7 +459,7 @@ void TrackingManager::update()
 	delete[] data;
     }
 
-    trackedBody * tb;
+    TrackerBase::TrackedBody * tb;
     for(int i = 0; i < _numHeads; i++)
     {
         if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))
@@ -772,15 +772,6 @@ bool TrackingManager::getUpdateHeadTracking()
     return _updateHeadTracking;
 }
 
-void TrackingManager::cleanupCurrentEvents()
-{
-    /*if(_currentEvents)
-    {
-	delete[] _currentEvents;
-	_currentEvents = NULL;
-    }*/
-}
-
 void TrackingManager::updateHandMask()
 {
     for(int i = 0; i < _numHands; i++)
@@ -999,7 +990,7 @@ void TrackingManager::generateThreadButtonEvents()
 
 void TrackingManager::updateThreadMats()
 {
-    trackedBody * tb;
+    TrackerBase::TrackedBody * tb;
     /*for(int i = 0; i < _numHeads; i++)
     {
 	if(_systems[_headAddress[i].first] && _systems[_headAddress[i].first]->getBody(_headAddress[i].second))

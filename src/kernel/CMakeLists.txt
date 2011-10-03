@@ -34,8 +34,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/InteractionManager.h
     ${HEADER_PATH}/Navigation.h
     ${HEADER_PATH}/CVRCullVisitor.h
-    ${HEADER_PATH}/PreCullVisitor.h
-    ${HEADER_PATH}/PostCullVisitor.h
     ${HEADER_PATH}/ThreadedLoader.h
     ${HEADER_PATH}/SceneObject.h
     ${HEADER_PATH}/InteractionEvent.h
@@ -89,8 +87,6 @@ SET(LIB_SRC_FILES
     InteractionManager.cpp
     Navigation.cpp
     CVRCullVisitor.cpp
-    PreCullVisitor.cpp
-    PostCullVisitor.cpp
     ThreadedLoader.cpp
     SceneObject.cpp
     InteractionEvent.cpp

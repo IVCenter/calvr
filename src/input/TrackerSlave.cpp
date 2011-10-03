@@ -12,7 +12,7 @@ TrackerSlave::TrackerSlave(int bodies, int buttons, int vals)
 
     _buttonMask = 0;
 
-    _bodyArray = _numBodies ? new trackedBody[_numBodies] : NULL;
+    _bodyArray = _numBodies ? new TrackedBody[_numBodies] : NULL;
     _valArray = _numVals ? new float[_numVals] : NULL;
 }
 
@@ -33,7 +33,7 @@ bool TrackerSlave::init(std::string tag)
     return true;
 }
 
-trackedBody * TrackerSlave::getBody(int index)
+TrackerBase::TrackedBody * TrackerSlave::getBody(int index)
 {
     if(index < 0 || index >= _numBodies)
     {
@@ -77,12 +77,12 @@ void TrackerSlave::update(std::map<int,std::list<InteractionEvent*> > & eventMap
 {
 }
 
-void TrackerSlave::readValues(trackedBody * tb, unsigned int * buttons,
+void TrackerSlave::readValues(TrackedBody * tb, unsigned int * buttons,
                               float * vals)
 {
     if(tb)
     {
-        memcpy(_bodyArray, tb, _numBodies * sizeof(struct trackedBody));
+        memcpy(_bodyArray, tb, _numBodies * sizeof(struct TrackedBody));
     }
 
     _buttonMask = *buttons;

@@ -95,8 +95,6 @@ void InteractionManager::handleEvents()
 
     _queueLock.unlock();
 
-    TrackingManager::instance()->cleanupCurrentEvents();
-
     //std::cerr << "Cleaning " << _mouseQueue.size() << " mouse events." << std::endl;
     while(_mouseQueue.size())
     {

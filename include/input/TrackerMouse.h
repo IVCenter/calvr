@@ -1,3 +1,6 @@
+/**
+ * @file TrackerMouse.h
+ */
 #ifndef TRACKER_MOUSE_H
 #define TRACKER_MOUSE_H
 
@@ -8,6 +11,9 @@
 namespace cvr
 {
 
+/**
+ * @brief Tracker implementation for a mouse connected to the head node
+ */
 class TrackerMouse : public cvr::TrackerBase
 {
     public:
@@ -16,7 +22,7 @@ class TrackerMouse : public cvr::TrackerBase
 
         virtual bool init(std::string tag);
 
-        virtual trackedBody * getBody(int index);
+        virtual TrackedBody * getBody(int index);
         virtual unsigned int getButtonMask();
         virtual float getValuator(int index);
 
@@ -34,8 +40,8 @@ class TrackerMouse : public cvr::TrackerBase
         virtual bool genDefaultButtonEvents() { return false; }
 
     protected:
-        trackedBody _mouseBody;
-        unsigned int _mouseButtonMask;
+        TrackedBody _mouseBody; ///< information representing the mouse orientation
+        unsigned int _mouseButtonMask; ///< button mask for the mouse
 };
 
 }
