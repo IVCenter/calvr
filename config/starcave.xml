@@ -39,7 +39,7 @@
         <Vrml97 value="on" />
         <FileBrowser value="off" />
         <PDB value="on" />
-        <GML value="off" />
+        <GML value="on" />
         <Scale value="off" />
       	<PanoView360 value="on" />
         <FloorPlan value="on" />
@@ -318,7 +318,7 @@
         </WebMonitor>
 
         <ArtifactVis>
-          <ArchInterfaceFolder value="/home/cdefanti/ArchInterface/" />
+          <ArchInterfaceFolder value="/home/covise/data/ArchInterface/" />
           <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
           <3DModelFolder value="/home/cdefanti/models/dcode_models/Finished/obj/" />
           <Offset>
