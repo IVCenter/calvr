@@ -39,7 +39,7 @@
         <Vrml97 value="on" />
         <FileBrowser value="off" />
         <PDB value="on" />
-        <GML value="off" />
+        <GML value="on" />
         <Scale value="off" />
       	<PanoView360 value="on" />
         <FloorPlan value="on" />
@@ -318,7 +318,7 @@
         </WebMonitor>
 
         <ArtifactVis>
-          <ArchInterfaceFolder value="/home/cdefanti/ArchInterface/" />
+          <ArchInterfaceFolder value="/home/covise/data/ArchInterface/" />
           <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
           <3DModelFolder value="/home/cdefanti/models/dcode_models/Finished/obj/" />
           <Offset>
@@ -658,7 +658,7 @@
       
    <MultiPC>
      <SyncMode value="TCP" />
-     <NumSlaves value="17" />   <!-- use 17 for all Cave machines -->
+     <NumSlaves value="16" />   <!-- use 17 for all Cave machines -->
 <!--
      <MasterInterface value="starcave.calit2.optiputer.net" />
      <Startup arch="x11" value="ssh ${USER}@starcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
@@ -686,7 +686,7 @@
      <Startup arch="x11" value="ssh ${USER}@tile-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
      <Startup arch="x11" value="ssh ${USER}@tile-3-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
-     <Startup arch="x11" value="ssh ${USER}@tile-3-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
+     <!--Startup arch="x11" value="ssh ${USER}@tile-3-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" /-->
      <Startup arch="x11" value="ssh ${USER}@tile-3-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="5" />
      <Startup arch="x11" value="ssh ${USER}@tile-5-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="6" />
      <Startup arch="x11" value="ssh ${USER}@tile-5-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="7" />
