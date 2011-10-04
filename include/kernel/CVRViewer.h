@@ -205,6 +205,7 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         double _doubleClickTimeout; ///< interval, in seconds, for a second click to become a double click
 
         osg::ref_ptr<osg::BarrierOperation> _cullDrawBarrier; ///< used for threaded rendering
+        osg::ref_ptr<osg::BarrierOperation> _swapReadyBarrier;
 
         CullMode _cullMode; ///< viewer culling mode
 
