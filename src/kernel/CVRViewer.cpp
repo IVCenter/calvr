@@ -1100,6 +1100,9 @@ void CVRViewer::renderingTraversals()
         }
     }
 
+    if(_endRenderingDispatchBarrier.valid())
+        _endRenderingDispatchBarrier->block();
+
     // IVL
 
     // TODO: plugin callback
@@ -1116,8 +1119,13 @@ void CVRViewer::renderingTraversals()
     //std::cerr << "Driver before endBarrier." << std::endl;
 
     // wait till the rendering dispatch is done.
-    if(_endRenderingDispatchBarrier.valid())
-        _endRenderingDispatchBarrier->block();
+    //if(_endRenderingDispatchBarrier.valid())
+    //    _endRenderingDispatchBarrier->block();
+
+    if(_swapReadyBarrier.valid())
+    {
+	_swapReadyBarrier->block();
+    }
 
     //std::cerr << "Driver after endBarrier." << std::endl;
 
@@ -1208,7 +1216,7 @@ void CVRViewer::startThreading()
     Cameras cameras;
     getCameras(cameras);
 
-    std::cerr << "Num cameras: " << cameras.size() << std::endl;
+    //std::cerr << "Num cameras: " << cameras.size() << std::endl;
 
     unsigned int numThreadsOnStartBarrier = 0;
     unsigned int numThreadsOnEndBarrier = 0;
@@ -1336,8 +1344,8 @@ void CVRViewer::startThreading()
                 + contexts.size(), osg::BarrierOperation::NO_OPERATION);
     }
 
-    osg::ref_ptr<osg::BarrierOperation> swapReadyBarrier = contexts.empty() ? 0
-            : new osg::BarrierOperation(contexts.size(),
+    _swapReadyBarrier = contexts.empty() ? 0
+            : new osg::BarrierOperation(contexts.size()+1,
                                         osg::BarrierOperation::NO_OPERATION);
 
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp =
@@ -1410,26 +1418,27 @@ void CVRViewer::startThreading()
         // IVL
         gc->getGraphicsThread()->add(new finishOperation());
 
-        if(_threadingModel == CullDrawThreadPerContext && _endBarrierPosition
-                == BeforeSwapBuffers && _endRenderingDispatchBarrier.valid())
+        if((_threadingModel == CullDrawThreadPerContext || _threadingModel == CullThreadPerCameraDrawThreadPerContext || _threadingModel == DrawThreadPerContext)
+	     && _endRenderingDispatchBarrier.valid())
         {
             // add the endRenderingDispatchBarrier
+	    //std::cerr << "Before." << std::endl;
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
         }
 
         // IVL
-        if(addSync)
+        /*if(addSync)
         {
             //std::cerr << "adding sync to thread" << std::endl;
             //gc->getGraphicsThread()->add(new sleepOperation(5));
             gc->getGraphicsThread()->add(new syncOperation());
             addSync = false;
-        }
+        }*/
 
         //gc->getGraphicsThread()->add(new printOperation("Before swap Barrier."));
 
-        if(swapReadyBarrier.valid())
-            gc->getGraphicsThread()->add(swapReadyBarrier.get());
+        if(_swapReadyBarrier.valid())
+            gc->getGraphicsThread()->add(_swapReadyBarrier.get());
 
         //gc->getGraphicsThread()->add(new printOperation("After swap Barrier."));
 
@@ -1438,9 +1447,10 @@ void CVRViewer::startThreading()
 
         //gc->getGraphicsThread()->add(new finishOperation());
 
-        if(_threadingModel == CullDrawThreadPerContext && _endBarrierPosition
+        /*if(_threadingModel == CullDrawThreadPerContext && _endBarrierPosition
                 == AfterSwapBuffers && _endRenderingDispatchBarrier.valid())
         {
+	    std::cerr << "After." << std::endl;
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
         }
@@ -1453,7 +1463,7 @@ void CVRViewer::startThreading()
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
             //gc->getGraphicsThread()->add(new printOperation("Context After EndRend."));
-        }
+        }*/
 
     }
 
