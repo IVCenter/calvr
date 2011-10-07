@@ -43,6 +43,7 @@ struct WindowInfo
         bool decoration;            ///< puts on window boarder with title bar,etc.
         bool supportsResize;        ///< allow window to change size
         bool overrideRedirect;      ///< override os redirects, can be used to force some window size/positions
+        bool useCursor;             ///< show mouse cursor in the window
         bool quadBuffer;            ///< true to enable quad buffered stereo
         osg::GraphicsContext * gc;  ///< osg graphics object for this window
 };

@@ -1082,14 +1082,14 @@ void CVRViewer::renderingTraversals()
     }
 
     // IVL
-    bool doSync = false;
+    //bool doSync = false;
 
     for(itr = contexts.begin(); itr != contexts.end(); ++itr)
     {
         //if (_done) return;
         if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
         {
-            doSync = true;
+            //doSync = true;
             doneMakeCurrentInThisThread = true;
             makeCurrent(*itr);
             if(!ComController::instance()->isMaster() || _renderOnMaster)
@@ -1108,7 +1108,7 @@ void CVRViewer::renderingTraversals()
     // TODO: plugin callback
 
     // sync buffer swap
-    if(doSync)
+    //if(doSync)
     {
         //std::cerr << "Sync" << std::endl;
         ComController::instance()->sync();
