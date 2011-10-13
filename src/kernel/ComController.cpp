@@ -60,7 +60,7 @@ bool ComController::init(osg::ArgumentParser * ap)
 	}
 	if(!ap->read("-p",_port))
 	{
-	    std::cerr << "Error: not \"-p\" (master port) option given on command line." << std::endl;
+	    std::cerr << "Error: no \"-p\" (master port) option given on command line." << std::endl;
 	    return false;
 	}
 	_isMaster = false;
@@ -583,7 +583,7 @@ bool ComController::connectMaster()
 
     sock->setNoDelay(true);
 
-    int bufferSize = 1024;
+    /*int bufferSize = 1024;
     if(sock->setsockopt(SOL_SOCKET, SO_SNDBUF, &bufferSize, sizeof(int)) == -1)
     {
         perror("SO_SNDBUF");
@@ -592,7 +592,7 @@ bool ComController::connectMaster()
     if(sock->setsockopt(SOL_SOCKET, SO_RCVBUF, &bufferSize, sizeof(int)) == -1)
     {
         perror("SO_RCVBUF");
-    }
+    }*/
 
     if(!sock->connect(30))
     {

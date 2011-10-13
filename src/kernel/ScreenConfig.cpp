@@ -249,6 +249,7 @@ bool ScreenConfig::readWindows()
             windowPtr->overrideRedirect
                     = ConfigManager::getBool("overrideRedirect", ss.str(),
                                              false);
+            windowPtr->useCursor = ConfigManager::getBool("useCursor", ss.str() ,ComController::instance()->isMaster() ? true : false);
             windowPtr->quadBuffer = ConfigManager::getBool("quadBuffer",
                                                            ss.str(), false);
             int pipeIndex = ConfigManager::getInt("pipeIndex", ss.str(), 0);
@@ -425,6 +426,7 @@ bool ScreenConfig::makeWindows()
         traits->screenNum = _windowInfoList[i]->myPipe->screen;
         traits->supportsResize = _windowInfoList[i]->supportsResize;
         traits->overrideRedirect = _windowInfoList[i]->overrideRedirect;
+        traits->useCursor = _windowInfoList[i]->useCursor;
         if(ConfigManager::getBool("Stencil", false))
         {
             traits->stencil = 8;
