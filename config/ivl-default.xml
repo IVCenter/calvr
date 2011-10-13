@@ -15,7 +15,42 @@
    <ConfigDebug value="false" />
    <GeneralDebug value="true" />
 
-   <Input>  
+   <Input>
+     <Threaded FPS="60.0" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="0" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+
+     <NumHeads value="0" />
+     <Head0Address system="0" body="0" />
+
+     <NumHands value="1" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0x0F" system1="0xFF" />
+       <Graphic value="NONE" />
+     </Hand0>
+     <Hand1>
+       <Address system="0" body="1" />
+       <ButtonMask system0="0xF0" system1="0x00" />
+       <Graphic value="NONE" />
+     </Hand1>
+
+     <NumValuators value="0" />
+     <Valuator0 station="0" number="0" />
+   </Input>
+
+   <!--Input>  
       <ButtonSystem value="NONE" />
       <TrackingSystem value="NONE" />
 
@@ -58,7 +93,7 @@
         <Offset x="0" y="0" z="0" />
         <Orientation h="0" p="0" r="0" />
       </HandDevice>
-    </Input>
+    </Input-->
 
 
    <MenuSystem type="BOARDMENU" useHints="false">
