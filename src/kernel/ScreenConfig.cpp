@@ -133,6 +133,20 @@ void ScreenConfig::updateCamera()
     }
 }
 
+int ScreenConfig::getNumWindows()
+{
+    return _windowInfoList.size();
+}
+
+WindowInfo * ScreenConfig::getWindowInfo(int window)
+{
+    if(window < 0 || window >= _windowInfoList.size())
+    {
+	return NULL;
+    }
+    return _windowInfoList[window];
+}
+
 int ScreenConfig::getNumScreens()
 {
     return _screenList.size();

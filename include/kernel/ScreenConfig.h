@@ -130,6 +130,10 @@ class CVRKERNEL_EXPORT ScreenConfig
          */
         int findScreenNumber(osg::Camera * c);
 
+        int getNumWindows();
+
+        WindowInfo * getWindowInfo(int window);
+
         /**
          * @brief Get the number of screens(viewports) created on this node
          */
