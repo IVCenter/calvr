@@ -14,7 +14,7 @@
 #include <iostream>
 #include <string>
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 
 using namespace cvr;
 
