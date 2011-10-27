@@ -753,7 +753,10 @@ void SceneManager::updateActiveObject()
     _uniqueActiveObjects.clear();
     for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
     {
-	_uniqueActiveObjects[it->second]++;
+        if(it->second)
+        {
+	    _uniqueActiveObjects[it->second]++;
+        }
     }
 }
 
