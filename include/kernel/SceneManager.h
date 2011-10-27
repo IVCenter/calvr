@@ -222,6 +222,7 @@ class CVRKERNEL_EXPORT SceneManager
 
         SceneObject * _menuOpenObject; ///< object with an open menu
         std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
+        std::map<SceneObject*,int> _uniqueActiveObjects;
         std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
 
         float _menuScale,_menuScaleMouse;

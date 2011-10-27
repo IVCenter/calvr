@@ -321,6 +321,17 @@ bool SceneManager::processEvent(InteractionEvent * ie)
 	hand = ie->asTrackedButtonEvent()->getHand();
 	button = ie->asTrackedButtonEvent()->getButton();
     }
+    else
+    {
+	for(std::map<SceneObject*,int>::iterator it = _uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end(); it++)
+	{
+	    if(it->first->processEvent(ie))
+	    {
+		return true;
+	    }
+	}
+	return false;
+    }
 
     if(hand == -2)
     {
@@ -376,6 +387,7 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
 			aobjit->second = NULL;
 		    }
 		}
+		_uniqueActiveObjects.erase(object);
 		object->setRegistered(false);
 		return;
 	    }
@@ -736,6 +748,12 @@ void SceneManager::updateActiveObject()
 	    _activeObjects[hand]->interactionCountDec();
 	    _activeObjects[hand] = NULL;
 	}
+    }
+
+    _uniqueActiveObjects.clear();
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
+    {
+	_uniqueActiveObjects[it->second]++;
     }
 }
 
