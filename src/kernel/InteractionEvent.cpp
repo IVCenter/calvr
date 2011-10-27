@@ -19,6 +19,12 @@ InteractionEvent * loadEventWithType(InteractionEvent * event, InteractionEventT
             *mie = *((MouseInteractionEvent*)event);
             return mie;
         }
+	case VALUATOR_INTER_EVENT:
+        {
+            ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
+            *vie = *((ValuatorInteractionEvent*)event);
+            return vie;
+        }
         case KEYBOARD_INTER_EVENT:
         {
             KeyboardInteractionEvent * kie = new KeyboardInteractionEvent();
@@ -46,6 +52,9 @@ void storeEvent(InteractionEvent * event, void * des)
         case MOUSE_INTER_EVENT:
             *((MouseInteractionEvent*)des) = *event->asMouseEvent();
             break;
+	case VALUATOR_INTER_EVENT:
+            *((ValuatorInteractionEvent*)des) = *event->asValuatorEvent();
+            break;
         case KEYBOARD_INTER_EVENT:
             *((KeyboardInteractionEvent*)des) = *event->asKeyboardEvent();
             break;
@@ -66,6 +75,8 @@ int getEventSize(InteractionEventType type)
             return sizeof(TrackedButtonInteractionEvent);
         case MOUSE_INTER_EVENT:
             return sizeof(MouseInteractionEvent);
+	case VALUATOR_INTER_EVENT:
+            return sizeof(ValuatorInteractionEvent);
         case KEYBOARD_INTER_EVENT:
             return sizeof(KeyboardInteractionEvent);
         case INTER_EVENT:

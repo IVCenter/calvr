@@ -21,6 +21,7 @@ enum Interaction
     BUTTON_UP = 0x10000001,
     BUTTON_DRAG = 0x10000002,
     BUTTON_DOUBLE_CLICK = 0x10000003,
+    VALUATOR = 0x20000000,
     KEY_UP = 0x04000000,
     KEY_DOWN = 0x04000001
 };
@@ -34,6 +35,7 @@ enum InteractionEventType
 {
     TRACKED_BUTTON_INTER_EVENT = 0,
     MOUSE_INTER_EVENT,
+    VALUATOR_INTER_EVENT,
     KEYBOARD_INTER_EVENT,
     INTER_EVENT,
     NUM_INTER_EVENT_TYPES // must be last item
@@ -41,6 +43,7 @@ enum InteractionEventType
 
 class TrackedButtonInteractionEvent;
 class MouseInteractionEvent;
+class ValuatorInteractionEvent;
 class KeyboardInteractionEvent;
 
 //TODO: add timestamps
@@ -79,6 +82,8 @@ class InteractionEvent
          * @return NULL is returned if this class can not be cast to a MouseInteractionEvent
          */
         virtual MouseInteractionEvent * asMouseEvent() { return NULL; }
+
+        virtual ValuatorInteractionEvent * asValuatorEvent() { return NULL; }
 
         /**
          * @brief Get a pointer to this class as a KeyboardInteractionEvent pointer
@@ -196,6 +201,32 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
         int _x; ///< viewport x coord
         int _y; ///< viewport y coord
         int _masterScreenNum; ///< screen on the master when this event was generated
+};
+
+
+/**
+ * @brief Interaction event for a valuator
+ */
+class ValuatorInteractionEvent : public InteractionEvent
+{
+    public:
+        ValuatorInteractionEvent() : _value(0.0), _valuator(0) {}
+
+        int getValuator() { return _valuator; }
+
+        void setValuator(int valuator) { _valuator = valuator; }
+
+        float getValue() { return _value; }
+
+        void setValue(float value) { _value = value; }
+
+        virtual InteractionEventType getEventType() { return VALUATOR_INTER_EVENT; }
+
+        virtual ValuatorInteractionEvent * asValuatorEvent() { return this; }
+
+    protected:
+        int _valuator;
+        float _value;
 };
 
 /**

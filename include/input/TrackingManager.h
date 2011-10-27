@@ -198,6 +198,10 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void generateThreadButtonEvents();
 
+        void generateValuatorEvents();
+
+        void generateThreadValuatorEvents();
+
         /**
          * @brief Update thread's local head/hand matrix transforms from tracker
          */
@@ -230,6 +234,12 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
             SceneManager::PointerGraphicType defaultPointerType; ///< type of graphic to use for pointer
             bool genDefaultButtonEvents; ///< should default buttons events be generated
             bool thread; ///< should this system be polled in a thread
+        };
+
+        enum ValuatorType
+        {
+            NON_ZERO,
+            CHANGE
         };
 
         static TrackingManager * _myPtr; ///< Static self pointer
@@ -266,6 +276,12 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<unsigned int> _rawButtonMask; ///< list of current raw button masks from tracker
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
+
+        int _numEventValuators;
+        std::vector<std::pair<int,int> > _eventValuatorAddress;
+        std::vector<ValuatorType> _eventValuatorType;
+        std::vector<float> _eventValuators;
+        std::map<int,float> _lastEventValuators;
 
         std::vector<std::vector<bool> > _genHandDefaultButtonEvents; ///< lookup to see if a hand button should have default events generated
 
