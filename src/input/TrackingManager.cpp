@@ -44,6 +44,7 @@ TrackingManager::TrackingManager()
 {
     _debugOutput = false;
     _threadQuit = false;
+    genComTrackEvents = NULL;
 }
 
 TrackingManager::~TrackingManager()
@@ -52,6 +53,24 @@ TrackingManager::~TrackingManager()
     {
 	quitThread();
 	join();
+    }
+
+    if(genComTrackEvents)
+    {
+	delete genComTrackEvents;
+    }
+
+    for(int i = 0; i < _systemInfo.size(); i++)
+    {
+	delete _systemInfo[i];
+    }
+
+    for(int i = 0; i < _systems.size(); i++)
+    {
+	if(_systems[i])
+	{
+	    delete _systems[i];
+	}
     }
 }
 
@@ -1000,7 +1019,14 @@ void TrackingManager::generateThreadButtonEvents()
                 }
                 buttonEvent->setButton(i);
                 // set current pointer info
-		buttonEvent->setTransform(_threadHandMatList[j]);
+		if(getIsHandThreaded(j))
+		{
+		    buttonEvent->setTransform(_threadHandMatList[j]);
+		}
+		else
+		{
+		    buttonEvent->setTransform(_handMatList[j]);
+		}
                 buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
@@ -1011,7 +1037,14 @@ void TrackingManager::generateThreadButtonEvents()
                 buttonEvent->setInteraction(BUTTON_DRAG);
                 buttonEvent->setButton(i);
                 // set current pointer info
-		buttonEvent->setTransform(_threadHandMatList[j]);
+		if(getIsHandThreaded(j))
+		{
+		    buttonEvent->setTransform(_threadHandMatList[j]);
+		}
+		else
+		{
+		    buttonEvent->setTransform(_handMatList[j]);
+		}
                 buttonEvent->setHand(j);
                 //_threadEvents.push((InteractionEvent*)buttonEvent);
                 genComTrackEvents->processEvent(buttonEvent);
@@ -1300,6 +1333,14 @@ void TrackingManager::setGenHandDefaultButtonEvents()
     }
 }
 
+bool TrackingManager::getIsHandThreaded(int hand)
+{
+    if(_handAddress[hand].first >= 0 && _handAddress[hand].first < _systemInfo.size())
+    {
+	return _systemInfo[_handAddress[hand].first]->thread;
+    }
+    return false;
+}
 
 GenComplexTrackingEvents::GenComplexTrackingEvents()
 {

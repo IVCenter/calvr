@@ -112,7 +112,7 @@ void VRPN_CALLBACK handleAnalog (void *userdata, const vrpn_ANALOGCB a)
      printf(" (%d chans)\n", a.num_channel);*/
 
     std::vector<float> * valList = (std::vector<float> *)userdata;
-    for (int i = 1; i < std::min((size_t)a.num_channel, valList->size()); i++)
+    for (int i = 0; i < std::min((size_t)a.num_channel, valList->size()); i++)
     {
         valList->at(i) = a.channel[i];
     }
@@ -154,6 +154,29 @@ TrackerVRPN::TrackerVRPN()
 
 TrackerVRPN::~TrackerVRPN()
 {
+    if(_device)
+    {
+	if(_device->tkr)
+	{
+	    delete _device->tkr;
+	}
+	if(_device->btn)
+	{
+	    delete _device->btn;
+	}
+	if(_device->ana)
+	{
+	    delete _device->ana;
+	}
+	delete _device;
+	_device = NULL;
+    }
+
+    for(int i = 0; i < _bodyList.size(); i++)
+    {
+	delete _bodyList[i];
+    }
+    _bodyList.clear();
 }
 
 bool TrackerVRPN::init(std::string tag)

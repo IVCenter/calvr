@@ -218,6 +218,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void setGenHandDefaultButtonEvents();
 
+        bool getIsHandThreaded(int hand);
+
         /**
          * @brief The information associated with a tracking system
          */
