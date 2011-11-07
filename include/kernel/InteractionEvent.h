@@ -210,7 +210,7 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
 class ValuatorInteractionEvent : public InteractionEvent
 {
     public:
-        ValuatorInteractionEvent() : _value(0.0), _valuator(0) {}
+        ValuatorInteractionEvent() : _value(0.0),_valuator(0),_hand(0) {}
 
         int getValuator() { return _valuator; }
 
@@ -220,12 +220,17 @@ class ValuatorInteractionEvent : public InteractionEvent
 
         void setValue(float value) { _value = value; }
 
+        int getHand() { return _hand; }
+
+        void setHand(int hand) { _hand = hand; }
+
         virtual InteractionEventType getEventType() { return VALUATOR_INTER_EVENT; }
 
         virtual ValuatorInteractionEvent * asValuatorEvent() { return this; }
 
     protected:
         int _valuator;
+        int _hand;
         float _value;
 };
 

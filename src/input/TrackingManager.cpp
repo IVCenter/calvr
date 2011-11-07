@@ -244,13 +244,13 @@ bool TrackingManager::init()
 	handss << "Input.Hand" << i;
 
 	_handAddress.push_back(std::pair<int,int>(ConfigManager::getInt("system",handss.str() + ".Address",0),
-	                                          ConfigManager::getInt("body",handss.str() + ".Address",0)));
+		    ConfigManager::getInt("body",handss.str() + ".Address",0)));
 	_threadHandButtonMasks.push_back(0);
 	_threadLastHandButtonMask.push_back(0);
-        _threadHandMatList.push_back(osg::Matrix());
+	_threadHandMatList.push_back(osg::Matrix());
 	_handMatList.push_back(osg::Matrix());
-        _handButtonMask.push_back(0);
-        _lastHandButtonMask.push_back(0);
+	_handButtonMask.push_back(0);
+	_lastHandButtonMask.push_back(0);
 
 	_genHandDefaultButtonEvents.push_back(std::vector<bool>());
 	_handStationFilterMask.push_back(std::vector<unsigned int>());
@@ -266,6 +266,32 @@ bool TrackingManager::init()
 	    char * eptr;
 	    unsigned long int imask = strtol(mask.c_str(), &eptr, 0);
 	    _handStationFilterMask[i].push_back((unsigned int)imask);
+	}
+
+	_numEventValuators.push_back(ConfigManager::getInt("value",handss.str() + ".NumValuators",0));
+	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
+	_eventValuatorType.push_back(std::vector<ValuatorType>());
+	_eventValuators.push_back(std::vector<float>());
+	_lastEventValuators.push_back(std::map<int,float>());
+	for(int j = 0; j < _numEventValuators[i]; j++)
+	{
+	    std::stringstream valss;
+	    valss << handss.str() << ".Valuator" << j;
+	    int system, number;
+	    system = ConfigManager::getInt("system",valss.str(),0);
+	    number = ConfigManager::getInt("number",valss.str(),0);
+	    _eventValuatorAddress[i].push_back(std::pair<int,int>(system,number));
+	    std::string type = ConfigManager::getEntry("type",valss.str(),"NON_ZERO");
+	    if(type == "CHANGE")
+	    {
+		_eventValuatorType[i].push_back(CHANGE);
+	    }
+	    else
+	    {
+		_eventValuatorType[i].push_back(NON_ZERO);
+	    }
+
+	    _eventValuators[i].push_back(0.0);
 	}
     }
 
@@ -351,7 +377,7 @@ bool TrackingManager::init()
         update();
     }*/
 
-    _numEventValuators = ConfigManager::getInt("value","Input.NumValuators",0);
+    /*_numEventValuators = ConfigManager::getInt("value","Input.NumValuators",0);
     for(int i = 0; i < _numEventValuators; i++)
     {
 	std::stringstream valss;
@@ -371,7 +397,7 @@ bool TrackingManager::init()
 	}
 
 	_eventValuators.push_back(0.0);
-    }
+    }*/
 
     for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
     {
@@ -1057,78 +1083,21 @@ void TrackingManager::generateThreadButtonEvents()
 
 void TrackingManager::generateValuatorEvents()
 {
-    for(int i = 0; i < _numEventValuators; i++)
+    for(int j = 0; j < _numHands; j++)
     {
-	float value;
-	if(_eventValuatorAddress[i].first >= 0 && _eventValuatorAddress[i].first < _systems.size())
+	for(int i = 0; i < _numEventValuators[j]; i++)
 	{
-	    if(_systemInfo[_eventValuatorAddress[i].first]->thread)
+	    float value;
+	    if(_eventValuatorAddress[j][i].first >= 0 && _eventValuatorAddress[j][i].first < _systems.size())
 	    {
-		continue;
-	    }
-
-	    if(_eventValuatorAddress[i].second >= 0 && _eventValuatorAddress[i].second < _valuatorList[_eventValuatorAddress[i].first].size())
-	    {
-		value = _valuatorList[_eventValuatorAddress[i].first][_eventValuatorAddress[i].second];
-	    }
-	    else
-	    {
-		value = 0.0;
-	    }
-	}
-	else
-	{
-	    value = 0.0;
-	}
-	
-	_eventValuators[i] = value;
-
-	if(_eventValuatorType[i] == NON_ZERO)
-	{
-	    if(fabs(_eventValuators[i]) > 0.05)
-	    {
-		ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
-		vie->setValuator(i);
-		vie->setValue(_eventValuators[i]);
-		InteractionManager::instance()->addEvent((InteractionEvent*)vie);
-	    }
-	}
-	else if(_eventValuatorType[i] == CHANGE)
-	{
-	    if(_lastEventValuators.find(i) == _lastEventValuators.end())
-	    {
-		_lastEventValuators[i] = value;
-	    }
-	    if(_eventValuators[i] != _lastEventValuators[i])
-	    {
-		ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
-		vie->setValuator(i);
-		vie->setValue(_eventValuators[i]);
-		InteractionManager::instance()->addEvent((InteractionEvent*)vie);
-	    }
-
-	    _lastEventValuators[i] = _eventValuators[i];
-	}
-    }
-}
-
-void TrackingManager::generateThreadValuatorEvents()
-{
-    for(int i = 0; i < _numEventValuators; i++)
-    {
-	float value;
-	if(_eventValuatorAddress[i].first >= 0 && _eventValuatorAddress[i].first < _systems.size())
-	{
-	    if(!_systemInfo[_eventValuatorAddress[i].first]->thread)
-	    {
-		continue;
-	    }
-
-	    if(_eventValuatorAddress[i].second >= 0 && _eventValuatorAddress[i].second < _systemInfo[_eventValuatorAddress[i].first]->numVal)
-	    {
-		if(_systems[_eventValuatorAddress[i].first])
+		if(_systemInfo[_eventValuatorAddress[j][i].first]->thread)
 		{
-		    value = _systems[_eventValuatorAddress[i].first]->getValuator(_eventValuatorAddress[i].second);
+		    continue;
+		}
+
+		if(_eventValuatorAddress[j][i].second >= 0 && _eventValuatorAddress[j][i].second < _valuatorList[_eventValuatorAddress[j][i].first].size())
+		{
+		    value = _valuatorList[_eventValuatorAddress[j][i].first][_eventValuatorAddress[j][i].second];
 		}
 		else
 		{
@@ -1139,39 +1108,106 @@ void TrackingManager::generateThreadValuatorEvents()
 	    {
 		value = 0.0;
 	    }
-	}
-	else
-	{
-	    value = 0.0;
-	}
-	
-	_eventValuators[i] = value;
 
-	if(_eventValuatorType[i] == NON_ZERO)
-	{
-	    if(fabs(_eventValuators[i]) > 0.05)
+	    _eventValuators[j][i] = value;
+
+	    if(_eventValuatorType[j][i] == NON_ZERO)
 	    {
-		ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
-		vie->setValuator(i);
-		vie->setValue(_eventValuators[i]);
-		_eventMap[vie->getEventType()].push_back(vie);
+		if(fabs(_eventValuators[j][i]) > 0.05)
+		{
+		    ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
+		    vie->setValuator(i);
+		    vie->setHand(j);
+		    vie->setValue(_eventValuators[j][i]);
+		    InteractionManager::instance()->addEvent((InteractionEvent*)vie);
+		}
+	    }
+	    else if(_eventValuatorType[j][i] == CHANGE)
+	    {
+		if(_lastEventValuators[j].find(i) == _lastEventValuators[j].end())
+		{
+		    _lastEventValuators[j][i] = value;
+		}
+		if(_eventValuators[j][i] != _lastEventValuators[j][i])
+		{
+		    ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
+		    vie->setValuator(i);
+		    vie->setHand(j);
+		    vie->setValue(_eventValuators[j][i]);
+		    InteractionManager::instance()->addEvent((InteractionEvent*)vie);
+		}
+
+		_lastEventValuators[j][i] = _eventValuators[j][i];
 	    }
 	}
-	else if(_eventValuatorType[i] == CHANGE)
+    }
+}
+
+void TrackingManager::generateThreadValuatorEvents()
+{
+    for(int j = 0; j < _numHands; j++)
+    {
+	for(int i = 0; i < _numEventValuators[j]; i++)
 	{
-	    if(_lastEventValuators.find(i) == _lastEventValuators.end())
+	    float value;
+	    if(_eventValuatorAddress[j][i].first >= 0 && _eventValuatorAddress[j][i].first < _systems.size())
 	    {
-		_lastEventValuators[i] = value;
+		if(!_systemInfo[_eventValuatorAddress[j][i].first]->thread)
+		{
+		    continue;
+		}
+
+		if(_eventValuatorAddress[j][i].second >= 0 && _eventValuatorAddress[j][i].second < _systemInfo[_eventValuatorAddress[j][i].first]->numVal)
+		{
+		    if(_systems[_eventValuatorAddress[j][i].first])
+		    {
+			value = _systems[_eventValuatorAddress[j][i].first]->getValuator(_eventValuatorAddress[j][i].second);
+		    }
+		    else
+		    {
+			value = 0.0;
+		    }
+		}
+		else
+		{
+		    value = 0.0;
+		}
 	    }
-	    if(_eventValuators[i] != _lastEventValuators[i])
+	    else
 	    {
-		ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
-		vie->setValuator(i);
-		vie->setValue(_eventValuators[i]);
-		_eventMap[vie->getEventType()].push_back(vie);
+		value = 0.0;
 	    }
 
-	    _lastEventValuators[i] = _eventValuators[i];
+	    _eventValuators[j][i] = value;
+
+	    if(_eventValuatorType[j][i] == NON_ZERO)
+	    {
+		if(fabs(_eventValuators[j][i]) > 0.05)
+		{
+		    ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
+		    vie->setValuator(i);
+		    vie->setHand(j);
+		    vie->setValue(_eventValuators[j][i]);
+		    _eventMap[vie->getEventType()].push_back(vie);
+		}
+	    }
+	    else if(_eventValuatorType[j][i] == CHANGE)
+	    {
+		if(_lastEventValuators[j].find(i) == _lastEventValuators[j].end())
+		{
+		    _lastEventValuators[j][i] = value;
+		}
+		if(_eventValuators[j][i] != _lastEventValuators[j][i])
+		{
+		    ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
+		    vie->setValuator(i);
+		    vie->setHand(j);
+		    vie->setValue(_eventValuators[j][i]);
+		    _eventMap[vie->getEventType()].push_back(vie);
+		}
+
+		_lastEventValuators[j][i] = _eventValuators[j][i];
+	    }
 	}
     }
 }

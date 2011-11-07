@@ -279,11 +279,11 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
 
-        int _numEventValuators;
-        std::vector<std::pair<int,int> > _eventValuatorAddress;
-        std::vector<ValuatorType> _eventValuatorType;
-        std::vector<float> _eventValuators;
-        std::map<int,float> _lastEventValuators;
+        std::vector<int> _numEventValuators;
+        std::vector<std::vector<std::pair<int,int> > > _eventValuatorAddress;
+        std::vector<std::vector<ValuatorType> > _eventValuatorType;
+        std::vector<std::vector<float> > _eventValuators;
+        std::vector<std::map<int,float> > _lastEventValuators;
 
         std::vector<std::vector<bool> > _genHandDefaultButtonEvents; ///< lookup to see if a hand button should have default events generated
 
