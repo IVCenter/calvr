@@ -746,15 +746,14 @@
      <Hand0>
        <Address system="0" body="0" />
        <ButtonMask system0="0xFFFF" system1="0x0" />
+       <NumValuators value="2" />
+       <Valuator0 system="0" number="0" />
+       <Valuator1 system="0" number="1" />
      </Hand0>
      <Hand1>
        <Address system="1" body="0" />
        <ButtonMask system0="0x00" system1="0xFFFF" />
      </Hand1>
-
-     <NumValuators value="2" />
-     <Valuator0 station="0" number="0" />
-     <Valuator1 station="0" number="1" />
    </Input>
 
     <!--Input>  
