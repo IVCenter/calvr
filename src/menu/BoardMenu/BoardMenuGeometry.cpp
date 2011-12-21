@@ -25,7 +25,7 @@ using namespace cvr;
 osg::Vec4 BoardMenuGeometry::_textColor;
 osg::Vec4 BoardMenuGeometry::_textColorSelected;
 osg::Vec4 BoardMenuGeometry::_backgroundColor;
-float BoardMenuGeometry::_boarder;
+float BoardMenuGeometry::_border;
 float BoardMenuGeometry::_iconHeight;
 float BoardMenuGeometry::_textSize;
 std::string BoardMenuGeometry::_iconDir;
@@ -289,9 +289,9 @@ MenuItem * BoardMenuGeometry::getMenuItem()
 void BoardMenuGeometry::resetIntersect(float width)
 {
     _intersect->removeDrawables(0, _intersect->getNumDrawables());
-    _intersect->addDrawable(makeQuad(width + 2.0 * _boarder, -(_height
-            + _boarder), osg::Vec4(0, 0, 0, 0), osg::Vec3(-_boarder, 0,
-                                                          _boarder / 2.0)));
+    _intersect->addDrawable(makeQuad(width + 2.0 * _border, -(_height
+            + _border), osg::Vec4(0, 0, 0, 0), osg::Vec3(-_border, 0,
+                                                          _border / 2.0)));
 }
 
 osg::Geode * BoardMenuGeometry::getIntersect()

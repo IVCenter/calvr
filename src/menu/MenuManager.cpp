@@ -1,6 +1,5 @@
 #include <menu/MenuManager.h>
 #include <menu/MenuSystem.h>
-#include <config/ConfigManager.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
@@ -18,6 +17,15 @@ MenuManager::MenuManager()
 
 MenuManager::~MenuManager()
 {
+    for(std::list<MenuSystemBase *>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end();)
+    {
+	MenuSystemBase * msb = *it;
+	it = _menuSystemList.erase(it);
+	if(msb)
+	{
+	    delete msb;
+	}
+    }
 }
 
 MenuManager * MenuManager::instance()

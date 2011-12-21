@@ -40,11 +40,11 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
 
     MenuButton * mb = dynamic_cast<MenuButton*> (item);
 
-    osgText::Text * textNode = makeText(mb->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
+    osgText::Text * textNode = makeText(mb->getText(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColor);
     /*osgText::Text * textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-    textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0));
     textNode->setColor(_textColor);
     textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
@@ -52,18 +52,18 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
     textNode->setText(mb->getText());*/
 
     osg::BoundingBox bb = textNode->getBound();
-    _width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
     //mg->height = bb.zMax() - bb.zMin();
     _height = _iconHeight;
 
     _geode->addDrawable(textNode);
 
-    textNode = makeText(mb->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode = makeText(mb->getText(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0), _textColorSelected);
     /*textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-    textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0));
     textNode->setColor(_textColorSelected);
     textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
@@ -90,7 +90,7 @@ void BoardMenuButtonGeometry::updateGeometry()
 	    {
 		text->setText(button->getText());
 		osg::BoundingBox bb = text->getBound();
-		_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _border;
 		text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(0));
 		if(text)
 		{

@@ -15,15 +15,16 @@ namespace cvr
 struct InteractionEvent;
 class MenuBase;
 class SubMenu;
+class MenuManager;
 
 /**
  * @brief MenuSystem implementation for the main CalVR menu
  */
 class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
 {
+    friend class MenuManager;
     public:
-        virtual ~MenuSystem();
-
+        
         /**
          * @brief Get a static pointer to the MenuSystem
          */
@@ -73,6 +74,7 @@ class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
 
     protected:
         MenuSystem();
+        virtual ~MenuSystem();
 
         static MenuSystem * _myPtr; ///< static self pointer
 

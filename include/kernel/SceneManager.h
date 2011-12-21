@@ -225,10 +225,10 @@ class CVRKERNEL_EXPORT SceneManager
         std::map<SceneObject*,int> _uniqueActiveObjects;
         std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
 
-        float _menuScale,_menuScaleMouse;
-        float _menuMinDistance,_menuMinDistanceMouse;
-        float _menuMaxDistance,_menuMaxDistanceMouse;
-        int _menuDefaultOpenButton,_menuDefaultOpenButtonMouse;
+        float _menuScale;
+        float _menuMinDistance;
+        float _menuMaxDistance;
+        int _menuDefaultOpenButton;
 };
 
 }

@@ -19,6 +19,10 @@ MenuSystem::MenuSystem()
 
 MenuSystem::~MenuSystem()
 {
+    if(_menu)
+    {
+	delete _menu;
+    }
 }
 
 MenuSystem * MenuSystem::instance()

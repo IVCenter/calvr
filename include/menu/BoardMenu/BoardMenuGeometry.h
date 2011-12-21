@@ -99,7 +99,7 @@ class BoardMenuGeometry
 
         float _width;
         float _height;
-        osg::Geode * _intersect;
+        osg::ref_ptr<osg::Geode> _intersect;
         osg::ref_ptr<osg::MatrixTransform> _node;
         MenuItem * _item;
 
@@ -107,7 +107,7 @@ class BoardMenuGeometry
         static osg::Vec4 _textColor;
         static osg::Vec4 _textColorSelected;
         static osg::Vec4 _backgroundColor;
-        static float _boarder;
+        static float _border;
         static float _iconHeight;
         static float _textSize;
         static osg::ref_ptr<osgText::Font> _font;

@@ -61,8 +61,8 @@ _name(name), _navigation(navigation), _movable(movable), _clip(clip), _contextMe
 
     _moveButton = 0;
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
-    _moveMouseButton = 0;
-    _menuMouseButton = SceneManager::instance()->_menuDefaultOpenButtonMouse;
+    //_moveMouseButton = 0;
+    //_menuMouseButton = SceneManager::instance()->_menuDefaultOpenButtonMouse;
 
     _activeHand = -2;
 }
@@ -590,13 +590,24 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 			    d2 = -d2;
 			}
 
-			if(d1 < d2)
+			if(n1)
+			{
+			    dist = d2;
+			}
+			else if(n2)
 			{
 			    dist = d1;
 			}
 			else
 			{
-			    dist = d2;
+			    if(d1 < d2)
+			    {
+				dist = d1;
+			    }
+			    else
+			    {
+				dist = d2;
+			    }
 			}
 		    }
 

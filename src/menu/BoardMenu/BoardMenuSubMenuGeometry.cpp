@@ -114,9 +114,9 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
         osg::BoundingBox bb = textNode->getBound();
         _width = bb.xMax() - bb.xMin();
-        _height = bb.zMax() - bb.zMin() + _boarder;
+        _height = bb.zMax() - bb.zMin() + _border;
 
-        //smg->geode->addDrawable(makeLine(osg::Vec3(0,-2,-(smg->height + _boarder)), osg::Vec3(smg->width,-2,-(smg->height + _boarder)),submenu->getTextColor()));
+        //smg->geode->addDrawable(makeLine(osg::Vec3(0,-2,-(smg->height + _border)), osg::Vec3(smg->width,-2,-(smg->height + _border)),submenu->getTextColor()));
 
 	textNode = makeText(submenu->getTitle(), 1.15 * _textSize, osg::Vec3(0, -2, 0), _textColorSelected, osgText::Text::LEFT_TOP);
         /*textNode = new osgText::Text();
@@ -140,11 +140,11 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
                                        osg::Vec3(0, -2, 0));
         _geodeIcon->addDrawable(geo);
 
-	osgText::Text * textNode = makeText(submenu->getName(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
+	osgText::Text * textNode = makeText(submenu->getName(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColor);
         /*osgText::Text * textNode = new osgText::Text();
         textNode->setCharacterSize(_textSize);
         textNode->setAlignment(osgText::Text::LEFT_CENTER);
-        textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2,
+        textNode->setPosition(osg::Vec3(_iconHeight + _border, -2,
                                         -_iconHeight / 2.0));
         textNode->setColor(_textColor);
         textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
@@ -152,17 +152,17 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
         textNode->setText(submenu->getName());*/
 
         osg::BoundingBox bb = textNode->getBound();
-        _width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+        _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
         //mg->height = bb.zMax() - bb.zMin();
         _height = _iconHeight;
 
         _geode->addDrawable(textNode);
 
-	textNode = makeText(submenu->getName(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColorSelected);
+	textNode = makeText(submenu->getName(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColorSelected);
         /*textNode = new osgText::Text();
         textNode->setCharacterSize(_textSize);
         textNode->setAlignment(osgText::Text::LEFT_CENTER);
-        textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2,
+        textNode->setPosition(osg::Vec3(_iconHeight + _border, -2,
                                         -_iconHeight / 2.0));
         textNode->setColor(_textColorSelected);
         textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
