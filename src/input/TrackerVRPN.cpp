@@ -53,7 +53,7 @@ void VRPN_CALLBACK handleBodyInfo (void *userdata, const vrpn_TRACKERCB t)
 
     if(t.sensor >= tbList->size())
     {
-	return;
+        return;
     }
 
     static const float m2mm = 1000.0;
@@ -132,17 +132,17 @@ TrackerVRPN::TrackerVRPN()
     _buttonMask = 0;
     _device = NULL;
 
-    trackingDebug = ConfigManager::getBool("Input.TrackingDebug", false);
+    trackingDebug = ConfigManager::getBool("Input.TrackingDebug",false);
     if(trackingDebug)
     {
-        buttonDebug = ConfigManager::getBool("button", "Input.TrackingDebug",
-                                             false, NULL);
-        bodyDebug = ConfigManager::getBool("body", "Input.TrackingDebug",
-                                           false, NULL);
+        buttonDebug = ConfigManager::getBool("button","Input.TrackingDebug",
+                false,NULL);
+        bodyDebug = ConfigManager::getBool("body","Input.TrackingDebug",false,
+                NULL);
         if(bodyDebug)
         {
             debugStation = ConfigManager::getInt("station",
-                                                 "Input.TrackingDebug", 0);
+                    "Input.TrackingDebug",0);
         }
     }
     else
@@ -156,25 +156,25 @@ TrackerVRPN::~TrackerVRPN()
 {
     if(_device)
     {
-	if(_device->tkr)
-	{
-	    delete _device->tkr;
-	}
-	if(_device->btn)
-	{
-	    delete _device->btn;
-	}
-	if(_device->ana)
-	{
-	    delete _device->ana;
-	}
-	delete _device;
-	_device = NULL;
+        if(_device->tkr)
+        {
+            delete _device->tkr;
+        }
+        if(_device->btn)
+        {
+            delete _device->btn;
+        }
+        if(_device->ana)
+        {
+            delete _device->ana;
+        }
+        delete _device;
+        _device = NULL;
     }
 
     for(int i = 0; i < _bodyList.size(); i++)
     {
-	delete _bodyList[i];
+        delete _bodyList[i];
     }
     _bodyList.clear();
 }
@@ -208,7 +208,7 @@ bool TrackerVRPN::init(std::string tag)
         return false;
     }
 
-    _device->tkr->register_change_handler(&_bodyList, handleBodyInfo);
+    _device->tkr->register_change_handler(&_bodyList,handleBodyInfo);
 
     for(int i = 0; i < _numBodies; i++)
     {
@@ -226,8 +226,8 @@ bool TrackerVRPN::init(std::string tag)
         return false;
     }
 
-    _device->btn->register_change_handler(&_buttonMask, handleButton);
-    _device->ana->register_change_handler(&_valList, handleAnalog);
+    _device->btn->register_change_handler(&_buttonMask,handleButton);
+    _device->ana->register_change_handler(&_valList,handleAnalog);
 
     for(int i = 0; i < _numVal; i++)
     {

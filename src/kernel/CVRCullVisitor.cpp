@@ -14,7 +14,8 @@ using namespace cvr;
 using namespace osgUtil;
 using namespace osg;
 
-CVRCullVisitor::CVRCullVisitor() : CullVisitor()
+CVRCullVisitor::CVRCullVisitor() :
+        CullVisitor()
 {
     //std::cerr << "My cull visitor created." << std::endl;
     _cullingStatus = true;
@@ -22,43 +23,51 @@ CVRCullVisitor::CVRCullVisitor() : CullVisitor()
     _skipCull = false;
 }
 
-CVRCullVisitor::CVRCullVisitor(const CVRCullVisitor& cv) : CullVisitor(cv)
+CVRCullVisitor::CVRCullVisitor(const CVRCullVisitor& cv) :
+        CullVisitor(cv)
 {
     _cullingStatus = cv._cullingStatus;
 }
 
-
 // osgUtil::CullVisitor functions
 // I wish there was an easier way, but isCulled is not virtual
 
-inline CullVisitor::value_type distance(const osg::Vec3& coord,const osg::Matrix& matrix)
+inline CullVisitor::value_type distance(const osg::Vec3& coord,
+        const osg::Matrix& matrix)
 {
-    return -((CullVisitor::value_type)coord[0]*(CullVisitor::value_type)matrix(0,2)+(CullVisitor::value_type)coord[1]*(CullVisitor::value_type)matrix(1,2)+(CullVisitor::value_type)coord[2]*(CullVisitor::value_type)matrix(2,2)+matrix(3,2));
+    return -((CullVisitor::value_type)coord[0]
+            * (CullVisitor::value_type)matrix(0,2)
+            + (CullVisitor::value_type)coord[1]
+                    * (CullVisitor::value_type)matrix(1,2)
+            + (CullVisitor::value_type)coord[2]
+                    * (CullVisitor::value_type)matrix(2,2) + matrix(3,2));
 }
 
 void CVRCullVisitor::apply(Node& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the culling mode.
     pushCurrentMask();
-    
+
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
-    
+    if(node_state)
+        popStateSet();
+
     // pop the culling mode.
     popCurrentMask();
 
@@ -66,46 +75,48 @@ void CVRCullVisitor::apply(Node& node)
     _cullingStatus = status;
 }
 
-
 void CVRCullVisitor::apply(Geode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     // traverse any call callbacks and traverse any children.
     handle_cull_callbacks_and_traverse(node);
 
     RefMatrix& matrix = *getModelViewMatrix();
-    for(unsigned int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i = 0; i < node.getNumDrawables(); ++i)
     {
         Drawable* drawable = node.getDrawable(i);
-        const BoundingBox &bb =drawable->getBound();
+        const BoundingBox &bb = drawable->getBound();
 
-        if( drawable->getCullCallback() )
+        if(drawable->getCullCallback())
         {
-            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
-            continue;
+            if(drawable->getCullCallback()->cull(this,drawable,&_renderInfo)
+                    == true)
+                continue;
         }
-        
+
         //else
         {
-            if (node.isCullingActive() && isCulled(bb)) continue;
+            if(node.isCullingActive() && isCulled(bb))
+                continue;
         }
 
-
-        if (_computeNearFar && bb.valid()) 
+        if(_computeNearFar && bb.valid())
         {
-            if (!updateCalculatedNearFar(matrix,*drawable,false)) continue;
+            if(!updateCalculatedNearFar(matrix,*drawable,false))
+                continue;
         }
 
         // need to track how push/pops there are, so we can unravel the stack correctly.
@@ -113,21 +124,20 @@ void CVRCullVisitor::apply(Geode& node)
 
         // push the geoset's state on the geostate stack.    
         StateSet* stateset = drawable->getStateSet();
-        if (stateset)
+        if(stateset)
         {
             ++numPopStateSetRequired;
             pushStateSet(stateset);
         }
 
         CullingSet& cs = getCurrentCullingSet();
-        if (!cs.getStateFrustumList().empty())
+        if(!cs.getStateFrustumList().empty())
         {
             osg::CullingSet::StateFrustumList& sfl = cs.getStateFrustumList();
             for(osg::CullingSet::StateFrustumList::iterator itr = sfl.begin();
-                itr != sfl.end();
-                ++itr)
+                    itr != sfl.end(); ++itr)
             {
-                if (itr->second.contains(bb))
+                if(itr->second.contains(bb))
                 {
                     ++numPopStateSetRequired;
                     pushStateSet(itr->first.get());
@@ -136,24 +146,24 @@ void CVRCullVisitor::apply(Geode& node)
         }
 
         float depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
-        
-        if (osg::isNaN(depth))
+
+        if(osg::isNaN(depth))
         {
             /*OSG_NOTIFY(osg::NOTICE)<<"CullVisitor::apply(Geode&) detected NaN,"<<std::endl
-                                    <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
-                                    <<"    matrix="<<matrix<<std::endl;
-            OSG_NOTIFY(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
-            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
-            {
-                OSG_NOTIFY(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
-            }*/
+             <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
+             <<"    matrix="<<matrix<<std::endl;
+             OSG_NOTIFY(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
+             for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+             {
+             OSG_NOTIFY(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
+             }*/
         }
         else
-        {        
+        {
             addDrawableAndDepth(drawable,&matrix,depth);
         }
 
-        for(unsigned int i=0;i< numPopStateSetRequired; ++i)
+        for(unsigned int i = 0; i < numPopStateSetRequired; ++i)
         {
             popStateSet();
         }
@@ -161,27 +171,28 @@ void CVRCullVisitor::apply(Geode& node)
     }
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     _firstCullStatus = firstStatus;
     _cullingStatus = status;
 }
 
-
 void CVRCullVisitor::apply(Billboard& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     // traverse any call callbacks and traverse any children.
     handle_cull_callbacks_and_traverse(node);
@@ -189,7 +200,7 @@ void CVRCullVisitor::apply(Billboard& node)
     const Vec3& eye_local = getEyeLocal();
     const RefMatrix& modelview = *getModelViewMatrix();
 
-    for(unsigned int i=0;i<node.getNumDrawables();++i)
+    for(unsigned int i = 0; i < node.getNumDrawables(); ++i)
     {
         const Vec3& pos = node.getPosition(i);
 
@@ -197,9 +208,10 @@ void CVRCullVisitor::apply(Billboard& node)
         // need to modify isCulled to handle the billboard offset.
         // if (isCulled(drawable->getBound())) continue;
 
-        if( drawable->getCullCallback() )
+        if(drawable->getCullCallback())
         {
-            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
+            if(drawable->getCullCallback()->cull(this,drawable,&_renderInfo)
+                    == true)
                 continue;
         }
 
@@ -207,61 +219,64 @@ void CVRCullVisitor::apply(Billboard& node)
 
         node.computeMatrix(*billboard_matrix,eye_local,pos);
 
-
-        if (_computeNearFar && drawable->getBound().valid()) updateCalculatedNearFar(*billboard_matrix,*drawable,true);
+        if(_computeNearFar && drawable->getBound().valid())
+            updateCalculatedNearFar(*billboard_matrix,*drawable,true);
         float depth = distance(pos,modelview);
-/*
-        if (_computeNearFar)
-        {
-            if (d<_computed_znear)
-            {
-                if (d<0.0) OSG_NOTIFY(osg::WARN)<<"Alerting billboard handling ="<<d<< std::endl;
-                _computed_znear = d;
-            }
-            if (d>_computed_zfar) _computed_zfar = d;
-        }
-*/
+        /*
+         if (_computeNearFar)
+         {
+         if (d<_computed_znear)
+         {
+         if (d<0.0) OSG_NOTIFY(osg::WARN)<<"Alerting billboard handling ="<<d<< std::endl;
+         _computed_znear = d;
+         }
+         if (d>_computed_zfar) _computed_zfar = d;
+         }
+         */
         StateSet* stateset = drawable->getStateSet();
-        if (stateset) pushStateSet(stateset);
-        
-        if (osg::isNaN(depth))
+        if(stateset)
+            pushStateSet(stateset);
+
+        if(osg::isNaN(depth))
         {
             /*OSG_NOTIFY(osg::NOTICE)<<"CullVisitor::apply(Billboard&) detected NaN,"<<std::endl
-                                    <<"    depth="<<depth<<", pos=("<<pos<<"),"<<std::endl
-                                    <<"    *billboard_matrix="<<*billboard_matrix<<std::endl;
-            OSG_NOTIFY(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
-            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
-            {
-                OSG_NOTIFY(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
-            }*/
+             <<"    depth="<<depth<<", pos=("<<pos<<"),"<<std::endl
+             <<"    *billboard_matrix="<<*billboard_matrix<<std::endl;
+             OSG_NOTIFY(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
+             for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+             {
+             OSG_NOTIFY(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
+             }*/
         }
         else
-        {        
+        {
             addDrawableAndDepth(drawable,billboard_matrix,depth);
         }
 
-        if (stateset) popStateSet();
+        if(stateset)
+            popStateSet();
 
     }
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     _firstCullStatus = firstStatus;
     _cullingStatus = status;
 }
 
-
 void CVRCullVisitor::apply(LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     StateAttribute* light = node.getLight();
-    if (light)
+    if(light)
     {
-        if (node.getReferenceFrame()==osg::LightSource::RELATIVE_RF)
+        if(node.getReferenceFrame() == osg::LightSource::RELATIVE_RF)
         {
             RefMatrix& matrix = *getModelViewMatrix();
             addPositionedAttribute(&matrix,light);
@@ -276,23 +291,24 @@ void CVRCullVisitor::apply(LightSource& node)
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 }
 
 void CVRCullVisitor::apply(ClipNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     RefMatrix& matrix = *getModelViewMatrix();
 
     const ClipNode::ClipPlaneList& planes = node.getClipPlaneList();
-    for(ClipNode::ClipPlaneList::const_iterator itr=planes.begin();
-        itr!=planes.end();
-        ++itr)
+    for(ClipNode::ClipPlaneList::const_iterator itr = planes.begin();
+            itr != planes.end(); ++itr)
     {
-        if (node.getReferenceFrame()==osg::ClipNode::RELATIVE_RF)
+        if(node.getReferenceFrame() == osg::ClipNode::RELATIVE_RF)
         {
             addPositionedAttribute(&matrix,itr->get());
         }
@@ -305,30 +321,33 @@ void CVRCullVisitor::apply(ClipNode& node)
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 }
 
 void CVRCullVisitor::apply(TexGenNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
-
-    if (node.getReferenceFrame()==osg::TexGenNode::RELATIVE_RF)
+    if(node.getReferenceFrame() == osg::TexGenNode::RELATIVE_RF)
     {
         RefMatrix& matrix = *getModelViewMatrix();
-        addPositionedTextureAttribute(node.getTextureUnit(), &matrix ,node.getTexGen());
+        addPositionedTextureAttribute(node.getTextureUnit(),&matrix,
+                node.getTexGen());
     }
     else
     {
-        addPositionedTextureAttribute(node.getTextureUnit(), 0 ,node.getTexGen());
+        addPositionedTextureAttribute(node.getTextureUnit(),0,node.getTexGen());
     }
-    
+
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the geostate stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 }
 
 void CVRCullVisitor::apply(Group& node)
@@ -336,11 +355,11 @@ void CVRCullVisitor::apply(Group& node)
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
 
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the culling mode.
@@ -348,12 +367,14 @@ void CVRCullVisitor::apply(Group& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -367,11 +388,11 @@ void CVRCullVisitor::apply(Transform& node)
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
 
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the culling mode.
@@ -379,18 +400,20 @@ void CVRCullVisitor::apply(Transform& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
-    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(*getModelViewMatrix());
+    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(*getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
-    pushModelViewMatrix(matrix.get(), node.getReferenceFrame());
-    
+    pushModelViewMatrix(matrix.get(),node.getReferenceFrame());
+
     handle_cull_callbacks_and_traverse(node);
 
     popModelViewMatrix();
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -407,33 +430,32 @@ void CVRCullVisitor::apply(Projection& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
-
+    if(node_state)
+        pushStateSet(node_state);
 
     // record previous near and far values.
     float previous_znear = _computed_znear;
     float previous_zfar = _computed_zfar;
-    
+
     // take a copy of the current near plane candidates
-    DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;
+    DistanceMatrixDrawableMap previousNearPlaneCandidateMap;
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
-
-    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
-    
+
     //OSG_NOTIFY(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
-    
+
     // note do culling check after the frustum has been updated to ensure
     // that the node is not culled prematurely.
-    
+
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
 
-    if (!isCulled(node))
+    if(!isCulled(node))
     {
         handle_cull_callbacks_and_traverse(node);
     }
@@ -452,7 +474,8 @@ void CVRCullVisitor::apply(Projection& node)
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -463,17 +486,16 @@ void CVRCullVisitor::apply(Switch& node)
     apply((Group&)node);
 }
 
-
 void CVRCullVisitor::apply(LOD& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
 
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the culling mode.
@@ -481,12 +503,14 @@ void CVRCullVisitor::apply(LOD& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -498,26 +522,28 @@ void CVRCullVisitor::apply(LOD& node)
 void CVRCullVisitor::apply(osg::ClearNode& node)
 {
     // simply override the current earth sky.
-    if (node.getRequiresClear())
+    if(node.getRequiresClear())
     {
-      getCurrentRenderBin()->getStage()->setClearColor(node.getClearColor());
-      getCurrentRenderBin()->getStage()->setClearMask(node.getClearMask());
+        getCurrentRenderBin()->getStage()->setClearColor(node.getClearColor());
+        getCurrentRenderBin()->getStage()->setClearMask(node.getClearMask());
     }
     else
     {
-      // we have an earth sky implementation to do the work for us
-      // so we don't need to clear.
-      getCurrentRenderBin()->getStage()->setClearMask(0);
+        // we have an earth sky implementation to do the work for us
+        // so we don't need to clear.
+        getCurrentRenderBin()->getStage()->setClearMask(0);
     }
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
 }
 
@@ -527,28 +553,32 @@ namespace osgUtil
 class RenderStageCache : public osg::Object
 {
     public:
-    
-        RenderStageCache() {}
-        RenderStageCache(const RenderStageCache&, const osg::CopyOp&) {}
-        
+
+        RenderStageCache()
+        {
+        }
+        RenderStageCache(const RenderStageCache&, const osg::CopyOp&)
+        {
+        }
+
         META_Object(osgUtil, RenderStageCache);
-        
+
         void setRenderStage(CullVisitor* cv, RenderStage* rs)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock < OpenThreads::Mutex > lock(_mutex);
             _renderStageMap[cv] = rs;
-        }        
+        }
 
         RenderStage* getRenderStage(osgUtil::CullVisitor* cv)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock < OpenThreads::Mutex > lock(_mutex);
             return _renderStageMap[cv].get();
         }
-        
-        typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
-        
-        OpenThreads::Mutex  _mutex;
-        RenderStageMap      _renderStageMap;
+
+        typedef std::map<CullVisitor*,osg::ref_ptr<RenderStage> > RenderStageMap;
+
+        OpenThreads::Mutex _mutex;
+        RenderStageMap _renderStageMap;
 };
 
 }
@@ -557,7 +587,8 @@ void CVRCullVisitor::apply(osg::Camera& camera)
 {
     // push the node's state.
     StateSet* node_state = camera.getStateSet();
-    if (node_state) pushStateSet(node_state);
+    if(node_state)
+        pushStateSet(node_state);
 
 //#define DEBUG_CULLSETTINGS
 
@@ -589,7 +620,7 @@ void CVRCullVisitor::apply(osg::Camera& camera)
     write(osg::notify(osg::NOTICE));
 #endif
     // inherit the settings from above
-    inheritCullSettings(saved_cull_settings, camera.getInheritanceMask());
+    inheritCullSettings(saved_cull_settings,camera.getInheritanceMask());
 
 #ifdef DEBUG_CULLSETTINGS
     osg::notify(osg::NOTICE)<<"CullVisitor, after inheritCullSettings(saved_cull_settings,"<<camera.getInheritanceMask()<<") : ";
@@ -603,25 +634,31 @@ void CVRCullVisitor::apply(osg::Camera& camera)
 
     // set the cull mask.
     unsigned int savedTraversalMask = getTraversalMask();
-    bool mustSetCullMask = (camera.getInheritanceMask() & osg::CullSettings::CULL_MASK) == 0;
-    if (mustSetCullMask) setTraversalMask(camera.getCullMask());
+    bool mustSetCullMask = (camera.getInheritanceMask()
+            & osg::CullSettings::CULL_MASK) == 0;
+    if(mustSetCullMask)
+        setTraversalMask(camera.getCullMask());
 
     RefMatrix& originalModelView = *getModelViewMatrix();
 
     osg::RefMatrix* projection = 0;
     osg::RefMatrix* modelview = 0;
 
-    if (camera.getReferenceFrame()==osg::Transform::RELATIVE_RF)
+    if(camera.getReferenceFrame() == osg::Transform::RELATIVE_RF)
     {
-        if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
+        if(camera.getTransformOrder() == osg::Camera::POST_MULTIPLY)
         {
-            projection = createOrReuseMatrix(*getProjectionMatrix()*camera.getProjectionMatrix());
-            modelview = createOrReuseMatrix(*getModelViewMatrix()*camera.getViewMatrix());
+            projection = createOrReuseMatrix(
+                    *getProjectionMatrix() * camera.getProjectionMatrix());
+            modelview = createOrReuseMatrix(
+                    *getModelViewMatrix() * camera.getViewMatrix());
         }
         else // pre multiply 
         {
-            projection = createOrReuseMatrix(camera.getProjectionMatrix()*(*getProjectionMatrix()));
-            modelview = createOrReuseMatrix(camera.getViewMatrix()*(*getModelViewMatrix()));
+            projection = createOrReuseMatrix(
+                    camera.getProjectionMatrix() * (*getProjectionMatrix()));
+            modelview = createOrReuseMatrix(
+                    camera.getViewMatrix() * (*getModelViewMatrix()));
         }
     }
     else
@@ -631,25 +668,24 @@ void CVRCullVisitor::apply(osg::Camera& camera)
         modelview = createOrReuseMatrix(camera.getViewMatrix());
     }
 
-
-    if (camera.getViewport()) pushViewport(camera.getViewport());
+    if(camera.getViewport())
+        pushViewport(camera.getViewport());
 
     // record previous near and far values.
     float previous_znear = _computed_znear;
     float previous_zfar = _computed_zfar;
-    
+
     // take a copy of the current near plane candidates
-    DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;
+    DistanceMatrixDrawableMap previousNearPlaneCandidateMap;
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
     pushProjectionMatrix(projection);
-    pushModelViewMatrix(modelview, camera.getReferenceFrame());    
+    pushModelViewMatrix(modelview,camera.getReferenceFrame());
 
-
-    if (camera.getRenderOrder()==osg::Camera::NESTED_RENDER)
+    if(camera.getRenderOrder() == osg::Camera::NESTED_RENDER)
     {
         handle_cull_callbacks_and_traverse(camera);
     }
@@ -658,43 +694,49 @@ void CVRCullVisitor::apply(osg::Camera& camera)
         // set up lighting.
         // currently ignore lights in the scene graph itself..
         // will do later.
-        osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
+        osgUtil::RenderStage* previous_stage =
+                getCurrentRenderBin()->getStage();
 
 //        unsigned int contextID = getState() ? getState()->getContextID() : 0;
 
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache());
-        if (!rsCache)
+        osg::ref_ptr<osgUtil::RenderStageCache> rsCache =
+                dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache());
+        if(!rsCache)
         {
             rsCache = new osgUtil::RenderStageCache;
             camera.setRenderingCache(rsCache.get());
         }
-        
-        osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);
-        if (!rtts)
+
+        osg::ref_ptr < osgUtil::RenderStage > rtts = rsCache->getRenderStage(
+                this);
+        if(!rtts)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(camera.getDataChangeMutex()));
-        
+            OpenThreads::ScopedLock < OpenThreads::Mutex
+                    > lock(*(camera.getDataChangeMutex()));
+
             rtts = new osgUtil::RenderStage;
             rsCache->setRenderStage(this,rtts.get());
 
             rtts->setCamera(&camera);
 
-            if ( camera.getInheritanceMask() & DRAW_BUFFER )
+            if(camera.getInheritanceMask() & DRAW_BUFFER)
             {
                 // inherit draw buffer from above.
-                rtts->setDrawBuffer(previous_stage->getDrawBuffer(),previous_stage->getDrawBufferApplyMask());
+                rtts->setDrawBuffer(previous_stage->getDrawBuffer(),
+                        previous_stage->getDrawBufferApplyMask());
             }
             else
             {
                 rtts->setDrawBuffer(camera.getDrawBuffer());
             }
-            
-            if ( camera.getInheritanceMask() & READ_BUFFER )
+
+            if(camera.getInheritanceMask() & READ_BUFFER)
             {
                 // inherit read buffer from above.
-                rtts->setReadBuffer(previous_stage->getReadBuffer(), previous_stage->getReadBufferApplyMask());
+                rtts->setReadBuffer(previous_stage->getReadBuffer(),
+                        previous_stage->getReadBufferApplyMask());
             }
             else
             {
@@ -713,9 +755,8 @@ void CVRCullVisitor::apply(osg::Camera& camera)
         rtts->setClearStencil(camera.getClearStencil());
         rtts->setClearMask(camera.getClearMask());
 
-
         // set up the background color and clear mask.
-        if (camera.getInheritanceMask() & CLEAR_COLOR)
+        if(camera.getInheritanceMask() & CLEAR_COLOR)
         {
             rtts->setClearColor(previous_stage->getClearColor());
         }
@@ -723,7 +764,7 @@ void CVRCullVisitor::apply(osg::Camera& camera)
         {
             rtts->setClearColor(camera.getClearColor());
         }
-        if (camera.getInheritanceMask() & CLEAR_MASK)
+        if(camera.getInheritanceMask() & CLEAR_MASK)
         {
             rtts->setClearMask(previous_stage->getClearMask());
         }
@@ -732,23 +773,25 @@ void CVRCullVisitor::apply(osg::Camera& camera)
             rtts->setClearMask(camera.getClearMask());
         }
 
-        
         // set the color mask.
-        osg::ColorMask* colorMask = camera.getColorMask()!=0 ? camera.getColorMask() : previous_stage->getColorMask();
+        osg::ColorMask* colorMask =
+                camera.getColorMask() != 0 ?
+                        camera.getColorMask() : previous_stage->getColorMask();
         rtts->setColorMask(colorMask);
 
         // set up the viewport.
-        osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
-        rtts->setViewport( viewport );
-        
-
+        osg::Viewport* viewport =
+                camera.getViewport() != 0 ?
+                        camera.getViewport() : previous_stage->getViewport();
+        rtts->setViewport(viewport);
 
         // set up to charge the same PositionalStateContainer is the parent previous stage.
         osg::Matrix inheritedMVtolocalMV;
         inheritedMVtolocalMV.invert(originalModelView);
         inheritedMVtolocalMV.postMult(*getModelViewMatrix());
         rtts->setInheritedPositionalStateContainerMatrix(inheritedMVtolocalMV);
-        rtts->setInheritedPositionalStateContainer(previous_stage->getPositionalStateContainer());
+        rtts->setInheritedPositionalStateContainer(
+                previous_stage->getPositionalStateContainer());
 
         // record the render bin, to be restored after creation
         // of the render to text
@@ -764,35 +807,35 @@ void CVRCullVisitor::apply(osg::Camera& camera)
 
         // restore the previous renderbin.
         setCurrentRenderBin(previousRenderBin);
-     
 
-        if (rtts->getStateGraphList().size()==0 && rtts->getRenderBinList().size()==0)
+        if(rtts->getStateGraphList().size() == 0
+                && rtts->getRenderBinList().size() == 0)
         {
             // getting to this point means that all the subgraph has been
             // culled by small feature culling or is beyond LOD ranges.
         }
-
 
         // and the render to texture stage to the current stages
         // dependancy list.
         switch(camera.getRenderOrder())
         {
             case osg::Camera::PRE_RENDER:
-                getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get(),camera.getRenderOrderNum());
+                getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get(),
+                        camera.getRenderOrderNum());
                 break;
             default:
-                getCurrentRenderBin()->getStage()->addPostRenderStage(rtts.get(),camera.getRenderOrderNum());
+                getCurrentRenderBin()->getStage()->addPostRenderStage(
+                        rtts.get(),camera.getRenderOrderNum());
                 break;
         }
 
     }
-    
+
     // restore the previous model view matrix.
     popModelViewMatrix();
 
     // restore the previous model view matrix.
     popProjectionMatrix();
-
 
     // restore the original near and far values
     _computed_znear = previous_znear;
@@ -801,17 +844,19 @@ void CVRCullVisitor::apply(osg::Camera& camera)
     // swap back the near plane candidates
     previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
 
-
-    if (camera.getViewport()) popViewport();
+    if(camera.getViewport())
+        popViewport();
 
     // restore the previous traversal mask settings
-    if (mustSetCullMask) setTraversalMask(savedTraversalMask);
+    if(mustSetCullMask)
+        setTraversalMask(savedTraversalMask);
 
     // restore the previous cull settings
     setCullSettings(saved_cull_settings);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
 }
 
@@ -823,12 +868,11 @@ void CVRCullVisitor::apply(osg::OccluderNode& node)
     // need to check if occlusion node is in the occluder
     // list, if so disable the appropriate ShadowOccluderVolume
     disableAndPushOccludersCurrentMask(_nodePath);
-    
 
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
         popOccludersCurrentMask(_nodePath);
         return;
     }
@@ -838,14 +882,14 @@ void CVRCullVisitor::apply(osg::OccluderNode& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
-
-
+    if(node_state)
+        pushStateSet(node_state);
 
     handle_cull_callbacks_and_traverse(node);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -862,11 +906,11 @@ void CVRCullVisitor::apply(osg::OcclusionQueryNode& node)
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
 
-    if (isCulled(node))
+    if(isCulled(node))
     {
-	_firstCullStatus = firstStatus;
-	_cullingStatus = status;
-	return;
+        _firstCullStatus = firstStatus;
+        _cullingStatus = status;
+        return;
     }
 
     // push the culling mode.
@@ -874,28 +918,28 @@ void CVRCullVisitor::apply(osg::OcclusionQueryNode& node)
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();
-    if (node_state) pushStateSet(node_state);
-
+    if(node_state)
+        pushStateSet(node_state);
 
     osg::Camera* camera = getCurrentCamera();
-    
+
     // If previous query indicates visible, then traverse as usual.
 #if (OPENSCENEGRAPH_MAJOR_VERSION == 2) && (OPENSCENEGRAPH_MINOR_VERSION == 9) && (OPENSCENEGRAPH_PATCH_VERSION <= 7)
     if (node.getPassed( camera, getDistanceToEyePoint( node.getBound()._center, false ) ))
 #else
-    if (node.getPassed( camera, *this ))
+    if(node.getPassed(camera,*this))
 #endif
         handle_cull_callbacks_and_traverse(node);
 
     // Traverse the query subtree if OcclusionQueryNode needs to issue another query.
-    node.traverseQuery( camera, *this );
+    node.traverseQuery(camera,*this);
 
     // Traverse the debug bounding geometry, if enabled.
-    node.traverseDebug( *this );
-
+    node.traverseDebug(*this);
 
     // pop the node's state off the render graph stack.    
-    if (node_state) popStateSet();
+    if(node_state)
+        popStateSet();
 
     // pop the culling mode.
     popCurrentMask();
@@ -904,7 +948,8 @@ void CVRCullVisitor::apply(osg::OcclusionQueryNode& node)
     _cullingStatus = status;
 }
 
-CVRCullVisitor::PreCullVisitor::PreCullVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+CVRCullVisitor::PreCullVisitor::PreCullVisitor() :
+        osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
 {
     setTraversalMask(DISABLE_FIRST_CULL);
     _setMask = false;
@@ -914,7 +959,7 @@ void CVRCullVisitor::PreCullVisitor::apply(Node& node)
 {
     if(node.getNodeMask() & FIRST_CULL_STATUS)
     {
-	_setMask = true;
+        _setMask = true;
     }
 }
 
@@ -923,28 +968,29 @@ void CVRCullVisitor::PreCullVisitor::apply(Group& group)
     bool setMask = false;
     for(int i = 0; i < group.getNumChildren(); i++)
     {
-	_setMask = false;
-	group.getChild(i)->accept(*this);
-	if(_setMask)
-	{
-	    setMask = true;
-	}
+        _setMask = false;
+        group.getChild(i)->accept(*this);
+        if(_setMask)
+        {
+            setMask = true;
+        }
     }
 
     if(group.getNodeMask() & FIRST_CULL_STATUS)
     {
-	_setMask = true;
+        _setMask = true;
     }
     else if(setMask)
     {
-	//std::cerr << "Pulling up node mask." << std::endl;
-	_setMask = true;
-	group.setNodeMask(group.getNodeMask() | FIRST_CULL_STATUS);
+        //std::cerr << "Pulling up node mask." << std::endl;
+        _setMask = true;
+        group.setNodeMask(group.getNodeMask() | FIRST_CULL_STATUS);
     }
-    
+
 }
 
-CVRCullVisitor::PostCullVisitor::PostCullVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+CVRCullVisitor::PostCullVisitor::PostCullVisitor() :
+        osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
 {
     setTraversalMask(DISABLE_FIRST_CULL);
 }

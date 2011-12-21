@@ -28,14 +28,13 @@ class ScreenStereo : public ScreenBase
         struct StereoCallback : public osgUtil::SceneView::ComputeStereoMatricesCallback
         {
                 virtual osg::Matrixd
-                        computeLeftEyeProjection(const osg::Matrixd &projection) const;
+                computeLeftEyeProjection(const osg::Matrixd &projection) const;
                 virtual osg::Matrixd
-                        computeLeftEyeView(const osg::Matrixd &view) const;
+                computeLeftEyeView(const osg::Matrixd &view) const;
                 virtual osg::Matrixd
-                        computeRightEyeProjection(
-                                                  const osg::Matrixd &projection) const;
+                computeRightEyeProjection(const osg::Matrixd &projection) const;
                 virtual osg::Matrixd
-                        computeRightEyeView(const osg::Matrixd &view) const;
+                computeRightEyeView(const osg::Matrixd &view) const;
                 ScreenStereo * screen;
         };
 
@@ -67,7 +66,10 @@ class ScreenStereo : public ScreenBase
 
         virtual void adjustViewportCoords(int & x, int & y);
 
-        osg::DisplaySettings::StereoMode getStereoMode() { return _stereoMode; }
+        osg::DisplaySettings::StereoMode getStereoMode()
+        {
+            return _stereoMode;
+        }
         void setStereoMode(osg::DisplaySettings::StereoMode sm);
 
     protected:

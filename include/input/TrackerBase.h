@@ -38,13 +38,13 @@ class TrackerBase
          */
         struct TrackedBody
         {
-            float x; ///< position x
-            float y; ///< position y
-            float z; ///< position z
-            float qx; ///< rotation x (quat)
-            float qy; ///< rotation y (quat)
-            float qz; ///< rotation z (quat)
-            float qw; ///< rotation w (quat)
+                float x; ///< position x
+                float y; ///< position y
+                float z; ///< position z
+                float qx; ///< rotation x (quat)
+                float qy; ///< rotation y (quat)
+                float qz; ///< rotation z (quat)
+                float qw; ///< rotation w (quat)
         };
 
         /**
@@ -103,32 +103,48 @@ class TrackerBase
          * @brief Update body/button information 
          * @param eventMap map to add any extra events into, indexed by cvr::InteractionEventType
          */
-        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap) = 0;
+        virtual void update(
+                std::map<int,std::list<InteractionEvent*> > & eventMap) = 0;
 
         /**
          * @brief Get the type for this tracking system
          */
-        virtual TrackerType getTrackerType() { return TRACKER; }
+        virtual TrackerType getTrackerType()
+        {
+            return TRACKER;
+        }
 
         /**
          * @brief Get the navigation type for this tracking system
          */
-        virtual Navigation::NavImplementation getNavImplementation() { return Navigation::TRACKER_NAV; }
+        virtual Navigation::NavImplementation getNavImplementation()
+        {
+            return Navigation::TRACKER_NAV;
+        }
 
         /**
          * @brief Get the type for pointer graphic to use for this system
          */
-        virtual SceneManager::PointerGraphicType getPointerType() { return SceneManager::CONE; }
+        virtual SceneManager::PointerGraphicType getPointerType()
+        {
+            return SceneManager::CONE;
+        }
 
         /**
          * @brief Get if this tracking system should be polled in a thread
          */
-        virtual bool thread() { return true; }
+        virtual bool thread()
+        {
+            return true;
+        }
 
         /**
          * @brief Get if default button events should be generated for this system
          */
-        virtual bool genDefaultButtonEvents() { return true; }
+        virtual bool genDefaultButtonEvents()
+        {
+            return true;
+        }
 };
 
 }

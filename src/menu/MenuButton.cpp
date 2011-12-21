@@ -3,7 +3,7 @@
 using namespace cvr;
 
 MenuButton::MenuButton(std::string text) :
-    MenuItem()
+        MenuItem()
 {
     _text = text;
 }

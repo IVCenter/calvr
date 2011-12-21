@@ -107,7 +107,7 @@ class CVRKERNEL_EXPORT PluginManager
         struct PrioritySort
         {
                 bool operator()(PluginInfo* const & first,
-                                PluginInfo* const & second)
+                        PluginInfo* const & second)
                 {
                     return first->priority > second->priority;
                 }

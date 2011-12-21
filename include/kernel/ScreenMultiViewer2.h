@@ -14,7 +14,9 @@
 
 namespace cvr
 {
-typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
+typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0,
+        float &contribution0, osg::Vec3 toZone1, osg::Vec3 orientation1,
+        float &contribution1);
 
 /**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
@@ -31,13 +33,13 @@ class CVRKERNEL_EXPORT ScreenMultiViewer2 : public ScreenMVSimulator
         struct StereoCallback : public osgUtil::SceneView::ComputeStereoMatricesCallback
         {
                 virtual osg::Matrixd
-                        computeLeftEyeProjection(const osg::Matrixd &) const;
+                computeLeftEyeProjection(const osg::Matrixd &) const;
                 virtual osg::Matrixd
-                        computeLeftEyeView(const osg::Matrixd &) const;
+                computeLeftEyeView(const osg::Matrixd &) const;
                 virtual osg::Matrixd
-                        computeRightEyeProjection(const osg::Matrixd &) const;
+                computeRightEyeProjection(const osg::Matrixd &) const;
                 virtual osg::Matrixd
-                        computeRightEyeView(const osg::Matrixd &) const;
+                computeRightEyeView(const osg::Matrixd &) const;
                 osg::Matrix _viewLeft; ///< left eye view matrix
                 osg::Matrix _viewRight; ///< right eye view matrix
                 osg::Matrix _projLeft; ///< left eye projection matrix
@@ -207,16 +209,16 @@ class CVRKERNEL_EXPORT ScreenMultiViewer2 : public ScreenMVSimulator
         static int _maxZoneColumns; ///< The maximum number of zone columns the screen can have
         osg::DisplaySettings::StereoMode _stereoMode; ///< osg stereo mode for this screen
 
-        std::vector< osg::ref_ptr<osg::Camera> > _camera; ///< osg::Camera for this screen
-        std::vector< osg::Vec3 > _zoneCenter; ///< center for each zone on this screen, in xy pairs
+        std::vector<osg::ref_ptr<osg::Camera> > _camera; ///< osg::Camera for this screen
+        std::vector<osg::Vec3> _zoneCenter; ///< center for each zone on this screen, in xy pairs
 
-        std::vector< osg::Matrix * > _projLeftPtr; ///< Vector to hold all zones' left eye projection matrices
-        std::vector< osg::Matrix * > _projRightPtr; ///< Vector to hold all zones' right eye projection matrices
-        std::vector< osg::Matrix * > _viewLeftPtr; ///< Vector to hold all zones' left eye view matrices
-        std::vector< osg::Matrix * > _viewRightPtr; ///< Vector to hold all zones' right eye view matrices
+        std::vector<osg::Matrix *> _projLeftPtr; ///< Vector to hold all zones' left eye projection matrices
+        std::vector<osg::Matrix *> _projRightPtr; ///< Vector to hold all zones' right eye projection matrices
+        std::vector<osg::Matrix *> _viewLeftPtr; ///< Vector to hold all zones' left eye view matrices
+        std::vector<osg::Matrix *> _viewRightPtr; ///< Vector to hold all zones' right eye view matrices
 
-        std::vector< osg::Matrix * > * _projPtr; ///< set to either _projLeftPtr, _projRightPtr, or null to setup project matrix in the StarCAVE
-        std::vector< osg::Matrix * > * _viewPtr; ///< set to either _viewLeftPtr, _viewRightPtr, or null to setup project matrix in the StarCAVE
+        std::vector<osg::Matrix *> * _projPtr; ///< set to either _projLeftPtr, _projRightPtr, or null to setup project matrix in the StarCAVE
+        std::vector<osg::Matrix *> * _viewPtr; ///< set to either _viewLeftPtr, _viewRightPtr, or null to setup project matrix in the StarCAVE
 
         osg::Quat _invScreenRotation; ///< world to screen space rotation
 
@@ -242,7 +244,8 @@ class CVRKERNEL_EXPORT ScreenMultiViewer2 : public ScreenMVSimulator
          * @param eyeLeft empty vector of osg Vec3's to be populated
          * @param eyeRight empty vector of osg Vec3's to be populated
          */
-        void setEyeLocations(std::vector<osg::Vec3> &eyeLeft,std::vector<osg::Vec3> &eyeRight);
+        void setEyeLocations(std::vector<osg::Vec3> &eyeLeft,
+                std::vector<osg::Vec3> &eyeRight);
         static setContributionFunc setContribution; ///< Sets which contribution function to use for zone contribution calculations
         static std::vector<setContributionFunc> setContributionFuncs; ///< vector of the allowed zone contribution functions
         static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs. (0 implies automatic)

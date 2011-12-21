@@ -73,22 +73,23 @@ int TrackerSlave::getNumButtons()
     return _numButtons;
 }
 
-void TrackerSlave::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
+void TrackerSlave::update(
+        std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
 }
 
 void TrackerSlave::readValues(TrackedBody * tb, unsigned int * buttons,
-                              float * vals)
+        float * vals)
 {
     if(tb)
     {
-        memcpy(_bodyArray, tb, _numBodies * sizeof(struct TrackedBody));
+        memcpy(_bodyArray,tb,_numBodies * sizeof(struct TrackedBody));
     }
 
     _buttonMask = *buttons;
 
     if(vals)
     {
-        memcpy(_valArray, vals, _numVals * sizeof(float));
+        memcpy(_valArray,vals,_numVals * sizeof(float));
     }
 }

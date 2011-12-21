@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace cvr 
+namespace cvr
 {
 
 /**
@@ -36,6 +36,7 @@ CVRUTIL_EXPORT void print(osg::Vec4 & v, std::string label = "Vec4");
  * @param label label to use in the print output
  * @param transpose should the output be transposed
  */
-CVRUTIL_EXPORT void print(osg::Matrix & m, std::string label = "Matrix", bool transpose = false);
+CVRUTIL_EXPORT void print(osg::Matrix & m, std::string label = "Matrix",
+        bool transpose = false);
 
 }

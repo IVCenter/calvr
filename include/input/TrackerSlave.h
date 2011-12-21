@@ -30,7 +30,8 @@ class TrackerSlave : public TrackerBase
         virtual int getNumValuators();
         virtual int getNumButtons();
 
-        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
+        virtual void update(
+                std::map<int,std::list<InteractionEvent*> > & eventMap);
 
         void readValues(TrackedBody * tb, unsigned int * buttons, float * vals);
     protected:

@@ -24,7 +24,7 @@ namespace cvr
  */
 class CVRKERNEL_EXPORT ThreadedLoader
 {
-    friend class CalVR;
+        friend class CalVR;
     public:
         /**
          * @brief get a static pointer to the instance of the class
@@ -37,7 +37,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param options osg options structure to use with the readNodeFile call
          * @return job number for this operation
          */
-        int readNodeFile(std::string filename, osgDB::ReaderWriter::Options * options = NULL);
+        int readNodeFile(std::string filename,
+                osgDB::ReaderWriter::Options * options = NULL);
 
         /**
          * @brief Open a list of model files with a background thread
@@ -45,7 +46,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param options list of osg options to use with the readNodeFile call, ignored if not present or NULL
          * @return job number for this operation
          */
-        int readNodeFiles(std::vector<std::string> & filenames, std::vector<osgDB::ReaderWriter::Options *> & options);
+        int readNodeFiles(std::vector<std::string> & filenames,
+                std::vector<osgDB::ReaderWriter::Options *> & options);
 
         /**
          * @brief Open an image file with a background thread
@@ -53,7 +55,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param options osg options structure to use with the readImageFile call
          * @return job number for this operation
          */
-        int readImageFile(std::string & filename, osgDB::ReaderWriter::Options * options = NULL);
+        int readImageFile(std::string & filename,
+                osgDB::ReaderWriter::Options * options = NULL);
 
         /**
          * @brief Open a list of image files with a background thread
@@ -61,7 +64,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param options list of osg options to use with the readImageFile call, ignored if not present or NULL
          * @return job number for this operation
          */
-        int readImageFiles(std::vector<std::string> & filenames, std::vector<osgDB::ReaderWriter::Options *> & options);
+        int readImageFiles(std::vector<std::string> & filenames,
+                std::vector<osgDB::ReaderWriter::Options *> & options);
 
         /**
          * @brief Runs a system command in a background thread over all nodes
@@ -117,7 +121,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param job job number
          * @param nodeList list to be filled with the read model file nodes
          */
-        void getNodeFiles(int job, std::vector<osg::ref_ptr<osg::Node> > & nodeList);
+        void getNodeFiles(int job,
+                std::vector<osg::ref_ptr<osg::Node> > & nodeList);
 
         /**
          * @brief Get the result of a job that read an image file
@@ -131,7 +136,8 @@ class CVRKERNEL_EXPORT ThreadedLoader
          * @param job job number
          * @param imageList list to be filled with the read image files
          */
-        void getImageFiles(int job, std::vector<osg::ref_ptr<osg::Image> > & imageList);
+        void getImageFiles(int job,
+                std::vector<osg::ref_ptr<osg::Image> > & imageList);
 
     protected:
         ThreadedLoader();
@@ -152,16 +158,16 @@ class CVRKERNEL_EXPORT ThreadedLoader
 
         struct ThreadedJob
         {
-            JobType type;
-            std::vector<std::string> strs;
-            std::vector<osgDB::ReaderWriter::Options *> options;
+                JobType type;
+                std::vector<std::string> strs;
+                std::vector<osgDB::ReaderWriter::Options *> options;
         };
 
         struct ThreadResult
         {
-            JobType type;
-            int ret;
-            std::vector<void*> ptrs;
+                JobType type;
+                int ret;
+                std::vector<void*> ptrs;
         };
 
         class LoaderThread : public OpenThreads::Thread
@@ -174,7 +180,10 @@ class CVRKERNEL_EXPORT ThreadedLoader
                 void quit();
 
                 char getStatus();
-                ThreadResult * getResult() { return &_result; }
+                ThreadResult * getResult()
+                {
+                    return &_result;
+                }
 
             protected:
                 ThreadedJob * _job;

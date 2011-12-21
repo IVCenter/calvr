@@ -17,7 +17,10 @@ class CVRCullVisitor : public osgUtil::CullVisitor
     public:
         CVRCullVisitor();
         CVRCullVisitor(const CVRCullVisitor& cv);
-        virtual CullVisitor* clone() const { return new CVRCullVisitor(*this); }
+        virtual CullVisitor* clone() const
+        {
+            return new CVRCullVisitor(*this);
+        }
 
         inline bool isCulled(const osg::Node& node)
         {
@@ -90,7 +93,6 @@ class CVRCullVisitor : public osgUtil::CullVisitor
         bool _cullingStatus;
         bool _firstCullStatus;
         bool _skipCull;
-
 
     public:
         // osgUtil::CullVisitor

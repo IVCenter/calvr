@@ -17,7 +17,8 @@ class CVRSocket;
 class CollaborativeThread : public OpenThreads::Thread
 {
     public:
-        CollaborativeThread(std::map<int,struct ClientInitInfo> * clientInitMap);
+        CollaborativeThread(
+                std::map<int,struct ClientInitInfo> * clientInitMap);
         ~CollaborativeThread();
 
         void init(cvr::CVRSocket * socket, int id);
@@ -28,14 +29,19 @@ class CollaborativeThread : public OpenThreads::Thread
         cvr::CVRSocket * getSocket();
         void setSocket(cvr::CVRSocket * socket);
 
-        void startUpdate(struct cvr::ClientUpdate & cu, int numBodies, struct cvr::BodyUpdate * bodies, int numMessages, CollaborativeMessageHeader * messageHeaders, char** messageData);
+        void startUpdate(struct cvr::ClientUpdate & cu, int numBodies,
+                struct cvr::BodyUpdate * bodies, int numMessages,
+                CollaborativeMessageHeader * messageHeaders,
+                char** messageData);
         bool updateDone();
 
         void quit();
 
         //TODO add message stuff
         void getUpdate(cvr::ServerUpdate * & su,
-                       cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList, CollaborativeMessageHeader * & messageHeaders, char ** & messageData);
+                cvr::ClientUpdate * & clientlist, BodyUpdate * & bodyList,
+                CollaborativeMessageHeader * & messageHeaders,
+                char ** & messageData);
 
     protected:
         void processMessage(CollaborativeMessageHeader & cmh, char * data);

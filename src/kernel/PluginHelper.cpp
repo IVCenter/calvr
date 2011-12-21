@@ -2,7 +2,6 @@
 #include <kernel/PluginManager.h>
 #include <collaborative/CollaborativeManager.h>
 
-
 using namespace cvr;
 
 PluginHelper::PluginHelper()
@@ -105,7 +104,7 @@ int PluginHelper::getNumValuators(int system)
 
 float PluginHelper::getValuator(int system, int index)
 {
-    return TrackingManager::instance()->getValuator(system, index);
+    return TrackingManager::instance()->getValuator(system,index);
 }
 
 int PluginHelper::getMouseX()
@@ -178,12 +177,16 @@ void PluginHelper::sendMessageByName(std::string plugin, int type, char * data)
     PluginManager::instance()->sendMessageByName(plugin,type,data);
 }
 
-void PluginHelper::sendCollaborativeMessageAsync(std::string plugin, int type, char * data, int size, bool sendLocal)
+void PluginHelper::sendCollaborativeMessageAsync(std::string plugin, int type,
+        char * data, int size, bool sendLocal)
 {
-    CollaborativeManager::instance()->sendCollaborativeMessageAsync(plugin,type,data,size,sendLocal);
+    CollaborativeManager::instance()->sendCollaborativeMessageAsync(plugin,type,
+            data,size,sendLocal);
 }
 
-void PluginHelper::sendCollaborativeMessageSync(std::string plugin, int type, char * data, int size, bool sendLocal)
+void PluginHelper::sendCollaborativeMessageSync(std::string plugin, int type,
+        char * data, int size, bool sendLocal)
 {
-    CollaborativeManager::instance()->sendCollaborativeMessageSync(plugin,type,data,size,sendLocal);
+    CollaborativeManager::instance()->sendCollaborativeMessageSync(plugin,type,
+            data,size,sendLocal);
 }

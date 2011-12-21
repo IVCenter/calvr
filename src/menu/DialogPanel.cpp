@@ -4,11 +4,13 @@
 
 using namespace cvr;
 
-DialogPanel::DialogPanel(float menuWidth, std::string title, std::string configTag) : PopupMenu(title,configTag)
+DialogPanel::DialogPanel(float menuWidth, std::string title,
+        std::string configTag) :
+        PopupMenu(title,configTag)
 {
     _menuWidth = menuWidth;
     _text = "";
-    _menuText = new MenuText(_text, 1.0, false, _menuWidth);
+    _menuText = new MenuText(_text,1.0,false,_menuWidth);
     addMenuItem(_menuText);
     setVisible(false);
 }

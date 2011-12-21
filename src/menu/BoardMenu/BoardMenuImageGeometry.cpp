@@ -7,7 +7,8 @@
 
 using namespace cvr;
 
-BoardMenuImageGeometry::BoardMenuImageGeometry() : BoardMenuGeometry()
+BoardMenuImageGeometry::BoardMenuImageGeometry() :
+        BoardMenuGeometry()
 {
 }
 
@@ -30,17 +31,20 @@ void BoardMenuImageGeometry::createGeometry(MenuItem * item)
     MenuImage * mi = dynamic_cast<MenuImage*>(item);
     if(!mi)
     {
-	std::cerr << "BoardMenuImageGeometry: Error, item is not of MenuImage type." << std::endl;
-	return;
+        std::cerr
+                << "BoardMenuImageGeometry: Error, item is not of MenuImage type."
+                << std::endl;
+        return;
     }
     _mi = mi;
 
-    osg::Geometry * geo = makeQuad(1.0,1.0, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec3(0,-2,-1.0));
+    osg::Geometry * geo = makeQuad(1.0,1.0,osg::Vec4(1.0,1.0,1.0,1.0),
+            osg::Vec3(0,-2,-1.0));
 
     _geode->addDrawable(geo);
 
     osg::StateSet * stateset = _geode->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     updateImage();
 }
@@ -59,22 +63,22 @@ void BoardMenuImageGeometry::updateImage()
     osg::Vec3 scale;
     if(_mi->getImage())
     {
-	osg::StateSet * stateset = _geode->getOrCreateStateSet();
-	stateset->setTextureAttributeAndModes(0, _mi->getImage(),
-                                              osg::StateAttribute::ON);
-	//stateset->setMode(GL_TEXTURE_2D, osg::StateAttribute::ON);
-	scale = osg::Vec3(_mi->getWidth(),1.0,_mi->getHeight());
-	_width = _mi->getWidth();
-	_height = _mi->getHeight();
+        osg::StateSet * stateset = _geode->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0,_mi->getImage(),
+                osg::StateAttribute::ON);
+        //stateset->setMode(GL_TEXTURE_2D, osg::StateAttribute::ON);
+        scale = osg::Vec3(_mi->getWidth(),1.0,_mi->getHeight());
+        _width = _mi->getWidth();
+        _height = _mi->getHeight();
 
-	_geode->setNodeMask(~0);
+        _geode->setNodeMask(~0);
     }
     else
     {
-	osg::StateSet * stateset = _geode->getOrCreateStateSet();
-	//stateset->setMode(GL_TEXTURE_2D, osg::StateAttribute::OFF);
-	scale = osg::Vec3(0,1,0);
-	_width = _height = 0;
+        osg::StateSet * stateset = _geode->getOrCreateStateSet();
+        //stateset->setMode(GL_TEXTURE_2D, osg::StateAttribute::OFF);
+        scale = osg::Vec3(0,1,0);
+        _width = _height = 0;
     }
 
     osg::Matrix m;

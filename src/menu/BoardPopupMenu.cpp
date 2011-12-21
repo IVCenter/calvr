@@ -7,7 +7,8 @@
 
 using namespace cvr;
 
-BoardPopupMenu::BoardPopupMenu() : BoardMenu()
+BoardPopupMenu::BoardPopupMenu() :
+        BoardMenu()
 {
 }
 
@@ -29,8 +30,8 @@ bool BoardPopupMenu::processIsect(IsectInfo & isect, int hand)
 {
     if(BoardMenu::processIsect(isect,hand))
     {
-	_currentPoint[hand] = isect.point;
-	return true;
+        _currentPoint[hand] = isect.point;
+        return true;
     }
     return false;
 }
@@ -44,70 +45,76 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 {
     if(!_menuActive || !_myMenu || !event->asTrackedButtonEvent())
     {
-	return false;
+        return false;
     }
 
     TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
 
     if(_clickActive)
     {
-	if(tie->getHand() == _activeHand)
-	{
-	    if(tie->getInteraction() == BUTTON_DRAG || tie->getInteraction() == BUTTON_UP)
-	    {
-		if(tie->getButton() == _primaryButton)
-		{
-		    BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-		    if(smg && smg->isMenuHead())
-		    {
-			updateMovement(tie);
-		    }
+        if(tie->getHand() == _activeHand)
+        {
+            if(tie->getInteraction() == BUTTON_DRAG
+                    || tie->getInteraction() == BUTTON_UP)
+            {
+                if(tie->getButton() == _primaryButton)
+                {
+                    BoardMenuSubMenuGeometry * smg =
+                            dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+                    if(smg && smg->isMenuHead())
+                    {
+                        updateMovement(tie);
+                    }
 
-		    _activeItem->processEvent(event);
-		    if(tie->getInteraction() == BUTTON_UP)
-		    {
-			_clickActive = false;
-		    }
-		    return true;
-		}
-	    }
-	}
-	return false;
+                    _activeItem->processEvent(event);
+                    if(tie->getInteraction() == BUTTON_UP)
+                    {
+                        _clickActive = false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     else if(tie->getHand() == _activeHand && tie->getButton() == _primaryButton)
     {
-	if(tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DOUBLE_CLICK)
-	{
-	    if(_activeItem)
-	    {
-		BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-		if(smg && smg->isMenuHead())
-		{
-		    osg::Vec3 ray;
-		    ray = _currentPoint[tie->getHand()] - tie->getTransform().getTrans();
+        if(tie->getInteraction() == BUTTON_DOWN
+                || tie->getInteraction() == BUTTON_DOUBLE_CLICK)
+        {
+            if(_activeItem)
+            {
+                BoardMenuSubMenuGeometry * smg =
+                        dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+                if(smg && smg->isMenuHead())
+                {
+                    osg::Vec3 ray;
+                    ray = _currentPoint[tie->getHand()]
+                            - tie->getTransform().getTrans();
 
-		    _moveDistance = ray.length();
-		    _menuPoint = _currentPoint[tie->getHand()] * osg::Matrix::inverse(_menuRoot->getMatrix());
-		    updateMovement(tie);
-		}
-		else if(smg && !smg->isMenuHead())
-		{
-		    if(smg->isMenuOpen())
-		    {
-			closeMenu((SubMenu*)smg->getMenuItem());
-		    }
-		    else
-		    {
-			openMenu(smg);
-		    }
-		}
-		_activeItem->processEvent(event);
-		_clickActive = true;
-		return true;
-	    }
+                    _moveDistance = ray.length();
+                    _menuPoint = _currentPoint[tie->getHand()]
+                            * osg::Matrix::inverse(_menuRoot->getMatrix());
+                    updateMovement(tie);
+                }
+                else if(smg && !smg->isMenuHead())
+                {
+                    if(smg->isMenuOpen())
+                    {
+                        closeMenu((SubMenu*)smg->getMenuItem());
+                    }
+                    else
+                    {
+                        openMenu(smg);
+                    }
+                }
+                _activeItem->processEvent(event);
+                _clickActive = true;
+                return true;
+            }
 
-	    return false;
-	}
+            return false;
+        }
     }
 
     return false;
@@ -172,21 +179,20 @@ osg::Matrix BoardPopupMenu::getTransform()
     return _menuRoot->getMatrix();
 }
 
-
 void BoardPopupMenu::setVisible(bool v)
 {
     if(v == _menuActive)
     {
-	return;
+        return;
     }
 
     if(v)
     {
-	SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
+        SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
     }
     else
     {
-	SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
+        SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
     }
 
     _menuActive = v;
@@ -199,14 +205,13 @@ bool BoardPopupMenu::isVisible()
 
 void BoardPopupMenu::updateMovement(TrackedButtonInteractionEvent * tie)
 {
-    osg::Vec3 menuPoint = osg::Vec3(0, _moveDistance, 0);
+    osg::Vec3 menuPoint = osg::Vec3(0,_moveDistance,0);
     //std::cerr << "move dist: " << _moveDistance << std::endl;
     menuPoint = menuPoint * tie->getTransform();
 
     //TODO: add hand/head mapping
-    osg::Vec3
-	viewerPoint =
-	TrackingManager::instance()->getHeadMat(0).getTrans();
+    osg::Vec3 viewerPoint =
+            TrackingManager::instance()->getHeadMat(0).getTrans();
 
     osg::Vec3 viewerDir = viewerPoint - menuPoint;
     viewerDir.z() = 0.0;
@@ -214,5 +219,7 @@ void BoardPopupMenu::updateMovement(TrackedButtonInteractionEvent * tie)
     osg::Matrix menuRot;
     menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
 
-    _menuRoot->setMatrix(osg::Matrix::translate(-_menuPoint) * menuRot * osg::Matrix::translate(menuPoint));
+    _menuRoot->setMatrix(
+            osg::Matrix::translate(-_menuPoint) * menuRot
+                    * osg::Matrix::translate(menuPoint));
 }

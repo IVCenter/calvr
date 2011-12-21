@@ -2,8 +2,9 @@
 
 using namespace cvr;
 
-MenuText::MenuText(std::string text, float sizeScale, bool indent, float maxWidth) :
-    MenuItem()
+MenuText::MenuText(std::string text, float sizeScale, bool indent,
+        float maxWidth) :
+        MenuItem()
 {
     _text = text;
     _indent = indent;

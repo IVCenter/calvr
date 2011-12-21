@@ -14,11 +14,11 @@
  */
 class IsectInfo
 {
-  public:
-      bool       found;              ///< false: no intersection found
-      osg::Vec3  point;              ///< intersection point
-      osg::Vec3  normal;             ///< intersection normal
-      osg::Geode *geode;              ///< intersected Geode
+    public:
+        bool found;              ///< false: no intersection found
+        osg::Vec3 point;              ///< intersection point
+        osg::Vec3 normal;             ///< intersection normal
+        osg::Geode *geode;              ///< intersected Geode
 };
 
 //TODO: modify this call to take a vector reference to remove the return copies
@@ -30,6 +30,6 @@ class IsectInfo
  * @return list of all geometry intersections
  */
 CVRUTIL_EXPORT std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
-                                             osg::Vec3& wPointerStart, osg::Vec3& wPointerEnd);
+        osg::Vec3& wPointerStart, osg::Vec3& wPointerEnd);
 
 #endif

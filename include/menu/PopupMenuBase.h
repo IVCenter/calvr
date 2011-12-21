@@ -20,7 +20,9 @@ namespace cvr
 class PopupMenuBase : public MenuBase
 {
     public:
-        virtual ~PopupMenuBase() {}
+        virtual ~PopupMenuBase()
+        {
+        }
 
         /**
          * @brief Set the position of the PopupMenu Implementation

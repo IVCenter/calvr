@@ -35,7 +35,8 @@ class TrackerVRPN : public TrackerBase
         virtual int getNumValuators();
         virtual int getNumButtons();
 
-        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
+        virtual void update(
+                std::map<int,std::list<InteractionEvent*> > & eventMap);
     protected:
         int _numBodies; ///< number of tracked bodies
         int _numVal; ///< number of valuators

@@ -35,7 +35,8 @@ class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu, public MenuCallback
          * @param title title of PopupMenu
          * @param configTag location of initial position/rotation/scale in config file
          */
-        TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow, std::string title, std::string configTag = "");
+        TabbedDialogPanel(float menuWidth, float rowHeight, int buttonsPerRow,
+                std::string title, std::string configTag = "");
         virtual ~TabbedDialogPanel();
 
         /**
@@ -64,7 +65,8 @@ class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu, public MenuCallback
          *
          * If the tab exists, this does nothing.  The image is sized to fit the menuWidth.
          */
-        void addTextureTab(std::string name, osg::Texture2D * texture, float aspectRatio);
+        void addTextureTab(std::string name, osg::Texture2D * texture,
+                float aspectRatio);
 
         /**
          * @brief Replace the contents of an existing tab with text
@@ -94,7 +96,8 @@ class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu, public MenuCallback
          * If the tab does not exist, this does nothing.  Will replace both text and image tabs.
          * The image is sized to fit the menuWidth
          */
-        void updateTabWithTexture(std::string name, osg::Texture2D * texture, float aspectRatio);
+        void updateTabWithTexture(std::string name, osg::Texture2D * texture,
+                float aspectRatio);
 
         /**
          * @brief Remove a tab from the panel

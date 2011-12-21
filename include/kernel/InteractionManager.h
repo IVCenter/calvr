@@ -105,8 +105,7 @@ class CVRKERNEL_EXPORT InteractionManager
         virtual ~InteractionManager();
 
         /// queue for events, flushed every frame
-        std::queue<InteractionEvent *,std::list<InteractionEvent *> >
-                _eventQueue;
+        std::queue<InteractionEvent *,std::list<InteractionEvent *> > _eventQueue;
 
         std::queue<InteractionEvent *,std::list<InteractionEvent *> > _mouseQueue;
         OpenThreads::Mutex _queueLock; ///< lock for queue add/removes

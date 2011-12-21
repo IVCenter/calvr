@@ -38,54 +38,68 @@ class ScreenMultiViewer : public ScreenMVSimulator
 
         struct FrustumPoints
         {
-            osg::Vec3 nearTL;
-            osg::Vec3 nearTR;
-            osg::Vec3 nearBL;
-            osg::Vec3 nearBR;
-            osg::Vec3 farTL;
-            osg::Vec3 farTR;
-            osg::Vec3 farBL;
-            osg::Vec3 farBR;
+                osg::Vec3 nearTL;
+                osg::Vec3 nearTR;
+                osg::Vec3 nearBL;
+                osg::Vec3 nearBR;
+                osg::Vec3 farTL;
+                osg::Vec3 farTR;
+                osg::Vec3 farBL;
+                osg::Vec3 farBR;
         };
 
-        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal);
+        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view,
+                osg::Matrix & proj, float & dist, struct FrustumPoints & fp,
+                osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint,
+                osg::Vec3 & farPoint, osg::Vec3 & nfNormal);
 
         struct PreDrawCallback : public osg::Camera::DrawCallback
         {
-            enum IndexState
-            {
-                FIXED = 0,
-                TOGGLE
-            };
+                enum IndexState
+                {
+                    FIXED = 0,
+                    TOGGLE
+                };
 
-            virtual void operator()(osg::RenderInfo & ri) const;
-            ScreenMultiViewer * _screen;
-            mutable int _index;
-            IndexState _indexState;
-            mutable bool _init;
-            mutable bool first;
-            mutable GLuint _query;
+                virtual void operator()(osg::RenderInfo & ri) const;
+                ScreenMultiViewer * _screen;
+                mutable int _index;
+                IndexState _indexState;
+                mutable bool _init;
+                mutable bool first;
+                mutable GLuint _query;
         };
 
         struct PostDrawCallback : public osg::Camera::DrawCallback
         {
-            virtual void operator()(osg::RenderInfo & ri) const;
-            PreDrawCallback * _pdc;
-            ScreenMultiViewer * _screen;
-            mutable bool first;
+                virtual void operator()(osg::RenderInfo & ri) const;
+                PreDrawCallback * _pdc;
+                ScreenMultiViewer * _screen;
+                mutable bool first;
         };
 
         struct StereoIdentCallback : public osgUtil::SceneView::ComputeStereoMatricesCallback
         {
-                virtual osg::Matrixd
-                        computeLeftEyeProjection(const osg::Matrixd &projection) const { return osg::Matrixd(); }
-                virtual osg::Matrixd
-                        computeLeftEyeView(const osg::Matrixd &view) const { return osg::Matrixd(); }
-                virtual osg::Matrixd
-                        computeRightEyeProjection(
-                                                  const osg::Matrixd &projection) const { return osg::Matrixd(); }
-                virtual osg::Matrixd
-                        computeRightEyeView(const osg::Matrixd &view) const { return osg::Matrixd(); }
+                virtual osg::Matrixd computeLeftEyeProjection(
+                        const osg::Matrixd &projection) const
+                {
+                    return osg::Matrixd();
+                }
+                virtual osg::Matrixd computeLeftEyeView(
+                        const osg::Matrixd &view) const
+                {
+                    return osg::Matrixd();
+                }
+                virtual osg::Matrixd computeRightEyeProjection(
+                        const osg::Matrixd &projection) const
+                {
+                    return osg::Matrixd();
+                }
+                virtual osg::Matrixd computeRightEyeView(
+                        const osg::Matrixd &view) const
+                {
+                    return osg::Matrixd();
+                }
         };
 
     protected:
@@ -125,7 +139,6 @@ class ScreenMultiViewer : public ScreenMVSimulator
 
         osg::Uniform * _maxRatio;
         osg::Uniform * _minRatio;
-
 
         bool _testGeoAdded;
         int _frameDelay;
@@ -167,7 +180,7 @@ class ScreenMultiViewer : public ScreenMVSimulator
         osg::Uniform * _bUni;
         osg::Uniform * _cUni;
 
-        float _a,_b,_c;
+        float _a, _b, _c;
 
         float _viewer0DistLocal[2];
         float _viewer1DistLocal[2];

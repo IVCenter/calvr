@@ -30,14 +30,30 @@ class TrackerMouse : public cvr::TrackerBase
         virtual int getNumValuators();
         virtual int getNumButtons();
 
-        virtual void update(std::map<int,std::list<InteractionEvent*> > & eventMap);
+        virtual void update(
+                std::map<int,std::list<InteractionEvent*> > & eventMap);
 
-        virtual TrackerType getTrackerType() { return MOUSE; }
-        virtual Navigation::NavImplementation getNavImplementation() { return Navigation::MOUSE_NAV; }
-        virtual SceneManager::PointerGraphicType getPointerType() { return SceneManager::NONE; }
+        virtual TrackerType getTrackerType()
+        {
+            return MOUSE;
+        }
+        virtual Navigation::NavImplementation getNavImplementation()
+        {
+            return Navigation::MOUSE_NAV;
+        }
+        virtual SceneManager::PointerGraphicType getPointerType()
+        {
+            return SceneManager::NONE;
+        }
 
-        virtual bool thread() { return false; }
-        virtual bool genDefaultButtonEvents() { return false; }
+        virtual bool thread()
+        {
+            return false;
+        }
+        virtual bool genDefaultButtonEvents()
+        {
+            return false;
+        }
 
     protected:
         TrackedBody _mouseBody; ///< information representing the mouse orientation

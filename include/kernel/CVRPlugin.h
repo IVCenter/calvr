@@ -66,7 +66,8 @@ class CVRPlugin
          * If the message is collaborative, any data will be deleted after the call.  To stop this and take
          * charge of the data, set the data pointer to NULL.
          */
-        virtual void message(int type, char * & data, bool collaborative = false)
+        virtual void message(int type, char * & data,
+                bool collaborative = false)
         {
         }
 

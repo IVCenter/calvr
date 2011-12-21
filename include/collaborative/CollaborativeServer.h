@@ -25,7 +25,7 @@ class CVRSocket;
 
 class CollaborativeServer
 {
-    friend class SocketThread;
+        friend class SocketThread;
     public:
         CollaborativeServer(int port);
         virtual ~CollaborativeServer();
@@ -37,11 +37,11 @@ class CollaborativeServer
     protected:
         void initConnection(int id, CVRSocket * sock);
         void checkSockets();
-        
+
         std::map<int,struct ClientUpdate> _clientMap;
         std::map<int,struct ClientInitInfo> _clientInitMap;
-        std::map<int, std::vector<struct BodyUpdate> > _clientHandList;
-        std::map<int, std::vector<struct BodyUpdate> > _clientHeadList;
+        std::map<int,std::vector<struct BodyUpdate> > _clientHandList;
+        std::map<int,std::vector<struct BodyUpdate> > _clientHeadList;
         std::vector<SocketThread *> _threadList;
         CollabMode _currentMode;
         int _masterID;
@@ -51,59 +51,61 @@ class CollaborativeServer
         MultiListenSocket * _listenSocket;
 };
 
-
 class SocketThread : public OpenThreads::Thread
 {
     public:
-	SocketThread(cvr::CVRSocket * socket, std::string name, int id, CollaborativeServer * server);
-	virtual ~SocketThread();
+        SocketThread(cvr::CVRSocket * socket, std::string name, int id,
+                CollaborativeServer * server);
+        virtual ~SocketThread();
 
-	virtual void run();
+        virtual void run();
 
-	int getID();
-	std::string getName();
-	void quit();
-    
-	void addMessage(CollaborativeMessage * message);
+        int getID();
+        std::string getName();
+        void quit();
+
+        void addMessage(CollaborativeMessage * message);
 
     protected:
-	bool checkSocket();
-	bool processEvents();
+        bool checkSocket();
+        bool processEvents();
         bool processMessage(CollaborativeMessageHeader & cmh);
 
         void queueCleanup(std::queue<CollaborativeMessage *> & queue);
 
         CollaborativeServer * _server;
 
-	std::queue<CollaborativeMessage *> _messageQueue;
-	OpenThreads::Mutex _messageLock;
+        std::queue<CollaborativeMessage *> _messageQueue;
+        OpenThreads::Mutex _messageLock;
         OpenThreads::Mutex _quitLock;
 
-	cvr::CVRSocket * _socket;
-	std::string _name;
-	int _id;
+        cvr::CVRSocket * _socket;
+        std::string _name;
+        int _id;
 
-	bool _quit;
+        bool _quit;
 };
 
 class CollaborativeMessage
 {
     public:
-	CollaborativeMessage(int refs, int type, std::string target, int size, char * data);
-	CollaborativeMessage(int refs, cvr::CollaborativeMessageHeader & cmh, char * data);
-	virtual ~CollaborativeMessage();
+        CollaborativeMessage(int refs, int type, std::string target, int size,
+                char * data);
+        CollaborativeMessage(int refs, cvr::CollaborativeMessageHeader & cmh,
+                char * data);
+        virtual ~CollaborativeMessage();
 
-	cvr::CollaborativeMessageHeader & getHeader();
-	char * getData();
+        cvr::CollaborativeMessageHeader & getHeader();
+        char * getData();
 
-	void unref();
+        void unref();
 
     protected:
-	OpenThreads::Mutex _refMutex;
+        OpenThreads::Mutex _refMutex;
 
-	int _refs;
-	cvr::CollaborativeMessageHeader _header;
-	char * _data;
+        int _refs;
+        cvr::CollaborativeMessageHeader _header;
+        char * _data;
 };
 
 }

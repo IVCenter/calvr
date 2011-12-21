@@ -47,60 +47,60 @@ CalVR::CalVR()
     _threadedLoader = NULL;
     _myPtr = this;
 }
-	
+
 CalVR::~CalVR()
 {
     if(_plugins)
     {
-	delete _plugins;
+        delete _plugins;
     }
     if(_file)
     {
-	delete _file;
+        delete _file;
     }
     if(_menu)
     {
-	delete _menu;
+        delete _menu;
     }
     if(_threadedLoader)
     {
-	delete _threadedLoader;
+        delete _threadedLoader;
     }
     if(_collaborative)
     {
-	delete _collaborative;
+        delete _collaborative;
     }
     if(_scene)
     {
-	delete _scene;
+        delete _scene;
     }
     if(_screens)
     {
-	delete _screens;
+        delete _screens;
     }
     if(_viewer)
     {
-	delete _viewer;
+        delete _viewer;
     }
     if(_navigation)
     {
-	delete _navigation;
+        delete _navigation;
     }
     if(_interaction)
     {
-	delete _interaction;
+        delete _interaction;
     }
     if(_tracking)
     {
-	delete _tracking;
+        delete _tracking;
     }
     if(_communication)
     {
-	delete _communication;
+        delete _communication;
     }
     if(_config)
     {
-	delete _config;
+        delete _config;
     }
 }
 
@@ -116,13 +116,13 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     char * chostname = getenv("CALVR_HOST_NAME");
     if(chostname)
     {
-	_hostName = chostname;	
+        _hostName = chostname;
     }
     else
     {
-	char hostname[512];
-	gethostname(hostname,511);
-	_hostName = hostname;
+        char hostname[512];
+        gethostname(hostname,511);
+        _hostName = hostname;
     }
 
     std::cerr << "HostName: " << _hostName << std::endl;
@@ -143,34 +143,34 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     // distribute files listed on command line
     std::vector<std::string> fileList;
-    int files,size;
+    int files, size;
     if(_communication->isMaster())
     {
-	for(int i = 1; i < args.argc(); i++)
-	{
-	    fileList.push_back(args.argv()[i]);
-	}
-	files = fileList.size();
-	_communication->sendSlaves(&files,sizeof(int));
-	for(int i = 0; i < files; i++)
-	{
-	    size = fileList[i].length() + 1;
-	    _communication->sendSlaves(&size,sizeof(int));
-	    _communication->sendSlaves((void*)fileList[i].c_str(),size);
-	}
+        for(int i = 1; i < args.argc(); i++)
+        {
+            fileList.push_back(args.argv()[i]);
+        }
+        files = fileList.size();
+        _communication->sendSlaves(&files,sizeof(int));
+        for(int i = 0; i < files; i++)
+        {
+            size = fileList[i].length() + 1;
+            _communication->sendSlaves(&size,sizeof(int));
+            _communication->sendSlaves((void*)fileList[i].c_str(),size);
+        }
     }
     else
     {
-	_communication->readMaster(&files,sizeof(int));
-	char * temp;
-	for(int i = 0; i < files; i++)
-	{
-	    _communication->readMaster(&size,sizeof(int));
-	    temp = new char[size];
-	    _communication->readMaster(temp,size);
-	    fileList.push_back(temp);
-	    delete[] temp;
-	}
+        _communication->readMaster(&files,sizeof(int));
+        char * temp;
+        for(int i = 0; i < files; i++)
+        {
+            _communication->readMaster(&size,sizeof(int));
+            temp = new char[size];
+            _communication->readMaster(temp,size);
+            fileList.push_back(temp);
+            delete[] temp;
+        }
     }
 
     _tracking = cvr::TrackingManager::instance();
@@ -198,7 +198,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_scene->init())
     {
         std::cerr << "Error setting up scene." << std::endl;
-	return false;
+        return false;
     }
 
     _scene->setViewerScene(_viewer);
@@ -218,8 +218,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     _menu = cvr::MenuManager::instance();
     if(!_menu->init())
     {
-	std::cerr << "Error setting up menu systems." << std::endl;
-	return false;
+        std::cerr << "Error setting up menu systems." << std::endl;
+        return false;
     }
 
     _file = cvr::FileHandler::instance();
@@ -229,7 +229,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     for(int i = 0; i < fileList.size(); i++)
     {
-	cvr::FileHandler::instance()->loadFile(fileList[i]);
+        cvr::FileHandler::instance()->loadFile(fileList[i]);
     }
 
     return true;
@@ -248,27 +248,27 @@ void CalVR::run()
     {
         //std::cerr << "Frame " << frameNum << std::endl;
         _viewer->frameStart();
-	_viewer->advance(USE_REFERENCE_TIME);
+        _viewer->advance(USE_REFERENCE_TIME);
         _viewer->eventTraversal();
         _tracking->update();
         _scene->update();
         _menu->update();
         _interaction->update();
         _navigation->update();
-	_scene->postEventUpdate();
+        _scene->postEventUpdate();
         _screens->computeViewProj();
         _screens->updateCamera();
-	_collaborative->update();
-	_threadedLoader->update();
+        _collaborative->update();
+        _threadedLoader->update();
         _plugins->preFrame();
         _viewer->updateTraversal();
         _viewer->renderingTraversals();
 
-	if(_communication->getIsSyncError())
-	{
-	    std::cerr << "Sync Error Exit." << std::endl;
-	    break;
-	}
+        if(_communication->getIsSyncError())
+        {
+            std::cerr << "Sync Error Exit." << std::endl;
+            break;
+        }
 
         _plugins->postFrame();
 

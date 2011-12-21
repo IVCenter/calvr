@@ -25,8 +25,12 @@ class MenuItem;
 class MenuSystemBase
 {
     public:
-        MenuSystemBase() {}
-        virtual ~MenuSystemBase() {}
+        MenuSystemBase()
+        {
+        }
+        virtual ~MenuSystemBase()
+        {
+        }
 
         /**
          * @brief Setup the menu

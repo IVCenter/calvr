@@ -21,7 +21,7 @@ MenuSystem::~MenuSystem()
 {
     if(_menu)
     {
-	delete _menu;
+        delete _menu;
     }
 }
 
@@ -38,8 +38,8 @@ bool MenuSystem::init()
 {
     _rootMenu = new SubMenu("CalVR");
 
-    std::string menuType = ConfigManager::getEntry("type", "MenuSystem",
-                                                   "BOARDMENU");
+    std::string menuType = ConfigManager::getEntry("type","MenuSystem",
+            "BOARDMENU");
     if(menuType == "BOARDMENU")
     {
         _type = BOARDMENU;
@@ -87,7 +87,7 @@ bool MenuSystem::processIsect(IsectInfo & isect, int hand)
 {
     if(_menu)
     {
-	return _menu->processIsect(isect,hand);
+        return _menu->processIsect(isect,hand);
     }
     return false;
 }
@@ -96,7 +96,7 @@ void MenuSystem::updateEnd()
 {
     if(_menu)
     {
-	_menu->updateEnd();
+        _menu->updateEnd();
     }
 }
 
@@ -104,6 +104,6 @@ void MenuSystem::itemDelete(MenuItem * item)
 {
     if(_menu)
     {
-	_menu->itemDelete(item);
+        _menu->itemDelete(item);
     }
 }

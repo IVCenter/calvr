@@ -221,7 +221,8 @@ class CVRKERNEL_EXPORT PluginHelper
          *
          * A SceneObject must be registered before it can be attached to the scene
          */
-        static void registerSceneObject(SceneObject * object, std::string plugin = "");
+        static void registerSceneObject(SceneObject * object,
+                std::string plugin = "");
 
         /**
          * @brief Unregister a SceneObject with the SceneManager
@@ -236,7 +237,8 @@ class CVRKERNEL_EXPORT PluginHelper
          *
          * If the plugin is not on, nothing happens.  This is a local call and no data copies or movement is involved.
          */
-        static void sendMessageByName(std::string plugin, int type, char * data);
+        static void sendMessageByName(std::string plugin, int type,
+                char * data);
 
         /**
          * @brief Sends a message to a plugin in a collaborative session (asynchronous)
@@ -251,7 +253,8 @@ class CVRKERNEL_EXPORT PluginHelper
          * disposable and the buffer is deleted automatically after the message is sent.  If sendLocal is true, it happens before
          * the function returns.
          */
-        static void sendCollaborativeMessageAsync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+        static void sendCollaborativeMessageAsync(std::string plugin, int type,
+                char * data, int size, bool sendLocal = false);
 
         /**
          * @brief Sends a message to a plugin in a collaborative session (synchronous)
@@ -265,7 +268,8 @@ class CVRKERNEL_EXPORT PluginHelper
          * This is a synchronous call.  The function does not return until the message is sent.  The time taken depends on the 
          * event in the collaborative queue and the network latency to the server.
          */
-        static void sendCollaborativeMessageSync(std::string plugin, int type, char * data, int size, bool sendLocal = false);
+        static void sendCollaborativeMessageSync(std::string plugin, int type,
+                char * data, int size, bool sendLocal = false);
 
     protected:
 

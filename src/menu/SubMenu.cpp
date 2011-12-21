@@ -4,7 +4,7 @@
 using namespace cvr;
 
 SubMenu::SubMenu(std::string name, std::string title) :
-    MenuItem()
+        MenuItem()
 {
     _name = name;
     if(title.empty())
@@ -25,7 +25,7 @@ void SubMenu::addItem(MenuItem * item)
 {
     if(!item)
     {
-	return;
+        return;
     }
 
     for(int i = 0; i < _children.size(); i++)
@@ -41,13 +41,13 @@ void SubMenu::addItem(MenuItem * item)
 
 void SubMenu::removeItem(MenuItem * item)
 {
-    for(std::vector<MenuItem*>::iterator it = _children.begin(); it
-            != _children.end(); it++)
+    for(std::vector<MenuItem*>::iterator it = _children.begin();
+            it != _children.end(); it++)
     {
         if((*it) == item)
         {
             _children.erase(it);
-	    _dirty = true;
+            _dirty = true;
             return;
         }
     }

@@ -58,17 +58,17 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
 
     std::cerr << "Loading config file: " << file << std::endl;
 
-    fp = fopen(cfile.c_str(), "r");
+    fp = fopen(cfile.c_str(),"r");
     if(fp == NULL)
     {
-        fp = fopen(file.c_str(), "r");
+        fp = fopen(file.c_str(),"r");
         if(fp == NULL)
         {
             std::cerr << "Unable to open file: " << file << std::endl;
             return false;
         }
     }
-    tree = mxmlLoadFile(NULL, fp, MXML_TEXT_CALLBACK);
+    tree = mxmlLoadFile(NULL,fp,MXML_TEXT_CALLBACK);
     fclose(fp);
 
     if(tree == NULL)
@@ -102,8 +102,7 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
      }
      }*/
 
-    while((xmlNode = mxmlFindElement(tree, tree, "GLOBAL", NULL, NULL,
-                                     MXML_DESCEND)))
+    while((xmlNode = mxmlFindElement(tree,tree,"GLOBAL",NULL,NULL,MXML_DESCEND)))
     {
         if(xmlNode->parent)
         {
@@ -111,7 +110,7 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
             while(tempnode)
             {
                 mxmlRemove(tempnode);
-                mxmlAdd(xmlNode->parent, MXML_ADD_AFTER, NULL, tempnode);
+                mxmlAdd(xmlNode->parent,MXML_ADD_AFTER,NULL,tempnode);
                 tempnode = xmlNode->child;
             }
             mxmlDelete(xmlNode);
@@ -124,18 +123,17 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
         }
     }
 
-    while((xmlNode = mxmlFindElement(tree, tree, "LOCAL", NULL, NULL,
-                                     MXML_DESCEND)))
+    while((xmlNode = mxmlFindElement(tree,tree,"LOCAL",NULL,NULL,MXML_DESCEND)))
     {
         if(xmlNode->parent)
         {
             std::string blockHost;
-            const char * attr = mxmlElementGetAttr(xmlNode, "host");
+            const char * attr = mxmlElementGetAttr(xmlNode,"host");
 
             //char hostname[51];
             //gethostname(hostname, 50);
             //std::string myHost = hostname;
-	    std::string myHost = CalVR::instance()->getHostName();
+            std::string myHost = CalVR::instance()->getHostName();
 
             if(attr && !myHost.empty() && attr[0] != '\0')
             {
@@ -143,13 +141,13 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
                 bool hostfound = false;
                 size_t startpos = 0;
 
-                while((startpos = blockHost.find(myHost, startpos))
+                while((startpos = blockHost.find(myHost,startpos))
                         != std::string::npos)
                 {
                     if((startpos == 0 || blockHost[startpos - 1] == ',')
-                            && (startpos + myHost.length()
-                                    == blockHost.length() || blockHost[startpos
-                                    + myHost.length()] == ','))
+                            && (startpos + myHost.length() == blockHost.length()
+                                    || blockHost[startpos + myHost.length()]
+                                            == ','))
                     {
                         hostfound = true;
                         break;
@@ -166,7 +164,7 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
                     while(tempnode)
                     {
                         mxmlRemove(tempnode);
-                        mxmlAdd(xmlNode->parent, MXML_ADD_AFTER, NULL, tempnode);
+                        mxmlAdd(xmlNode->parent,MXML_ADD_AFTER,NULL,tempnode);
                         tempnode = xmlNode->child;
                     }
                 }
@@ -183,8 +181,7 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
 
     _configRootList.push_back(tree);
 
-    while((xmlNode = mxmlFindElement(tree, tree, "INCLUDE", NULL, NULL,
-                                     MXML_DESCEND)))
+    while((xmlNode = mxmlFindElement(tree,tree,"INCLUDE",NULL,NULL,MXML_DESCEND)))
     {
         if(xmlNode->parent)
         {
@@ -286,12 +283,12 @@ bool ConfigManager::init()
     {
         if(pos)
         {
-            fileList.push_back(file.substr(0, pos));
+            fileList.push_back(file.substr(0,pos));
         }
 
         if(pos + 1 < file.size())
         {
-            file = file.substr(pos + 1, file.size() - (pos + 1));
+            file = file.substr(pos + 1,file.size() - (pos + 1));
         }
         else
         {
@@ -370,19 +367,19 @@ bool ConfigManager::init()
      }
      }*/
 
-    _debugOutput = getBool("ConfigDebug", false);
+    _debugOutput = getBool("ConfigDebug",false);
 
     return true;
 }
 
 std::string ConfigManager::getEntry(std::string path, std::string def,
-                                    bool * found)
+        bool * found)
 {
-    return getEntry("value", path, def, found);
+    return getEntry("value",path,def,found);
 }
 
 std::string ConfigManager::getEntry(std::string attribute, std::string path,
-                                    std::string def, bool * found)
+        std::string def, bool * found)
 {
     if(path.empty())
     {
@@ -407,7 +404,7 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
         }
         else
         {
-            pathFrag = pathRemainder.substr(0, location);
+            pathFrag = pathRemainder.substr(0,location);
             if(location + 1 < pathRemainder.size())
             {
                 pathRemainder = pathRemainder.substr(location + 1);
@@ -456,22 +453,22 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
                     continue;
                 }
                 std::string nodeName = xmlNode->value.element.name;
-                const char * nameAtt = mxmlElementGetAttr(xmlNode, "name");
+                const char * nameAtt = mxmlElementGetAttr(xmlNode,"name");
                 std::string suffix = nameAtt ? nameAtt : "";
 
                 //std::cerr << "Looking at node: " << nodeName << " with suffix " << suffix << std::endl;
 
                 location = pathFrag.find_first_of(':');
                 if((location == std::string::npos && pathFrag == nodeName)
-                        || (location != std::string::npos && pathFrag
-                                == nodeName + ":" + suffix))
+                        || (location != std::string::npos
+                                && pathFrag == nodeName + ":" + suffix))
                 {
                     //std::cerr << "Found Fragment." << std::endl;
                     if(pathRemainder.empty())
                     {
                         //found node
-                        const char * attr =
-                                mxmlElementGetAttr(xmlNode, attribute.c_str());
+                        const char * attr = mxmlElementGetAttr(xmlNode,
+                                attribute.c_str());
                         if(attr)
                         {
                             if(found)
@@ -500,9 +497,8 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
                     else
                     {
                         parentStack.push(
-                                         std::pair<mxml_node_t *,std::string>(
-                                                                              xmlNode,
-                                                                              pathFrag));
+                                std::pair<mxml_node_t *,std::string>(xmlNode,
+                                        pathFrag));
                         location = pathRemainder.find_first_of('.');
                         if(location == std::string::npos)
                         {
@@ -511,11 +507,11 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
                         }
                         else
                         {
-                            pathFrag = pathRemainder.substr(0, location);
+                            pathFrag = pathRemainder.substr(0,location);
                             if(location + 1 < pathRemainder.size())
                             {
-                                pathRemainder = pathRemainder.substr(location
-                                        + 1);
+                                pathRemainder = pathRemainder.substr(
+                                        location + 1);
                             }
                             else
                             {
@@ -532,7 +528,8 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
                     xmlNode = xmlNode->next;
                 }
             }
-        } while(!parentStack.empty());
+        }
+        while(!parentStack.empty());
     }
     if(found)
     {
@@ -548,16 +545,16 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
 
 float ConfigManager::getFloat(std::string path, float def, bool * found)
 {
-    return getFloat("value", path, def, found);
+    return getFloat("value",path,def,found);
 }
 
 float ConfigManager::getFloat(std::string attribute, std::string path,
-                              float def, bool * found)
+        float def, bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
     ss << def;
-    std::string result = getEntry(attribute, path, ss.str(), &hasEntry);
+    std::string result = getEntry(attribute,path,ss.str(),&hasEntry);
     if(hasEntry)
     {
         if(found)
@@ -575,16 +572,16 @@ float ConfigManager::getFloat(std::string attribute, std::string path,
 
 double ConfigManager::getDouble(std::string path, double def, bool * found)
 {
-    return getDouble("value", path, def, found);
+    return getDouble("value",path,def,found);
 }
 
 double ConfigManager::getDouble(std::string attribute, std::string path,
-                              double def, bool * found)
+        double def, bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
     ss << def;
-    std::string result = getEntry(attribute, path, ss.str(), &hasEntry);
+    std::string result = getEntry(attribute,path,ss.str(),&hasEntry);
     if(hasEntry)
     {
         if(found)
@@ -602,16 +599,16 @@ double ConfigManager::getDouble(std::string attribute, std::string path,
 
 int ConfigManager::getInt(std::string path, int def, bool * found)
 {
-    return getInt("value", path, def, found);
+    return getInt("value",path,def,found);
 }
 
 int ConfigManager::getInt(std::string attribute, std::string path, int def,
-                          bool * found)
+        bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
     ss << def;
-    std::string result = getEntry(attribute, path, ss.str(), &hasEntry);
+    std::string result = getEntry(attribute,path,ss.str(),&hasEntry);
     if(hasEntry)
     {
         if(found)
@@ -629,23 +626,23 @@ int ConfigManager::getInt(std::string attribute, std::string path, int def,
 
 bool ConfigManager::getBool(std::string path, bool def, bool * found)
 {
-    return getBool("value", path, def, found);
+    return getBool("value",path,def,found);
 }
 
 bool ConfigManager::getBool(std::string attribute, std::string path, bool def,
-                            bool * found)
+        bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
     ss << def;
-    std::string result = getEntry(attribute, path, ss.str(), &hasEntry);
+    std::string result = getEntry(attribute,path,ss.str(),&hasEntry);
     if(hasEntry)
     {
         if(found)
         {
             *found = true;
         }
-        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+        std::transform(result.begin(),result.end(),result.begin(),::tolower);
         if(result == "on" || result == "true")
         {
             return true;
@@ -667,9 +664,8 @@ osg::Vec3 ConfigManager::getVec3(std::string path, osg::Vec3 def, bool * found)
     return getVec3("x","y","z",path,def,found);
 }
 
-osg::Vec3 ConfigManager::getVec3(std::string attributeX, std::string attributeY, 
-	std::string attributeZ, std::string path, osg::Vec3 def,
-	bool * found)
+osg::Vec3 ConfigManager::getVec3(std::string attributeX, std::string attributeY,
+        std::string attributeZ, std::string path, osg::Vec3 def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;
@@ -678,35 +674,34 @@ osg::Vec3 ConfigManager::getVec3(std::string attributeX, std::string attributeY,
     result.x() = getFloat(attributeX,path,def.x(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.y() = getFloat(attributeY,path,def.y(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.z() = getFloat(attributeZ,path,def.z(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
 
     if(found)
     {
-	*found = hasEntry;
+        *found = hasEntry;
     }
     return result;
 }
 
-osg::Vec4 ConfigManager::getVec4(std::string path, osg::Vec4 def, 
-	bool * found)
+osg::Vec4 ConfigManager::getVec4(std::string path, osg::Vec4 def, bool * found)
 {
     return getVec4("x","y","z","w",path,def,found);
 }
 
-osg::Vec4 ConfigManager::getVec4(std::string attributeX, std::string attributeY, 
-	std::string attributeZ, std::string attributeW, std::string path, 
-	osg::Vec4 def, bool * found)
+osg::Vec4 ConfigManager::getVec4(std::string attributeX, std::string attributeY,
+        std::string attributeZ, std::string attributeW, std::string path,
+        osg::Vec4 def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;
@@ -715,39 +710,40 @@ osg::Vec4 ConfigManager::getVec4(std::string attributeX, std::string attributeY,
     result.x() = getFloat(attributeX,path,def.x(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.y() = getFloat(attributeY,path,def.y(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.z() = getFloat(attributeZ,path,def.z(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.w() = getFloat(attributeW,path,def.w(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
 
     if(found)
     {
-	*found = hasEntry;
+        *found = hasEntry;
     }
     return result;
 }
 
-osg::Vec3d ConfigManager::getVec3d(std::string path, osg::Vec3d def, bool * found)
+osg::Vec3d ConfigManager::getVec3d(std::string path, osg::Vec3d def,
+        bool * found)
 {
     return getVec3d("x","y","z",path,def,found);
 }
 
-osg::Vec3d ConfigManager::getVec3d(std::string attributeX, std::string attributeY, 
-	std::string attributeZ, std::string path, osg::Vec3d def,
-	bool * found)
+osg::Vec3d ConfigManager::getVec3d(std::string attributeX,
+        std::string attributeY, std::string attributeZ, std::string path,
+        osg::Vec3d def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;
@@ -756,35 +752,35 @@ osg::Vec3d ConfigManager::getVec3d(std::string attributeX, std::string attribute
     result.x() = getDouble(attributeX,path,def.x(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.y() = getDouble(attributeY,path,def.y(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.z() = getDouble(attributeZ,path,def.z(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
 
     if(found)
     {
-	*found = hasEntry;
+        *found = hasEntry;
     }
     return result;
 }
 
-osg::Vec4d ConfigManager::getVec4d(std::string path, osg::Vec4d def, 
-	bool * found)
+osg::Vec4d ConfigManager::getVec4d(std::string path, osg::Vec4d def,
+        bool * found)
 {
     return getVec4d("x","y","z","w",path,def,found);
 }
 
-osg::Vec4d ConfigManager::getVec4d(std::string attributeX, std::string attributeY, 
-	std::string attributeZ, std::string attributeW, std::string path, 
-	osg::Vec4d def, bool * found)
+osg::Vec4d ConfigManager::getVec4d(std::string attributeX,
+        std::string attributeY, std::string attributeZ, std::string attributeW,
+        std::string path, osg::Vec4d def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;
@@ -793,27 +789,27 @@ osg::Vec4d ConfigManager::getVec4d(std::string attributeX, std::string attribute
     result.x() = getDouble(attributeX,path,def.x(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.y() = getDouble(attributeY,path,def.y(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.z() = getDouble(attributeZ,path,def.z(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
     result.w() = getDouble(attributeW,path,def.w(),&isFound);
     if(isFound)
     {
-	hasEntry = true;
+        hasEntry = true;
     }
 
     if(found)
     {
-	*found = hasEntry;
+        *found = hasEntry;
     }
     return result;
 }
@@ -824,7 +820,7 @@ osg::Vec4 ConfigManager::getColor(std::string path, osg::Vec4 def, bool * found)
 }
 
 void ConfigManager::getChildren(std::string path,
-                                std::vector<std::string> & destList)
+        std::vector<std::string> & destList)
 {
     if(path.empty())
     {
@@ -845,7 +841,7 @@ void ConfigManager::getChildren(std::string path,
         }
         else
         {
-            pathFrag = pathRemainder.substr(0, location);
+            pathFrag = pathRemainder.substr(0,location);
             if(location + 1 < pathRemainder.size())
             {
                 pathRemainder = pathRemainder.substr(location + 1);
@@ -882,15 +878,15 @@ void ConfigManager::getChildren(std::string path,
                     continue;
                 }
                 std::string nodeName = xmlNode->value.element.name;
-                const char * nameAtt = mxmlElementGetAttr(xmlNode, "name");
+                const char * nameAtt = mxmlElementGetAttr(xmlNode,"name");
                 std::string suffix = nameAtt ? nameAtt : "";
 
                 //std::cerr << "Looking at node: " << nodeName << " with suffix " << suffix << std::endl;
 
                 location = pathFrag.find_first_of(':');
                 if((location == std::string::npos && pathFrag == nodeName)
-                        || (location != std::string::npos && pathFrag
-                                == nodeName + ":" + suffix))
+                        || (location != std::string::npos
+                                && pathFrag == nodeName + ":" + suffix))
                 {
                     //std::cerr << "Found Fragment." << std::endl;
                     if(pathRemainder.empty())
@@ -906,10 +902,10 @@ void ConfigManager::getChildren(std::string path,
                                     continue;
                                 }
                                 // ignore comment tags
-                                if(strncmp(cnode->value.element.name, "!--", 3))
+                                if(strncmp(cnode->value.element.name,"!--",3))
                                 {
                                     destList.push_back(
-                                                       cnode->value.element.name);
+                                            cnode->value.element.name);
                                 }
                                 cnode = cnode->next;
                             }
@@ -919,9 +915,8 @@ void ConfigManager::getChildren(std::string path,
                     else
                     {
                         parentStack.push(
-                                         std::pair<mxml_node_t *,std::string>(
-                                                                              xmlNode,
-                                                                              pathFrag));
+                                std::pair<mxml_node_t *,std::string>(xmlNode,
+                                        pathFrag));
                         location = pathRemainder.find_first_of('.');
                         if(location == std::string::npos)
                         {
@@ -930,11 +925,11 @@ void ConfigManager::getChildren(std::string path,
                         }
                         else
                         {
-                            pathFrag = pathRemainder.substr(0, location);
+                            pathFrag = pathRemainder.substr(0,location);
                             if(location + 1 < pathRemainder.size())
                             {
-                                pathRemainder = pathRemainder.substr(location
-                                        + 1);
+                                pathRemainder = pathRemainder.substr(
+                                        location + 1);
                             }
                             else
                             {
@@ -951,7 +946,8 @@ void ConfigManager::getChildren(std::string path,
                     xmlNode = xmlNode->next;
                 }
             }
-        } while(!parentStack.empty());
+        }
+        while(!parentStack.empty());
     }
     return;
 }

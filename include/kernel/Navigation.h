@@ -35,7 +35,7 @@ enum NavMode
  */
 class CVRKERNEL_EXPORT Navigation
 {
-    friend class CalVR;
+        friend class CalVR;
     public:
 
         /**
@@ -102,7 +102,7 @@ class CVRKERNEL_EXPORT Navigation
 
         static Navigation * _myPtr;     ///< static self pointer
 
-        std::map<int,NavMode> _buttonMap;   ///< map of what navigation mode is set for each button
+        std::map<int,NavMode> _buttonMap; ///< map of what navigation mode is set for each button
         bool _eventActive;  ///< is there a navigation event in progress
         int _activeHand;    ///< hand for the active event
         int _eventID;       ///< button for the active event
@@ -111,7 +111,7 @@ class CVRKERNEL_EXPORT Navigation
         osg::Vec3 _eventPos;    ///< world space position at start of event
         osg::Quat _eventRot;    ///< rotation at start of event
         float _startScale;      ///< scale at start of event
-        osg::Matrix _startXForm;    ///< object space transform at start of event
+        osg::Matrix _startXForm;   ///< object space transform at start of event
 
         int _eventX;            ///< mouse viewport x coord at start of event
         int _eventY;            ///< mouse viewport y coord at start of event

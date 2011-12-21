@@ -16,7 +16,8 @@ namespace cvr
  * @param point point to find distance to
  * @return distance between the point and the line
  */
-float linePointDistance(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3 point);
+float linePointDistance(osg::Vec3 linePoint1, osg::Vec3 linePoint2,
+        osg::Vec3 point);
 
 /**
  * @brief Find the distance from a point to a line
@@ -27,7 +28,8 @@ float linePointDistance(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3 po
  *
  * Uses references to avoid param copies
  */
-float linePointDistanceRef(const osg::Vec3 & linePoint1, const osg::Vec3 & linePoint2, const osg::Vec3 & point);
+float linePointDistanceRef(const osg::Vec3 & linePoint1,
+        const osg::Vec3 & linePoint2, const osg::Vec3 & point);
 
 /**
  * @brief Find the closest point on a line to a specified point
@@ -37,7 +39,8 @@ float linePointDistanceRef(const osg::Vec3 & linePoint1, const osg::Vec3 & lineP
  * @param closestPoint vector that is filled with the closest point
  * @return how far down the line segment this point is. i.e. closestPoint = linePoint1 + (linePoint2 - linePoint1) * (return value)
  */
-float linePointClosestPoint(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3 point, osg::Vec3 & closestPoint);
+float linePointClosestPoint(osg::Vec3 linePoint1, osg::Vec3 linePoint2,
+        osg::Vec3 point, osg::Vec3 & closestPoint);
 
 /**
  * @brief Find the closest point on a line to a specified point
@@ -49,7 +52,9 @@ float linePointClosestPoint(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec
  *
  * Uses references to avoid param copies
  */
-float linePointClosestPointRef(const osg::Vec3 & linePoint1, const osg::Vec3 & linePoint2, const osg::Vec3 & point, osg::Vec3 & closestPoint);
+float linePointClosestPointRef(const osg::Vec3 & linePoint1,
+        const osg::Vec3 & linePoint2, const osg::Vec3 & point,
+        osg::Vec3 & closestPoint);
 
 /**
  * @brief Find the intersection points between a line and a sphere
@@ -63,7 +68,9 @@ float linePointClosestPointRef(const osg::Vec3 & linePoint1, const osg::Vec3 & l
  * @param w2 filled with weight down line segment of second intersection
  * @return returns true if there is an intersection
  */
-bool lineSphereIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3 center, float radius, osg::Vec3 & intersect1, float & w1, osg::Vec3 & intersect2, float & w2);
+bool lineSphereIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2,
+        osg::Vec3 center, float radius, osg::Vec3 & intersect1, float & w1,
+        osg::Vec3 & intersect2, float & w2);
 
 /**
  * @brief Find the intersection points between a line and a sphere
@@ -79,7 +86,9 @@ bool lineSphereIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec
  *
  * Uses references to avoid param copies
  */
-bool lineSphereIntersectionRef(const osg::Vec3 & linePoint1, const osg::Vec3 & linePoint2, const osg::Vec3 & center, float radius, osg::Vec3 & intersect1, float & w1, osg::Vec3 & intersect2, float & w2);
+bool lineSphereIntersectionRef(const osg::Vec3 & linePoint1,
+        const osg::Vec3 & linePoint2, const osg::Vec3 & center, float radius,
+        osg::Vec3 & intersect1, float & w1, osg::Vec3 & intersect2, float & w2);
 
 /**
  * @brief Find the intersection point between a line and a plane
@@ -91,7 +100,9 @@ bool lineSphereIntersectionRef(const osg::Vec3 & linePoint1, const osg::Vec3 & l
  * @param w weight down the line segment for the intersection point
  * @return returns true if the line intersects the plane
  */
-bool linePlaneIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Vec3 & intersect, float & w);
+bool linePlaneIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2,
+        osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Vec3 & intersect,
+        float & w);
 
 /**
  * @brief Find the intersection point between a line and a plane
@@ -105,7 +116,9 @@ bool linePlaneIntersection(osg::Vec3 linePoint1, osg::Vec3 linePoint2, osg::Vec3
  *
  * Uses references to avoid param copies
  */
-bool linePlaneIntersectionRef(const osg::Vec3 & linePoint1, const osg::Vec3 & linePoint2, const osg::Vec3 & planePoint, const osg::Vec3 & planeNormal, osg::Vec3 & intersect, float & w);
+bool linePlaneIntersectionRef(const osg::Vec3 & linePoint1,
+        const osg::Vec3 & linePoint2, const osg::Vec3 & planePoint,
+        const osg::Vec3 & planeNormal, osg::Vec3 & intersect, float & w);
 
 /**
  * @brief Find the distance between a point and a plane
@@ -114,7 +127,8 @@ bool linePlaneIntersectionRef(const osg::Vec3 & linePoint1, const osg::Vec3 & li
  * @param point point to find the distance to
  * @return distance between the point and the plane
  */
-float planePointDistance(osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Vec3 point);
+float planePointDistance(osg::Vec3 planePoint, osg::Vec3 planeNormal,
+        osg::Vec3 point);
 
 /**
  * @brief Find the distance between a point and a plane
@@ -125,7 +139,8 @@ float planePointDistance(osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Vec3 
  *
  * Uses references to avoid param copies
  */
-float planePointDistanceRef(const osg::Vec3 & planePoint, const osg::Vec3 & planeNormal, const osg::Vec3 & point);
+float planePointDistanceRef(const osg::Vec3 & planePoint,
+        const osg::Vec3 & planeNormal, const osg::Vec3 & point);
 
 /**
  * @brief Find the closest point on a plane to the given point
@@ -134,7 +149,8 @@ float planePointDistanceRef(const osg::Vec3 & planePoint, const osg::Vec3 & plan
  * @param point point to find closest point to
  * @param closestPoint filled with the closest point in the plane
  */
-void planePointClosestPoint(osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Vec3 point, osg::Vec3 & closestPoint);
+void planePointClosestPoint(osg::Vec3 planePoint, osg::Vec3 planeNormal,
+        osg::Vec3 point, osg::Vec3 & closestPoint);
 
 /**
  * @brief Find the closest point on a plane to the given point
@@ -145,7 +161,9 @@ void planePointClosestPoint(osg::Vec3 planePoint, osg::Vec3 planeNormal, osg::Ve
  *
  * Uses references to avoid param copies
  */
-void planePointClosestPointRef(const osg::Vec3 & planePoint, const osg::Vec3 & planeNormal, const osg::Vec3 & point, osg::Vec3 & closestPoint);
+void planePointClosestPointRef(const osg::Vec3 & planePoint,
+        const osg::Vec3 & planeNormal, const osg::Vec3 & point,
+        osg::Vec3 & closestPoint);
 
 }
 #endif

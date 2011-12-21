@@ -21,12 +21,18 @@ class ComputeBoundingBoxVisitor : public osg::NodeVisitor
         /**
          * @brief Get the visitor's bounding box
          */
-        const osg::BoundingBox & getBound() { return m_bb; }
+        const osg::BoundingBox & getBound()
+        {
+            return m_bb;
+        }
 
         /**
          * @brief Set the visitor's bounding box
          */
-        void setBound(osg::BoundingBox & bb) { m_bb = bb; }
+        void setBound(osg::BoundingBox & bb)
+        {
+            m_bb = bb;
+        }
         virtual void apply(osg::Transform&);
         virtual void apply(osg::Geode&);
 

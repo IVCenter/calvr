@@ -41,21 +41,20 @@ TrackerShmem::~TrackerShmem()
 
 bool TrackerShmem::init(std::string tag)
 {
-    int shmKey =
-            ConfigManager::getInt(tag + ".SHMEM.TrackerID", 4126);
+    int shmKey = ConfigManager::getInt(tag + ".SHMEM.TrackerID",4126);
 
 #ifndef WIN32
-    int shmID = shmget(shmKey, sizeof(struct tracker_header), 0);
+    int shmID = shmget(shmKey,sizeof(struct tracker_header),0);
     if(shmID == -1)
     {
     }
     else
     {
-	_tracker = (tracker_header *)shmat(shmID, NULL, 0);
-	if(_tracker == (tracker_header *)-1)
-	{
-	    _tracker = NULL;
-	}
+        _tracker = (tracker_header *)shmat(shmID,NULL,0);
+        if(_tracker == (tracker_header *)-1)
+        {
+            _tracker = NULL;
+        }
     }
 
 #else
@@ -69,36 +68,36 @@ bool TrackerShmem::init(std::string tag)
     }
     else
     {
-	_tracker = NULL;
+        _tracker = NULL;
     }
 
 #endif
 
     if(_tracker)
     {
-	_numBodies = _tracker->count;
-	for(int i = 0; i < _numBodies; i++)
-	{
-	    TrackedBody * tb = new TrackedBody;
-	    tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0;
-	    _bodyList.push_back(tb);
-	}
+        _numBodies = _tracker->count;
+        for(int i = 0; i < _numBodies; i++)
+        {
+            TrackedBody * tb = new TrackedBody;
+            tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0;
+            _bodyList.push_back(tb);
+        }
     }
 
-    shmKey = ConfigManager::getInt(tag + ".SHMEM.ControllerID", 4127);
+    shmKey = ConfigManager::getInt(tag + ".SHMEM.ControllerID",4127);
 
 #ifndef WIN32
-    shmID = shmget(shmKey, sizeof(struct control_header), 0);
+    shmID = shmget(shmKey,sizeof(struct control_header),0);
     if(shmID == -1)
     {
     }
     else
     {
-	_controller = (control_header *)shmat(shmID, NULL, 0);
-	if(_controller == (control_header *)-1)
-	{
-	    _controller = NULL;
-	}
+        _controller = (control_header *)shmat(shmID,NULL,0);
+        if(_controller == (control_header *)-1)
+        {
+            _controller = NULL;
+        }
     }
 
 #else
@@ -111,24 +110,24 @@ bool TrackerShmem::init(std::string tag)
     }
     else
     {
-	_controller = NULL;
+        _controller = NULL;
     }
 #endif
 
     if(_controller)
     {
 #ifndef WIN32
-	_numButtons = std::min(_controller->but_count,
-		(uint32_t)CVR_MAX_BUTTONS);
+        _numButtons = std::min(_controller->but_count,
+                (uint32_t)CVR_MAX_BUTTONS);
 #else
-	_numButtons = min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS);
+        _numButtons = min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS);
 #endif
 
-	_numVal = _controller->val_count;
-	for(int i = 0; i < _numVal; i++)
-	{
-	    _valList.push_back(0.0);
-	}
+        _numVal = _controller->val_count;
+        for(int i = 0; i < _numVal; i++)
+        {
+            _valList.push_back(0.0);
+        }
     }
 
     _buttonMask = 0;
@@ -176,30 +175,31 @@ int TrackerShmem::getNumButtons()
     return _numButtons;
 }
 
-void TrackerShmem::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
+void TrackerShmem::update(
+        std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
     if(_numButtons)
     {
-	int * buttonStart = (int *)(((char *)_controller)
-		+ _controller->but_offset);
-	_buttonMask = 0;
-	for(int i = 0; i < _numButtons; i++)
-	{
-	    _buttonMask = _buttonMask | (buttonStart[i] << i);
-	}
+        int * buttonStart = (int *)(((char *)_controller)
+                + _controller->but_offset);
+        _buttonMask = 0;
+        for(int i = 0; i < _numButtons; i++)
+        {
+            _buttonMask = _buttonMask | (buttonStart[i] << i);
+        }
     }
 
     if(_numVal)
     {
-	float * valStart = (float *)(((char *)_controller)
-		+ _controller->val_offset);
-	for(int i = 0; i < _numVal; i++)
-	{
-	    _valList[i] = valStart[i];
-	}
+        float * valStart = (float *)(((char *)_controller)
+                + _controller->val_offset);
+        for(int i = 0; i < _numVal; i++)
+        {
+            _valList[i] = valStart[i];
+        }
     }
 
-    static const float deg2rad = (float) M_PI / 180.0f;
+    static const float deg2rad = (float)M_PI / 180.0f;
 
     for(int i = 0; i < _numBodies; i++)
     {
@@ -208,9 +208,9 @@ void TrackerShmem::update(std::map<int,std::list<InteractionEvent*> > & eventMap
         _bodyList[i]->x = sen->p[0] * FEET_TO_MM;
         _bodyList[i]->y = sen->p[1] * FEET_TO_MM;
         _bodyList[i]->z = sen->p[2] * FEET_TO_MM;
-        osg::Quat q = osg::Quat(sen->r[2] * deg2rad, osg::Vec3(0, 0, 1),
-                                sen->r[1] * deg2rad, osg::Vec3(1, 0, 0),
-                                sen->r[0] * deg2rad, osg::Vec3(0, 1, 0));
+        osg::Quat q = osg::Quat(sen->r[2] * deg2rad,osg::Vec3(0,0,1),
+                sen->r[1] * deg2rad,osg::Vec3(1,0,0),sen->r[0] * deg2rad,
+                osg::Vec3(0,1,0));
         _bodyList[i]->qx = q.x();
         _bodyList[i]->qy = q.y();
         _bodyList[i]->qz = q.z();

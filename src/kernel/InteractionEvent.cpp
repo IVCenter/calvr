@@ -3,13 +3,15 @@
 namespace cvr
 {
 
-InteractionEvent * loadEventWithType(InteractionEvent * event, InteractionEventType type)
+InteractionEvent * loadEventWithType(InteractionEvent * event,
+        InteractionEventType type)
 {
     switch(type)
     {
         case TRACKED_BUTTON_INTER_EVENT:
         {
-            TrackedButtonInteractionEvent * tbie = new TrackedButtonInteractionEvent();
+            TrackedButtonInteractionEvent * tbie =
+                    new TrackedButtonInteractionEvent();
             *tbie = *((TrackedButtonInteractionEvent*)event);
             return tbie;
         }
@@ -19,7 +21,7 @@ InteractionEvent * loadEventWithType(InteractionEvent * event, InteractionEventT
             *mie = *((MouseInteractionEvent*)event);
             return mie;
         }
-	case VALUATOR_INTER_EVENT:
+        case VALUATOR_INTER_EVENT:
         {
             ValuatorInteractionEvent * vie = new ValuatorInteractionEvent();
             *vie = *((ValuatorInteractionEvent*)event);
@@ -47,12 +49,13 @@ void storeEvent(InteractionEvent * event, void * des)
     switch(event->getEventType())
     {
         case TRACKED_BUTTON_INTER_EVENT:
-            *((TrackedButtonInteractionEvent*)des) = *event->asTrackedButtonEvent();
+            *((TrackedButtonInteractionEvent*)des) =
+                    *event->asTrackedButtonEvent();
             break;
         case MOUSE_INTER_EVENT:
             *((MouseInteractionEvent*)des) = *event->asMouseEvent();
             break;
-	case VALUATOR_INTER_EVENT:
+        case VALUATOR_INTER_EVENT:
             *((ValuatorInteractionEvent*)des) = *event->asValuatorEvent();
             break;
         case KEYBOARD_INTER_EVENT:
@@ -62,7 +65,8 @@ void storeEvent(InteractionEvent * event, void * des)
             *((InteractionEvent*)des) = *event;
             break;
         default:
-            std::cerr << "Error: unknown event type in storeEvent, value = " << (int)event->getEventType() << std::endl;
+            std::cerr << "Error: unknown event type in storeEvent, value = "
+                    << (int)event->getEventType() << std::endl;
             break;
     }
 }
@@ -75,14 +79,15 @@ int getEventSize(InteractionEventType type)
             return sizeof(TrackedButtonInteractionEvent);
         case MOUSE_INTER_EVENT:
             return sizeof(MouseInteractionEvent);
-	case VALUATOR_INTER_EVENT:
+        case VALUATOR_INTER_EVENT:
             return sizeof(ValuatorInteractionEvent);
         case KEYBOARD_INTER_EVENT:
             return sizeof(KeyboardInteractionEvent);
         case INTER_EVENT:
             return sizeof(InteractionEvent);
         default:
-            std::cerr << "Error: unknown event type in getEventSize, value = " << (int)type << std::endl;
+            std::cerr << "Error: unknown event type in getEventSize, value = "
+                    << (int)type << std::endl;
             return 0;
     }
 }

@@ -3,7 +3,7 @@
 using namespace cvr;
 
 MenuCheckbox::MenuCheckbox(std::string text, bool value) :
-    MenuItem()
+        MenuItem()
 {
     _text = text;
     _value = value;

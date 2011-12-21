@@ -17,19 +17,19 @@ namespace cvr
 class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
 {
     public:
-        getWorldCoordOfNodeVisitor():
-            osg::NodeVisitor(NodeVisitor::TRAVERSE_PARENTS), _done(false)
+        getWorldCoordOfNodeVisitor() :
+                osg::NodeVisitor(NodeVisitor::TRAVERSE_PARENTS), _done(false)
         {
-            _matrix= osg::Matrixd();
+            _matrix = osg::Matrixd();
         }
 
         virtual void apply(osg::Node &node)
         {
-            if (!_done)
+            if(!_done)
             {
-                if (0 == node.getNumParents()) // no parents
+                if(0 == node.getNumParents()) // no parents
                 {
-                    _matrix.set( osg::computeLocalToWorld(this->getNodePath()) );
+                    _matrix.set(osg::computeLocalToWorld(this->getNodePath()));
                     _done = true;
                 }
                 traverse(node);
@@ -54,7 +54,7 @@ class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
  * Note: is node is a transform type node, its transform will be contained in the resulting local to world
  * matrix
  */
-osg::Matrixd CVRUTIL_EXPORT getLocalToWorldMatrix( osg::Node* node);
+osg::Matrixd CVRUTIL_EXPORT getLocalToWorldMatrix(osg::Node* node);
 
 }
 

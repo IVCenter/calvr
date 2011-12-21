@@ -19,16 +19,21 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
     public:
         MultiViewerCullVisitor();
         MultiViewerCullVisitor(const MultiViewerCullVisitor& cv);
-        virtual CullVisitor* clone() const { return new MultiViewerCullVisitor(*this); }
+        virtual CullVisitor* clone() const
+        {
+            return new MultiViewerCullVisitor(*this);
+        }
 
         inline void printDebug(osg::Vec3 point)
         {
             osg::Polytope::PlaneList pl;
             pl = _currentNearFrustum.getPlaneList();
-            std::cerr << "Point x: " << point.x() << " y: " << point.y() << " z: " << point.z() << std::endl;
+            std::cerr << "Point x: " << point.x() << " y: " << point.y()
+                    << " z: " << point.z() << std::endl;
             for(int i = 0; i < pl.size(); i++)
             {
-                std::cerr << "Near Dist: " << pl[i].distance(point) << std::endl;
+                std::cerr << "Near Dist: " << pl[i].distance(point)
+                        << std::endl;
             }
 
             pl = _currentFarFrustum.getPlaneList();
@@ -43,13 +48,15 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
             //printDebug(bb.center());
             //std::cerr << "isInCullArea bb value: " << !(_currentNearFrustum.contains(bb) || _currentFarFrustum.contains(bb)) << std::endl;
             //return false;
-            return !(_currentNearFrustum.contains(bb) || _currentFarFrustum.contains(bb));
+            return !(_currentNearFrustum.contains(bb)
+                    || _currentFarFrustum.contains(bb));
         }
 
         inline bool isInCullArea(const osg::BoundingSphere& bs)
         {
             //printDebug(bs.center());
-            return !(_currentNearFrustum.contains(bs) || _currentFarFrustum.contains(bs));
+            return !(_currentNearFrustum.contains(bs)
+                    || _currentFarFrustum.contains(bs));
         }
 
         inline bool isInCullArea(const osg::Node& node)
@@ -85,11 +92,11 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
                     //std::cerr << "First cull done" << std::endl;
                     _skipCull = false;
                     /*bool b = isInCullArea(node);
-                    if(b)
-                    {
-                        std::cerr << "Culling node" << std::endl;
-                    }
-                    return b;*/
+                     if(b)
+                     {
+                     std::cerr << "Culling node" << std::endl;
+                     }
+                     return b;*/
                     return isInCullArea(node);
                 }
             }
@@ -98,11 +105,11 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
                 _skipCull = false;
                 _firstCullStatus = false;
                 /*bool b = isInCullArea(node);
-                if(b)
-                {
-                    std::cerr << "Culling node" << std::endl;
-                }
-                return b;*/
+                 if(b)
+                 {
+                 std::cerr << "Culling node" << std::endl;
+                 }
+                 return b;*/
                 return isInCullArea(node);
             }
         }
@@ -114,15 +121,16 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
                 return false;
             }
             /*bool b = isInCullArea(bb);
-            if(b)
-            {
-                std::cerr << "Culling geometry" << std::endl;
-            }
-            return b;*/
+             if(b)
+             {
+             std::cerr << "Culling geometry" << std::endl;
+             }
+             return b;*/
             return isInCullArea(bb);
         }
 
-        void pushModelViewMatrix(osg::RefMatrix* matrix, osg::Transform::ReferenceFrame referenceFrame);
+        void pushModelViewMatrix(osg::RefMatrix* matrix,
+                osg::Transform::ReferenceFrame referenceFrame);
         void popModelViewMatrix();
         void setFrustums(osg::Polytope & near, osg::Polytope & far);
 
@@ -136,7 +144,6 @@ class MultiViewerCullVisitor : public osgUtil::CullVisitor
         osg::Polytope _currentFarFrustum;
         osg::Polytope _nearFrustum;
         osg::Polytope _farFrustum;
-
 
     public:
         // osgUtil::CullVisitor

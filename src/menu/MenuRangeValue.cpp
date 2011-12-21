@@ -2,7 +2,9 @@
 
 using namespace cvr;
 
-MenuRangeValue::MenuRangeValue(std::string label, float min, float max, float current, float stepsize) : MenuItem()
+MenuRangeValue::MenuRangeValue(std::string label, float min, float max,
+        float current, float stepsize) :
+        MenuItem()
 {
     _label = label;
     _min = min;

@@ -19,7 +19,7 @@ namespace cvr
  */
 class ScreenBase
 {
-    friend class ScreenConfig;
+        friend class ScreenConfig;
     public:
         ScreenBase();
 
@@ -52,7 +52,10 @@ class ScreenBase
         /**
          * @brief Get the screen params used to create this screen
          */
-        ScreenInfo * getScreenInfo() { return _myInfo; }
+        ScreenInfo * getScreenInfo()
+        {
+            return _myInfo;
+        }
 
         /**
          * @brief See if a given osg::Camera was created by this screen
@@ -66,27 +69,42 @@ class ScreenBase
          * @param x x coord in range 0 to width
          * @param y y coord in range 0 to height
          */
-        virtual void adjustViewportCoords(int & x, int & y) { return; }
+        virtual void adjustViewportCoords(int & x, int & y)
+        {
+            return;
+        }
 
         /**
          * @brief Set near plane value for all screens
          */
-        static void setNear(float near) { _near = near; }
+        static void setNear(float near)
+        {
+            _near = near;
+        }
 
         /**
          * @brief Set far plane value for all screens
          */
-        static void setFar(float far) { _far = far; }
+        static void setFar(float far)
+        {
+            _far = far;
+        }
 
         /**
          * @brief Get the eye separation
          */
-        static double getEyeSeparation() { return _separation; }
+        static double getEyeSeparation()
+        {
+            return _separation;
+        }
 
         /**
          * @brief Get the current eye separation multiplier
          */
-        static double getEyeSeparationMultiplier() { return _eyeSepMult; }
+        static double getEyeSeparationMultiplier()
+        {
+            return _eyeSepMult;
+        }
 
         /**
          * @brief Applies some default settings to the camera
@@ -112,7 +130,8 @@ class ScreenBase
          *
          * Uses information in the screen info to do the typical calculation
          */
-        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj);
+        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view,
+                osg::Matrix & proj);
 
     protected:
         static double _separation; ///< eye separation

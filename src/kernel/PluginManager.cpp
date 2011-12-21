@@ -48,7 +48,7 @@ bool PluginManager::init()
 #endif
 
     std::vector<std::string> plugins;
-    ConfigManager::getChildren("Plugin", plugins);
+    ConfigManager::getChildren("Plugin",plugins);
 
     for(int i = 0; i < plugins.size(); i++)
     {
@@ -56,17 +56,16 @@ bool PluginManager::init()
         {
             continue;
         }
-        _pluginMap[plugins[i]] = ConfigManager::getBool(std::string("Plugin")
-                + "." + plugins[i], false);
+        _pluginMap[plugins[i]] = ConfigManager::getBool(
+                std::string("Plugin") + "." + plugins[i],false);
     }
 
     // default nav buttons
-    _pluginMap["MenuBasics"]
-            = ConfigManager::getBool("Plugin.MenuBasics", true);
+    _pluginMap["MenuBasics"] = ConfigManager::getBool("Plugin.MenuBasics",true);
 
     //std::cerr << "Plugins: " << std::endl;
-    for(std::map<std::string,bool>::iterator it = _pluginMap.begin(); it
-            != _pluginMap.end(); it++)
+    for(std::map<std::string,bool>::iterator it = _pluginMap.begin();
+            it != _pluginMap.end(); it++)
     {
         //std::cerr << it->first << " " << it->second << std::endl;
         if(it->second)
@@ -75,8 +74,7 @@ bool PluginManager::init()
         }
     }
 
-    std::sort(_loadedPluginList.begin(), _loadedPluginList.end(),
-              PrioritySort());
+    std::sort(_loadedPluginList.begin(),_loadedPluginList.end(),PrioritySort());
 
     std::cerr << "Loaded Plugins: " << std::endl;
     for(int i = 0; i < _loadedPluginList.size(); i++)
@@ -85,8 +83,8 @@ bool PluginManager::init()
                 << _loadedPluginList[i]->priority << std::endl;
     }
 
-    for(std::vector<PluginInfo *>::iterator it = _loadedPluginList.begin(); it
-            != _loadedPluginList.end();)
+    for(std::vector<PluginInfo *>::iterator it = _loadedPluginList.begin();
+            it != _loadedPluginList.end();)
     {
         if(!(*it)->ptr->init())
         {
@@ -105,7 +103,7 @@ void PluginManager::preFrame()
 {
     if(ComController::instance()->getIsSyncError())
     {
-	return;
+        return;
     }
 
     for(int i = 0; i < _loadedPluginList.size(); i++)
@@ -118,7 +116,7 @@ void PluginManager::postFrame()
 {
     if(ComController::instance()->getIsSyncError())
     {
-	return;
+        return;
     }
 
     for(int i = 0; i < _loadedPluginList.size(); i++)
@@ -131,10 +129,10 @@ bool PluginManager::processEvent(InteractionEvent * event)
 {
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	if(_loadedPluginList[i]->ptr->processEvent(event))
-	{
-	    return true;
-	}
+        if(_loadedPluginList[i]->ptr->processEvent(event))
+        {
+            return true;
+        }
     }
     return false;
 }
@@ -143,11 +141,11 @@ void PluginManager::sendMessageByName(std::string plugin, int type, char * data)
 {
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	if(_loadedPluginList[i]->name == plugin)
-	{
-	    _loadedPluginList[i]->ptr->message(type,data,false);
-	    break;
-	}
+        if(_loadedPluginList[i]->name == plugin)
+        {
+            _loadedPluginList[i]->ptr->message(type,data,false);
+            break;
+        }
     }
 }
 
@@ -155,7 +153,7 @@ bool PluginManager::getPluginLoaded(std::string plugin)
 {
     if(_pluginMap.find(plugin) == _pluginMap.end())
     {
-	return false;
+        return false;
     }
 
     return _pluginMap[plugin];
@@ -166,11 +164,11 @@ CVRPlugin * PluginManager::getPlugin(std::string plugin)
     CVRPlugin * ptr = NULL;
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	if(_loadedPluginList[i]->name == plugin)
-	{
-	    ptr = _loadedPluginList[i]->ptr;
-	    break;
-	}
+        if(_loadedPluginList[i]->name == plugin)
+        {
+            ptr = _loadedPluginList[i]->ptr;
+            break;
+        }
     }
     return ptr;
 }
@@ -188,15 +186,15 @@ bool PluginManager::loadPlugin(std::string plugin)
 #else
     std::string libPath = _pluginLibDir + "lib" + plugin + ".so";
 #endif
-    libHandle = dlopen(libPath.c_str(), RTLD_LAZY);
+    libHandle = dlopen(libPath.c_str(),RTLD_LAZY);
     if(!libHandle)
     {
         std::cerr << dlerror() << std::endl;
         return false;
     }
 
-    func = (CVRPlugin * (*)())dlsym(libHandle, "createPlugin");
-    if((error = dlerror()) != NULL)
+    func = (CVRPlugin * (*)())dlsym(libHandle, "createPlugin");if
+(    (error = dlerror()) != NULL)
     {
         std::cerr << error << std::endl;
         return false;

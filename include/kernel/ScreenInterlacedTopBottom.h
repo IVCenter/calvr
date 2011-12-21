@@ -35,29 +35,28 @@ class ScreenInterlacedTopBottom : public ScreenBase
         struct StereoCallback : public osgUtil::SceneView::ComputeStereoMatricesCallback
         {
                 virtual osg::Matrixd
-                        computeLeftEyeProjection(const osg::Matrixd &projection) const;
+                computeLeftEyeProjection(const osg::Matrixd &projection) const;
                 virtual osg::Matrixd
-                        computeLeftEyeView(const osg::Matrixd &view) const;
+                computeLeftEyeView(const osg::Matrixd &view) const;
                 virtual osg::Matrixd
-                        computeRightEyeProjection(
-                                                  const osg::Matrixd &projection) const;
+                computeRightEyeProjection(const osg::Matrixd &projection) const;
                 virtual osg::Matrixd
-                        computeRightEyeView(const osg::Matrixd &view) const;
+                computeRightEyeView(const osg::Matrixd &view) const;
                 ScreenInterlacedTopBottom * screen;
         };
 
         struct InterlaceCallback : public osg::Camera::DrawCallback
         {
-            virtual void operator() (osg::RenderInfo &renderInfo) const;
-            ScreenInterlacedTopBottom * screen;
+                virtual void operator()(osg::RenderInfo &renderInfo) const;
+                ScreenInterlacedTopBottom * screen;
 
-            mutable std::map<int,bool> _initMap;
-            mutable std::map<int,osg::ref_ptr<osg::Program> > _programMap;
-            mutable std::map<int,osg::ref_ptr<osg::Geometry> > _geometryMap;
-            mutable bool odd;
-            mutable bool first;
-            static OpenThreads::Mutex _initLock;
-            osg::Texture2D * _texture;
+                mutable std::map<int,bool> _initMap;
+                mutable std::map<int,osg::ref_ptr<osg::Program> > _programMap;
+                mutable std::map<int,osg::ref_ptr<osg::Geometry> > _geometryMap;
+                mutable bool odd;
+                mutable bool first;
+                static OpenThreads::Mutex _initLock;
+                osg::Texture2D * _texture;
         };
 
         /**

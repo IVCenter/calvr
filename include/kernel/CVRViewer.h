@@ -23,8 +23,8 @@ struct DefaultUpdate;
  */
 class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 {
-    friend class CalVR;
-    friend struct DefaultUpdate;
+        friend class CalVR;
+        friend struct DefaultUpdate;
     public:
         CVRViewer();
         CVRViewer(osg::ArgumentParser& arguments);
@@ -129,17 +129,26 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         /**
          * @brief Get the screen on the master node where the mouse is currently active
          */
-        int getActiveMasterScreen() { return _activeMasterScreen; }
+        int getActiveMasterScreen()
+        {
+            return _activeMasterScreen;
+        }
 
         /**
          * @brief Set if the y widow coord should be inverted for mouse events
          */
-        void setInvertMouseY(bool inv) { _invertMouseY = inv; }
+        void setInvertMouseY(bool inv)
+        {
+            _invertMouseY = inv;
+        }
 
         /**
          * @brief Get if the y widow coord should be inverted for mouse events
          */
-        bool getInvertMouseY() { return _invertMouseY; }
+        bool getInvertMouseY()
+        {
+            return _invertMouseY;
+        }
     protected:
         virtual ~CVRViewer();
 
@@ -153,8 +162,7 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          */
         enum CullMode
         {
-            DEFAULT,
-            CALVR
+            DEFAULT, CALVR
         };
 
         struct eventInfo
@@ -179,8 +187,7 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
          */
         enum CustomViewerEventType
         {
-            UPDATE_ACTIVE_SCREEN = 1<<24,
-            UPDATE_VIEWPORT = 1<<25
+            UPDATE_ACTIVE_SCREEN = 1 << 24, UPDATE_VIEWPORT = 1 << 25
         };
 
         /**

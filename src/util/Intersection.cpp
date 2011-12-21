@@ -3,13 +3,12 @@
 #include <kernel/NodeMask.h>
 
 std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
-                                             osg::Vec3& wPointerStart,
-                                             osg::Vec3& wPointerEnd)
+        osg::Vec3& wPointerStart, osg::Vec3& wPointerEnd)
 {
     // Compute intersections of viewing ray with objects:
     osgUtil::IntersectVisitor iv;
-    osg::ref_ptr<osg::LineSegment> testSegment = new osg::LineSegment();
-    testSegment->set(wPointerStart, wPointerEnd);
+    osg::ref_ptr < osg::LineSegment > testSegment = new osg::LineSegment();
+    testSegment->set(wPointerStart,wPointerEnd);
     iv.addLineSegment(testSegment.get());
     iv.setTraversalMask(cvr::INTERSECT_MASK);
     std::vector<IsectInfo> isecvec;
@@ -20,8 +19,8 @@ std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
     if(iv.hits())
     {
         float minDist = FLT_MAX;
-        osgUtil::IntersectVisitor::HitList& hitList =
-                iv.getHitList(testSegment.get());
+        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(
+                testSegment.get());
         if(!hitList.empty())
         {
             for(size_t i = 0; i < hitList.size(); i++)

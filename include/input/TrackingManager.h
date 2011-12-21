@@ -225,17 +225,17 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         struct TrackingSystemInfo
         {
-            int numBodies; ///< number of tracked bodies
-            int numButtons; ///< number of buttons
-            int numVal; ///< number of valuators
-            osg::Matrix systemTransform; ///< transform on the entire tracking system
-            std::vector<osg::Matrix> bodyRotations; ///< rotation adjustment for each tracked body
-            std::vector<osg::Vec3> bodyTranslations; ///< position adjustment for each tracked body
-            Navigation::NavImplementation navImp; ///< navigation type for the system
-            TrackerBase::TrackerType trackerType; ///< system type
-            SceneManager::PointerGraphicType defaultPointerType; ///< type of graphic to use for pointer
-            bool genDefaultButtonEvents; ///< should default buttons events be generated
-            bool thread; ///< should this system be polled in a thread
+                int numBodies; ///< number of tracked bodies
+                int numButtons; ///< number of buttons
+                int numVal; ///< number of valuators
+                osg::Matrix systemTransform; ///< transform on the entire tracking system
+                std::vector<osg::Matrix> bodyRotations; ///< rotation adjustment for each tracked body
+                std::vector<osg::Vec3> bodyTranslations; ///< position adjustment for each tracked body
+                Navigation::NavImplementation navImp; ///< navigation type for the system
+                TrackerBase::TrackerType trackerType; ///< system type
+                SceneManager::PointerGraphicType defaultPointerType; ///< type of graphic to use for pointer
+                bool genDefaultButtonEvents; ///< should default buttons events be generated
+                bool thread; ///< should this system be polled in a thread
         };
 
         enum ValuatorType

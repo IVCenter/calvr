@@ -31,7 +31,7 @@ class MenuRangeValue;
  */
 class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 {
-    friend class SceneManager;
+        friend class SceneManager;
     public:
 
         /**
@@ -55,13 +55,17 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          * @param contextMenu Should this object have a context menu
          * @param showBounds Should the bounding box be drawn
          */
-        SceneObject(std::string name, bool navigation, bool movable, bool clip, bool contextMenu, bool showBounds = false);
+        SceneObject(std::string name, bool navigation, bool movable, bool clip,
+                bool contextMenu, bool showBounds = false);
         virtual ~SceneObject();
 
         /**
          * @brief Get the name of this object
          */
-        const std::string & getName() { return _name; }
+        const std::string & getName()
+        {
+            return _name;
+        }
 
         /**
          * @brief Get if we can navigate through this object
@@ -76,7 +80,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get if this object is movable with the wand
          */
-        bool getMovable() { return _movable;}
+        bool getMovable()
+        {
+            return _movable;
+        }
 
         /**
          * @brief Set if this object is movable with the wand
@@ -86,7 +93,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get if this object is clippable
          */
-        bool getClipOn() { return _clip; }
+        bool getClipOn()
+        {
+            return _clip;
+        }
 
         /**
          * @brief Set if this object is clippable
@@ -96,12 +106,18 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get if this object has a context menu
          */
-        bool getHasContextMenu() { return _contextMenu; }
+        bool getHasContextMenu()
+        {
+            return _contextMenu;
+        }
 
         /**
          * @brief Get if the bounding box should be drawn
          */
-        bool getShowBounds() { return _showBounds; }
+        bool getShowBounds()
+        {
+            return _showBounds;
+        }
 
         /**
          * @brief Set if the bounding box should be drawn
@@ -163,7 +179,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get it the object is attached to the Scene
          */
-        bool getAttached() { return _attached; }
+        bool getAttached()
+        {
+            return _attached;
+        }
 
         /**
          * @brief Add a node to this object
@@ -188,7 +207,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get the number of osg::Node children that are part of this object
          */
-        int getNumChildNodes() { return _childrenNodes.size(); }
+        int getNumChildNodes()
+        {
+            return _childrenNodes.size();
+        }
 
         /**
          * @brief Get a pointer to an osg::Node child of this object by index
@@ -199,7 +221,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         /**
          * @brief Get the number of SceneObject children that are attached to this object
          */
-        int getNumChildObjects() { return _childrenObjects.size(); }
+        int getNumChildObjects()
+        {
+            return _childrenObjects.size();
+        }
 
         /**
          * @brief Get a pointer to a SceneObject child of this object by index
@@ -249,7 +274,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          * @param max Max scale
          * @param value Current scale value
          */
-        void addScaleMenuItem(std::string label, float min, float max, float value);
+        void addScaleMenuItem(std::string label, float min, float max,
+                float value);
 
         /**
          * @brief Remove scale MenuRangeValue if it has been added to the context menu
@@ -286,26 +312,35 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          * @param handID The hand number that has entered the object, if >= 0 it is a wand, if -1 it is the mouse
          * @param mat Current orientation of the hand device
          */
-        virtual void enterCallback(int handID, const osg::Matrix & mat) {}
+        virtual void enterCallback(int handID, const osg::Matrix & mat)
+        {
+        }
 
         /**
          * @brief Callback called each frame the pointer device is in the object
          * @param handID The hand number for this update, if >= 0 it is a wand, if -1 it is the mouse
          * @param mat Current orientation of the hand device
          */
-        virtual void updateCallback(int handID, const osg::Matrix & mat) {}
+        virtual void updateCallback(int handID, const osg::Matrix & mat)
+        {
+        }
 
         /**
          * @brief Callback called when a pointer leaves the object bounds
          * @param handID The hand number that has left the object, if >= 0 it is a wand, if -1 it is the mouse
          */
-        virtual void leaveCallback(int handID) {}
+        virtual void leaveCallback(int handID)
+        {
+        }
 
         /**
          * @brief Callback for events not handled by the default move/navigation operations
          * @return Return true if the event is consumed
          */
-        virtual bool eventCallback(InteractionEvent * ie) { return false; }
+        virtual bool eventCallback(InteractionEvent * ie)
+        {
+            return false;
+        }
 
         /**
          * @brief Set the bounding box for this object
@@ -326,17 +361,26 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          *
          * This is only valid if the BoundsCalcMode is set to AUTO
          */
-        void dirtyBounds() { _boundsDirty = true; }
+        void dirtyBounds()
+        {
+            _boundsDirty = true;
+        }
 
         /**
          * @brief Set if the bounding box should be manually or automatically computed
          */
-        void setBoundsCalcMode(BoundsCalcMode bcm) { _boundsCalcMode = bcm; }
+        void setBoundsCalcMode(BoundsCalcMode bcm)
+        {
+            _boundsCalcMode = bcm;
+        }
 
         /**
          * @brief Get the current bounding box calculation mode
          */
-        BoundsCalcMode getBoundsCalcMode() { return _boundsCalcMode; }
+        BoundsCalcMode getBoundsCalcMode()
+        {
+            return _boundsCalcMode;
+        }
 
         /**
          * @brief Close this object's context menu
@@ -344,18 +388,32 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         void closeMenu();
 
     protected:
-        bool getRegistered() { return _registered; }
+        bool getRegistered()
+        {
+            return _registered;
+        }
         void setRegistered(bool reg);
-        bool getEventActive() { return _eventActive; }
-        int getActiveHand() { return _activeHand; }
-        void setActiveHand(int hand) { _activeHand = hand; }
+        bool getEventActive()
+        {
+            return _eventActive;
+        }
+        int getActiveHand()
+        {
+            return _activeHand;
+        }
+        void setActiveHand(int hand)
+        {
+            _activeHand = hand;
+        }
         void processMove(osg::Matrix & mat);
         void moveCleanup();
 
         void computeBoundingBox();
 
         bool intersectsFast(osg::Vec3 & start, osg::Vec3 & end);
-        bool intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & itersect1, bool & neg1, osg::Vec3 & intersect2, bool & neg2);
+        bool intersects(osg::Vec3 & start, osg::Vec3 & end,
+                osg::Vec3 & itersect1, bool & neg1, osg::Vec3 & intersect2,
+                bool & neg2);
 
         void createBoundsGeometry();
         void updateBoundsGeometry();

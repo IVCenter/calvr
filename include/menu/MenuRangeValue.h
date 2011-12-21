@@ -30,7 +30,8 @@ class CVRMENU_EXPORT MenuRangeValue : public MenuItem
          * @param current initial value
          * @param stepsize not yet used
          */
-        MenuRangeValue(std::string label, float min, float max, float current, float stepsize = 0.0);
+        MenuRangeValue(std::string label, float min, float max, float current,
+                float stepsize = 0.0);
         virtual ~MenuRangeValue();
 
         /**

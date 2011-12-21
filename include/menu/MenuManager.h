@@ -23,7 +23,7 @@ class MenuSystemBase;
  */
 class CVRMENU_EXPORT MenuManager
 {
-    friend class MenuItem;
+        friend class MenuItem;
     public:
         virtual ~MenuManager();
 

@@ -28,7 +28,8 @@ class CVRMENU_EXPORT MenuText : public MenuItem
          * @param indent if the text should be indented to align with checkboxes, etc
          * @param maxWidth sets the maximum width for the text line, will wordwrap
          */
-        MenuText(std::string text, float sizeScale = 1.0, bool indent = true, float maxWidth = 0.0);
+        MenuText(std::string text, float sizeScale = 1.0, bool indent = true,
+                float maxWidth = 0.0);
         virtual ~MenuText();
 
         /**
@@ -44,7 +45,10 @@ class CVRMENU_EXPORT MenuText : public MenuItem
         /**
          * @brief Get if the text should be indented to align with checkboxes, etc
          */
-        bool getIndent() { return _indent; }
+        bool getIndent()
+        {
+            return _indent;
+        }
 
         /**
          * @brief Set if the text should be indented
@@ -54,7 +58,10 @@ class CVRMENU_EXPORT MenuText : public MenuItem
         /**
          * @brief Get the maximum width for the text block, will wordwrap
          */
-        float getMaxWidth() { return _maxWidth; }
+        float getMaxWidth()
+        {
+            return _maxWidth;
+        }
 
         /**
          * @brief Set the maximum width for the text block, will wordwrap
@@ -64,7 +71,10 @@ class CVRMENU_EXPORT MenuText : public MenuItem
         /**
          * @brief Get the scale value for the text size
          */
-        float getSizeScale() { return _sizeScale; }
+        float getSizeScale()
+        {
+            return _sizeScale;
+        }
 
         /**
          * @brief Set the scale value for the text size

@@ -55,8 +55,8 @@ void ScreenLenticular::init(int)
     for(int i = 0; i < _eyes; i++)
     {
         _cameraList.push_back(new osg::Camera());
-	osg::DisplaySettings * ds = new osg::DisplaySettings();
-	_cameraList[i]->setDisplaySettings(ds);
+        osg::DisplaySettings * ds = new osg::DisplaySettings();
+        _cameraList[i]->setDisplaySettings(ds);
         CVRViewer::instance()->addSlave(_cameraList[i].get(), osg::Matrixd(), osg::Matrixd());
         defaultCameraInit(_cameraList[i].get());
 

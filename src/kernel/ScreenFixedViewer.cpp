@@ -7,7 +7,8 @@
 
 using namespace cvr;
 
-ScreenFixedViewer::ScreenFixedViewer() : ScreenBase()
+ScreenFixedViewer::ScreenFixedViewer() :
+        ScreenBase()
 {
 }
 
@@ -22,13 +23,15 @@ void ScreenFixedViewer::init(int mode)
     osg::DisplaySettings * ds = new osg::DisplaySettings();
     _camera->setDisplaySettings(ds);
 
-    CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
+    CVRViewer::instance()->addSlave(_camera.get(),osg::Matrixd(),
+            osg::Matrixd());
     defaultCameraInit(_camera.get());
 
     std::stringstream ss;
-    ss << "ChannelConfig.Channel:" << _myInfo->channelIndex << ".ViewerPosition";
+    ss << "ChannelConfig.Channel:" << _myInfo->channelIndex
+            << ".ViewerPosition";
 
-    float x,y,z;
+    float x, y, z;
 
     x = ConfigManager::getFloat("x",ss.str(),0);
     y = ConfigManager::getFloat("y",ss.str(),0);

@@ -25,7 +25,8 @@ class CVRMENU_EXPORT DialogPanel : public PopupMenu
          * @param title title for the PopupMenu
          * @param configTag location in config file for initial position/rotation/scale
          */
-        DialogPanel(float menuWidth, std::string title, std::string configTag = "");
+        DialogPanel(float menuWidth, std::string title, std::string configTag =
+                "");
         virtual ~DialogPanel();
 
         /**

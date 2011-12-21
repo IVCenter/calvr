@@ -49,7 +49,7 @@ class ScreenFixedViewer : public ScreenBase
         osg::ref_ptr<osg::Camera> _camera;  ///< camera created for screen
         osg::Matrix _view;                  ///< view matrix
         osg::Matrix _proj;                  ///< projection matrix
-        osg::Matrix _viewerMat;             ///< matrix to use for viewer position/orientation
+        osg::Matrix _viewerMat; ///< matrix to use for viewer position/orientation
 };
 
 }

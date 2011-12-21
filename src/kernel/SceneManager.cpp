@@ -25,10 +25,11 @@ using namespace cvr;
 
 struct PrioritySort
 {
-    bool operator() (const std::pair<float,SceneObject*>& first, const std::pair<float,SceneObject*>& second)
-    {
-	return first.first > second.first;
-    }
+        bool operator()(const std::pair<float,SceneObject*>& first
+                , const std::pair<float,SceneObject*>& second)
+        {
+            return first.first > second.first;
+        }
 };
 
 SceneManager * SceneManager::_myPtr = NULL;
@@ -74,13 +75,17 @@ bool SceneManager::init()
     _objectTransform->addChild(_objectScale);
     _objectScale->addChild(_objectRoot);
 
-    bool dpart = ConfigManager::getBool("value",std::string("UseDepthPartition"),false);
+    bool dpart = ConfigManager::getBool("value",
+            std::string("UseDepthPartition"),false);
     _depthPartitionLeft->setActive(dpart);
     _depthPartitionRight->setActive(dpart);
 
-    _depthPartitionLeft->setNodeMask(_depthPartitionLeft->getNodeMask() & ~(CULL_MASK_RIGHT));
-    _depthPartitionRight->setNodeMask(_depthPartitionRight->getNodeMask() & ~(CULL_MASK_LEFT));
-    _depthPartitionRight->setNodeMask(_depthPartitionRight->getNodeMask() & ~(CULL_MASK));
+    _depthPartitionLeft->setNodeMask(
+            _depthPartitionLeft->getNodeMask() & ~(CULL_MASK_RIGHT));
+    _depthPartitionRight->setNodeMask(
+            _depthPartitionRight->getNodeMask() & ~(CULL_MASK_LEFT));
+    _depthPartitionRight->setNodeMask(
+            _depthPartitionRight->getNodeMask() & ~(CULL_MASK));
 
     _scale = 1.0;
     _showAxis = false;
@@ -92,17 +97,20 @@ bool SceneManager::init()
     initSceneState();
     initAxis();
 
-    bool b = ConfigManager::getBool("ShowAxis", false);
+    bool b = ConfigManager::getBool("ShowAxis",false);
 
     setAxis(b);
 
-    b = ConfigManager::getBool("HidePointer", false);
+    b = ConfigManager::getBool("HidePointer",false);
     setHidePointer(b);
 
     _menuScale = ConfigManager::getFloat("value","ContextMenus.Scale",1.0);
-    _menuMinDistance = ConfigManager::getFloat("value","ContextMenus.MinDistance",750.0);
-    _menuMaxDistance = ConfigManager::getFloat("value","ContextMenus.MaxDistance",1000.0);
-    _menuDefaultOpenButton = ConfigManager::getInt("value","ContextMenus.DefaultOpenButton",1);
+    _menuMinDistance = ConfigManager::getFloat("value",
+            "ContextMenus.MinDistance",750.0);
+    _menuMaxDistance = ConfigManager::getFloat("value",
+            "ContextMenus.MaxDistance",1000.0);
+    _menuDefaultOpenButton = ConfigManager::getInt("value",
+            "ContextMenus.DefaultOpenButton",1);
 
     return true;
 }
@@ -111,13 +119,13 @@ void SceneManager::update()
 {
     if(ComController::instance()->getIsSyncError())
     {
-	return;
+        return;
     }
 
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms[i]->setMatrix(
-                                      TrackingManager::instance()->getHandMat(i));
+                TrackingManager::instance()->getHandMat(i));
     }
 
     if(_showAxis)
@@ -125,8 +133,7 @@ void SceneManager::update()
         for(int i = 0; i < _headAxisTransforms.size(); i++)
         {
             _headAxisTransforms[i]->setMatrix(
-                                              TrackingManager::instance()->getUnfrozenHeadMat(
-                                                                                      i));
+                    TrackingManager::instance()->getUnfrozenHeadMat(i));
         }
     }
 
@@ -137,23 +144,26 @@ void SceneManager::postEventUpdate()
 {
     if(ComController::instance()->getIsSyncError())
     {
-	return;
+        return;
     }
 
-    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin();
+            it != _activeObjects.end(); it++)
     {
-	if(it->second)
-	{
-	    it->second->moveCleanup();
-	    if(it->first >= 0)
-	    {
-		it->second->updateCallback(it->first,TrackingManager::instance()->getHandMat(it->first));
-	    }
-	    else
-	    {
-		it->second->updateCallback(it->first,InteractionManager::instance()->getMouseMat());
-	    }
-	}
+        if(it->second)
+        {
+            it->second->moveCleanup();
+            if(it->first >= 0)
+            {
+                it->second->updateCallback(it->first,
+                        TrackingManager::instance()->getHandMat(it->first));
+            }
+            else
+            {
+                it->second->updateCallback(it->first,
+                        InteractionManager::instance()->getMouseMat());
+            }
+        }
     }
 }
 
@@ -190,7 +200,7 @@ void SceneManager::setObjectScale(double scale)
     _scale = scale;
 
     osg::Matrixd m;
-    m.makeScale(osg::Vec3d(_scale, _scale, _scale));
+    m.makeScale(osg::Vec3d(_scale,_scale,_scale));
 
     _objectScale->setMatrix(m);
 
@@ -260,22 +270,22 @@ void SceneManager::setHidePointer(bool b)
 {
     if(b == _hidePointer)
     {
-	return;
+        return;
     }
 
     if(b)
     {
-	for(int i = 0; i < _handTransforms.size(); i++)
-	{
-	    _sceneRoot->removeChild(_handTransforms[i]);
-	}
+        for(int i = 0; i < _handTransforms.size(); i++)
+        {
+            _sceneRoot->removeChild(_handTransforms[i]);
+        }
     }
     else
     {
-	for(int i = 0; i < _handTransforms.size(); i++)
-	{
-	    _sceneRoot->addChild(_handTransforms[i]);
-	}
+        for(int i = 0; i < _handTransforms.size(); i++)
+        {
+            _sceneRoot->addChild(_handTransforms[i]);
+        }
     }
 
     _hidePointer = b;
@@ -314,36 +324,38 @@ bool SceneManager::processEvent(InteractionEvent * ie)
 
     if(ie->asTrackedButtonEvent())
     {
-	hand = ie->asTrackedButtonEvent()->getHand();
-	button = ie->asTrackedButtonEvent()->getButton();
+        hand = ie->asTrackedButtonEvent()->getHand();
+        button = ie->asTrackedButtonEvent()->getButton();
     }
     else
     {
-	for(std::map<SceneObject*,int>::iterator it = _uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end(); it++)
-	{
-	    if(it->first->processEvent(ie))
-	    {
-		return true;
-	    }
-	}
-	return false;
+        for(std::map<SceneObject*,int>::iterator it =
+                _uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end();
+                it++)
+        {
+            if(it->first->processEvent(ie))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     if(hand == -2)
     {
-	return false;
+        return false;
     }
 
     if(_activeObjects[hand])
     {
-	return _activeObjects[hand]->processEvent(ie);
+        return _activeObjects[hand]->processEvent(ie);
     }
     else if(_menuOpenObject)
     {
-	if(ie->getInteraction() == BUTTON_DOWN && _menuOpenObject->_menuButton)
-	{
-	    return _menuOpenObject->processEvent(ie);
-	}
+        if(ie->getInteraction() == BUTTON_DOWN && _menuOpenObject->_menuButton)
+        {
+            return _menuOpenObject->processEvent(ie);
+        }
     }
     return false;
 }
@@ -352,13 +364,15 @@ void SceneManager::registerSceneObject(SceneObject * object, std::string plugin)
 {
     if(object->_parent)
     {
-	std::cerr << "SceneManager: error: trying to register SceneObject " << object->getName() << ", which is a child object." << std::endl;
-	return; 
+        std::cerr << "SceneManager: error: trying to register SceneObject "
+                << object->getName() << ", which is a child object."
+                << std::endl;
+        return;
     }
 
     if(_pluginObjectMap.find(plugin) == _pluginObjectMap.end())
     {
-	_pluginObjectMap[plugin] = std::vector<SceneObject*>();
+        _pluginObjectMap[plugin] = std::vector<SceneObject*>();
     }
 
     _pluginObjectMap[plugin].push_back(object);
@@ -367,27 +381,31 @@ void SceneManager::registerSceneObject(SceneObject * object, std::string plugin)
 
 void SceneManager::unregisterSceneObject(SceneObject * object)
 {
-    for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+    for(std::map<std::string,std::vector<SceneObject*> >::iterator it =
+            _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
     {
-	for(std::vector<SceneObject*>::iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
-	{
-	    if((*it2) == object)
-	    {
-		// detach
-		(*it2)->detachFromScene();
-		it->second.erase(it2);
-		for(std::map<int,SceneObject*>::iterator aobjit = _activeObjects.begin(); aobjit != _activeObjects.end(); aobjit++)
-		{
-		    if(aobjit->second == object)
-		    {
-			aobjit->second = NULL;
-		    }
-		}
-		_uniqueActiveObjects.erase(object);
-		object->setRegistered(false);
-		return;
-	    }
-	}
+        for(std::vector<SceneObject*>::iterator it2 = it->second.begin();
+                it2 != it->second.end(); it2++)
+        {
+            if((*it2) == object)
+            {
+                // detach
+                (*it2)->detachFromScene();
+                it->second.erase(it2);
+                for(std::map<int,SceneObject*>::iterator aobjit =
+                        _activeObjects.begin(); aobjit != _activeObjects.end();
+                        aobjit++)
+                {
+                    if(aobjit->second == object)
+                    {
+                        aobjit->second = NULL;
+                    }
+                }
+                _uniqueActiveObjects.erase(object);
+                object->setRegistered(false);
+                return;
+            }
+        }
     }
 }
 
@@ -395,7 +413,7 @@ void SceneManager::setMenuOpenObject(SceneObject * object)
 {
     if(object != _menuOpenObject)
     {
-	closeOpenObjectMenu();
+        closeOpenObjectMenu();
     }
 
     _menuOpenObject = object;
@@ -411,8 +429,8 @@ void SceneManager::closeOpenObjectMenu()
 {
     if(_menuOpenObject)
     {
-	_menuOpenObject->closeMenu();
-	_menuOpenObject = NULL;
+        _menuOpenObject->closeMenu();
+        _menuOpenObject = NULL;
     }
 }
 
@@ -421,29 +439,29 @@ void SceneManager::initPointers()
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms.push_back(new osg::MatrixTransform());
-	_sceneRoot->addChild(_handTransforms[i]);
+        _sceneRoot->addChild(_handTransforms[i]);
         _handTransforms[i]->setMatrix(
-                                      TrackingManager::instance()->getHandMat(i));
+                TrackingManager::instance()->getHandMat(i));
 
-	switch(TrackingManager::instance()->getPointerGraphicType(i))
-	{
-	    case CONE:
-		{
-		    osg::Cone * cone = new osg::Cone(osg::Vec3(0, 500, 0), 10, 2000);
-		    osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
-		    cone->setRotation(q);
-		    osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
-		    osg::Geode * geode = new osg::Geode();
-		    geode->addDrawable(sd);
-		    geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
-		    _handTransforms[i]->addChild(geode);
-		    break;
-		}
-	    case NONE:
-		break;
-	    default:
-		break;
-	}
+        switch(TrackingManager::instance()->getPointerGraphicType(i))
+        {
+            case CONE:
+            {
+                osg::Cone * cone = new osg::Cone(osg::Vec3(0,500,0),10,2000);
+                osg::Quat q = osg::Quat(-M_PI / 2.0,osg::Vec3(1.0,0,0));
+                cone->setRotation(q);
+                osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
+                osg::Geode * geode = new osg::Geode();
+                geode->addDrawable(sd);
+                geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
+                _handTransforms[i]->addChild(geode);
+                break;
+            }
+            case NONE:
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -454,29 +472,32 @@ void SceneManager::initLights()
     //TODO: replace with lighting manager
 
     //read any values from config file
-    osg::Vec4 diffuse,specular,ambient,position;
+    osg::Vec4 diffuse, specular, ambient, position;
     osg::Vec3 direction;
-    float spotexp,spotcutoff;
+    float spotexp, spotcutoff;
 
-    diffuse = ConfigManager::getColor("Light.Diffuse",osg::Vec4(1.0, 1.0, 1.0, 1.0));
-    specular = ConfigManager::getColor("Light.Specular",osg::Vec4(0, 0, 0, 1.0));
-    ambient = ConfigManager::getColor("Light.Ambient",osg::Vec4(0.3, 0.3, 0.3, 1.0));
-    position = ConfigManager::getVec4("Light.Position",osg::Vec4(0.0, -10000.0, 10000.0, 1.0));
-    direction = ConfigManager::getVec3("Light.Direction",osg::Vec3(0, 0, -1));
+    diffuse = ConfigManager::getColor("Light.Diffuse",
+            osg::Vec4(1.0,1.0,1.0,1.0));
+    specular = ConfigManager::getColor("Light.Specular",osg::Vec4(0,0,0,1.0));
+    ambient = ConfigManager::getColor("Light.Ambient",
+            osg::Vec4(0.3,0.3,0.3,1.0));
+    position = ConfigManager::getVec4("Light.Position",
+            osg::Vec4(0.0,-10000.0,10000.0,1.0));
+    direction = ConfigManager::getVec3("Light.Direction",osg::Vec3(0,0,-1));
     spotexp = ConfigManager::getFloat("Light.SpotExponent",0);
     spotcutoff = ConfigManager::getFloat("Light.SpotCutoff",180.0);
-    
+
     osg::LightSource * source = new osg::LightSource();
     osg::Light * light = new osg::Light(0);
 
     /*light->setDiffuse(osg::Vec4(1.0, 1.0, 1.0, 1.0));
-    light->setSpecular(osg::Vec4(0, 0, 0, 1.0));
-    light->setAmbient(osg::Vec4(0.3, 0.3, 0.3, 1.0));
-    light->setPosition(osg::Vec4(0.0, -10000.0, 10000.0, 1.0));
-    light->setDirection(osg::Vec3(0, 0, -1));
-    //light->setDirection(osg::Vec3(0, 0.707106781, -0.707106781));
-    light->setSpotExponent(0);
-    light->setSpotCutoff(180.0);*/
+     light->setSpecular(osg::Vec4(0, 0, 0, 1.0));
+     light->setAmbient(osg::Vec4(0.3, 0.3, 0.3, 1.0));
+     light->setPosition(osg::Vec4(0.0, -10000.0, 10000.0, 1.0));
+     light->setDirection(osg::Vec3(0, 0, -1));
+     //light->setDirection(osg::Vec3(0, 0.707106781, -0.707106781));
+     light->setSpotExponent(0);
+     light->setSpotCutoff(180.0);*/
 
     light->setDiffuse(diffuse);
     light->setSpecular(specular);
@@ -491,7 +512,7 @@ void SceneManager::initLights()
 
     //stateset->setAttributeAndModes(light, osg::StateAttribute::ON);
     source->setLocalStateSetModes(osg::StateAttribute::ON);
-    source->setStateSetModes(*stateset, osg::StateAttribute::ON);
+    source->setStateSetModes(*stateset,osg::StateAttribute::ON);
 
     if(_handTransforms.size() > 0 && false)
     {
@@ -506,9 +527,9 @@ void SceneManager::initLights()
         source->setLight(light);
         _handTransforms[0]->addChild(source);
 
-        stateset->setAttributeAndModes(light, osg::StateAttribute::ON);
+        stateset->setAttributeAndModes(light,osg::StateAttribute::ON);
         source->setLocalStateSetModes(osg::StateAttribute::ON);
-        source->setStateSetModes(*stateset, osg::StateAttribute::ON);
+        source->setStateSetModes(*stateset,osg::StateAttribute::ON);
     }
 }
 
@@ -521,82 +542,82 @@ void SceneManager::initSceneState()
     lm->setLocalViewer(true);
 
     osg::Material * mat = new osg::Material();
-    mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 1.0f, 1.0f,
-                                                             1.0f));
-    mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0.2f, 0.2f, 0.2f,
-                                                             1.0f));
-    mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(1.0f, 1.0f, 1.0f,
-                                                              1.0f));
-    mat->setAlpha(osg::Material::FRONT_AND_BACK, 1.0f);
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK,
+            osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    mat->setAmbient(osg::Material::FRONT_AND_BACK,
+            osg::Vec4(0.2f,0.2f,0.2f,1.0f));
+    mat->setSpecular(osg::Material::FRONT_AND_BACK,
+            osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    mat->setAlpha(osg::Material::FRONT_AND_BACK,1.0f);
     mat->setColorMode(osg::Material::DIFFUSE);
 
-    stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-    stateset->setAttributeAndModes(mat, osg::StateAttribute::ON);
-    stateset->setAttributeAndModes(lm, osg::StateAttribute::ON);
-    stateset->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(mat,osg::StateAttribute::ON);
+    stateset->setAttributeAndModes(lm,osg::StateAttribute::ON);
+    stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
 }
 
 void SceneManager::initAxis()
 {
     _axisNode = new osg::Group();
 
-    osg::Cone * cone = new osg::Cone(osg::Vec3(0, 0, 0), 15, 32);
-    osg::Quat q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
+    osg::Cone * cone = new osg::Cone(osg::Vec3(0,0,0),15,32);
+    osg::Quat q = osg::Quat(-M_PI / 2.0,osg::Vec3(1.0,0,0));
     cone->setRotation(q);
     osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
-    sd->setColor(osg::Vec4(0.0, 1.0, 0.0, 1.0));
+    sd->setColor(osg::Vec4(0.0,1.0,0.0,1.0));
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(sd);
     osg::MatrixTransform * mt = new osg::MatrixTransform();
     osg::Matrix m;
-    m.makeTranslate(osg::Vec3(0, 208, 0));
+    m.makeTranslate(osg::Vec3(0,208,0));
     mt->setMatrix(m);
     mt->addChild(geode);
     _axisNode->addChild(mt);
 
-    cone = new osg::Cone(osg::Vec3(0, 0, 0), 15, 32);
-    q = osg::Quat(M_PI / 2.0, osg::Vec3(0, 1.0, 0));
+    cone = new osg::Cone(osg::Vec3(0,0,0),15,32);
+    q = osg::Quat(M_PI / 2.0,osg::Vec3(0,1.0,0));
     cone->setRotation(q);
     sd = new osg::ShapeDrawable(cone);
-    sd->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+    sd->setColor(osg::Vec4(1.0,0.0,0.0,1.0));
     geode = new osg::Geode();
     geode->addDrawable(sd);
     mt = new osg::MatrixTransform();
-    m.makeTranslate(osg::Vec3(208, 0, 0));
+    m.makeTranslate(osg::Vec3(208,0,0));
     mt->setMatrix(m);
     mt->addChild(geode);
     _axisNode->addChild(mt);
 
-    cone = new osg::Cone(osg::Vec3(0, 0, 0), 15, 32);
+    cone = new osg::Cone(osg::Vec3(0,0,0),15,32);
     sd = new osg::ShapeDrawable(cone);
-    sd->setColor(osg::Vec4(0.0, 0.0, 1.0, 1.0));
+    sd->setColor(osg::Vec4(0.0,0.0,1.0,1.0));
     geode = new osg::Geode();
     geode->addDrawable(sd);
     mt = new osg::MatrixTransform();
-    m.makeTranslate(osg::Vec3(0, 0, 208));
+    m.makeTranslate(osg::Vec3(0,0,208));
     mt->setMatrix(m);
     mt->addChild(geode);
     _axisNode->addChild(mt);
 
     geode = new osg::Geode();
 
-    osg::Cylinder * cylinder = new osg::Cylinder(osg::Vec3(0, 0, 100), 10, 200);
+    osg::Cylinder * cylinder = new osg::Cylinder(osg::Vec3(0,0,100),10,200);
     sd = new osg::ShapeDrawable(cylinder);
-    sd->setColor(osg::Vec4(0.0, 0.0, 1.0, 1.0));
+    sd->setColor(osg::Vec4(0.0,0.0,1.0,1.0));
     geode->addDrawable(sd);
 
-    cylinder = new osg::Cylinder(osg::Vec3(100, 0, 0), 10, 200);
-    q = osg::Quat(M_PI / 2.0, osg::Vec3(0, 1.0, 0));
+    cylinder = new osg::Cylinder(osg::Vec3(100,0,0),10,200);
+    q = osg::Quat(M_PI / 2.0,osg::Vec3(0,1.0,0));
     cylinder->setRotation(q);
     sd = new osg::ShapeDrawable(cylinder);
-    sd->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+    sd->setColor(osg::Vec4(1.0,0.0,0.0,1.0));
     geode->addDrawable(sd);
 
-    cylinder = new osg::Cylinder(osg::Vec3(0, 100, 0), 10, 200);
-    q = osg::Quat(-M_PI / 2.0, osg::Vec3(1.0, 0, 0));
+    cylinder = new osg::Cylinder(osg::Vec3(0,100,0),10,200);
+    q = osg::Quat(-M_PI / 2.0,osg::Vec3(1.0,0,0));
     cylinder->setRotation(q);
     sd = new osg::ShapeDrawable(cylinder);
-    sd->setColor(osg::Vec4(0.0, 1.0, 0.0, 1.0));
+    sd->setColor(osg::Vec4(0.0,1.0,0.0,1.0));
     geode->addDrawable(sd);
 
     _axisNode->addChild(geode);
@@ -616,200 +637,225 @@ void SceneManager::updateActiveObject()
 
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
-	int hand;
-	osg::Matrix handMatrix;
-	hand = i;
-	handMatrix = TrackingManager::instance()->getHandMat(i);
+        int hand;
+        osg::Matrix handMatrix;
+        hand = i;
+        handMatrix = TrackingManager::instance()->getHandMat(i);
 
-	if(_activeObjects[hand])
-	{
-	    if(_activeObjects[hand]->getEventActive() && _activeObjects[hand]->getActiveHand() == hand)
-	    {
-		// recalc parent bounding box during movement;
-		if(_activeObjects[hand]->_moving)
-		{
-		    SceneObject * root = _activeObjects[hand];
-		    while(root->_parent)
-		    {
-			root = root->_parent;
-		    }
-		    root->getOrComputeBoundingBox();
-		}
-		continue;
-	    }
-	}
+        if(_activeObjects[hand])
+        {
+            if(_activeObjects[hand]->getEventActive()
+                    && _activeObjects[hand]->getActiveHand() == hand)
+            {
+                // recalc parent bounding box during movement;
+                if(_activeObjects[hand]->_moving)
+                {
+                    SceneObject * root = _activeObjects[hand];
+                    while(root->_parent)
+                    {
+                        root = root->_parent;
+                    }
+                    root->getOrComputeBoundingBox();
+                }
+                continue;
+            }
+        }
 
-	start = osg::Vec3(0,0,0);
-	end = osg::Vec3(0,10000,0);
-	start = start * handMatrix;
-	end = end * handMatrix;
+        start = osg::Vec3(0,0,0);
+        end = osg::Vec3(0,10000,0);
+        start = start * handMatrix;
+        end = end * handMatrix;
 
-	std::list<SceneObject*> hitList;
+        std::list<SceneObject*> hitList;
 
-	// Find list of all ojects that pass bounding sphere intersection
-	for(std::map<std::string,std::vector<SceneObject*> >::iterator it = _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
-	{
-	    for(int j = 0; j < it->second.size(); j++)
-	    {
-		if(it->second[j]->intersectsFast(start,end))
-		{
-		    hitList.push_back(it->second[j]);
-		}
-	    }
-	}
+        // Find list of all ojects that pass bounding sphere intersection
+        for(std::map<std::string,std::vector<SceneObject*> >::iterator it =
+                _pluginObjectMap.begin(); it != _pluginObjectMap.end(); it++)
+        {
+            for(int j = 0; j < it->second.size(); j++)
+            {
+                if(it->second[j]->intersectsFast(start,end))
+                {
+                    hitList.push_back(it->second[j]);
+                }
+            }
+        }
 
-	if(TrackingManager::instance()->getHandTrackerType(hand) == TrackerBase::MOUSE)
-	{
-	    if(!InteractionManager::instance()->mouseActive())
-	    {
-		continue;
-	    }
-	}
+        if(TrackingManager::instance()->getHandTrackerType(hand)
+                == TrackerBase::MOUSE)
+        {
+            if(!InteractionManager::instance()->mouseActive())
+            {
+                continue;
+            }
+        }
 
-	//std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
+        //std::cerr << "hand: " << hand << " listsize: " << hitList.size() << std::endl;
 
-	osg::Vec3 isec1, isec2;
-	bool neg1,neg2;
-	std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
+        osg::Vec3 isec1, isec2;
+        bool neg1, neg2;
+        std::priority_queue<std::pair<float,SceneObject*>
+                , std::vector<std::pair<float,SceneObject*> >, PrioritySort> sortQueue;
 
-	// find points of bounding box intersection
-	for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
-	{
-	    //std::cerr << "Object " << (*objit)->getName() << std::endl;
-	    if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
-	    {
-		if(neg1)
-		{
-		    //std::cerr << "n1: " << -(isec1-start).length() << std::endl;
-		    sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
-		}
-		else
-		{
-		    //std::cerr << "1: " << (isec1-start).length() << std::endl;
-		    sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
-		}
+        // find points of bounding box intersection
+        for(std::list<SceneObject*>::iterator objit = hitList.begin();
+                objit != hitList.end(); objit++)
+        {
+            //std::cerr << "Object " << (*objit)->getName() << std::endl;
+            if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+            {
+                if(neg1)
+                {
+                    //std::cerr << "n1: " << -(isec1-start).length() << std::endl;
+                    sortQueue.push(
+                            std::pair<float,SceneObject*>(
+                                    -(isec1 - start).length(),(*objit)));
+                }
+                else
+                {
+                    //std::cerr << "1: " << (isec1-start).length() << std::endl;
+                    sortQueue.push(
+                            std::pair<float,SceneObject*>(
+                                    (isec1 - start).length(),(*objit)));
+                }
 
-		if(neg2)
-		{
-		    //std::cerr << "n2: " << -(isec2-start).length() << std::endl;
-		    sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
-		}
-		else
-		{
-		    //std::cerr << "2: " << (isec2-start).length() << std::endl;
-		    sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
-		}
-	    }
-	}
+                if(neg2)
+                {
+                    //std::cerr << "n2: " << -(isec2-start).length() << std::endl;
+                    sortQueue.push(
+                            std::pair<float,SceneObject*>(
+                                    -(isec2 - start).length(),(*objit)));
+                }
+                else
+                {
+                    //std::cerr << "2: " << (isec2-start).length() << std::endl;
+                    sortQueue.push(
+                            std::pair<float,SceneObject*>(
+                                    (isec2 - start).length(),(*objit)));
+                }
+            }
+        }
 
-	//std::cerr << "sortqueue size: " << sortQueue.size() << std::endl;
+        //std::cerr << "sortqueue size: " << sortQueue.size() << std::endl;
 
-	std::map<SceneObject*,int> countMap;
-	SceneObject * currentObject = NULL;
-	while(sortQueue.size())
-	{
-	    //std::cerr << "dist: " << sortQueue.top().first << std::endl;
-	    currentObject = sortQueue.top().second;
-	    countMap[currentObject]++;
-	    if(countMap[currentObject] == 2)
-	    {
-		break;
-	    }
-	    sortQueue.pop();
-	}
+        std::map<SceneObject*,int> countMap;
+        SceneObject * currentObject = NULL;
+        while(sortQueue.size())
+        {
+            //std::cerr << "dist: " << sortQueue.top().first << std::endl;
+            currentObject = sortQueue.top().second;
+            countMap[currentObject]++;
+            if(countMap[currentObject] == 2)
+            {
+                break;
+            }
+            sortQueue.pop();
+        }
 
-	if(currentObject)
-	{
-	    currentObject = findChildActiveObject(currentObject,start,end);
-	    if(_activeObjects[hand] != currentObject)
-	    {
-		if(_activeObjects[hand])
-		{
-		    _activeObjects[hand]->leaveCallback(hand);
-		    _activeObjects[hand]->interactionCountDec();
-		}
-		_activeObjects[hand] = currentObject;
-		currentObject->enterCallback(hand,handMatrix);
-		currentObject->interactionCountInc();
-	    }
-	}
-	else if(_activeObjects[hand])
-	{
-	    _activeObjects[hand]->leaveCallback(hand);
-	    _activeObjects[hand]->interactionCountDec();
-	    _activeObjects[hand] = NULL;
-	}
+        if(currentObject)
+        {
+            currentObject = findChildActiveObject(currentObject,start,end);
+            if(_activeObjects[hand] != currentObject)
+            {
+                if(_activeObjects[hand])
+                {
+                    _activeObjects[hand]->leaveCallback(hand);
+                    _activeObjects[hand]->interactionCountDec();
+                }
+                _activeObjects[hand] = currentObject;
+                currentObject->enterCallback(hand,handMatrix);
+                currentObject->interactionCountInc();
+            }
+        }
+        else if(_activeObjects[hand])
+        {
+            _activeObjects[hand]->leaveCallback(hand);
+            _activeObjects[hand]->interactionCountDec();
+            _activeObjects[hand] = NULL;
+        }
     }
 
     _uniqueActiveObjects.clear();
-    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); it++)
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin();
+            it != _activeObjects.end(); it++)
     {
         if(it->second)
         {
-	    _uniqueActiveObjects[it->second]++;
+            _uniqueActiveObjects[it->second]++;
         }
     }
 }
 
-SceneObject * SceneManager::findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end)
+SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
+        osg::Vec3 & start, osg::Vec3 & end)
 {
     std::list<SceneObject*> hitList;
 
     for(int i = 0; i < object->getNumChildObjects(); i++)
     {
-	if(object->getChildObject(i)->intersectsFast(start,end))
-	{
-	    hitList.push_back(object->getChildObject(i));
-	}
+        if(object->getChildObject(i)->intersectsFast(start,end))
+        {
+            hitList.push_back(object->getChildObject(i));
+        }
     }
 
     //std::cerr << "Nested: hitlist size: " << hitList.size() << std::endl;
 
     osg::Vec3 isec1, isec2;
-    bool neg1,neg2;
-    std::priority_queue<std::pair<float,SceneObject*>, std::vector<std::pair<float,SceneObject*> >, PrioritySort > sortQueue;
+    bool neg1, neg2;
+    std::priority_queue<std::pair<float,SceneObject*>
+            , std::vector<std::pair<float,SceneObject*> >, PrioritySort> sortQueue;
 
     // find points of bounding box intersection
-    for(std::list<SceneObject*>::iterator objit = hitList.begin(); objit != hitList.end(); objit++)
+    for(std::list<SceneObject*>::iterator objit = hitList.begin();
+            objit != hitList.end(); objit++)
     {
-	if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
-	{
-	    if(neg1)
-	    {
-		sortQueue.push(std::pair<float,SceneObject*>(-(isec1-start).length(),(*objit)));
-	    }
-	    else
-	    {
-		sortQueue.push(std::pair<float,SceneObject*>((isec1-start).length(),(*objit)));
-	    }
+        if((*objit)->intersects(start,end,isec1,neg1,isec2,neg2))
+        {
+            if(neg1)
+            {
+                sortQueue.push(
+                        std::pair<float,SceneObject*>(-(isec1 - start).length(),
+                                (*objit)));
+            }
+            else
+            {
+                sortQueue.push(
+                        std::pair<float,SceneObject*>((isec1 - start).length(),
+                                (*objit)));
+            }
 
-	    if(neg2)
-	    {
-		sortQueue.push(std::pair<float,SceneObject*>(-(isec2-start).length(),(*objit)));
-	    }
-	    else
-	    {
-		sortQueue.push(std::pair<float,SceneObject*>((isec2-start).length(),(*objit)));
-	    }
-	}
+            if(neg2)
+            {
+                sortQueue.push(
+                        std::pair<float,SceneObject*>(-(isec2 - start).length(),
+                                (*objit)));
+            }
+            else
+            {
+                sortQueue.push(
+                        std::pair<float,SceneObject*>((isec2 - start).length(),
+                                (*objit)));
+            }
+        }
     }
 
     std::map<SceneObject*,int> countMap;
     SceneObject * currentObject = NULL;
     while(sortQueue.size())
     {
-	currentObject = sortQueue.top().second;
-	countMap[currentObject]++;
-	if(countMap[currentObject] == 2)
-	{
-	    break;
-	}
-	sortQueue.pop();
+        currentObject = sortQueue.top().second;
+        countMap[currentObject]++;
+        if(countMap[currentObject] == 2)
+        {
+            break;
+        }
+        sortQueue.pop();
     }
 
     if(currentObject)
     {
-	return findChildActiveObject(currentObject,start,end);
+        return findChildActiveObject(currentObject,start,end);
     }
 
     return object;

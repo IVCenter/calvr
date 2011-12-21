@@ -27,7 +27,7 @@ namespace cvr
  */
 class BoardMenu : public MenuBase
 {
-    friend class BoardMenuGeometry;
+        friend class BoardMenuGeometry;
     public:
         BoardMenu();
         virtual ~BoardMenu();
@@ -82,7 +82,6 @@ class BoardMenu : public MenuBase
          * @brief Removes the menu from view
          */
         virtual void close();
-
 
         /**
          * @brief Set the scale for the menu geometry
@@ -142,8 +141,8 @@ class BoardMenu : public MenuBase
         std::map<SubMenu*,float> _widthMap; ///< current width of the geometry of each SubMenu in this menu
         std::map<SubMenu*,osg::ref_ptr<osg::MatrixTransform> > _menuMap; ///< map of SubMenu to its geometry scenegraph root
         std::map<osg::Geode *,BoardMenuGeometry*> _intersectMap; ///< map of menu item intersection geometry to the item
-        std::map<MenuItem *, BoardMenuGeometry *> _geometryMap; ///< map from a MenuItem to its geometry class
-        std::map<SubMenu*, std::pair<BoardMenuGeometry*,BoardMenuGeometry*> > _menuGeometryMap; ///< map from SubMenu to geometry pair (line item, and menu head)
+        std::map<MenuItem *,BoardMenuGeometry *> _geometryMap; ///< map from a MenuItem to its geometry class
+        std::map<SubMenu*,std::pair<BoardMenuGeometry*,BoardMenuGeometry*> > _menuGeometryMap; ///< map from SubMenu to geometry pair (line item, and menu head)
 
         std::stack<SubMenu*> _openMenus; ///< stack of all currently opened SubMenus
 };

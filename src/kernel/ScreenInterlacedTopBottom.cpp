@@ -14,13 +14,12 @@
 #include <iostream>
 #include <string>
 
-//#include <GL/gl.h>
-
 using namespace cvr;
 
 OpenThreads::Mutex ScreenInterlacedTopBottom::InterlaceCallback::_initLock;
 
-ScreenInterlacedTopBottom::ScreenInterlacedTopBottom() : ScreenBase()
+ScreenInterlacedTopBottom::ScreenInterlacedTopBottom() :
+        ScreenBase()
 {
 }
 
@@ -31,7 +30,6 @@ ScreenInterlacedTopBottom::~ScreenInterlacedTopBottom()
 void ScreenInterlacedTopBottom::init(int mode)
 {
     _stereoMode = osg::DisplaySettings::VERTICAL_SPLIT;
-    //_stereoMode = osg::DisplaySettings::LEFT_EYE;
 
     _cameraL = new osg::Camera();
     _cameraR = new osg::Camera();
@@ -41,13 +39,15 @@ void ScreenInterlacedTopBottom::init(int mode)
     ds = new osg::DisplaySettings();
     _cameraR->setDisplaySettings(ds);
 
-    CVRViewer::instance()->addSlave(_cameraL.get(), osg::Matrixd(), osg::Matrixd());
+    CVRViewer::instance()->addSlave(_cameraL.get(),osg::Matrixd(),
+            osg::Matrixd());
     defaultCameraInit(_cameraL.get());
-    CVRViewer::instance()->addSlave(_cameraR.get(), osg::Matrixd(), osg::Matrixd());
+    CVRViewer::instance()->addSlave(_cameraR.get(),osg::Matrixd(),
+            osg::Matrixd());
     defaultCameraInit(_cameraR.get());
 
     osgViewer::Renderer * renderer =
-            dynamic_cast<osgViewer::Renderer*> (_cameraL->getRenderer());
+            dynamic_cast<osgViewer::Renderer*>(_cameraL->getRenderer());
     if(!renderer)
     {
         std::cerr << "Error getting renderer pointer." << std::endl;
@@ -63,13 +63,12 @@ void ScreenInterlacedTopBottom::init(int mode)
         renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
         renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
-	osg::Viewport * vp = _cameraL->getViewport();
-	vp->height() = vp->height() / 2.0;
-	_cameraL->setViewport(vp);
+        osg::Viewport * vp = _cameraL->getViewport();
+        vp->height() = vp->height() / 2.0;
+        _cameraL->setViewport(vp);
     }
 
-    renderer =
-            dynamic_cast<osgViewer::Renderer*> (_cameraR->getRenderer());
+    renderer = dynamic_cast<osgViewer::Renderer*>(_cameraR->getRenderer());
     if(!renderer)
     {
         std::cerr << "Error getting renderer pointer." << std::endl;
@@ -85,9 +84,9 @@ void ScreenInterlacedTopBottom::init(int mode)
         renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
         renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
-	osg::Viewport * vp = _cameraR->getViewport();
-	vp->height() = vp->height() / 2.0;
-	_cameraR->setViewport(vp);
+        osg::Viewport * vp = _cameraR->getViewport();
+        vp->height() = vp->height() / 2.0;
+        _cameraR->setViewport(vp);
     }
 
     int samples = ConfigManager::getInt("MultiSample",0);
@@ -101,61 +100,63 @@ void ScreenInterlacedTopBottom::init(int mode)
     //_camera->setDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
     //_camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
-
     /*osg::Image * image = new osg::Image();
-    image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
-    image->setInternalTextureFormat(4);
+     image->allocateImage(1024,768,GL_RGBA,GL_RGBA,GL_FLOAT);
+     image->setInternalTextureFormat(4);
 
-    float * textureData = (float *)image->data();
+     float * textureData = (float *)image->data();
 
-    int index = 0;
-    for(int i = 0; i < 1024 * 384; i++)
-    {
-	textureData[index] = 0.0;
-	textureData[index+1] = 1.0;
-	textureData[index+2] = 0.0;
-	textureData[index+3] = 1.0;
-	index += 4;
-    }
+     int index = 0;
+     for(int i = 0; i < 1024 * 384; i++)
+     {
+     textureData[index] = 0.0;
+     textureData[index+1] = 1.0;
+     textureData[index+2] = 0.0;
+     textureData[index+3] = 1.0;
+     index += 4;
+     }
      
-    for(int i = 0; i < 1024 * 384; i++)
-    {
-	textureData[index] = 0.0;
-	textureData[index+1] = 0.0;
-	textureData[index+2] = 1.0;
-	textureData[index+3] = 1.0;
-	index += 4;
-    }
+     for(int i = 0; i < 1024 * 384; i++)
+     {
+     textureData[index] = 0.0;
+     textureData[index+1] = 0.0;
+     textureData[index+2] = 1.0;
+     textureData[index+3] = 1.0;
+     index += 4;
+     }
 
-    _colorTexture = new osg::Texture2D(image);
-    _colorTexture->setResizeNonPowerOfTwoHint(false);
-    _colorTexture->setUseHardwareMipMapGeneration(false);
-    _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
-    _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);*/
+     _colorTexture = new osg::Texture2D(image);
+     _colorTexture->setResizeNonPowerOfTwoHint(false);
+     _colorTexture->setUseHardwareMipMapGeneration(false);
+     _colorTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
+     _colorTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);*/
 
     _colorTextureL = new osg::Texture2D();
-    _colorTextureL->setTextureSize((int)_myInfo->myChannel->width,(int)(_myInfo->myChannel->height / 2.0));
+    _colorTextureL->setTextureSize((int)_myInfo->myChannel->width,
+            (int)(_myInfo->myChannel->height / 2.0));
     _colorTextureL->setInternalFormat(GL_RGBA);
-    _colorTextureL->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    _colorTextureL->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureL->setFilter(osg::Texture2D::MIN_FILTER,
+            osg::Texture2D::LINEAR);
+    _colorTextureL->setFilter(osg::Texture2D::MAG_FILTER,
+            osg::Texture2D::LINEAR);
     _colorTextureL->setResizeNonPowerOfTwoHint(false);
     _colorTextureL->setUseHardwareMipMapGeneration(false);
 
     /*_depthTexture = new osg::Texture2D();
-    _depthTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
-    _depthTexture->setInternalFormat(GL_DEPTH_COMPONENT);
-    _depthTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    _depthTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-    _depthTexture->setResizeNonPowerOfTwoHint(false);
-    _depthTexture->setUseHardwareMipMapGeneration(false);*/
-
+     _depthTexture->setTextureSize((int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
+     _depthTexture->setInternalFormat(GL_DEPTH_COMPONENT);
+     _depthTexture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+     _depthTexture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+     _depthTexture->setResizeNonPowerOfTwoHint(false);
+     _depthTexture->setUseHardwareMipMapGeneration(false);*/
 
     //image = new osg::Image();
     //image->allocateImage(1920,1080,GL_RGBA,GL_RGBA,GL_FLOAT);
     //image->setInternalTextureFormat(4);
     _cameraL->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
     //_cameraL->attach(osg::Camera::COLOR_BUFFER0, image, samples, samples);
-    _cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL, 0, 0, false, samples, samples);
+    _cameraL->attach(osg::Camera::COLOR_BUFFER0,_colorTextureL,0,0,false,
+            samples,samples);
     //_cameraL->attach(osg::Camera::COLOR_BUFFER0, _colorTextureL);
     //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
     //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,16 +171,20 @@ void ScreenInterlacedTopBottom::init(int mode)
     _cameraR->setPostDrawCallback(ic);
 
     _colorTextureR = new osg::Texture2D();
-    _colorTextureR->setTextureSize((int)_myInfo->myChannel->width,(int)(_myInfo->myChannel->height / 2.0));
+    _colorTextureR->setTextureSize((int)_myInfo->myChannel->width,
+            (int)(_myInfo->myChannel->height / 2.0));
     _colorTextureR->setInternalFormat(GL_RGBA);
-    _colorTextureR->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    _colorTextureR->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    _colorTextureR->setFilter(osg::Texture2D::MIN_FILTER,
+            osg::Texture2D::LINEAR);
+    _colorTextureR->setFilter(osg::Texture2D::MAG_FILTER,
+            osg::Texture2D::LINEAR);
     _colorTextureR->setResizeNonPowerOfTwoHint(false);
     _colorTextureR->setUseHardwareMipMapGeneration(false);
 
     _cameraR->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
     //_camera->attach(osg::Camera::COLOR_BUFFER0, image);
-    _cameraR->attach(osg::Camera::COLOR_BUFFER0, _colorTextureR, 0, 0, false, samples, samples);
+    _cameraR->attach(osg::Camera::COLOR_BUFFER0,_colorTextureR,0,0,false,
+            samples,samples);
     //_cameraR->attach(osg::Camera::COLOR_BUFFER0, _colorTextureR);
     //_camera->attach(osg::Camera::DEPTH_BUFFER, _depthTexture);
     //_camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -208,28 +213,28 @@ void ScreenInterlacedTopBottom::updateCamera()
 }
 
 osg::Matrixd ScreenInterlacedTopBottom::StereoCallback::computeLeftEyeProjection(
-                                                                    const osg::Matrixd &projection) const
+        const osg::Matrixd &projection) const
 {
     (void)projection;
     return screen->_projLeft;
 }
 
 osg::Matrixd ScreenInterlacedTopBottom::StereoCallback::computeLeftEyeView(
-                                                              const osg::Matrixd &view) const
+        const osg::Matrixd &view) const
 {
     (void)view;
     return screen->_viewLeft;
 }
 
 osg::Matrixd ScreenInterlacedTopBottom::StereoCallback::computeRightEyeProjection(
-                                                                     const osg::Matrixd &projection) const
+        const osg::Matrixd &projection) const
 {
     (void)projection;
     return screen->_projRight;
 }
 
 osg::Matrixd ScreenInterlacedTopBottom::StereoCallback::computeRightEyeView(
-                                                               const osg::Matrixd &view) const
+        const osg::Matrixd &view) const
 {
     (void)view;
     return screen->_viewRight;
@@ -255,28 +260,30 @@ void ScreenInterlacedTopBottom::adjustViewportCoords(int & x, int & y)
     return;
     if(_stereoMode == osg::DisplaySettings::HORIZONTAL_SPLIT)
     {
-	if(x > (_myInfo->myChannel->width / 2.0))
-	{
-	    x = (int)( ((float)x) - (_myInfo->myChannel->width / 2.0) );
-	}
-	x *= 2;
+        if(x > (_myInfo->myChannel->width / 2.0))
+        {
+            x = (int)(((float)x) - (_myInfo->myChannel->width / 2.0));
+        }
+        x *= 2;
     }
     else if(_stereoMode == osg::DisplaySettings::VERTICAL_SPLIT)
     {
-	if(y > (_myInfo->myChannel->height / 2.0))
-	{
-	    y = (int)(((float)y) - (_myInfo->myChannel->height / 2.0));
-	}
-	y *= 2;
+        if(y > (_myInfo->myChannel->height / 2.0))
+        {
+            y = (int)(((float)y) - (_myInfo->myChannel->height / 2.0));
+        }
+        y *= 2;
     }
 
     return;
 }
 
-void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &renderInfo) const
+void ScreenInterlacedTopBottom::InterlaceCallback::operator()(
+        osg::RenderInfo &renderInfo) const
 {
     int context = renderInfo.getContextID();
-    const osg::GL2Extensions* extensions = osg::GL2Extensions::Get(context,true);
+    const osg::GL2Extensions* extensions = osg::GL2Extensions::Get(context,
+            true);
     //osg::FBOExtensions* ext = osg::FBOExtensions::instance(context,true);
     //ext->glBindFramebuffer(osg::FrameBufferObject::READ_DRAW_FRAMEBUFFER, 0);
     //glColorMask(true,true,true,true);
@@ -286,20 +293,20 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     //glFinish();
     //return;
     /*if(skip)
-    {
-	//screen->_camera->setClearColor(osg::Vec4(1.0,0,0,0));
-	skip = false;
-	return;
-    }
-    else
-    {
-	//screen->_camera->setClearColor(osg::Vec4(0,1.0,0,0));
-	skip = true;
-    }*/
+     {
+     //screen->_camera->setClearColor(osg::Vec4(1.0,0,0,0));
+     skip = false;
+     return;
+     }
+     else
+     {
+     //screen->_camera->setClearColor(osg::Vec4(0,1.0,0,0));
+     skip = true;
+     }*/
 
     if(first)
     {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     //glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -307,51 +314,59 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     //std::cerr << "Callback." << std::endl;
     if(!_initMap[context])
     {
-	OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_initLock);
-	std::string shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
+        OpenThreads::ScopedLock < OpenThreads::Mutex > lock(_initLock);
+        std::string shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
-	osg::Shader * vert, * frag;
-	if(odd)
-	{
-	    vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "interlace.vert"));
-	    frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "interlace-odd.frag"));	
-	}
-	else
-	{
-	    vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "interlace.vert"));
-	    frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "interlace-even.frag"));
-	}
+        osg::Shader * vert, *frag;
+        if(odd)
+        {
+            vert = osg::Shader::readShaderFile(osg::Shader::VERTEX,
+                    osgDB::findDataFile(shaderdir + "interlace.vert"));
+            frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT,
+                    osgDB::findDataFile(shaderdir + "interlace-odd.frag"));
+        }
+        else
+        {
+            vert = osg::Shader::readShaderFile(osg::Shader::VERTEX,
+                    osgDB::findDataFile(shaderdir + "interlace.vert"));
+            frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT,
+                    osgDB::findDataFile(shaderdir + "interlace-even.frag"));
+        }
 
-	_programMap[context] = new osg::Program;
-	_programMap[context]->addShader(vert);
-	_programMap[context]->addShader(frag);
+        _programMap[context] = new osg::Program;
+        _programMap[context]->addShader(vert);
+        _programMap[context]->addShader(frag);
 
-	_geometryMap[context] = new osg::Geometry();
+        _geometryMap[context] = new osg::Geometry();
 
-	osg::DrawArrays * quad = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,0,0);
-	osg::Vec2Array * verts = new osg::Vec2Array(0);
-	_geometryMap[context]->setVertexArray(verts);
-	_geometryMap[context]->addPrimitiveSet(quad);
-	verts->push_back(osg::Vec2(-1.0,1.0));
-	verts->push_back(osg::Vec2(-1.0,-1.0));
-	verts->push_back(osg::Vec2(1.0,1.0));
-	verts->push_back(osg::Vec2(1.0,-1.0));
+        osg::DrawArrays * quad = new osg::DrawArrays(
+                osg::PrimitiveSet::TRIANGLE_STRIP,0,0);
+        osg::Vec2Array * verts = new osg::Vec2Array(0);
+        _geometryMap[context]->setVertexArray(verts);
+        _geometryMap[context]->addPrimitiveSet(quad);
+        verts->push_back(osg::Vec2(-1.0,1.0));
+        verts->push_back(osg::Vec2(-1.0,-1.0));
+        verts->push_back(osg::Vec2(1.0,1.0));
+        verts->push_back(osg::Vec2(1.0,-1.0));
 
-	_geometryMap[context]->setUseDisplayList(false);
+        _geometryMap[context]->setUseDisplayList(false);
 
-	quad->setCount(4);
-	
-	/*glGenBuffers(1,&_arrayMap[context]);
-	  glBindBuffer(GL_ARRAY_BUFFER, arrayMap[context]);
-	  float points[8] = {-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0};
+        quad->setCount(4);
 
-	  glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), points, GL_STATIC_DRAW);
-	  glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	
-	_initMap[context] = true;
+        /*glGenBuffers(1,&_arrayMap[context]);
+         glBindBuffer(GL_ARRAY_BUFFER, arrayMap[context]);
+         float points[8] = {-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0};
+
+         glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), points, GL_STATIC_DRAW);
+         glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+
+        _initMap[context] = true;
     }
 
-    glViewport((int)screen->_myInfo->myChannel->left,(int)screen->_myInfo->myChannel->bottom,(int)screen->_myInfo->myChannel->width,(int)screen->_myInfo->myChannel->height);
+    glViewport((int)screen->_myInfo->myChannel->left,
+            (int)screen->_myInfo->myChannel->bottom,
+            (int)screen->_myInfo->myChannel->width,
+            (int)screen->_myInfo->myChannel->height);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -372,7 +387,7 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     //glGetIntegerv(GL_TEXTURE_BINDING_2D,&bindtex);
     if(to)
     {
-	to->bind();
+        to->bind();
     }
     //_texture->apply(*renderInfo.getState());
 
@@ -388,14 +403,14 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator() (osg::RenderInfo &
     //glActiveTexture(activeTexture);
     /*glBegin(GL_TRIANGLE_STRIP);
 
-    glColor3f(1.0,0.0,0.0);
+     glColor3f(1.0,0.0,0.0);
 
-    glVertex2f(-1.0,1.0);
-    glVertex2f(-1.0,-1.0);
-    glVertex2f(1.0,1.0);
-    glVertex2f(1.0,-1.0);
+     glVertex2f(-1.0,1.0);
+     glVertex2f(-1.0,-1.0);
+     glVertex2f(1.0,1.0);
+     glVertex2f(1.0,-1.0);
 
-    glEnd();*/
+     glEnd();*/
 
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);

@@ -25,7 +25,7 @@ class SubMenu;
  */
 class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
 {
-    friend class MenuManager;
+        friend class MenuManager;
     public:
         /**
          * @brief Constructor

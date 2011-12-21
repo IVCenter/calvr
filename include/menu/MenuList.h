@@ -106,7 +106,6 @@ class CVRMENU_EXPORT MenuList : public MenuItem
          */
         const float getSensitivity();
 
-
     protected:
         std::vector<std::string> _values; ///< values stored in the list
         int _index; ///< current chosen index (defaults to first item in the list)

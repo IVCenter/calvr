@@ -22,9 +22,9 @@ class MenuManager;
  */
 class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
 {
-    friend class MenuManager;
+        friend class MenuManager;
     public:
-        
+
         /**
          * @brief Get a static pointer to the MenuSystem
          */

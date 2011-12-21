@@ -27,7 +27,8 @@
 
 using namespace cvr;
 
-ScreenMultiViewer::ScreenMultiViewer() : ScreenMVSimulator()
+ScreenMultiViewer::ScreenMultiViewer() :
+        ScreenMVSimulator()
 {
     std::cerr << "Using Multi Viewer Screen" << std::endl;
     _testGeoAdded = false;
@@ -47,16 +48,21 @@ void ScreenMultiViewer::init(int mode)
     osg::DisplaySettings * ds = new osg::DisplaySettings();
     _camera->setDisplaySettings(ds);
 
-    CVRViewer::instance()->addSlave(_camera.get(), osg::Matrixd(), osg::Matrixd());
+    CVRViewer::instance()->addSlave(_camera.get(),osg::Matrixd(),
+            osg::Matrixd());
     defaultCameraInit(_camera.get());
 
-    _camera->getOrCreateStateSet()->setMode( GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+    _camera->getOrCreateStateSet()->setMode(GL_CULL_FACE,
+            osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
 
     _camera->setCullingMode(osgUtil::CullVisitor::VIEW_FRUSTUM_CULLING);
     //_camera->setCullingMode(osgUtil::CullVisitor::NO_CULLING);
 
-    osg::Scissor * scissor = new osg::Scissor((int)_myInfo->myChannel->left,(int)_myInfo->myChannel->bottom,(int)_myInfo->myChannel->width,(int)_myInfo->myChannel->height);
-    _camera->getOrCreateStateSet()->setAttributeAndModes(scissor,osg::StateAttribute::ON);
+    osg::Scissor * scissor = new osg::Scissor((int)_myInfo->myChannel->left,
+            (int)_myInfo->myChannel->bottom,(int)_myInfo->myChannel->width,
+            (int)_myInfo->myChannel->height);
+    _camera->getOrCreateStateSet()->setAttributeAndModes(scissor,
+            osg::StateAttribute::ON);
 
     PreDrawCallback * pdc = new PreDrawCallback;
     pdc->_screen = this;
@@ -72,57 +78,62 @@ void ScreenMultiViewer::init(int mode)
 
     if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
     {
-	pdc->_index = 0;
-	pdc->_indexState = PreDrawCallback::TOGGLE;
+        pdc->_index = 0;
+        pdc->_indexState = PreDrawCallback::TOGGLE;
 
-	osgViewer::Renderer * renderer =
-	    dynamic_cast<osgViewer::Renderer*> (_camera->getRenderer());
-	if(!renderer)
-	{
-	    std::cerr << "Error getting renderer pointer." << std::endl;
-	}
-	else
-	{
-	    osg::DisplaySettings * ds =
-		renderer->getSceneView(0)->getDisplaySettings();
-	    ds->setStereo(true);
-	    ds->setStereoMode(_stereoMode);
-	    StereoIdentCallback * sc = new StereoIdentCallback;
-	    renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
-	    renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+        osgViewer::Renderer * renderer =
+                dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
+        if(!renderer)
+        {
+            std::cerr << "Error getting renderer pointer." << std::endl;
+        }
+        else
+        {
+            osg::DisplaySettings * ds =
+                    renderer->getSceneView(0)->getDisplaySettings();
+            ds->setStereo(true);
+            ds->setStereoMode(_stereoMode);
+            StereoIdentCallback * sc = new StereoIdentCallback;
+            renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
+            renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
-	    renderer->getSceneView(0)->setCullVisitorLeft(new MultiViewerCullVisitor());
-	    renderer->getSceneView(1)->setCullVisitorLeft(new MultiViewerCullVisitor());
-	    renderer->getSceneView(0)->setCullVisitorRight(new MultiViewerCullVisitor());
-	    renderer->getSceneView(1)->setCullVisitorRight(new MultiViewerCullVisitor());
-	}
+            renderer->getSceneView(0)->setCullVisitorLeft(
+                    new MultiViewerCullVisitor());
+            renderer->getSceneView(1)->setCullVisitorLeft(
+                    new MultiViewerCullVisitor());
+            renderer->getSceneView(0)->setCullVisitorRight(
+                    new MultiViewerCullVisitor());
+            renderer->getSceneView(1)->setCullVisitorRight(
+                    new MultiViewerCullVisitor());
+        }
     }
     else
     {
-	osgViewer::Renderer * renderer =
-	    dynamic_cast<osgViewer::Renderer*> (_camera->getRenderer());
-	if(!renderer)
-	{
-	    std::cerr << "Error getting renderer pointer." << std::endl;
-	}
-	else
-	{
-	    osg::DisplaySettings * ds =
-		renderer->getSceneView(0)->getDisplaySettings();
-	    ds->setStereo(true);
-	    ds->setStereoMode(_stereoMode);
-	    StereoIdentCallback * sc = new StereoIdentCallback;
-	    renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
-	    renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
+        osgViewer::Renderer * renderer =
+                dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
+        if(!renderer)
+        {
+            std::cerr << "Error getting renderer pointer." << std::endl;
+        }
+        else
+        {
+            osg::DisplaySettings * ds =
+                    renderer->getSceneView(0)->getDisplaySettings();
+            ds->setStereo(true);
+            ds->setStereoMode(_stereoMode);
+            StereoIdentCallback * sc = new StereoIdentCallback;
+            renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
+            renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
-	    renderer->getSceneView(0)->setCullVisitor(new MultiViewerCullVisitor());
-	    renderer->getSceneView(1)->setCullVisitor(new MultiViewerCullVisitor());
-	}
+            renderer->getSceneView(0)->setCullVisitor(
+                    new MultiViewerCullVisitor());
+            renderer->getSceneView(1)->setCullVisitor(
+                    new MultiViewerCullVisitor());
+        }
 
-	pdc->_index = 0;
-	pdc->_indexState = PreDrawCallback::FIXED;
+        pdc->_index = 0;
+        pdc->_indexState = PreDrawCallback::FIXED;
     }
-    
 
     _camera->setPreDrawCallback(pdc);
 
@@ -133,16 +144,19 @@ void ScreenMultiViewer::init(int mode)
     std::string shaderdir;
     shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
 
-    _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX, osgDB::findDataFile(shaderdir + "multiviewer.vert"));
-    _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT, osgDB::findDataFile(shaderdir + "multiviewer.frag"));
-    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY, osgDB::findDataFile(shaderdir + "multiviewer.geom.7"));
+    _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX,
+            osgDB::findDataFile(shaderdir + "multiviewer.vert"));
+    _frag = osg::Shader::readShaderFile(osg::Shader::FRAGMENT,
+            osgDB::findDataFile(shaderdir + "multiviewer.frag"));
+    _geom = osg::Shader::readShaderFile(osg::Shader::GEOMETRY,
+            osgDB::findDataFile(shaderdir + "multiviewer.geom.7"));
 
     _program = new osg::Program;
     _program->addShader(_vert);
     _program->addShader(_geom);
-    _program->setParameter( GL_GEOMETRY_VERTICES_OUT_EXT, 55 );
-    _program->setParameter( GL_GEOMETRY_INPUT_TYPE_EXT, GL_TRIANGLES );
-    _program->setParameter( GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP );
+    _program->setParameter(GL_GEOMETRY_VERTICES_OUT_EXT,55);
+    _program->setParameter(GL_GEOMETRY_INPUT_TYPE_EXT,GL_TRIANGLES);
+    _program->setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT,GL_TRIANGLE_STRIP);
     _program->addShader(_frag);
 
     _camera->getOrCreateStateSet()->setAttribute(_program);
@@ -202,7 +216,8 @@ void ScreenMultiViewer::init(int mode)
 
     osg::Vec3 viewerdir(0.0,1.0,0.0);
     viewerdir = viewerdir * TrackingManager::instance()->getHeadMat(0);
-    viewerdir = viewerdir - TrackingManager::instance()->getHeadMat(0).getTrans();
+    viewerdir = viewerdir
+            - TrackingManager::instance()->getHeadMat(0).getTrans();
     viewerdir.normalize();
 
     _viewer0Dir = new osg::Uniform();
@@ -213,7 +228,8 @@ void ScreenMultiViewer::init(int mode)
 
     viewerdir = osg::Vec3(0.0,1.0,0.0);
     viewerdir = viewerdir * TrackingManager::instance()->getHeadMat(1);
-    viewerdir = viewerdir - TrackingManager::instance()->getHeadMat(1).getTrans();
+    viewerdir = viewerdir
+            - TrackingManager::instance()->getHeadMat(1).getTrans();
     viewerdir.normalize();
 
     _viewer1Dir = new osg::Uniform();
@@ -226,7 +242,7 @@ void ScreenMultiViewer::init(int mode)
     _viewer0Dist->setName("viewer0Dist");
     _viewer0Dist->setType(osg::Uniform::FLOAT);
     _camera->getOrCreateStateSet()->addUniform(_viewer0Dist);
-    
+
     _viewer1Dist = new osg::Uniform();
     _viewer1Dist->setName("viewer1Dist");
     _viewer1Dist->setType(osg::Uniform::FLOAT);
@@ -317,80 +333,82 @@ void ScreenMultiViewer::init(int mode)
 void ScreenMultiViewer::computeViewProj()
 {
     {
-	osg::Vec3d eyePos;
+        osg::Vec3d eyePos;
 
-	switch(_stereoMode)
-	{
-	    case osg::DisplaySettings::LEFT_EYE:
-		eyePos = defaultLeftEye(0);
-		_viewer0PosLocal[0] = eyePos;
-		break;
-	    case osg::DisplaySettings::RIGHT_EYE:
-		eyePos = defaultRightEye(0);
-		_viewer0PosLocal[0] = eyePos;
-		break;
-	    case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-		_viewer0PosLocal[0] = defaultLeftEye(0);
-		_viewer0PosLocal[1] = defaultRightEye(0);
-		break;
-	    default:
-		eyePos = eyePos * getCurrentHeadMatrix(0);
-		_viewer0PosLocal[0] = eyePos;
-		break;
-	}
+        switch(_stereoMode)
+        {
+            case osg::DisplaySettings::LEFT_EYE:
+                eyePos = defaultLeftEye(0);
+                _viewer0PosLocal[0] = eyePos;
+                break;
+            case osg::DisplaySettings::RIGHT_EYE:
+                eyePos = defaultRightEye(0);
+                _viewer0PosLocal[0] = eyePos;
+                break;
+            case osg::DisplaySettings::HORIZONTAL_INTERLACE:
+                _viewer0PosLocal[0] = defaultLeftEye(0);
+                _viewer0PosLocal[1] = defaultRightEye(0);
+                break;
+            default:
+                eyePos = eyePos * getCurrentHeadMatrix(0);
+                _viewer0PosLocal[0] = eyePos;
+                break;
+        }
 
-	//_viewer0Pos->set(eyePos);
+        //_viewer0Pos->set(eyePos);
 
-	switch(_stereoMode)
-	{
-	    case osg::DisplaySettings::LEFT_EYE:
-		eyePos = defaultLeftEye(1);
-		_viewer1PosLocal[0] = eyePos;
-		break;
-	    case osg::DisplaySettings::RIGHT_EYE:
-		eyePos = defaultRightEye(1);
-		_viewer1PosLocal[0] = eyePos;
-		break;
-	    case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-		_viewer1PosLocal[0] = defaultLeftEye(1);
-		_viewer1PosLocal[1] = defaultRightEye(1);
-		break;
-	    default:
-		eyePos = osg::Vec3d(0,0,0) * getCurrentHeadMatrix(1);
-		_viewer1PosLocal[0] = eyePos;
-		break;
-	}
+        switch(_stereoMode)
+        {
+            case osg::DisplaySettings::LEFT_EYE:
+                eyePos = defaultLeftEye(1);
+                _viewer1PosLocal[0] = eyePos;
+                break;
+            case osg::DisplaySettings::RIGHT_EYE:
+                eyePos = defaultRightEye(1);
+                _viewer1PosLocal[0] = eyePos;
+                break;
+            case osg::DisplaySettings::HORIZONTAL_INTERLACE:
+                _viewer1PosLocal[0] = defaultLeftEye(1);
+                _viewer1PosLocal[1] = defaultRightEye(1);
+                break;
+            default:
+                eyePos = osg::Vec3d(0,0,0) * getCurrentHeadMatrix(1);
+                _viewer1PosLocal[0] = eyePos;
+                break;
+        }
 
-	//_viewer1Pos->set(eyePos);
+        //_viewer1Pos->set(eyePos);
 
-	osg::Vec3 viewerdir(0.0,1.0,0.0);
-	viewerdir = viewerdir * getCurrentHeadMatrix(0);
-	viewerdir = viewerdir - getCurrentHeadMatrix(0).getTrans();
-	viewerdir.normalize();
+        osg::Vec3 viewerdir(0.0,1.0,0.0);
+        viewerdir = viewerdir * getCurrentHeadMatrix(0);
+        viewerdir = viewerdir - getCurrentHeadMatrix(0).getTrans();
+        viewerdir.normalize();
 
-	_viewer0Dir->set(viewerdir);
+        _viewer0Dir->set(viewerdir);
 
-	if(TrackingManager::instance()->getNumHeads() >= 2 || isSimulatedHeadMatrix(1))
-	{
-	    viewerdir = osg::Vec3(0.0,1.0,0.0);
-	    viewerdir = viewerdir * getCurrentHeadMatrix(1);
-	    viewerdir = viewerdir - getCurrentHeadMatrix(1).getTrans();
-	    viewerdir.normalize();
+        if(TrackingManager::instance()->getNumHeads() >= 2
+                || isSimulatedHeadMatrix(1))
+        {
+            viewerdir = osg::Vec3(0.0,1.0,0.0);
+            viewerdir = viewerdir * getCurrentHeadMatrix(1);
+            viewerdir = viewerdir - getCurrentHeadMatrix(1).getTrans();
+            viewerdir.normalize();
 
-	    _viewer1Dir->set(viewerdir);
-	}
-	else
-	{
-	    osg::Matrix rot, trans;
-	    rot.makeRotate(M_PI / 2.0, osg::Vec3(0,0,1.0));
-	    trans.makeTranslate(osg::Vec3(350,500,100));
-	    viewerdir = osg::Vec3(0.0,1.0,0.0);
-	    viewerdir = viewerdir * rot * getCurrentHeadMatrix(0) * trans;
-	    viewerdir = viewerdir - (getCurrentHeadMatrix(0) * trans).getTrans();
-	    viewerdir.normalize();
-	    _viewer1Dir->set(viewerdir);
-	    _viewer1PosLocal[0] = (getCurrentHeadMatrix(0) * trans).getTrans();
-	}
+            _viewer1Dir->set(viewerdir);
+        }
+        else
+        {
+            osg::Matrix rot, trans;
+            rot.makeRotate(M_PI / 2.0,osg::Vec3(0,0,1.0));
+            trans.makeTranslate(osg::Vec3(350,500,100));
+            viewerdir = osg::Vec3(0.0,1.0,0.0);
+            viewerdir = viewerdir * rot * getCurrentHeadMatrix(0) * trans;
+            viewerdir = viewerdir
+                    - (getCurrentHeadMatrix(0) * trans).getTrans();
+            viewerdir.normalize();
+            _viewer1Dir->set(viewerdir);
+            _viewer1PosLocal[0] = (getCurrentHeadMatrix(0) * trans).getTrans();
+        }
 
     }
 
@@ -401,110 +419,116 @@ void ScreenMultiViewer::computeViewProj()
 
     for(int i = 0; i < 2; i++)
     {
-	viewer0BoundEyePos[i] = _viewer0PosLocal[i] * (1.0 - _minRatioLocal[i]) + _viewer1PosLocal[i] * _minRatioLocal[i];
-	//if(TrackingManager::instance()->getNumHeads() >= 2)
-	//{
-	    viewer1BoundEyePos[i] = _viewer0PosLocal[i] * (1.0 - _maxRatioLocal[i]) + _viewer1PosLocal[i] * _maxRatioLocal[i];
-	//}
-	//else
-	//{
-	//    viewer1BoundEyePos[i] = viewer0BoundEyePos[i];
-	//}
+        viewer0BoundEyePos[i] = _viewer0PosLocal[i] * (1.0 - _minRatioLocal[i])
+                + _viewer1PosLocal[i] * _minRatioLocal[i];
+        //if(TrackingManager::instance()->getNumHeads() >= 2)
+        //{
+        viewer1BoundEyePos[i] = _viewer0PosLocal[i] * (1.0 - _maxRatioLocal[i])
+                + _viewer1PosLocal[i] * _maxRatioLocal[i];
+        //}
+        //else
+        //{
+        //    viewer1BoundEyePos[i] = viewer0BoundEyePos[i];
+        //}
 
-	if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	{
-	    break;
-	}
+        if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
+        {
+            break;
+        }
     }
 
     for(int i = 0; i < 2; i++)
     {
-	osg::Vec3 nearPoint0, nearPoint1, farPoint0, farPoint1;
-	computeDefaultViewProj(viewer0BoundEyePos[i],_viewer0View[i],_viewer0Proj[i],_viewer0DistLocal[i],_viewer0Frustum[i],_viewer0ScreenPos[i],nearPoint0,farPoint0,_nfNormalLocal[i]);
-	computeDefaultViewProj(viewer1BoundEyePos[i],_viewer1View[i],_viewer1Proj[i],_viewer1DistLocal[i],_viewer1Frustum[i],_viewer1ScreenPos[i],nearPoint1,farPoint1,_nfNormalLocal[i]);
+        osg::Vec3 nearPoint0, nearPoint1, farPoint0, farPoint1;
+        computeDefaultViewProj(viewer0BoundEyePos[i],_viewer0View[i],
+                _viewer0Proj[i],_viewer0DistLocal[i],_viewer0Frustum[i],
+                _viewer0ScreenPos[i],nearPoint0,farPoint0,_nfNormalLocal[i]);
+        computeDefaultViewProj(viewer1BoundEyePos[i],_viewer1View[i],
+                _viewer1Proj[i],_viewer1DistLocal[i],_viewer1Frustum[i],
+                _viewer1ScreenPos[i],nearPoint1,farPoint1,_nfNormalLocal[i]);
 
-	//std::cerr << "Viewer0Dist: " << _viewer0DistLocal[i] << " Viewer1Dist: " << _viewer1DistLocal[i] << std::endl;
-	if(_viewer0DistLocal[i] < _viewer1DistLocal[i])
-	{
-	    //std::cerr << "Using viewer 0." << std::endl;
-	    _nearPointLocal[i] = nearPoint0;
-	    _farPointLocal[i] = farPoint0;
-	}
-	else
-	{
-	    _nearPointLocal[i] = nearPoint1;
-	    _farPointLocal[i] = farPoint1;
-	}
+        //std::cerr << "Viewer0Dist: " << _viewer0DistLocal[i] << " Viewer1Dist: " << _viewer1DistLocal[i] << std::endl;
+        if(_viewer0DistLocal[i] < _viewer1DistLocal[i])
+        {
+            //std::cerr << "Using viewer 0." << std::endl;
+            _nearPointLocal[i] = nearPoint0;
+            _farPointLocal[i] = farPoint0;
+        }
+        else
+        {
+            _nearPointLocal[i] = nearPoint1;
+            _farPointLocal[i] = farPoint1;
+        }
 
-	if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	{
-	    break;
-	}
+        if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
+        {
+            break;
+        }
     }
 
     _proj = osg::Matrix::identity();
     _view = osg::Matrix::identity();
 
     /*for(int i = 0; i < 2; i++)
-    {
-	//get eye position
-	osg::Vec3d eyePos;
+     {
+     //get eye position
+     osg::Vec3d eyePos;
 
-	int headNumber;
+     int headNumber;
 
-	if(TrackingManager::instance()->getNumHeads() >= 2)
-	{
-	    headNumber = i;
-	}
-	else
-	{
-	    headNumber = 0;
-	}
+     if(TrackingManager::instance()->getNumHeads() >= 2)
+     {
+     headNumber = i;
+     }
+     else
+     {
+     headNumber = 0;
+     }
 
-	switch(_stereoMode)
-	{
-	    case osg::DisplaySettings::LEFT_EYE:
-		eyePos = defaultLeftEye(headNumber);
-		break;
-	    case osg::DisplaySettings::RIGHT_EYE:
-		eyePos = defaultRightEye(headNumber);
-		break;
-	    case osg::DisplaySettings::HORIZONTAL_INTERLACE:
-		eyePos = defaultLeftEye(headNumber);
-		break;
-	    default:
-		eyePos = eyePos * getCurrentHeadMatrix(headNumber);
-		break;
-	}
+     switch(_stereoMode)
+     {
+     case osg::DisplaySettings::LEFT_EYE:
+     eyePos = defaultLeftEye(headNumber);
+     break;
+     case osg::DisplaySettings::RIGHT_EYE:
+     eyePos = defaultRightEye(headNumber);
+     break;
+     case osg::DisplaySettings::HORIZONTAL_INTERLACE:
+     eyePos = defaultLeftEye(headNumber);
+     break;
+     default:
+     eyePos = eyePos * getCurrentHeadMatrix(headNumber);
+     break;
+     }
 
-	if(!i)
-	{
-	    computeDefaultViewProj(eyePos,_viewer0View[0],_viewer0Proj[0],_viewer0DistLocal[0],_viewer0Frustum[0],_viewer0ScreenPos[0]);
-	}
-	else
-	{
-	    computeDefaultViewProj(eyePos,_viewer1View[0],_viewer1Proj[0],_viewer1DistLocal[0],_viewer1Frustum[0],_viewer1ScreenPos[0]);
-	}
+     if(!i)
+     {
+     computeDefaultViewProj(eyePos,_viewer0View[0],_viewer0Proj[0],_viewer0DistLocal[0],_viewer0Frustum[0],_viewer0ScreenPos[0]);
+     }
+     else
+     {
+     computeDefaultViewProj(eyePos,_viewer1View[0],_viewer1Proj[0],_viewer1DistLocal[0],_viewer1Frustum[0],_viewer1ScreenPos[0]);
+     }
 
 
-	if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	{
-	    eyePos = defaultRightEye(headNumber);
-	    if(!i)
-	    {
-		computeDefaultViewProj(eyePos,_viewer0View[1],_viewer0Proj[1],_viewer0DistLocal[1],_viewer0Frustum[1],_viewer0ScreenPos[1]);
-	    }
-	    else
-	    {
-		computeDefaultViewProj(eyePos,_viewer1View[1],_viewer1Proj[1],_viewer1DistLocal[1],_viewer1Frustum[1],_viewer1ScreenPos[1]);
-	    }
+     if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
+     {
+     eyePos = defaultRightEye(headNumber);
+     if(!i)
+     {
+     computeDefaultViewProj(eyePos,_viewer0View[1],_viewer0Proj[1],_viewer0DistLocal[1],_viewer0Frustum[1],_viewer0ScreenPos[1]);
+     }
+     else
+     {
+     computeDefaultViewProj(eyePos,_viewer1View[1],_viewer1Proj[1],_viewer1DistLocal[1],_viewer1Frustum[1],_viewer1ScreenPos[1]);
+     }
 
-	}
+     }
 
-	_proj = osg::Matrix::identity();
-	_view = osg::Matrix::identity();
+     _proj = osg::Matrix::identity();
+     _view = osg::Matrix::identity();
 
-    }*/
+     }*/
 
     float hwidth = _myInfo->width / 2.0;
     float hheight = _myInfo->height / 2.0;
@@ -519,215 +543,214 @@ void ScreenMultiViewer::computeViewProj()
     screenBL = screenBL * _myInfo->transform;
     screenBR = screenBR * _myInfo->transform;
 
-
     for(int i = 0; i < 2; i++)
     {
-	osg::Vec3 point, normal;
-	osg::Vec3 a,b;
+        osg::Vec3 point, normal;
+        osg::Vec3 a, b;
 
-	osg::Polytope::PlaneList plistNear;
-	osg::Polytope::PlaneList plistFar;
+        osg::Polytope::PlaneList plistNear;
+        osg::Polytope::PlaneList plistFar;
 
-	if(_viewer0ScreenPos[i].y() < _viewer1ScreenPos[i].y())
-	{
-	    // Near frust Near plane
-	    point = _viewer0Frustum[i].nearTL;
-	    a = _viewer0Frustum[i].nearTR - point;
-	    b = _viewer0Frustum[i].nearBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
+        if(_viewer0ScreenPos[i].y() < _viewer1ScreenPos[i].y())
+        {
+            // Near frust Near plane
+            point = _viewer0Frustum[i].nearTL;
+            a = _viewer0Frustum[i].nearTR - point;
+            b = _viewer0Frustum[i].nearBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Far frust Far plane
-	    point = _viewer1Frustum[i].farTL;
-	    a = _viewer1Frustum[i].farBL - point;
-	    b = _viewer1Frustum[i].farTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
-	else
-	{
-	    // Near frust Near plane
-	    point = _viewer1Frustum[i].nearTL;
-	    a = _viewer1Frustum[i].nearTR - point;
-	    b = _viewer1Frustum[i].nearBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
+            // Far frust Far plane
+            point = _viewer1Frustum[i].farTL;
+            a = _viewer1Frustum[i].farBL - point;
+            b = _viewer1Frustum[i].farTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
+        else
+        {
+            // Near frust Near plane
+            point = _viewer1Frustum[i].nearTL;
+            a = _viewer1Frustum[i].nearTR - point;
+            b = _viewer1Frustum[i].nearBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Far frust Far plane
-	    point = _viewer0Frustum[i].farTL;
-	    a = _viewer0Frustum[i].farBL - point;
-	    b = _viewer0Frustum[i].farTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
+            // Far frust Far plane
+            point = _viewer0Frustum[i].farTL;
+            a = _viewer0Frustum[i].farBL - point;
+            b = _viewer0Frustum[i].farTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
 
-	// Near frust Far plane
-	point = screenTL;
-	a = screenBL - point;
-	b = screenTR - point;
-	normal = a ^ b;
-	normal.normalize();
-	plistNear.push_back(osg::Plane(normal, point));
-	
-	// Far frust Near plane
-	point = screenTL;
-	a = screenTR - point;
-	b = screenBL - point;
-	normal = a ^ b;
-	normal.normalize();
-	plistFar.push_back(osg::Plane(normal, point));
+        // Near frust Far plane
+        point = screenTL;
+        a = screenBL - point;
+        b = screenTR - point;
+        normal = a ^ b;
+        normal.normalize();
+        plistNear.push_back(osg::Plane(normal,point));
 
-	if(_viewer0ScreenPos[i].x() < _viewer1ScreenPos[i].x())
-	{
-	    // Near frust Left plane
-	    point = _viewer0Frustum[i].nearTL;
-	    a = _viewer0Frustum[i].nearBL - point;
-	    b = screenTL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Right plane
-	    point = screenTR;
-	    a = _viewer0Frustum[i].farTR - point;
-	    b = screenBR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
+        // Far frust Near plane
+        point = screenTL;
+        a = screenTR - point;
+        b = screenBL - point;
+        normal = a ^ b;
+        normal.normalize();
+        plistFar.push_back(osg::Plane(normal,point));
 
-	    // Near frust Right plane
-	    point = _viewer1Frustum[i].nearTR;
-	    a = screenTR - point;
-	    b = _viewer1Frustum[i].nearBR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Left plane
-	    point = screenTL;
-	    a = screenBL - point;
-	    b = _viewer1Frustum[i].farTL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
-	else
-	{
-	    // Near frust Left plane
-	    point = _viewer1Frustum[i].nearTL;
-	    a = _viewer1Frustum[i].nearBL - point;
-	    b = screenTL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Right plane
-	    point = screenTR;
-	    a = _viewer1Frustum[i].farTR - point;
-	    b = screenBR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
+        if(_viewer0ScreenPos[i].x() < _viewer1ScreenPos[i].x())
+        {
+            // Near frust Left plane
+            point = _viewer0Frustum[i].nearTL;
+            a = _viewer0Frustum[i].nearBL - point;
+            b = screenTL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Near frust Right plane
-	    point = _viewer0Frustum[i].nearTR;
-	    a = screenTR - point;
-	    b = _viewer0Frustum[i].nearBR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Left plane
-	    point = screenTL;
-	    a = screenBL - point;
-	    b = _viewer0Frustum[i].farTL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
+            // Far frust Right plane
+            point = screenTR;
+            a = _viewer0Frustum[i].farTR - point;
+            b = screenBR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
 
-	if(_viewer0ScreenPos[i].z() < _viewer1ScreenPos[i].z())
-	{
-	    // Near frust Bottom plane
-	    point = _viewer0Frustum[i].nearBL;
-	    a = _viewer0Frustum[i].nearBR - point;
-	    b = screenBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
+            // Near frust Right plane
+            point = _viewer1Frustum[i].nearTR;
+            a = screenTR - point;
+            b = _viewer1Frustum[i].nearBR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Far frust Top plane
-	    point = screenTL;
-	    a = _viewer0Frustum[i].farTL - point;
-	    b = screenTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
+            // Far frust Left plane
+            point = screenTL;
+            a = screenBL - point;
+            b = _viewer1Frustum[i].farTL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
+        else
+        {
+            // Near frust Left plane
+            point = _viewer1Frustum[i].nearTL;
+            a = _viewer1Frustum[i].nearBL - point;
+            b = screenTL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Near frust Top plane
-	    point = _viewer1Frustum[i].nearTL;
-	    a = screenTL - point;
-	    b = _viewer1Frustum[i].nearTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Bottom plane
-	    point = screenBL;
-	    a = screenBR - point;
-	    b = _viewer1Frustum[i].farBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
-	else
-	{
-	    // Near frust Bottom plane
-	    point = _viewer1Frustum[i].nearBL;
-	    a = _viewer1Frustum[i].nearBR - point;
-	    b = screenBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
+            // Far frust Right plane
+            point = screenTR;
+            a = _viewer1Frustum[i].farTR - point;
+            b = screenBR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
 
-	    // Far frust Top plane
-	    point = screenTL;
-	    a = _viewer1Frustum[i].farTL - point;
-	    b = screenTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
+            // Near frust Right plane
+            point = _viewer0Frustum[i].nearTR;
+            a = screenTR - point;
+            b = _viewer0Frustum[i].nearBR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	    // Near frust Top plane
-	    point = _viewer0Frustum[i].nearTL;
-	    a = screenTL - point;
-	    b = _viewer0Frustum[i].nearTR - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistNear.push_back(osg::Plane(normal, point));
-	    
-	    // Far frust Bottom plane
-	    point = screenBL;
-	    a = screenBR - point;
-	    b = _viewer0Frustum[i].farBL - point;
-	    normal = a ^ b;
-	    normal.normalize();
-	    plistFar.push_back(osg::Plane(normal, point));
-	}
+            // Far frust Left plane
+            point = screenTL;
+            a = screenBL - point;
+            b = _viewer0Frustum[i].farTL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
 
-	_cullFrustumNear[i].set(plistNear);
-	_cullFrustumFar[i].set(plistFar);
+        if(_viewer0ScreenPos[i].z() < _viewer1ScreenPos[i].z())
+        {
+            // Near frust Bottom plane
+            point = _viewer0Frustum[i].nearBL;
+            a = _viewer0Frustum[i].nearBR - point;
+            b = screenBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
 
-	// Fox in socks my day is done sir. Thank you for a lot of fun sir.
+            // Far frust Top plane
+            point = screenTL;
+            a = _viewer0Frustum[i].farTL - point;
+            b = screenTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
 
-	if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	{
-	    break;
-	}
+            // Near frust Top plane
+            point = _viewer1Frustum[i].nearTL;
+            a = screenTL - point;
+            b = _viewer1Frustum[i].nearTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
+
+            // Far frust Bottom plane
+            point = screenBL;
+            a = screenBR - point;
+            b = _viewer1Frustum[i].farBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
+        else
+        {
+            // Near frust Bottom plane
+            point = _viewer1Frustum[i].nearBL;
+            a = _viewer1Frustum[i].nearBR - point;
+            b = screenBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
+
+            // Far frust Top plane
+            point = screenTL;
+            a = _viewer1Frustum[i].farTL - point;
+            b = screenTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+
+            // Near frust Top plane
+            point = _viewer0Frustum[i].nearTL;
+            a = screenTL - point;
+            b = _viewer0Frustum[i].nearTR - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistNear.push_back(osg::Plane(normal,point));
+
+            // Far frust Bottom plane
+            point = screenBL;
+            a = screenBR - point;
+            b = _viewer0Frustum[i].farBL - point;
+            normal = a ^ b;
+            normal.normalize();
+            plistFar.push_back(osg::Plane(normal,point));
+        }
+
+        _cullFrustumNear[i].set(plistNear);
+        _cullFrustumFar[i].set(plistFar);
+
+        // Fox in socks my day is done sir. Thank you for a lot of fun sir.
+
+        if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
+        {
+            break;
+        }
     }
 
 #if 0
@@ -739,53 +762,59 @@ void ScreenMultiViewer::computeViewProj()
     pl = _cullFrustumNear[0].getPlaneList();
     for(int i = 0; i < pl.size(); i++)
     {
-	std::cerr << "Near Dist: " << pl[i].distance(testpoint) << std::endl;
+        std::cerr << "Near Dist: " << pl[i].distance(testpoint) << std::endl;
     }
 
     pl = _cullFrustumFar[0].getPlaneList();
     for(int i = 0; i < pl.size(); i++)
     {
-	std::cerr << "Far Dist: " << pl[i].distance(testpoint) << std::endl;
+        std::cerr << "Far Dist: " << pl[i].distance(testpoint) << std::endl;
     }
 
 #endif
 
     osgViewer::Renderer * renderer =
-            dynamic_cast<osgViewer::Renderer*> (_camera->getRenderer());
+            dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
     if(!renderer)
     {
         std::cerr << "Error getting renderer pointer." << std::endl;
     }
     else
     {
-	for(int i = 0; i < 2; i++)
-	{
-	    if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	    {
-		MultiViewerCullVisitor * mvcv = dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(i)->getCullVisitorLeft());
-		if(mvcv)
-		{
-		    mvcv->setFrustums(_cullFrustumNear[0],_cullFrustumFar[0]);
-		}
-		mvcv = dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(i)->getCullVisitorRight());
-		if(mvcv)
-		{
-		    mvcv->setFrustums(_cullFrustumNear[1],_cullFrustumFar[1]);
-		}
-	    }
-	    else
-	    {
-		MultiViewerCullVisitor * mvcv = dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(i)->getCullVisitor());
-		if(mvcv)
-		{
-		    mvcv->setFrustums(_cullFrustumNear[0],_cullFrustumFar[0]);
-		}
-		else
-		{
-		    std::cerr << "Error getting mvcv." << std::endl;
-		}
-	    }
-	}
+        for(int i = 0; i < 2; i++)
+        {
+            if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
+            {
+                MultiViewerCullVisitor * mvcv =
+                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                                i)->getCullVisitorLeft());
+                if(mvcv)
+                {
+                    mvcv->setFrustums(_cullFrustumNear[0],_cullFrustumFar[0]);
+                }
+                mvcv =
+                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                                i)->getCullVisitorRight());
+                if(mvcv)
+                {
+                    mvcv->setFrustums(_cullFrustumNear[1],_cullFrustumFar[1]);
+                }
+            }
+            else
+            {
+                MultiViewerCullVisitor * mvcv =
+                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                                i)->getCullVisitor());
+                if(mvcv)
+                {
+                    mvcv->setFrustums(_cullFrustumNear[0],_cullFrustumFar[0]);
+                }
+                else
+                {
+                    std::cerr << "Error getting mvcv." << std::endl;
+                }
+            }
+        }
     }
 
     //algtest();
@@ -796,12 +825,12 @@ void ScreenMultiViewer::updateCamera()
     //std::cerr << "Frame" << std::endl;
     if(!_testGeoAdded && _frameDelay > 0)
     {
-	//addTestGeometry();
-	_testGeoAdded = true;
+        //addTestGeometry();
+        _testGeoAdded = true;
     }
     else if(!_testGeoAdded)
     {
-	_frameDelay++;
+        _frameDelay++;
     }
 
     _camera->setViewMatrix(_view);
@@ -822,7 +851,10 @@ ScreenInfo * ScreenMultiViewer::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
-void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view, osg::Matrix & proj, float & dist, struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos, osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal)
+void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos,
+        osg::Matrix & view, osg::Matrix & proj, float & dist,
+        struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos,
+        osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal)
 {
     osg::Vec3d worldEye = eyePos;
     //translate screen to origin
@@ -831,9 +863,9 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
 
     //rotate screen to xz
     osg::Matrix screenRot;
-    screenRot.makeRotate(-_myInfo->h * M_PI / 180.0, osg::Vec3(0, 0, 1),
-			 -_myInfo->p * M_PI / 180.0, osg::Vec3(1, 0, 0),
-			 -_myInfo->r * M_PI / 180.0, osg::Vec3(0, 1, 0));
+    screenRot.makeRotate(-_myInfo->h * M_PI / 180.0,osg::Vec3(0,0,1),
+            -_myInfo->p * M_PI / 180.0,osg::Vec3(1,0,0),
+            -_myInfo->r * M_PI / 180.0,osg::Vec3(0,1,0));
 
     eyePos = eyePos * screenTrans * screenRot;
 
@@ -850,16 +882,16 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
     right = _near * (_myInfo->width / 2.0 - eyePos.x()) / screenDist;
     left = _near * (-_myInfo->width / 2.0 - eyePos.x()) / screenDist;
 
-    proj.makeFrustum(left, right, bottom, top, _near, _far);
+    proj.makeFrustum(left,right,bottom,top,_near,_far);
 
     osg::Matrix cam2world;
     cam2world.makeTranslate(eyePos);
     cam2world = cam2world * _myInfo->transform;
 
-    fp.nearTL = osg::Vec3(left, _near, top) * cam2world;
-    fp.nearTR = osg::Vec3(right, _near, top) * cam2world;
-    fp.nearBL = osg::Vec3(left, _near, bottom) * cam2world;
-    fp.nearBR = osg::Vec3(right, _near, bottom) * cam2world;
+    fp.nearTL = osg::Vec3(left,_near,top) * cam2world;
+    fp.nearTR = osg::Vec3(right,_near,top) * cam2world;
+    fp.nearBL = osg::Vec3(left,_near,bottom) * cam2world;
+    fp.nearBR = osg::Vec3(right,_near,bottom) * cam2world;
 
     float ftop, fbottom, fleft, fright;
 
@@ -868,10 +900,10 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
     fright = _far * (_myInfo->width / 2.0 - eyePos.x()) / screenDist;
     fleft = _far * (-_myInfo->width / 2.0 - eyePos.x()) / screenDist;
 
-    fp.farTL = osg::Vec3(fleft, _far, ftop) * cam2world;
-    fp.farTR = osg::Vec3(fright, _far, ftop) * cam2world;
-    fp.farBL = osg::Vec3(fleft, _far, fbottom) * cam2world;
-    fp.farBR = osg::Vec3(fright, _far, fbottom) * cam2world;
+    fp.farTL = osg::Vec3(fleft,_far,ftop) * cam2world;
+    fp.farTR = osg::Vec3(fright,_far,ftop) * cam2world;
+    fp.farBL = osg::Vec3(fleft,_far,fbottom) * cam2world;
+    fp.farBR = osg::Vec3(fright,_far,fbottom) * cam2world;
 
     // move camera to origin
     osg::Matrix cameraTrans;
@@ -879,8 +911,8 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
 
     //make view
     view = screenTrans * screenRot * cameraTrans
-	* osg::Matrix::lookAt(osg::Vec3(0, 0, 0), osg::Vec3(0, 1, 0),
-		osg::Vec3(0, 0, 1));
+            * osg::Matrix::lookAt(osg::Vec3(0,0,0),osg::Vec3(0,1,0),
+                    osg::Vec3(0,0,1));
 
     osg::Matrix invView = osg::Matrix::inverse(view);
     osg::Vec3 point;
@@ -899,108 +931,108 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & 
 void ScreenMultiViewer::algtest()
 {
     /*osg::Vec4 point0,point1,point2;
-    point0 = osg::Vec4(10,500,0,1.0);
-    point2 = osg::Vec4(-10,250,2000,1.0);
-    point1 = osg::Vec4(2000,-500,0,1.0);
-    float fragx = 0.2;
-    float fragy = 0.2;
+     point0 = osg::Vec4(10,500,0,1.0);
+     point2 = osg::Vec4(-10,250,2000,1.0);
+     point1 = osg::Vec4(2000,-500,0,1.0);
+     float fragx = 0.2;
+     float fragy = 0.2;
 
-    osg::Vec4 nearpoint;
-    nearpoint.x() = (fragx) * 100.0;
-    nearpoint.y() = (fragy) * 100.0;
-    nearpoint.w() = 100.0;
+     osg::Vec4 nearpoint;
+     nearpoint.x() = (fragx) * 100.0;
+     nearpoint.y() = (fragy) * 100.0;
+     nearpoint.w() = 100.0;
 
-    nearpoint = nearpoint * osg::Matrix::inverse(_viewer0Proj);
+     nearpoint = nearpoint * osg::Matrix::inverse(_viewer0Proj);
 
-    osg::Matrix invproj = osg::Matrix::inverse(_viewer0Proj);
-    std::cerr << "Inv Proj Matrix:" << std::endl;
-    for(int i = 0; i < 4; i++)
-    {
-	for(int j = 0; j < 4; j++)
-	{
-	    std::cerr << invproj(j,i) << " ";
-	}
-	std::cerr << std::endl;
-    }
+     osg::Matrix invproj = osg::Matrix::inverse(_viewer0Proj);
+     std::cerr << "Inv Proj Matrix:" << std::endl;
+     for(int i = 0; i < 4; i++)
+     {
+     for(int j = 0; j < 4; j++)
+     {
+     std::cerr << invproj(j,i) << " ";
+     }
+     std::cerr << std::endl;
+     }
 
-    std::cerr << "Invproj near x: " << nearpoint.x() << " y: " << nearpoint.y() << " z: " << nearpoint.z() << " w: " << nearpoint.w() << std::endl;
+     std::cerr << "Invproj near x: " << nearpoint.x() << " y: " << nearpoint.y() << " z: " << nearpoint.z() << " w: " << nearpoint.w() << std::endl;
 
-    nearpoint.w() = 1.0;
+     nearpoint.w() = 1.0;
 
-    nearpoint = nearpoint * osg::Matrix::inverse(_viewer0View);
+     nearpoint = nearpoint * osg::Matrix::inverse(_viewer0View);
 
-    osg::Matrix invview = osg::Matrix::inverse(_viewer0View);
-    std::cerr << "Inv View Matrix:" << std::endl;
-    for(int i = 0; i < 4; i++)
-    {
-	for(int j = 0; j < 4; j++)
-	{
-	    std::cerr << invview(j,i) << " ";
-	}
-	std::cerr << std::endl;
-    }
+     osg::Matrix invview = osg::Matrix::inverse(_viewer0View);
+     std::cerr << "Inv View Matrix:" << std::endl;
+     for(int i = 0; i < 4; i++)
+     {
+     for(int j = 0; j < 4; j++)
+     {
+     std::cerr << invview(j,i) << " ";
+     }
+     std::cerr << std::endl;
+     }
 
-    std::cerr << "Invview near x: " << nearpoint.x() << " y: " << nearpoint.y() << " z: " << nearpoint.z() << " w: " << nearpoint.w() << std::endl;
+     std::cerr << "Invview near x: " << nearpoint.x() << " y: " << nearpoint.y() << " z: " << nearpoint.z() << " w: " << nearpoint.w() << std::endl;
 
-    osg::Vec4 farpoint;
-    farpoint.x() = (fragx) * 10000.0;
-    farpoint.y() = (fragy) * 10000.0;
-    farpoint.w() = 10000.0;
+     osg::Vec4 farpoint;
+     farpoint.x() = (fragx) * 10000.0;
+     farpoint.y() = (fragy) * 10000.0;
+     farpoint.w() = 10000.0;
 
-    farpoint = farpoint * osg::Matrix::inverse(_viewer0Proj);
+     farpoint = farpoint * osg::Matrix::inverse(_viewer0Proj);
 
-    std::cerr << "Invproj far x: " << farpoint.x() << " y: " << farpoint.y() << " z: " << farpoint.z() << " w: " << farpoint.w() << std::endl;
+     std::cerr << "Invproj far x: " << farpoint.x() << " y: " << farpoint.y() << " z: " << farpoint.z() << " w: " << farpoint.w() << std::endl;
 
-    farpoint.w() = 1.0;
+     farpoint.w() = 1.0;
 
-    farpoint = farpoint * osg::Matrix::inverse(_viewer0View);
+     farpoint = farpoint * osg::Matrix::inverse(_viewer0View);
 
-    std::cerr << "Invview far x: " << farpoint.x() << " y: " << farpoint.y() << " z: " << farpoint.z() << " w: " << farpoint.w() << std::endl;
+     std::cerr << "Invview far x: " << farpoint.x() << " y: " << farpoint.y() << " z: " << farpoint.z() << " w: " << farpoint.w() << std::endl;
 
-    osg::Matrix solve;
+     osg::Matrix solve;
 
-    osg::Vec4 point;
+     osg::Vec4 point;
 
-    point = farpoint - nearpoint;
+     point = farpoint - nearpoint;
 
-    solve(0,0) = point.x();
-    solve(0,1) = point.y();
-    solve(0,2) = point.z();
+     solve(0,0) = point.x();
+     solve(0,1) = point.y();
+     solve(0,2) = point.z();
 
-    point = point1 - point0;
+     point = point1 - point0;
 
-    solve(1,0) = point.x();
-    solve(1,1) = point.y();
-    solve(1,2) = point.z();
+     solve(1,0) = point.x();
+     solve(1,1) = point.y();
+     solve(1,2) = point.z();
 
-    point = point2 - point0;
-    
-    solve(2,0) = point.x();
-    solve(2,1) = point.y();
-    solve(2,2) = point.z();
+     point = point2 - point0;
 
-    solve = osg::Matrix::inverse(solve);
+     solve(2,0) = point.x();
+     solve(2,1) = point.y();
+     solve(2,2) = point.z();
 
-    point = farpoint - point0;
+     solve = osg::Matrix::inverse(solve);
 
-    point = point * solve;
+     point = farpoint - point0;
 
-    std::cerr << "Solution point x: " << point.x() << " y: " << point.y() << " z: " << point.z() << std::endl;
+     point = point * solve;
 
-    osg::Vec4 planepoint = farpoint + (nearpoint - farpoint) * point.x();
+     std::cerr << "Solution point x: " << point.x() << " y: " << point.y() << " z: " << point.z() << std::endl;
 
-    std::cerr << "Plane point x: " << planepoint.x() << " y: " << planepoint.y() << " z: " << planepoint.z() << std::endl;
-*/
+     osg::Vec4 planepoint = farpoint + (nearpoint - farpoint) * point.x();
+
+     std::cerr << "Plane point x: " << planepoint.x() << " y: " << planepoint.y() << " z: " << planepoint.z() << std::endl;
+     */
 
     /*osg::Vec4 realnear = osg::Vec4(33.8048, -2857, 25.3503, 1.0);
-    
-    realnear = realnear * _viewer0View;
 
-    std::cerr << "realnear post view x: " << realnear.x() << " y: " << realnear.y() << " z: " << realnear.z() << " w: " << realnear.w() << std::endl;
+     realnear = realnear * _viewer0View;
 
-    realnear = realnear * _viewer0Proj;
+     std::cerr << "realnear post view x: " << realnear.x() << " y: " << realnear.y() << " z: " << realnear.z() << " w: " << realnear.w() << std::endl;
 
-    std::cerr << "realnear post proj x: " << realnear.x() << " y: " << realnear.y() << " z: " << realnear.z() << " w: " << realnear.w() << std::endl;*/
+     realnear = realnear * _viewer0Proj;
+
+     std::cerr << "realnear post proj x: " << realnear.x() << " y: " << realnear.y() << " z: " << realnear.z() << " w: " << realnear.w() << std::endl;*/
 }
 
 void ScreenMultiViewer::addTestGeometry()
@@ -1008,7 +1040,7 @@ void ScreenMultiViewer::addTestGeometry()
     static bool geoadded = false;
     if(geoadded)
     {
-	return;
+        return;
     }
     geoadded = true;
     osg::Geometry * geo = new osg::Geometry();
@@ -1025,8 +1057,8 @@ void ScreenMultiViewer::addTestGeometry()
 
     geo->setVertexArray(verts);
 
-    osg::DrawElementsUInt * ele =
-            new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, 0);
+    osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
+            osg::PrimitiveSet::TRIANGLES,0);
 
     ele->push_back(0);
     ele->push_back(1);
@@ -1045,8 +1077,7 @@ void ScreenMultiViewer::addTestGeometry()
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
 
-    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4>
-            *colorIndexArray;
+    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
     colorIndexArray = new osg::TemplateIndexArray<unsigned int,
             osg::Array::UIntArrayType,4,4>;
     colorIndexArray->push_back(0);
@@ -1064,71 +1095,71 @@ void ScreenMultiViewer::addTestGeometry()
     geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     /*osg::Vec3Array* verts = new osg::Vec3Array();
-    verts->push_back(osg::Vec3(10000,10000,10000));
-    verts->push_back(osg::Vec3(10000,10000,-10000));
-    verts->push_back(osg::Vec3(-10000,10000,-10000));
-    verts->push_back(osg::Vec3(-10000,10000,10000));
-    verts->push_back(osg::Vec3(-10000,-10000,10000));
-    verts->push_back(osg::Vec3(-10000,-10000,-10000));
-    verts->push_back(osg::Vec3(10000,-10000,-10000));
-    verts->push_back(osg::Vec3(10000,-10000,10000));
+     verts->push_back(osg::Vec3(10000,10000,10000));
+     verts->push_back(osg::Vec3(10000,10000,-10000));
+     verts->push_back(osg::Vec3(-10000,10000,-10000));
+     verts->push_back(osg::Vec3(-10000,10000,10000));
+     verts->push_back(osg::Vec3(-10000,-10000,10000));
+     verts->push_back(osg::Vec3(-10000,-10000,-10000));
+     verts->push_back(osg::Vec3(10000,-10000,-10000));
+     verts->push_back(osg::Vec3(10000,-10000,10000));
 
-    geo->setVertexArray(verts);
+     geo->setVertexArray(verts);
 
-    osg::DrawElementsUInt * ele =
-            new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
+     osg::DrawElementsUInt * ele =
+     new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS, 0);
 
-    ele->push_back(0);
-    ele->push_back(1);
-    ele->push_back(2);
-    ele->push_back(3);
+     ele->push_back(0);
+     ele->push_back(1);
+     ele->push_back(2);
+     ele->push_back(3);
 
-    ele->push_back(2);
-    ele->push_back(3);
-    ele->push_back(4);
-    ele->push_back(5);
+     ele->push_back(2);
+     ele->push_back(3);
+     ele->push_back(4);
+     ele->push_back(5);
 
-    ele->push_back(4);
-    ele->push_back(5);
-    ele->push_back(6);
-    ele->push_back(7);
+     ele->push_back(4);
+     ele->push_back(5);
+     ele->push_back(6);
+     ele->push_back(7);
 
-    ele->push_back(6);
-    ele->push_back(7);
-    ele->push_back(0);
-    ele->push_back(1);
+     ele->push_back(6);
+     ele->push_back(7);
+     ele->push_back(0);
+     ele->push_back(1);
 
-    ele->push_back(0);
-    ele->push_back(3);
-    ele->push_back(4);
-    ele->push_back(7);
+     ele->push_back(0);
+     ele->push_back(3);
+     ele->push_back(4);
+     ele->push_back(7);
 
-    ele->push_back(1);
-    ele->push_back(2);
-    ele->push_back(5);
-    ele->push_back(6);
+     ele->push_back(1);
+     ele->push_back(2);
+     ele->push_back(5);
+     ele->push_back(6);
 
-    geo->addPrimitiveSet(ele);
+     geo->addPrimitiveSet(ele);
 
-    osg::Vec4Array* colors = new osg::Vec4Array;
-    colors->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
+     osg::Vec4Array* colors = new osg::Vec4Array;
+     colors->push_back(osg::Vec4(1.0,1.0,1.0,1.0));
 
-    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4>
-            *colorIndexArray;
-    colorIndexArray = new osg::TemplateIndexArray<unsigned int,
-            osg::Array::UIntArrayType,4,4>;
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
+     osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4>
+     *colorIndexArray;
+     colorIndexArray = new osg::TemplateIndexArray<unsigned int,
+     osg::Array::UIntArrayType,4,4>;
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
+     colorIndexArray->push_back(0);
 
-    geo->setColorArray(colors);
-    geo->setColorIndices(colorIndexArray);
-    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);*/
+     geo->setColorArray(colors);
+     geo->setColorIndices(colorIndexArray);
+     geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);*/
 
     osg::Geode * geode = new osg::Geode();
     geode->addDrawable(geo);
@@ -1154,29 +1185,29 @@ void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
     //std::cerr << "nfNormal: " << _screen->_nfNormalLocal[_index].x() << " " << _screen->_nfNormalLocal[_index].y() << " " << _screen->_nfNormalLocal[_index].z() << std::endl;
 
     /*osg::Matrix v0v, v1v, v0p, v1p;
-    for(int i = 0; i < 16; i++)
-    {
-	v0v.ptr()[i] = (1.0 - _screen->_minRatioLocal[_index]) * _screen->_viewer0View[_index].ptr()[i] + _screen->_minRatioLocal[_index] * _screen->_viewer1View[_index].ptr()[i];
-	v1v.ptr()[i] = (1.0 - _screen->_maxRatioLocal[_index]) * _screen->_viewer0View[_index].ptr()[i] + _screen->_maxRatioLocal[_index] * _screen->_viewer1View[_index].ptr()[i];
-	v0p.ptr()[i] = (1.0 - _screen->_minRatioLocal[_index]) * _screen->_viewer0Proj[_index].ptr()[i] + _screen->_minRatioLocal[_index] * _screen->_viewer1Proj[_index].ptr()[i];
-	v1p.ptr()[i] = (1.0 - _screen->_maxRatioLocal[_index]) * _screen->_viewer0Proj[_index].ptr()[i] + _screen->_maxRatioLocal[_index] * _screen->_viewer1Proj[_index].ptr()[i];
-    }*/
+     for(int i = 0; i < 16; i++)
+     {
+     v0v.ptr()[i] = (1.0 - _screen->_minRatioLocal[_index]) * _screen->_viewer0View[_index].ptr()[i] + _screen->_minRatioLocal[_index] * _screen->_viewer1View[_index].ptr()[i];
+     v1v.ptr()[i] = (1.0 - _screen->_maxRatioLocal[_index]) * _screen->_viewer0View[_index].ptr()[i] + _screen->_maxRatioLocal[_index] * _screen->_viewer1View[_index].ptr()[i];
+     v0p.ptr()[i] = (1.0 - _screen->_minRatioLocal[_index]) * _screen->_viewer0Proj[_index].ptr()[i] + _screen->_minRatioLocal[_index] * _screen->_viewer1Proj[_index].ptr()[i];
+     v1p.ptr()[i] = (1.0 - _screen->_maxRatioLocal[_index]) * _screen->_viewer0Proj[_index].ptr()[i] + _screen->_maxRatioLocal[_index] * _screen->_viewer1Proj[_index].ptr()[i];
+     }*/
 
 #ifdef FRAGMENT_QUERY
     if(!_init)
     {
-	glGenQueries(1,&_query);
-	_init = true;
+        glGenQueries(1,&_query);
+        _init = true;
     }
 
     if(first)
     {
-	glBeginQuery(GL_SAMPLES_PASSED,_query);
+        glBeginQuery(GL_SAMPLES_PASSED,_query);
     }
 
     if(_screen->_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
     {
-	first = !first;
+        first = !first;
     }
 
 #endif
@@ -1192,34 +1223,34 @@ void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
 
     //if(TrackingManager::instance()->getNumHeads() >= 2)
     //{
-	glActiveTexture(GL_TEXTURE6);
-	glLoadMatrix((GLdouble *)_screen->_viewer1View[_index].ptr());
+    glActiveTexture(GL_TEXTURE6);
+    glLoadMatrix((GLdouble *)_screen->_viewer1View[_index].ptr());
 
-	glActiveTexture(GL_TEXTURE7);
-	glLoadMatrix((GLdouble *)_screen->_viewer1Proj[_index].ptr());
+    glActiveTexture(GL_TEXTURE7);
+    glLoadMatrix((GLdouble *)_screen->_viewer1Proj[_index].ptr());
     /*}
-    else
-    {
-	glActiveTexture(GL_TEXTURE6);
-	glLoadMatrix((GLdouble *)v0v.ptr());
+     else
+     {
+     glActiveTexture(GL_TEXTURE6);
+     glLoadMatrix((GLdouble *)v0v.ptr());
 
-	glActiveTexture(GL_TEXTURE7);
-	glLoadMatrix((GLdouble *)v0p.ptr());
-    }*/
+     glActiveTexture(GL_TEXTURE7);
+     glLoadMatrix((GLdouble *)v0p.ptr());
+     }*/
 
     glActiveTexture(GL_TEXTURE0);
     glMatrixMode(GL_MODELVIEW);
 
     if(_indexState == TOGGLE)
     {
-	if(_index)
-	{
-	    _index = 0;
-	}
-	else
-	{
-	    _index = 1;
-	}
+        if(_index)
+        {
+            _index = 0;
+        }
+        else
+        {
+            _index = 1;
+        }
     }
 }
 
@@ -1229,15 +1260,15 @@ void ScreenMultiViewer::PostDrawCallback::operator()(osg::RenderInfo & ri) const
 
     if(_screen->_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
     {
-	first = !first;
+        first = !first;
     }
 
     if(first)
     {
-	GLuint result;
-	glEndQuery(GL_SAMPLES_PASSED);
-	glGetQueryObjectuiv(_pdc->_query,GL_QUERY_RESULT,&result);
-	std::cerr << "Fragments passed: " << result << std::endl; 
+        GLuint result;
+        glEndQuery(GL_SAMPLES_PASSED);
+        glGetQueryObjectuiv(_pdc->_query,GL_QUERY_RESULT,&result);
+        std::cerr << "Fragments passed: " << result << std::endl;
     }
 
 #endif
@@ -1245,7 +1276,7 @@ void ScreenMultiViewer::PostDrawCallback::operator()(osg::RenderInfo & ri) const
 
 void ScreenMultiViewer::calcScreenMinMaxRatio()
 {
-    float bottomLeft,bottomRight,topLeft,topRight;
+    float bottomLeft, bottomRight, topLeft, topRight;
 
     _viewer0Dir->get(_dir0);
     _viewer1Dir->get(_dir1);
@@ -1256,219 +1287,225 @@ void ScreenMultiViewer::calcScreenMinMaxRatio()
     for(int i = 0; i < 2; i++)
     {
 
-	bottomLeft = getRatio(0.5,0.5,i);
-	bottomRight = getRatio(((float)_myInfo->myChannel->width) - 0.5, 0.5, i);
-	topLeft = getRatio(0.5,((float)_myInfo->myChannel->height) - 0.5, i);
-	topRight = getRatio(((float)_myInfo->myChannel->width) - 0.5, ((float)_myInfo->myChannel->height) - 0.5, i);
+        bottomLeft = getRatio(0.5,0.5,i);
+        bottomRight = getRatio(((float)_myInfo->myChannel->width) - 0.5,0.5,i);
+        topLeft = getRatio(0.5,((float)_myInfo->myChannel->height) - 0.5,i);
+        topRight = getRatio(((float)_myInfo->myChannel->width) - 0.5,
+                ((float)_myInfo->myChannel->height) - 0.5,i);
 
-	//std::cerr << "BL: " << bottomLeft << " BR: " << bottomRight << " TL: " << topLeft << " TR: " << topRight << std::endl;
+        //std::cerr << "BL: " << bottomLeft << " BR: " << bottomRight << " TL: " << topLeft << " TR: " << topRight << std::endl;
 
-	float currentRatio;
-	float minx, maxx, miny, maxy;
-	float currentx, currenty;
+        float currentRatio;
+        float minx, maxx, miny, maxy;
+        float currentx, currenty;
 
-	// find max
-	if(bottomLeft >= bottomRight && bottomLeft >= topLeft && bottomLeft >= topRight)
-	{
-	    currentRatio = bottomLeft;
-	    minx = 0.5;
-	    miny = 0.5; 
-	    maxx = ((float)_myInfo->myChannel->width) - 0.5;
-	    maxx = maxx / 2.0;
-	    maxy = ((float)_myInfo->myChannel->height) - 0.5;
-	    maxy = maxy / 2.0;
+        // find max
+        if(bottomLeft >= bottomRight && bottomLeft >= topLeft
+                && bottomLeft >= topRight)
+        {
+            currentRatio = bottomLeft;
+            minx = 0.5;
+            miny = 0.5;
+            maxx = ((float)_myInfo->myChannel->width) - 0.5;
+            maxx = maxx / 2.0;
+            maxy = ((float)_myInfo->myChannel->height) - 0.5;
+            maxy = maxy / 2.0;
 
-	    currentx = minx;
-	    currenty = miny;
-	}
-	else if(bottomRight >= bottomLeft && bottomRight >= topLeft && bottomRight >= topRight)
-	{
-	    minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    miny = 0.5; 
-	    maxx = ((float)_myInfo->myChannel->width) - 0.5;
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            currentx = minx;
+            currenty = miny;
+        }
+        else if(bottomRight >= bottomLeft && bottomRight >= topLeft
+                && bottomRight >= topRight)
+        {
+            minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            miny = 0.5;
+            maxx = ((float)_myInfo->myChannel->width) - 0.5;
+            maxy = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
-	else if(topLeft >= bottomLeft && topLeft >= bottomRight && topLeft >= topRight)
-	{
-	    minx = 0.5;
-	    miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0; 
-	    maxx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5);
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
+        else if(topLeft >= bottomLeft && topLeft >= bottomRight
+                && topLeft >= topRight)
+        {
+            minx = 0.5;
+            miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            maxx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            maxy = (((float)_myInfo->myChannel->height) - 0.5);
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
-	else // topRight
-	{
-	    minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0; 
-	    maxx = (((float)_myInfo->myChannel->width) - 0.5);
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5);
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
+        else // topRight
+        {
+            minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            maxx = (((float)_myInfo->myChannel->width) - 0.5);
+            maxy = (((float)_myInfo->myChannel->height) - 0.5);
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
 
-	while(maxx - minx > 0.5)
-	{
-	    currentx = minx + ((maxx - minx) / 2.0);
-	    float newRatio = getRatio(currentx, currenty,i);
-	    if(newRatio > currentRatio)
-	    {
-		minx = currentx;
-		currentRatio = newRatio;
-	    }
-	    else
-	    {
-		maxx = currentx;
-	    }
-	}
+        while(maxx - minx > 0.5)
+        {
+            currentx = minx + ((maxx - minx) / 2.0);
+            float newRatio = getRatio(currentx,currenty,i);
+            if(newRatio > currentRatio)
+            {
+                minx = currentx;
+                currentRatio = newRatio;
+            }
+            else
+            {
+                maxx = currentx;
+            }
+        }
 
-	while(maxy - miny > 0.5)
-	{
-	    currenty = miny + ((maxy - miny) / 2.0);
-	    float newRatio = getRatio(currentx, currenty,i);
-	    if(newRatio > currentRatio)
-	    {
-		miny = currenty;
-		currentRatio = newRatio;
-	    }
-	    else
-	    {
-		maxy = currenty;
-	    }
-	}
+        while(maxy - miny > 0.5)
+        {
+            currenty = miny + ((maxy - miny) / 2.0);
+            float newRatio = getRatio(currentx,currenty,i);
+            if(newRatio > currentRatio)
+            {
+                miny = currenty;
+                currentRatio = newRatio;
+            }
+            else
+            {
+                maxy = currenty;
+            }
+        }
 
-	_maxRatioLocal[i] = currentRatio;
+        _maxRatioLocal[i] = currentRatio;
 
-	// find min
-	if(bottomLeft <= bottomRight && bottomLeft <= topLeft && bottomLeft <= topRight)
-	{
-	    currentRatio = bottomLeft;
-	    minx = 0.5;
-	    miny = 0.5; 
-	    maxx = ((float)_myInfo->myChannel->width) - 0.5;
-	    maxx = maxx / 2.0;
-	    maxy = ((float)_myInfo->myChannel->height) - 0.5;
-	    maxy = maxy / 2.0;
+        // find min
+        if(bottomLeft <= bottomRight && bottomLeft <= topLeft
+                && bottomLeft <= topRight)
+        {
+            currentRatio = bottomLeft;
+            minx = 0.5;
+            miny = 0.5;
+            maxx = ((float)_myInfo->myChannel->width) - 0.5;
+            maxx = maxx / 2.0;
+            maxy = ((float)_myInfo->myChannel->height) - 0.5;
+            maxy = maxy / 2.0;
 
-	    currentx = minx;
-	    currenty = miny;
-	}
-	else if(bottomRight <= bottomLeft && bottomRight <= topLeft && bottomRight <= topRight)
-	{
-	    minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    miny = 0.5; 
-	    maxx = ((float)_myInfo->myChannel->width) - 0.5;
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            currentx = minx;
+            currenty = miny;
+        }
+        else if(bottomRight <= bottomLeft && bottomRight <= topLeft
+                && bottomRight <= topRight)
+        {
+            minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            miny = 0.5;
+            maxx = ((float)_myInfo->myChannel->width) - 0.5;
+            maxy = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
-	else if(topLeft <= bottomLeft && topLeft <= bottomRight && topLeft <= topRight)
-	{
-	    minx = 0.5;
-	    miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0; 
-	    maxx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5);
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
+        else if(topLeft <= bottomLeft && topLeft <= bottomRight
+                && topLeft <= topRight)
+        {
+            minx = 0.5;
+            miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            maxx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            maxy = (((float)_myInfo->myChannel->height) - 0.5);
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
-	else // topRight
-	{
-	    minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
-	    miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0; 
-	    maxx = (((float)_myInfo->myChannel->width) - 0.5);
-	    maxy = (((float)_myInfo->myChannel->height) - 0.5);
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
+        else // topRight
+        {
+            minx = (((float)_myInfo->myChannel->width) - 0.5) / 2.0;
+            miny = (((float)_myInfo->myChannel->height) - 0.5) / 2.0;
+            maxx = (((float)_myInfo->myChannel->width) - 0.5);
+            maxy = (((float)_myInfo->myChannel->height) - 0.5);
 
-	    currentx = minx;
-	    currenty = miny;
-	    currentRatio = getRatio(currentx, currenty, i);
-	}
+            currentx = minx;
+            currenty = miny;
+            currentRatio = getRatio(currentx,currenty,i);
+        }
 
-	while(maxx - minx > 0.1)
-	{
-	    currentx = minx + ((maxx - minx) / 2.0);
-	    float newRatio = getRatio(currentx, currenty,i);
-	    if(newRatio < currentRatio)
-	    {
-		minx = currentx;
-		currentRatio = newRatio;
-	    }
-	    else
-	    {
-		maxx = currentx;
-	    }
-	}
+        while(maxx - minx > 0.1)
+        {
+            currentx = minx + ((maxx - minx) / 2.0);
+            float newRatio = getRatio(currentx,currenty,i);
+            if(newRatio < currentRatio)
+            {
+                minx = currentx;
+                currentRatio = newRatio;
+            }
+            else
+            {
+                maxx = currentx;
+            }
+        }
 
-	while(maxy - miny > 0.1)
-	{
-	    currenty = miny + ((maxy - miny) / 2.0);
-	    float newRatio = getRatio(currentx, currenty,i);
-	    if(newRatio < currentRatio)
-	    {
-		miny = currenty;
-		currentRatio = newRatio;
-	    }
-	    else
-	    {
-		maxy = currenty;
-	    }
-	}
+        while(maxy - miny > 0.1)
+        {
+            currenty = miny + ((maxy - miny) / 2.0);
+            float newRatio = getRatio(currentx,currenty,i);
+            if(newRatio < currentRatio)
+            {
+                miny = currenty;
+                currentRatio = newRatio;
+            }
+            else
+            {
+                maxy = currenty;
+            }
+        }
 
-	_minRatioLocal[i] = currentRatio;
+        _minRatioLocal[i] = currentRatio;
 
-	//std::cerr << "Min Ratio: " << _minRatioLocal[i] << " Max Ratio: " << _maxRatioLocal[i] << " Range: " << _maxRatioLocal[i] - _minRatioLocal[i] << std::endl;
+        //std::cerr << "Min Ratio: " << _minRatioLocal[i] << " Max Ratio: " << _maxRatioLocal[i] << " Range: " << _maxRatioLocal[i] - _minRatioLocal[i] << std::endl;
 
 #if 0
-	//compare result to brute force
-	
-	float bruteforceMin = 1.0;
-	float bruteforceMax = 0.0;
-	float bfMinx;
-	float bfMiny;
-	float bfMaxx;
-	float bfMaxy;
-	for(float j = 0.5; j < _myInfo->myChannel->width; j = j + 1.0)
-	{
-	    for(float k = 0.5; k < _myInfo->myChannel->height; k = k + 1.0)
-	    {
-		float r = getRatio(j,k,i);
-		if(r < bruteforceMin)
-		{
-		    bruteforceMin = r;
-		    bfMinx = j;
-		    bfMiny = k;
-		}
-		if(r > bruteforceMax)
-		{
-		    bruteforceMax = r;
-		    bfMaxx = j;
-		    bfMaxy = k;
-		}
-	    }
-	}
+        //compare result to brute force
 
-	std::cerr << "MinRatio: " << _minRatioLocal[i] << " bf: " << bruteforceMin << " MaxRatio: " << _maxRatioLocal[i] << " bf: " << bruteforceMax << std::endl;
+        float bruteforceMin = 1.0;
+        float bruteforceMax = 0.0;
+        float bfMinx;
+        float bfMiny;
+        float bfMaxx;
+        float bfMaxy;
+        for(float j = 0.5; j < _myInfo->myChannel->width; j = j + 1.0)
+        {
+            for(float k = 0.5; k < _myInfo->myChannel->height; k = k + 1.0)
+            {
+                float r = getRatio(j,k,i);
+                if(r < bruteforceMin)
+                {
+                    bruteforceMin = r;
+                    bfMinx = j;
+                    bfMiny = k;
+                }
+                if(r > bruteforceMax)
+                {
+                    bruteforceMax = r;
+                    bfMaxx = j;
+                    bfMaxy = k;
+                }
+            }
+        }
+
+        std::cerr << "MinRatio: " << _minRatioLocal[i] << " bf: " << bruteforceMin << " MaxRatio: " << _maxRatioLocal[i] << " bf: " << bruteforceMax << std::endl;
 
 #endif
 
+        //std::cerr << "currentx: " << currentx << " currenty: " << currenty << " max ratio: " << maxRatio << " min ratio: " << minRatio << std::endl;
 
-	//std::cerr << "currentx: " << currentx << " currenty: " << currenty << " max ratio: " << maxRatio << " min ratio: " << minRatio << std::endl;
-	
-	if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
-	{
-	    break;
-	}
+        if(_stereoMode != osg::DisplaySettings::HORIZONTAL_INTERLACE)
+        {
+            break;
+        }
     }
 }
 
@@ -1494,7 +1531,8 @@ float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
     return weight.y() / (weight.x() + weight.y());
 }
 
-ScreenMultiViewer::StateSetVisitor::StateSetVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
+ScreenMultiViewer::StateSetVisitor::StateSetVisitor() :
+        osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
 {
     _lighting = true;
     _texture = false;
@@ -1508,83 +1546,83 @@ void ScreenMultiViewer::StateSetVisitor::apply(osg::Node& node)
     osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
     if(sa != osg::StateAttribute::INHERIT)
     {
-	osg::Uniform * lighting = NULL;
-	if(sa == osg::StateAttribute::ON && !_lighting)
-	{
-	    lighting = stateset->getUniform("MVLighting");
-	    if(!lighting)
-	    {
-		lighting = new osg::Uniform();
-		lighting->setName("MVLighting");
-		lighting->setType(osg::Uniform::BOOL);
-		lighting->set(true);
-		stateset->addUniform(lighting);
-	    }
-	    else
-	    {
-		lighting->set(true);
-	    }
-	    _lighting = true;
-	}
-	else if(sa == osg::StateAttribute::OFF && _lighting)
-	{
-	    lighting = stateset->getUniform("MVLighting");
-	    if(!lighting)
-	    {
-		lighting = new osg::Uniform();
-		lighting->setName("MVLighting");
-		lighting->setType(osg::Uniform::BOOL);
-		lighting->set(false);
-		stateset->addUniform(lighting);
-	    }
-	    else
-	    {
-		lighting->set(false);
-	    }
+        osg::Uniform * lighting = NULL;
+        if(sa == osg::StateAttribute::ON && !_lighting)
+        {
+            lighting = stateset->getUniform("MVLighting");
+            if(!lighting)
+            {
+                lighting = new osg::Uniform();
+                lighting->setName("MVLighting");
+                lighting->setType(osg::Uniform::BOOL);
+                lighting->set(true);
+                stateset->addUniform(lighting);
+            }
+            else
+            {
+                lighting->set(true);
+            }
+            _lighting = true;
+        }
+        else if(sa == osg::StateAttribute::OFF && _lighting)
+        {
+            lighting = stateset->getUniform("MVLighting");
+            if(!lighting)
+            {
+                lighting = new osg::Uniform();
+                lighting->setName("MVLighting");
+                lighting->setType(osg::Uniform::BOOL);
+                lighting->set(false);
+                stateset->addUniform(lighting);
+            }
+            else
+            {
+                lighting->set(false);
+            }
 
-	    _lighting = false;
-	}
+            _lighting = false;
+        }
     }
 
     sa = stateset->getMode(GL_TEXTURE_2D);
     if(sa != osg::StateAttribute::INHERIT)
     {
-	osg::Uniform * texture = NULL;
-	if(sa == osg::StateAttribute::ON && !_texture)
-	{
-	    texture = stateset->getUniform("MVTexture");
-	    if(!texture)
-	    {
-		texture = new osg::Uniform();
-		texture->setName("MVTexture");
-		texture->setType(osg::Uniform::BOOL);
-		texture->set(true);
-		stateset->addUniform(texture);
-	    }
-	    else
-	    {
-		texture->set(true);
-	    }
-	    _texture = true;
-	}
-	else if(sa == osg::StateAttribute::OFF && _texture)
-	{
-	    texture = stateset->getUniform("MVTexture");
-	    if(!texture)
-	    {
-		texture = new osg::Uniform();
-		texture->setName("MVTexture");
-		texture->setType(osg::Uniform::BOOL);
-		texture->set(false);
-		stateset->addUniform(texture);
-	    }
-	    else
-	    {
-		texture->set(false);
-	    }
+        osg::Uniform * texture = NULL;
+        if(sa == osg::StateAttribute::ON && !_texture)
+        {
+            texture = stateset->getUniform("MVTexture");
+            if(!texture)
+            {
+                texture = new osg::Uniform();
+                texture->setName("MVTexture");
+                texture->setType(osg::Uniform::BOOL);
+                texture->set(true);
+                stateset->addUniform(texture);
+            }
+            else
+            {
+                texture->set(true);
+            }
+            _texture = true;
+        }
+        else if(sa == osg::StateAttribute::OFF && _texture)
+        {
+            texture = stateset->getUniform("MVTexture");
+            if(!texture)
+            {
+                texture = new osg::Uniform();
+                texture->setName("MVTexture");
+                texture->setType(osg::Uniform::BOOL);
+                texture->set(false);
+                stateset->addUniform(texture);
+            }
+            else
+            {
+                texture->set(false);
+            }
 
-	    _texture = false;
-	}
+            _texture = false;
+        }
     }
 
     traverse(node);
@@ -1601,163 +1639,163 @@ void ScreenMultiViewer::StateSetVisitor::apply(osg::Geode& node)
     osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
     if(sa != osg::StateAttribute::INHERIT)
     {
-	osg::Uniform * lighting = NULL;
-	if(sa == osg::StateAttribute::ON && !_lighting)
-	{
-	    lighting = stateset->getUniform("MVLighting");
-	    if(!lighting)
-	    {
-		lighting = new osg::Uniform();
-		lighting->setName("MVLighting");
-		lighting->setType(osg::Uniform::BOOL);
-		lighting->set(true);
-		stateset->addUniform(lighting);
-	    }
-	    else
-	    {
-		lighting->set(true);
-	    }
-	    _lighting = true;
-	}
-	else if(sa == osg::StateAttribute::OFF && _lighting)
-	{
-	    lighting = stateset->getUniform("MVLighting");
-	    if(!lighting)
-	    {
-		lighting = new osg::Uniform();
-		lighting->setName("MVLighting");
-		lighting->setType(osg::Uniform::BOOL);
-		lighting->set(false);
-		stateset->addUniform(lighting);
-	    }
-	    else
-	    {
-		lighting->set(false);
-	    }
+        osg::Uniform * lighting = NULL;
+        if(sa == osg::StateAttribute::ON && !_lighting)
+        {
+            lighting = stateset->getUniform("MVLighting");
+            if(!lighting)
+            {
+                lighting = new osg::Uniform();
+                lighting->setName("MVLighting");
+                lighting->setType(osg::Uniform::BOOL);
+                lighting->set(true);
+                stateset->addUniform(lighting);
+            }
+            else
+            {
+                lighting->set(true);
+            }
+            _lighting = true;
+        }
+        else if(sa == osg::StateAttribute::OFF && _lighting)
+        {
+            lighting = stateset->getUniform("MVLighting");
+            if(!lighting)
+            {
+                lighting = new osg::Uniform();
+                lighting->setName("MVLighting");
+                lighting->setType(osg::Uniform::BOOL);
+                lighting->set(false);
+                stateset->addUniform(lighting);
+            }
+            else
+            {
+                lighting->set(false);
+            }
 
-	    _lighting = false;
-	}
+            _lighting = false;
+        }
     }
 
     sa = stateset->getMode(GL_TEXTURE_2D);
     if(sa != osg::StateAttribute::INHERIT)
     {
-	osg::Uniform * texture = NULL;
-	if(sa == osg::StateAttribute::ON && !_texture)
-	{
-	    texture = stateset->getUniform("MVTexture");
-	    if(!texture)
-	    {
-		texture = new osg::Uniform();
-		texture->setName("MVTexture");
-		texture->setType(osg::Uniform::BOOL);
-		texture->set(true);
-		stateset->addUniform(texture);
-	    }
-	    else
-	    {
-		texture->set(true);
-	    }
-	    _texture = true;
-	}
-	else if(sa == osg::StateAttribute::OFF && _texture)
-	{
-	    texture = stateset->getUniform("MVTexture");
-	    if(!texture)
-	    {
-		texture = new osg::Uniform();
-		texture->setName("MVTexture");
-		texture->setType(osg::Uniform::BOOL);
-		texture->set(false);
-		stateset->addUniform(texture);
-	    }
-	    else
-	    {
-		texture->set(false);
-	    }
+        osg::Uniform * texture = NULL;
+        if(sa == osg::StateAttribute::ON && !_texture)
+        {
+            texture = stateset->getUniform("MVTexture");
+            if(!texture)
+            {
+                texture = new osg::Uniform();
+                texture->setName("MVTexture");
+                texture->setType(osg::Uniform::BOOL);
+                texture->set(true);
+                stateset->addUniform(texture);
+            }
+            else
+            {
+                texture->set(true);
+            }
+            _texture = true;
+        }
+        else if(sa == osg::StateAttribute::OFF && _texture)
+        {
+            texture = stateset->getUniform("MVTexture");
+            if(!texture)
+            {
+                texture = new osg::Uniform();
+                texture->setName("MVTexture");
+                texture->setType(osg::Uniform::BOOL);
+                texture->set(false);
+                stateset->addUniform(texture);
+            }
+            else
+            {
+                texture->set(false);
+            }
 
-	    _texture = false;
-	}
+            _texture = false;
+        }
     }
 
     for(unsigned int i = 0; i < node.getNumDrawables(); i++)
     {
-	stateset = node.getDrawable(i)->getOrCreateStateSet();
-	osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
-	if(sa != osg::StateAttribute::INHERIT)
-	{
-	    osg::Uniform * lighting = NULL;
-	    if(sa == osg::StateAttribute::ON && !_lighting)
-	    {
-		lighting = stateset->getUniform("MVLighting");
-		if(!lighting)
-		{
-		    lighting = new osg::Uniform();
-		    lighting->setName("MVLighting");
-		    lighting->setType(osg::Uniform::BOOL);
-		    lighting->set(true);
-		    stateset->addUniform(lighting);
-		}
-		else
-		{
-		    lighting->set(true);
-		}
-	    }
-	    else if(sa == osg::StateAttribute::OFF && _lighting)
-	    {
-		lighting = stateset->getUniform("MVLighting");
-		if(!lighting)
-		{
-		    lighting = new osg::Uniform();
-		    lighting->setName("MVLighting");
-		    lighting->setType(osg::Uniform::BOOL);
-		    lighting->set(false);
-		    stateset->addUniform(lighting);
-		}
-		else
-		{
-		    lighting->set(false);
-		}
-	    }
-	}
+        stateset = node.getDrawable(i)->getOrCreateStateSet();
+        osg::StateAttribute::GLModeValue sa = stateset->getMode(GL_LIGHTING);
+        if(sa != osg::StateAttribute::INHERIT)
+        {
+            osg::Uniform * lighting = NULL;
+            if(sa == osg::StateAttribute::ON && !_lighting)
+            {
+                lighting = stateset->getUniform("MVLighting");
+                if(!lighting)
+                {
+                    lighting = new osg::Uniform();
+                    lighting->setName("MVLighting");
+                    lighting->setType(osg::Uniform::BOOL);
+                    lighting->set(true);
+                    stateset->addUniform(lighting);
+                }
+                else
+                {
+                    lighting->set(true);
+                }
+            }
+            else if(sa == osg::StateAttribute::OFF && _lighting)
+            {
+                lighting = stateset->getUniform("MVLighting");
+                if(!lighting)
+                {
+                    lighting = new osg::Uniform();
+                    lighting->setName("MVLighting");
+                    lighting->setType(osg::Uniform::BOOL);
+                    lighting->set(false);
+                    stateset->addUniform(lighting);
+                }
+                else
+                {
+                    lighting->set(false);
+                }
+            }
+        }
 
-	sa = stateset->getMode(GL_TEXTURE_2D);
-	if(sa != osg::StateAttribute::INHERIT)
-	{
-	    osg::Uniform * texture = NULL;
-	    if(sa == osg::StateAttribute::ON && !_texture)
-	    {
-		texture = stateset->getUniform("MVTexture");
-		if(!texture)
-		{
-		    texture = new osg::Uniform();
-		    texture->setName("MVTexture");
-		    texture->setType(osg::Uniform::BOOL);
-		    texture->set(true);
-		    stateset->addUniform(texture);
-		}
-		else
-		{
-		    texture->set(true);
-		}
-	    }
-	    else if(sa == osg::StateAttribute::OFF && _texture)
-	    {
-		texture = stateset->getUniform("MVTexture");
-		if(!texture)
-		{
-		    texture = new osg::Uniform();
-		    texture->setName("MVTexture");
-		    texture->setType(osg::Uniform::BOOL);
-		    texture->set(false);
-		    stateset->addUniform(texture);
-		}
-		else
-		{
-		    texture->set(false);
-		}
-	    }
-	}
+        sa = stateset->getMode(GL_TEXTURE_2D);
+        if(sa != osg::StateAttribute::INHERIT)
+        {
+            osg::Uniform * texture = NULL;
+            if(sa == osg::StateAttribute::ON && !_texture)
+            {
+                texture = stateset->getUniform("MVTexture");
+                if(!texture)
+                {
+                    texture = new osg::Uniform();
+                    texture->setName("MVTexture");
+                    texture->setType(osg::Uniform::BOOL);
+                    texture->set(true);
+                    stateset->addUniform(texture);
+                }
+                else
+                {
+                    texture->set(true);
+                }
+            }
+            else if(sa == osg::StateAttribute::OFF && _texture)
+            {
+                texture = stateset->getUniform("MVTexture");
+                if(!texture)
+                {
+                    texture = new osg::Uniform();
+                    texture->setName("MVTexture");
+                    texture->setType(osg::Uniform::BOOL);
+                    texture->set(false);
+                    stateset->addUniform(texture);
+                }
+                else
+                {
+                    texture->set(false);
+                }
+            }
+        }
     }
 
     traverse(node);

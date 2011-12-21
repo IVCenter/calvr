@@ -14,7 +14,7 @@
 using namespace cvr;
 
 BoardMenuRangeValueGeometry::BoardMenuRangeValueGeometry() :
-    BoardMenuGeometry()
+        BoardMenuGeometry()
 {
 
 }
@@ -27,7 +27,7 @@ BoardMenuRangeValueGeometry::~BoardMenuRangeValueGeometry()
 void BoardMenuRangeValueGeometry::selectItem(bool on)
 {
     //std::cerr << "Select Item called " << on << std::endl;
-    _node->removeChildren(0, _node->getNumChildren());
+    _node->removeChildren(0,_node->getNumChildren());
     if(on)
     {
         _node->addChild(_groupSelected);
@@ -67,18 +67,15 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     _node->addChild(_group);
 
-    osg::Geometry * geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0,
-                                                                        1.0,
-                                                                        1.0,
-                                                                        1.0),
-                                   osg::Vec3(0, -2, 0));
+    osg::Geometry * geo = makeQuad(_iconHeight,-_iconHeight,
+            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(geo);
 
     MenuRangeValue * mrv = (MenuRangeValue*)item;
 
     const char * printstr;
-    if((mrv->getMin() >= 0 && mrv->getMax() >= 0) || (mrv->getMin() < 0
-            && mrv->getMax() < 0))
+    if((mrv->getMin() >= 0 && mrv->getMax() >= 0)
+            || (mrv->getMin() < 0 && mrv->getMax() < 0))
     {
         printstr = "%6f";
         _sign = false;
@@ -89,20 +86,20 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
         _sign = true;
     }
 
-    _label = makeText(mrv->getLabel(), _textSize, osg::Vec3(_iconHeight
-            + _border, -2, -_iconHeight / 2.0), _textColor);
+    _label = makeText(mrv->getLabel(),_textSize,
+            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
 
     _geode->addDrawable(_label.get());
 
-    _geodeSelected->addDrawable(makeText(mrv->getLabel(), _textSize,
-                                         osg::Vec3(_iconHeight + _border, -2,
-                                                   -_iconHeight / 2.0),
-                                         _textColorSelected));
+    _geodeSelected->addDrawable(
+            makeText(mrv->getLabel(),_textSize,
+                    osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
+                    _textColorSelected));
 
     char buffer[7];
-    snprintf(buffer, 7, "%6f", mrv->getMin());
-    _minValue = makeText(buffer, _textSize * 0.75, osg::Vec3(0, -2, -3.0
-            * _iconHeight / 2.0 - _border), _textColor);
+    snprintf(buffer,7,"%6f",mrv->getMin());
+    _minValue = makeText(buffer,_textSize * 0.75,
+            osg::Vec3(0,-2,-3.0 * _iconHeight / 2.0 - _border),_textColor);
 
     _geode->addDrawable(_minValue.get());
     _geodeSelected->addDrawable(_minValue.get());
@@ -113,24 +110,24 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
-    geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
-                   osg::Vec3(width2, -2, -_iconHeight - _border));
+    geo = makeQuad(_iconHeight,-_iconHeight,osg::Vec4(1.0,1.0,1.0,1.0),
+            osg::Vec3(width2,-2,-_iconHeight - _border));
     _geodeBackIcon->addDrawable(geo);
 
     _backIcon = loadIcon("less.rgb");
 
     if(_backIcon)
     {
-	osg::StateSet * stateset = _geodeBackIcon->getOrCreateStateSet();
-	stateset->setTextureAttributeAndModes(0, _backIcon,
-                                              osg::StateAttribute::ON);
+        osg::StateSet * stateset = _geodeBackIcon->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0,_backIcon,
+                osg::StateAttribute::ON);
     }
 
     width2 += _iconHeight + _border;
 
-    snprintf(buffer, 7, printstr, mrv->getValue());
-    _currentValue = makeText(buffer, _textSize, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _border), _textColor);
+    snprintf(buffer,7,printstr,mrv->getValue());
+    _currentValue = makeText(buffer,_textSize,
+            osg::Vec3(width2,-2,-3.0 * _iconHeight / 2.0 - _border),_textColor);
 
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
@@ -139,24 +136,24 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
-    geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
-                   osg::Vec3(width2, -2, -_iconHeight - _border));
+    geo = makeQuad(_iconHeight,-_iconHeight,osg::Vec4(1.0,1.0,1.0,1.0),
+            osg::Vec3(width2,-2,-_iconHeight - _border));
     _geodeForwardIcon->addDrawable(geo);
 
     _forwardIcon = loadIcon("greater.rgb");
 
     if(_forwardIcon)
     {
-	osg::StateSet * stateset = _geodeForwardIcon->getOrCreateStateSet();
-	stateset->setTextureAttributeAndModes(0, _forwardIcon,
-                                              osg::StateAttribute::ON);
+        osg::StateSet * stateset = _geodeForwardIcon->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0,_forwardIcon,
+                osg::StateAttribute::ON);
     }
 
     width2 += _iconHeight + _border;
 
-    snprintf(buffer, 7, "%6f", mrv->getMax());
-    _maxValue = makeText(buffer, _textSize * 0.75, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _border), _textColor);
+    snprintf(buffer,7,"%6f",mrv->getMax());
+    _maxValue = makeText(buffer,_textSize * 0.75,
+            osg::Vec3(width2,-2,-3.0 * _iconHeight / 2.0 - _border),_textColor);
 
     _geode->addDrawable(_maxValue.get());
     _geodeSelected->addDrawable(_maxValue.get());
@@ -167,7 +164,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _height = _iconHeight * 2.0 + _border;
 
     osg::BoundingBox bb = _label->getBound();
-    _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border, width2);
+    _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border,width2);
 }
 
 void BoardMenuRangeValueGeometry::updateGeometry()
@@ -197,9 +194,9 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
     MenuRangeValue * mrv = (MenuRangeValue*)_item;
 
-    snprintf(buffer, 7, printstr, mrv->getValue());
-    _currentValue = makeText(buffer, _textSize, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _border), _textColor);
+    snprintf(buffer,7,printstr,mrv->getValue());
+    _currentValue = makeText(buffer,_textSize,
+            osg::Vec3(width2,-2,-3.0 * _iconHeight / 2.0 - _border),_textColor);
 
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
@@ -210,132 +207,136 @@ void BoardMenuRangeValueGeometry::updateGeometry()
     bb = _maxValue->getBound();
     width2 += bb.xMax() - bb.xMin();
 
-    _width = std::max(width1, width2);
+    _width = std::max(width1,width2);
 }
 
 void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 {
     if(event->asMouseEvent())
     {
-	MouseInteractionEvent * mie = event->asMouseEvent();
-	if(event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
-	{
-	    int x,y;
+        MouseInteractionEvent * mie = event->asMouseEvent();
+        if(event->getInteraction() == BUTTON_DOWN
+                || event->getInteraction() == BUTTON_DOUBLE_CLICK)
+        {
+            int x, y;
 
-	    x = mie->getX();
-	    y = mie->getY();
+            x = mie->getX();
+            y = mie->getY();
 
-	    _lastMouseX = x;
-	    _lastMouseY = y;
-	    return;
-	}
-	if(event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
-	{
-	    int x,y;
-	    x = mie->getX();
-	    y = mie->getY();
+            _lastMouseX = x;
+            _lastMouseY = y;
+            return;
+        }
+        if(event->getInteraction() == BUTTON_DRAG
+                || event->getInteraction() == BUTTON_UP)
+        {
+            int x, y;
+            x = mie->getX();
+            y = mie->getY();
 
-	    MenuRangeValue * mrv = (MenuRangeValue*)_item;
-	    float pixelRange = 400;
+            MenuRangeValue * mrv = (MenuRangeValue*)_item;
+            float pixelRange = 400;
 
-	    bool valueUpdated = false;
-	    if(x > _lastMouseX)
-	    {
-		if(mrv->getValue() != mrv->getMax())
-		{
-		    float change = (x - _lastMouseX) * (mrv->getMax()
-			    - mrv->getMin()) / pixelRange;
-		    float newValue = std::max(mrv->getValue() + change,
-			    mrv->getMin());
-		    mrv->setValue(newValue);
-		    valueUpdated = true;
-		}
-	    }
-	    else if(x < _lastMouseX)
-	    {
-		if(mrv->getValue() != mrv->getMin())
-		{
-		    float change = (x - _lastMouseX) * (mrv->getMax()
-			    - mrv->getMin()) / pixelRange;
-		    float newValue = std::min(mrv->getValue() + change,
-			    mrv->getMax());
-		    mrv->setValue(newValue);
-		    valueUpdated = true;
-		}
-	    }
+            bool valueUpdated = false;
+            if(x > _lastMouseX)
+            {
+                if(mrv->getValue() != mrv->getMax())
+                {
+                    float change = (x - _lastMouseX)
+                            * (mrv->getMax() - mrv->getMin()) / pixelRange;
+                    float newValue = std::max(mrv->getValue() + change,
+                            mrv->getMin());
+                    mrv->setValue(newValue);
+                    valueUpdated = true;
+                }
+            }
+            else if(x < _lastMouseX)
+            {
+                if(mrv->getValue() != mrv->getMin())
+                {
+                    float change = (x - _lastMouseX)
+                            * (mrv->getMax() - mrv->getMin()) / pixelRange;
+                    float newValue = std::min(mrv->getValue() + change,
+                            mrv->getMax());
+                    mrv->setValue(newValue);
+                    valueUpdated = true;
+                }
+            }
 
-	    if(valueUpdated)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item);
-		}
-	    }
+            if(valueUpdated)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item);
+                }
+            }
 
-	    _lastMouseY = y;
-	    _lastMouseX = x;
-	    return;
-	}
+            _lastMouseY = y;
+            _lastMouseX = x;
+            return;
+        }
     }
     else if(event->asTrackedButtonEvent())
     {
-	TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
-	if(event->getInteraction() == BUTTON_DOWN || event->getInteraction() == BUTTON_DOUBLE_CLICK)
-	{
-	    _point = tie->getTransform().getTrans();
-	    osg::Vec3 forward = osg::Vec3(0, 1.0, 0) * tie->getTransform();
-	    forward = forward - _point;
-	    _normal = forward ^ osg::Vec3(0, 0, 1.0);
-	    _normal.normalize();
-	    _lastDistance = 0.0;
-	    return;
-	}
-	if(event->getInteraction() == BUTTON_DRAG || event->getInteraction() == BUTTON_UP)
-	{
-	    MenuRangeValue * mrv = (MenuRangeValue*)_item;
-	    osg::Vec3 vec = tie->getTransform().getTrans();
-	    vec = vec - _point;
-	    float newDistance = vec * _normal;
+        TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+        if(event->getInteraction() == BUTTON_DOWN
+                || event->getInteraction() == BUTTON_DOUBLE_CLICK)
+        {
+            _point = tie->getTransform().getTrans();
+            osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
+            forward = forward - _point;
+            _normal = forward ^ osg::Vec3(0,0,1.0);
+            _normal.normalize();
+            _lastDistance = 0.0;
+            return;
+        }
+        if(event->getInteraction() == BUTTON_DRAG
+                || event->getInteraction() == BUTTON_UP)
+        {
+            MenuRangeValue * mrv = (MenuRangeValue*)_item;
+            osg::Vec3 vec = tie->getTransform().getTrans();
+            vec = vec - _point;
+            float newDistance = vec * _normal;
 
-	    float range = 600;
+            float range = 600;
 
-	    bool valueUpdated = false;
-	    if(newDistance < _lastDistance)
-	    {
-		if(mrv->getValue() != mrv->getMin())
-		{
-		    float change =  (newDistance - _lastDistance) * (mrv->getMax()
-			    - mrv->getMin()) / range;
-		    float newValue = std::max(mrv->getValue() + change,
-			    mrv->getMin());
-		    mrv->setValue(newValue);
-		    valueUpdated = true;
-		}
-	    }
-	    else if(newDistance > _lastDistance)
-	    {
-		if(mrv->getValue() != mrv->getMax())
-		{
-		    float change = (newDistance - _lastDistance) * (mrv->getMax()
-			    - mrv->getMin()) / range;
-		    float newValue = std::min(mrv->getValue() + change,
-			    mrv->getMax());
-		    mrv->setValue(newValue);
-		    valueUpdated = true;
-		}
-	    }
+            bool valueUpdated = false;
+            if(newDistance < _lastDistance)
+            {
+                if(mrv->getValue() != mrv->getMin())
+                {
+                    float change = (newDistance - _lastDistance)
+                            * (mrv->getMax() - mrv->getMin()) / range;
+                    float newValue = std::max(mrv->getValue() + change,
+                            mrv->getMin());
+                    mrv->setValue(newValue);
+                    valueUpdated = true;
+                }
+            }
+            else if(newDistance > _lastDistance)
+            {
+                if(mrv->getValue() != mrv->getMax())
+                {
+                    float change = (newDistance - _lastDistance)
+                            * (mrv->getMax() - mrv->getMin()) / range;
+                    float newValue = std::min(mrv->getValue() + change,
+                            mrv->getMax());
+                    mrv->setValue(newValue);
+                    valueUpdated = true;
+                }
+            }
 
-	    if(valueUpdated)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item);
-		}
-	    }
+            if(valueUpdated)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item);
+                }
+            }
 
-	    _lastDistance = newDistance;
+            _lastDistance = newDistance;
 
-	    return;
-	}
+            return;
+        }
     }
 }

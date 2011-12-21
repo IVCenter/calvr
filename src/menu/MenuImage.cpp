@@ -4,14 +4,16 @@
 
 using namespace cvr;
 
-MenuImage::MenuImage(std::string imageFile, float width, float height) : MenuItem()
+MenuImage::MenuImage(std::string imageFile, float width, float height) :
+        MenuItem()
 {
     _width = width;
     _height = height;
     loadImageFromFile(imageFile);
 }
 
-MenuImage::MenuImage(osg::Texture2D * texture, float width, float height) : MenuItem()
+MenuImage::MenuImage(osg::Texture2D * texture, float width, float height) :
+        MenuItem()
 {
     _width = width;
     _height = height;
@@ -40,7 +42,7 @@ osg::Texture2D * MenuImage::getImage()
 {
     if(_image.valid())
     {
-	return _image.get();
+        return _image.get();
     }
 
     return NULL;
@@ -75,21 +77,21 @@ MenuItemType MenuImage::getType()
 
 void MenuImage::loadImageFromFile(std::string & file)
 {
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
+    osg::ref_ptr < osg::Image > image = osgDB::readImageFile(file);
     if(image.get())
     {
         _image = new osg::Texture2D;
         _image->setImage(image);
 
-	if(_width == 0)
-	{
-	    _width = image->s();
-	}
-	if(_height == 0)
-	{
-	    _height = image->t();
-	}
-	return;
+        if(_width == 0)
+        {
+            _width = image->s();
+        }
+        if(_height == 0)
+        {
+            _height = image->t();
+        }
+        return;
     }
     _image = NULL;
 }

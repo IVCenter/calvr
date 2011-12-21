@@ -16,10 +16,10 @@ int main(int argc, char **argv)
     }
 
     cvr::CalVR * calvr = new cvr::CalVR();
-    osg::ArgumentParser args(&argc, argv);
+    osg::ArgumentParser args(&argc,argv);
     if(!calvr->init(args,cvrDir))
     {
-	return 0;
+        return 0;
     }
 
     calvr->run();

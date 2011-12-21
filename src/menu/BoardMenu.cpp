@@ -30,12 +30,11 @@ BoardMenu::BoardMenu()
 
     std::string s;
 
-    _distance
-            = ConfigManager::getFloat("distance",
-                                      "MenuSystem.BoardMenu.Position", 2000.0);
+    _distance = ConfigManager::getFloat("distance",
+            "MenuSystem.BoardMenu.Position",2000.0);
 
-    s = ConfigManager::getEntry("value", "MenuSystem.BoardMenu.Trigger",
-                                "DOUBLECLICK");
+    s = ConfigManager::getEntry("value","MenuSystem.BoardMenu.Trigger",
+            "DOUBLECLICK");
 
     if(s == "DOUBLECLICK")
     {
@@ -52,12 +51,12 @@ BoardMenu::BoardMenu()
     }
 
     _primaryButton = ConfigManager::getInt("select",
-                                           "MenuSystem.BoardMenu.Buttons", 0);
+            "MenuSystem.BoardMenu.Buttons",0);
 
     _secondaryButton = ConfigManager::getInt("open",
-                                             "MenuSystem.BoardMenu.Buttons", 1);
+            "MenuSystem.BoardMenu.Buttons",1);
 
-    _scale = ConfigManager::getFloat("MenuSystem.BoardMenu.Scale", 1.0);
+    _scale = ConfigManager::getFloat("MenuSystem.BoardMenu.Scale",1.0);
 
     _menuScale = new osg::MatrixTransform();
     osg::Matrix scale;
@@ -67,7 +66,7 @@ BoardMenu::BoardMenu()
     _menuRoot->addChild(_menuScale);
 
     osg::StateSet * stateset = _menuRoot->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
     _menuActive = false;
     _activeItem = NULL;
@@ -75,9 +74,9 @@ BoardMenu::BoardMenu()
     _clickActive = false;
 
     // TODO: read values from config file
-    BoardMenuGeometry::_textColor = osg::Vec4(1.0, 1.0, 1.0, 1.0);
-    BoardMenuGeometry::_textColorSelected = osg::Vec4(0.0, 1.0, 0.0, 1.0);
-    BoardMenuGeometry::_backgroundColor = osg::Vec4(0.0, 0.0, 0.0, 1.0);
+    BoardMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0);
+    BoardMenuGeometry::_textColorSelected = osg::Vec4(0.0,1.0,0.0,1.0);
+    BoardMenuGeometry::_backgroundColor = osg::Vec4(0.0,0.0,0.0,1.0);
     BoardMenuGeometry::_border = 10.0;
     BoardMenuGeometry::_iconHeight = 30.0;
     //BoardMenuGeometry::_textSize = 65.0;
@@ -93,11 +92,12 @@ BoardMenu::BoardMenu()
     osgText::Font * font = osgText::readFontFile(fontfile);
     if(font)
     {
-	BoardMenuGeometry::_font = font;
+        BoardMenuGeometry::_font = font;
     }
     else
     {
-	std::cerr << "Warning: font file: " << fontfile << " not found." << std::endl;
+        std::cerr << "Warning: font file: " << fontfile << " not found."
+                << std::endl;
     }
     BoardMenuGeometry::calibrateTextSize(65.0);
 }
@@ -106,19 +106,21 @@ BoardMenu::~BoardMenu()
 {
     if(_menuActive)
     {
-	SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
+        SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
     }
-    
-    for(std::map<MenuItem *, BoardMenuGeometry *>::iterator it = _geometryMap.begin(); it != _geometryMap.end(); it++)
+
+    for(std::map<MenuItem *,BoardMenuGeometry *>::iterator it =
+            _geometryMap.begin(); it != _geometryMap.end(); it++)
     {
-	delete it->second;
+        delete it->second;
     }
     _geometryMap.clear();
 
-    for(std::map<SubMenu*, std::pair<BoardMenuGeometry*,BoardMenuGeometry*> >::iterator it = _menuGeometryMap.begin(); it != _menuGeometryMap.end(); it++)
+    for(std::map<SubMenu*,std::pair<BoardMenuGeometry*,BoardMenuGeometry*> >::iterator it =
+            _menuGeometryMap.begin(); it != _menuGeometryMap.end(); it++)
     {
-	delete it->second.first;
-	delete it->second.second;
+        delete it->second.first;
+        delete it->second.second;
     }
     _menuGeometryMap.clear();
 }
@@ -143,19 +145,20 @@ void BoardMenu::updateEnd()
     if(_menuActive && !_clickActive)
     {
         if(!_foundItem && _activeItem)
-	{
-	    _activeHand = -1;
-	    selectItem(NULL);
-	}
-	else if(_activeItem)
-	{
-	    osg::Vec3 pStart(0,0,0);
-	    osg::Vec3 pEnd(0,10000,0);
-	    pStart = pStart * TrackingManager::instance()->getHandMat(_activeHand);
-	    pEnd = pEnd * TrackingManager::instance()->getHandMat(_activeHand);
+        {
+            _activeHand = -1;
+            selectItem(NULL);
+        }
+        else if(_activeItem)
+        {
+            osg::Vec3 pStart(0,0,0);
+            osg::Vec3 pEnd(0,10000,0);
+            pStart = pStart
+                    * TrackingManager::instance()->getHandMat(_activeHand);
+            pEnd = pEnd * TrackingManager::instance()->getHandMat(_activeHand);
 
-	    _activeItem->update(pStart,pEnd);
-	}
+            _activeItem->update(pStart,pEnd);
+        }
     }
 }
 
@@ -163,7 +166,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 {
     if(!_myMenu || !event->asTrackedButtonEvent())
     {
-	return false;
+        return false;
     }
 
     TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
@@ -172,42 +175,47 @@ bool BoardMenu::processEvent(InteractionEvent * event)
     {
         if(_trigger == DOUBLECLICK)
         {
-	    if(event->getInteraction() == BUTTON_DOUBLE_CLICK)
-	    {
-		if(tie->getButton() == _secondaryButton)
-		{
-		    SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
+            if(event->getInteraction() == BUTTON_DOUBLE_CLICK)
+            {
+                if(tie->getButton() == _secondaryButton)
+                {
+                    SceneManager::instance()->getMenuRoot()->addChild(
+                            _menuRoot);
 
-                    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
-		    menuPoint = menuPoint * tie->getTransform();
+                    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
+                    menuPoint = menuPoint * tie->getTransform();
 
-		    if(event->asMouseEvent())
-		    {
-			osg::Vec3 menuOffset = osg::Vec3(_widthMap[_myMenu] / 2.0,
-				0, 0);
-			osg::Matrix m;
-			m.makeTranslate(menuPoint);
-			_menuRoot->setMatrix(m);
-		    }
-		    else
-		    {
-			osg::Vec3 viewerPoint = TrackingManager::instance()->getHeadMat(0).getTrans();
+                    if(event->asMouseEvent())
+                    {
+                        osg::Vec3 menuOffset = osg::Vec3(
+                                _widthMap[_myMenu] / 2.0,0,0);
+                        osg::Matrix m;
+                        m.makeTranslate(menuPoint);
+                        _menuRoot->setMatrix(m);
+                    }
+                    else
+                    {
+                        osg::Vec3 viewerPoint =
+                                TrackingManager::instance()->getHeadMat(0).getTrans();
 
-			osg::Vec3 viewerDir = viewerPoint - menuPoint;
-			viewerDir.z() = 0.0;
+                        osg::Vec3 viewerDir = viewerPoint - menuPoint;
+                        viewerDir.z() = 0.0;
 
-			osg::Matrix menuRot;
-			menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+                        osg::Matrix menuRot;
+                        menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
 
-			osg::Vec3 menuOffset = osg::Vec3(_widthMap[_myMenu] * _scale / 2.0, 0, 0);
-			_menuRoot->setMatrix(osg::Matrix::translate(-menuOffset) * menuRot * osg::Matrix::translate(menuPoint));
-		    }
+                        osg::Vec3 menuOffset = osg::Vec3(
+                                _widthMap[_myMenu] * _scale / 2.0,0,0);
+                        _menuRoot->setMatrix(
+                                osg::Matrix::translate(-menuOffset) * menuRot
+                                        * osg::Matrix::translate(menuPoint));
+                    }
 
-		    _menuActive = true;
-		    SceneManager::instance()->closeOpenObjectMenu();
+                    _menuActive = true;
+                    SceneManager::instance()->closeOpenObjectMenu();
                     return true;
-		}
-	    }
+                }
+            }
         }
         else if(_trigger == UPCLICK)
         {
@@ -218,58 +226,61 @@ bool BoardMenu::processEvent(InteractionEvent * event)
     {
         if(_clickActive)
         {
-	    if(tie->getHand() == _activeHand)
-	    {
-		if(tie->getButton() == _primaryButton)
-		{
-		    _activeItem->processEvent(event);
-		    if(tie->getInteraction() == BUTTON_UP)
-		    {
-			_clickActive = false;
-		    }
-		    return true;
-		}
-	    }
+            if(tie->getHand() == _activeHand)
+            {
+                if(tie->getButton() == _primaryButton)
+                {
+                    _activeItem->processEvent(event);
+                    if(tie->getInteraction() == BUTTON_UP)
+                    {
+                        _clickActive = false;
+                    }
+                    return true;
+                }
+            }
             return false;
         }
-	else if(tie->getHand() == _activeHand)
-	{
-	    if(tie->getButton() == _primaryButton && (tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DOUBLE_CLICK))
-	    {
-		// do click
-		if(_activeItem)
-		{
-		    BoardMenuSubMenuGeometry * smg =
-			dynamic_cast<BoardMenuSubMenuGeometry *> (_activeItem);
-		    if(smg && !smg->isMenuHead())
-		    {
-			if(smg->isMenuOpen())
-			{
-			    closeMenu((SubMenu*)smg->getMenuItem());
-			}
-			else
-			{
-			    openMenu(smg);
-			}
-		    }
-		    _activeItem->processEvent(event);
-		    _clickActive = true;
-		    return true;
-		}
-		return false;
-	    }
-	}
+        else if(tie->getHand() == _activeHand)
+        {
+            if(tie->getButton() == _primaryButton
+                    && (tie->getInteraction() == BUTTON_DOWN
+                            || tie->getInteraction() == BUTTON_DOUBLE_CLICK))
+            {
+                // do click
+                if(_activeItem)
+                {
+                    BoardMenuSubMenuGeometry * smg =
+                            dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+                    if(smg && !smg->isMenuHead())
+                    {
+                        if(smg->isMenuOpen())
+                        {
+                            closeMenu((SubMenu*)smg->getMenuItem());
+                        }
+                        else
+                        {
+                            openMenu(smg);
+                        }
+                    }
+                    _activeItem->processEvent(event);
+                    _clickActive = true;
+                    return true;
+                }
+                return false;
+            }
+        }
 
-	if(tie->getButton() == _secondaryButton && tie->getInteraction() == BUTTON_DOWN)
-	{
-	    if(_activeItem)
+        if(tie->getButton() == _secondaryButton
+                && tie->getInteraction() == BUTTON_DOWN)
+        {
+            if(_activeItem)
             {
                 selectItem(NULL);
             }
             SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
             _menuActive = false;
             return true;
-	}
+        }
     }
     return false;
 }
@@ -278,9 +289,9 @@ void BoardMenu::itemDelete(MenuItem * item)
 {
     if(!_myMenu)
     {
-	return;
+        return;
     }
-    
+
     std::vector<SubMenu*> searchList;
     searchList.push_back(_myMenu);
     std::vector<std::pair<SubMenu*,MenuItem*> > removeList;
@@ -288,34 +299,36 @@ void BoardMenu::itemDelete(MenuItem * item)
     while(searchList.size())
     {
         for(std::vector<MenuItem*>::iterator it =
-                searchList[0]->getChildren().begin(); it
-                != searchList[0]->getChildren().end(); it++)
+                searchList[0]->getChildren().begin();
+                it != searchList[0]->getChildren().end(); it++)
         {
             if((*it)->isSubMenu())
             {
-		if((*it) == item)
-		{
-		     removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
-		     continue;
-		}
-		else
-		{
-		    SubMenu * sm = dynamic_cast<SubMenu*> (*it);
-		    searchList.push_back(sm);
-		}
+                if((*it) == item)
+                {
+                    removeList.push_back(
+                            std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+                    continue;
+                }
+                else
+                {
+                    SubMenu * sm = dynamic_cast<SubMenu*>(*it);
+                    searchList.push_back(sm);
+                }
             }
-	    else if((*it) == item)
-	    {
-		removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
-		continue;
-	    }
+            else if((*it) == item)
+            {
+                removeList.push_back(
+                        std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+                continue;
+            }
         }
         searchList.erase(searchList.begin());
     }
 
     for(int i = 0; i < removeList.size(); i++)
     {
-	removeList[i].first->removeItem(removeList[i].second);
+        removeList[i].first->removeItem(removeList[i].second);
     }
 
     updateMenus();
@@ -323,57 +336,59 @@ void BoardMenu::itemDelete(MenuItem * item)
     bool removedItem;
     do
     {
-	removedItem = false;
-	for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it = _intersectMap.begin(); it != _intersectMap.end(); it++)
-	{
-	    if(it->second->getMenuItem() == item)
-	    {
-		_intersectMap.erase(it);
-		removedItem = true;
-	    }
-	}
-    } while(removedItem);
+        removedItem = false;
+        for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it =
+                _intersectMap.begin(); it != _intersectMap.end(); it++)
+        {
+            if(it->second->getMenuItem() == item)
+            {
+                _intersectMap.erase(it);
+                removedItem = true;
+            }
+        }
+    }
+    while(removedItem);
 
     if(item->isSubMenu())
     {
-	SubMenu * sm = (SubMenu*)item;
-	if(_widthMap.find(sm) != _widthMap.end())
-	{
-	    _widthMap.erase(sm);
-	}
-	if(_menuMap.find(sm) != _menuMap.end())
-	{
-	    if(_menuMap[sm]->getNumParents())
-	    {
-		closeMenu(sm);
-	    }
-	    _menuMap.erase(sm);
-	}
-	if(_menuGeometryMap.find(sm) != _menuGeometryMap.end())
-	{
-	    delete _menuGeometryMap[sm].first;
-	    delete _menuGeometryMap[sm].second;
-	    _menuGeometryMap.erase(sm);
-	}
+        SubMenu * sm = (SubMenu*)item;
+        if(_widthMap.find(sm) != _widthMap.end())
+        {
+            _widthMap.erase(sm);
+        }
+        if(_menuMap.find(sm) != _menuMap.end())
+        {
+            if(_menuMap[sm]->getNumParents())
+            {
+                closeMenu(sm);
+            }
+            _menuMap.erase(sm);
+        }
+        if(_menuGeometryMap.find(sm) != _menuGeometryMap.end())
+        {
+            delete _menuGeometryMap[sm].first;
+            delete _menuGeometryMap[sm].second;
+            _menuGeometryMap.erase(sm);
+        }
     }
     else
     {
-	if(_geometryMap.find(item) != _geometryMap.end())
-	{
-	    delete _geometryMap[item];
-	    _geometryMap.erase(item);
-	}
+        if(_geometryMap.find(item) != _geometryMap.end())
+        {
+            delete _geometryMap[item];
+            _geometryMap.erase(item);
+        }
     }
 
     if(_activeItem && item == _activeItem->getMenuItem())
     {
-	_clickActive = false;
-	_activeItem = NULL;
+        _clickActive = false;
+        _activeItem = NULL;
     }
 
     if(item == _myMenu)
     {
-	_myMenu = NULL;
+        _myMenu = NULL;
     }
 }
 
@@ -388,23 +403,25 @@ void BoardMenu::clear()
     _widthMap.clear();
     _menuMap.clear();
     _intersectMap.clear();
-    
-    for(std::map<MenuItem *, BoardMenuGeometry *>::iterator it = _geometryMap.begin(); it != _geometryMap.end(); it++)
+
+    for(std::map<MenuItem *,BoardMenuGeometry *>::iterator it =
+            _geometryMap.begin(); it != _geometryMap.end(); it++)
     {
-	delete it->second;
+        delete it->second;
     }
     _geometryMap.clear();
 
-    for(std::map<SubMenu*,std::pair<BoardMenuGeometry*,BoardMenuGeometry*> >::iterator it = _menuGeometryMap.begin(); it != _menuGeometryMap.end(); it++)
+    for(std::map<SubMenu*,std::pair<BoardMenuGeometry*,BoardMenuGeometry*> >::iterator it =
+            _menuGeometryMap.begin(); it != _menuGeometryMap.end(); it++)
     {
-	delete it->second.first;
-	delete it->second.second;
+        delete it->second.first;
+        delete it->second.second;
     }
     _menuGeometryMap.clear();
 
     while(_openMenus.size() > 0)
     {
-	_openMenus.pop();
+        _openMenus.pop();
     }
 }
 
@@ -412,11 +429,11 @@ void BoardMenu::close()
 {
     if(_menuActive)
     {
-	_clickActive = false;
-	selectItem(NULL);
-	SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
-	_menuActive = false;
-	_activeHand = -1;
+        _clickActive = false;
+        selectItem(NULL);
+        SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
+        _menuActive = false;
+        _activeHand = -1;
     }
 }
 
@@ -450,12 +467,12 @@ void BoardMenu::updateMenus()
     while(searchList.size())
     {
         for(std::vector<MenuItem*>::iterator it =
-                searchList[0]->getChildren().begin(); it
-                != searchList[0]->getChildren().end(); it++)
+                searchList[0]->getChildren().begin();
+                it != searchList[0]->getChildren().end(); it++)
         {
             if((*it)->isSubMenu())
             {
-                SubMenu * sm = dynamic_cast<SubMenu*> (*it);
+                SubMenu * sm = dynamic_cast<SubMenu*>(*it);
                 searchList.push_back(sm);
                 foundList.push_back(sm);
             }
@@ -481,15 +498,14 @@ void BoardMenu::updateMenus()
             _menuMap[foundList[i]] = new osg::MatrixTransform();
         }
 
-        _menuMap[foundList[i]]->removeChildren(
-                                               0,
-                                               _menuMap[foundList[i]]->getNumChildren());
+        _menuMap[foundList[i]]->removeChildren(0,
+                _menuMap[foundList[i]]->getNumChildren());
 
         if(_menuGeometryMap.find(foundList[i]) == _menuGeometryMap.end())
         {
             _menuGeometryMap[foundList[i]] = std::pair<BoardMenuGeometry*,
-                    BoardMenuGeometry*>(createGeometry(foundList[i], true),
-                                        createGeometry(foundList[i]));
+                    BoardMenuGeometry*>(createGeometry(foundList[i],true),
+                    createGeometry(foundList[i]));
         }
 
         if(_menuGeometryMap[foundList[i]].first)
@@ -498,8 +514,8 @@ void BoardMenu::updateMenus()
         }
 
         for(std::vector<MenuItem*>::iterator it =
-                foundList[i]->getChildren().begin(); it
-                != foundList[i]->getChildren().end(); it++)
+                foundList[i]->getChildren().begin();
+                it != foundList[i]->getChildren().end(); it++)
         {
             BoardMenuGeometry * mg;
 
@@ -508,13 +524,9 @@ void BoardMenu::updateMenus()
                 if(_menuGeometryMap.find((SubMenu*)(*it))
                         == _menuGeometryMap.end())
                 {
-                    _menuGeometryMap[(SubMenu*)(*it)]
-                            = std::pair<BoardMenuGeometry*,BoardMenuGeometry*>(
-                                                                               createGeometry(
-                                                                                              *it,
-                                                                                              true),
-                                                                               createGeometry(
-                                                                                              *it));
+                    _menuGeometryMap[(SubMenu*)(*it)] = std::pair<
+                            BoardMenuGeometry*,BoardMenuGeometry*>(
+                            createGeometry(*it,true),createGeometry(*it));
                 }
                 mg = _menuGeometryMap[(SubMenu*)(*it)].second;
             }
@@ -553,7 +565,7 @@ void BoardMenu::updateMenus()
                 width = geoList[j]->getWidth();
             }
         }
-	_widthMap[foundList[i]] = (width + 2.0 * _border);
+        _widthMap[foundList[i]] = (width + 2.0 * _border);
 
         // add invisible intersection test drawable
         for(int j = 0; j < geoList.size(); j++)
@@ -565,7 +577,7 @@ void BoardMenu::updateMenus()
         if(geoList.size() > 0)
         {
             BoardMenuSubMenuGeometry * smg =
-                    dynamic_cast<BoardMenuSubMenuGeometry *> (geoList[0]);
+                    dynamic_cast<BoardMenuSubMenuGeometry *>(geoList[0]);
             if(smg)
             {
                 smg->resetMenuLine(width);
@@ -577,54 +589,40 @@ void BoardMenu::updateMenus()
         for(int j = 0; j < geoList.size(); j++)
         {
             osg::Matrix m;
-            m.makeTranslate(osg::Vec3(_border, 0, -offset));
+            m.makeTranslate(osg::Vec3(_border,0,-offset));
             geoList[j]->getNode()->setMatrix(m);
             offset += geoList[j]->getHeight() + _border;
-	    _menuMap[foundList[i]]->addChild(geoList[j]->getNode());
+            _menuMap[foundList[i]]->addChild(geoList[j]->getNode());
             _intersectMap[geoList[j]->getIntersect()] = geoList[j];
         }
 
         // create menu board geometry
         osg::Geode * geode = new osg::Geode();
         geode->addDrawable(
-                           BoardMenuGeometry::makeQuad(
-                                                       width + 2.0 * _border,
-                                                       -offset,
-                                                       BoardMenuGeometry::_backgroundColor));
+                BoardMenuGeometry::makeQuad(width + 2.0 * _border,-offset,
+                        BoardMenuGeometry::_backgroundColor));
         geode->addDrawable(
-                           BoardMenuGeometry::makeLine(
-                                                       osg::Vec3(0, -2, 0),
-                                                       osg::Vec3(width + 2.0
-                                                               * _border, -2,
-                                                                 0),
-                                                       BoardMenuGeometry::_textColor));
+                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,0),
+                        osg::Vec3(width + 2.0 * _border,-2,0),
+                        BoardMenuGeometry::_textColor));
         geode->addDrawable(
-                           BoardMenuGeometry::makeLine(
-                                                       osg::Vec3(0, -2, 0),
-                                                       osg::Vec3(0, -2, -offset),
-                                                       BoardMenuGeometry::_textColor));
+                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,0),
+                        osg::Vec3(0,-2,-offset),BoardMenuGeometry::_textColor));
         geode->addDrawable(
-                           BoardMenuGeometry::makeLine(
-                                                       osg::Vec3(0, -2, -offset),
-                                                       osg::Vec3(width + 2.0
-                                                               * _border, -2,
-                                                                 -offset),
-                                                       BoardMenuGeometry::_textColor));
+                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,-offset),
+                        osg::Vec3(width + 2.0 * _border,-2,-offset),
+                        BoardMenuGeometry::_textColor));
         geode->addDrawable(
-                           BoardMenuGeometry::makeLine(
-                                                       osg::Vec3(width + 2.0
-                                                               * _border, -2,
-                                                                 0),
-                                                       osg::Vec3(width + 2.0
-                                                               * _border, -2,
-                                                                 -offset),
-                                                       BoardMenuGeometry::_textColor));
+                BoardMenuGeometry::makeLine(
+                        osg::Vec3(width + 2.0 * _border,-2,0),
+                        osg::Vec3(width + 2.0 * _border,-2,-offset),
+                        BoardMenuGeometry::_textColor));
         //scaleMT->addChild(geode);
-	_menuMap[foundList[i]]->addChild(geode);
+        _menuMap[foundList[i]]->addChild(geode);
 
-	osg::LineWidth* linewidth = new osg::LineWidth(2.0);
-	osg::StateSet * stateset = geode->getOrCreateStateSet();
-	stateset->setAttributeAndModes(linewidth,osg::StateAttribute::ON);
+        osg::LineWidth* linewidth = new osg::LineWidth(2.0);
+        osg::StateSet * stateset = geode->getOrCreateStateSet();
+        stateset->setAttributeAndModes(linewidth,osg::StateAttribute::ON);
 
         //_menuMap[foundList[i]]->addChild(scaleMT);
         foundList[i]->setDirty(false);
@@ -633,27 +631,27 @@ void BoardMenu::updateMenus()
     std::stack<SubMenu*> revMenuStack;
     while(_openMenus.size())
     {
-	bool found = false;
-	for(int i = 0; i < foundList.size(); i++)
-	{
-	    if(foundList[i] == _openMenus.top())
-	    {
-		revMenuStack.push(_openMenus.top());
-		found = true;
-	    }
-	}
+        bool found = false;
+        for(int i = 0; i < foundList.size(); i++)
+        {
+            if(foundList[i] == _openMenus.top())
+            {
+                revMenuStack.push(_openMenus.top());
+                found = true;
+            }
+        }
 
-	if(!found)
-	{
-	    closeMenu(_openMenus.top());
-	    //std::cerr << "Removing open menu." << std::endl;
-	}
-	else
-	{
-	    //std::cerr << "Not removing open menu." << std::endl;
-	}
+        if(!found)
+        {
+            closeMenu(_openMenus.top());
+            //std::cerr << "Removing open menu." << std::endl;
+        }
+        else
+        {
+            //std::cerr << "Not removing open menu." << std::endl;
+        }
 
-	_openMenus.pop();
+        _openMenus.pop();
     }
 
     float offset = 0;
@@ -661,18 +659,18 @@ void BoardMenu::updateMenus()
     m.makeTranslate(osg::Vec3(-offset,0,0));
     if(revMenuStack.size())
     {
-	_menuMap[revMenuStack.top()]->setMatrix(m);
-	_openMenus.push(revMenuStack.top());
-	revMenuStack.pop();
+        _menuMap[revMenuStack.top()]->setMatrix(m);
+        _openMenus.push(revMenuStack.top());
+        revMenuStack.pop();
     }
 
     while(revMenuStack.size())
     {
-	offset += _widthMap[revMenuStack.top()];
-	m.makeTranslate(osg::Vec3(-offset,0,0));
-	_menuMap[revMenuStack.top()]->setMatrix(m);
-	_openMenus.push(revMenuStack.top());
-	revMenuStack.pop();
+        offset += _widthMap[revMenuStack.top()];
+        m.makeTranslate(osg::Vec3(-offset,0,0));
+        _menuMap[revMenuStack.top()]->setMatrix(m);
+        _openMenus.push(revMenuStack.top());
+        revMenuStack.pop();
     }
 }
 
@@ -680,27 +678,30 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
 {
     if(!_menuActive)
     {
-	return false;
+        return false;
     }
     else if(_clickActive)
     {
-	return true;
+        return true;
     }
-    
+
     if(_intersectMap.find(isect.geode) != _intersectMap.end())
     {
-	TrackerBase::TrackerType ttype = TrackingManager::instance()->getHandTrackerType(hand);
-	if(_activeHand >= 0 && _activeHand != hand)
-	{
-	    if(ttype >= TrackingManager::instance()->getHandTrackerType(_activeHand))
-	    {
-		return true;
-	    }
-	}
-	_activeHand = hand;
-	selectItem(_intersectMap[isect.geode]);
-	_foundItem = true;
-	return true;
+        TrackerBase::TrackerType ttype =
+                TrackingManager::instance()->getHandTrackerType(hand);
+        if(_activeHand >= 0 && _activeHand != hand)
+        {
+            if(ttype
+                    >= TrackingManager::instance()->getHandTrackerType(
+                            _activeHand))
+            {
+                return true;
+            }
+        }
+        _activeHand = hand;
+        selectItem(_intersectMap[isect.geode]);
+        _foundItem = true;
+        return true;
     }
 
     return false;
@@ -710,18 +711,17 @@ void BoardMenu::selectItem(BoardMenuGeometry * mg)
 {
     if(mg != _activeItem)
     {
-	if(_activeItem)
-	{
-	    _activeItem->selectItem(false);
-	}
+        if(_activeItem)
+        {
+            _activeItem->selectItem(false);
+        }
 
+        if(mg)
+        {
+            mg->selectItem(true);
+        }
 
-	if(mg)
-	{
-	    mg->selectItem(true);
-	}
-
-	_activeItem = mg;
+        _activeItem = mg;
     }
 }
 
@@ -755,7 +755,7 @@ void BoardMenu::openMenu(BoardMenuSubMenuGeometry * smg)
     smg->openMenu(true);
 
     osg::Vec3 pos = _menuMap[_openMenus.top()]->getMatrix().getTrans();
-    pos = pos + osg::Vec3(-_widthMap[(SubMenu*)smg->getMenuItem()], 0, 0);
+    pos = pos + osg::Vec3(-_widthMap[(SubMenu*)smg->getMenuItem()],0,0);
 
     osg::Matrix m;
     m.makeTranslate(pos);
@@ -770,40 +770,40 @@ void BoardMenu::closeMenu(SubMenu * menu)
 {
     while(_openMenus.size() > 0)
     {
-	BoardMenuSubMenuGeometry * smg = NULL;
-	for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it =
-		_intersectMap.begin(); it != _intersectMap.end(); it++)
-	{
-	    if(it->second->getMenuItem() == _openMenus.top())
-	    {
-		smg = (BoardMenuSubMenuGeometry*)(it->second);
-		if(smg && !smg->isMenuHead())
-		{
-		    break;
-		}
-		else
-		{
-		    smg = NULL;
-		}
-	    }
-	}
+        BoardMenuSubMenuGeometry * smg = NULL;
+        for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it =
+                _intersectMap.begin(); it != _intersectMap.end(); it++)
+        {
+            if(it->second->getMenuItem() == _openMenus.top())
+            {
+                smg = (BoardMenuSubMenuGeometry*)(it->second);
+                if(smg && !smg->isMenuHead())
+                {
+                    break;
+                }
+                else
+                {
+                    smg = NULL;
+                }
+            }
+        }
 
-	if(!smg)
-	{
-	    return;
-	}
+        if(!smg)
+        {
+            return;
+        }
 
-	smg->openMenu(false);
+        smg->openMenu(false);
 
-	_menuScale->removeChild(_menuMap[_openMenus.top()]);
+        _menuScale->removeChild(_menuMap[_openMenus.top()]);
 
-	if(_openMenus.top() == menu)
-	{
-	    break;
-	}
-	else
-	{
-	    _openMenus.pop();
-	}
+        if(_openMenus.top() == menu)
+        {
+            break;
+        }
+        else
+        {
+            _openMenus.pop();
+        }
     }
 }

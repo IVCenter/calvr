@@ -20,18 +20,18 @@ PopupMenu::PopupMenu(std::string title, std::string configTag)
     _rootMenu = new SubMenu(_title,_title);
     _menu->setMenu(_rootMenu);
 
-    float x,y,z,h,p,r,scale;
+    float x, y, z, h, p, r, scale;
     x = y = z = h = p = r = 0.0;
     scale = 1.0;
     if(!configTag.empty())
     {
-	x = ConfigManager::getFloat("x",configTag,0.0);
-	y = ConfigManager::getFloat("y",configTag,0.0);
-	z = ConfigManager::getFloat("z",configTag,0.0);
-	h = ConfigManager::getFloat("h",configTag,0.0);
-	p = ConfigManager::getFloat("p",configTag,0.0);
-	r = ConfigManager::getFloat("r",configTag,0.0);
-	scale = ConfigManager::getFloat("scale",configTag,1.0);
+        x = ConfigManager::getFloat("x",configTag,0.0);
+        y = ConfigManager::getFloat("y",configTag,0.0);
+        z = ConfigManager::getFloat("z",configTag,0.0);
+        h = ConfigManager::getFloat("h",configTag,0.0);
+        p = ConfigManager::getFloat("p",configTag,0.0);
+        r = ConfigManager::getFloat("r",configTag,0.0);
+        scale = ConfigManager::getFloat("scale",configTag,1.0);
     }
 
     osg::Vec3 pos(x,y,z);
@@ -39,8 +39,8 @@ PopupMenu::PopupMenu(std::string title, std::string configTag)
     _menu->setPosition(pos);
     _menu->setRotation(rot);
     _menu->setScale(scale);
-    
-    MenuManager::instance()->addMenuSystem(this);    
+
+    MenuManager::instance()->addMenuSystem(this);
 }
 
 PopupMenu::~PopupMenu()
@@ -48,7 +48,7 @@ PopupMenu::~PopupMenu()
     MenuManager::instance()->removeMenuSystem(this);
     if(_menu)
     {
-	delete _menu;
+        delete _menu;
     }
 }
 

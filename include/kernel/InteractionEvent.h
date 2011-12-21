@@ -38,7 +38,8 @@ enum InteractionEventType
     VALUATOR_INTER_EVENT,
     KEYBOARD_INTER_EVENT,
     INTER_EVENT,
-    NUM_INTER_EVENT_TYPES // must be last item
+    NUM_INTER_EVENT_TYPES
+// must be last item
 };
 
 class TrackedButtonInteractionEvent;
@@ -54,42 +55,66 @@ class KeyboardInteractionEvent;
 class InteractionEvent
 {
     public:
-        InteractionEvent() : _interaction(NO_INTERACTION) {}
+        InteractionEvent() :
+                _interaction(NO_INTERACTION)
+        {
+        }
 
         /**
          * @brief Get the interaction value for this event
          */
-        Interaction getInteraction() { return _interaction; }
+        Interaction getInteraction()
+        {
+            return _interaction;
+        }
 
         /**
          * @brief Set the interaction value for this event
          */
-        void setInteraction(Interaction interaction) { _interaction = interaction; }
+        void setInteraction(Interaction interaction)
+        {
+            _interaction = interaction;
+        }
 
         /**
          * @brief Get the interaction class type
          */
-        virtual InteractionEventType getEventType() { return INTER_EVENT; }
+        virtual InteractionEventType getEventType()
+        {
+            return INTER_EVENT;
+        }
 
         /**
          * @brief Get a pointer to this class as a TrackedButtonInteractionEvent pointer
          * @return NULL is returned if this class can not be cast to a TrackedButtonInteractionEvent
          */
-        virtual TrackedButtonInteractionEvent * asTrackedButtonEvent() { return NULL; }
+        virtual TrackedButtonInteractionEvent * asTrackedButtonEvent()
+        {
+            return NULL;
+        }
 
         /**
          * @brief Get a pointer to this class as a MouseInteractionEvent pointer
          * @return NULL is returned if this class can not be cast to a MouseInteractionEvent
          */
-        virtual MouseInteractionEvent * asMouseEvent() { return NULL; }
+        virtual MouseInteractionEvent * asMouseEvent()
+        {
+            return NULL;
+        }
 
-        virtual ValuatorInteractionEvent * asValuatorEvent() { return NULL; }
+        virtual ValuatorInteractionEvent * asValuatorEvent()
+        {
+            return NULL;
+        }
 
         /**
          * @brief Get a pointer to this class as a KeyboardInteractionEvent pointer
          * @return NULL is returned if this class can not be cast to a KeyboardInteractionEvent
          */
-        virtual KeyboardInteractionEvent * asKeyboardEvent() { return NULL; }
+        virtual KeyboardInteractionEvent * asKeyboardEvent()
+        {
+            return NULL;
+        }
 
     protected:
         Interaction _interaction; ///< event interaction value
@@ -101,41 +126,68 @@ class InteractionEvent
 class TrackedButtonInteractionEvent : public InteractionEvent
 {
     public:
-        TrackedButtonInteractionEvent() : InteractionEvent(),_hand(0),_button(0) {}
+        TrackedButtonInteractionEvent() :
+                InteractionEvent(), _hand(0), _button(0)
+        {
+        }
 
         /**
          * @brief Get hand number for this event
          */
-        int getHand() { return _hand; }
+        int getHand()
+        {
+            return _hand;
+        }
 
         /**
          * @brief Set hand number for this event
          */
-        void setHand(int hand) { _hand = hand; }
+        void setHand(int hand)
+        {
+            _hand = hand;
+        }
 
         /**
          * @brief Get button number for this event
          */
-        int getButton() { return _button; }
+        int getButton()
+        {
+            return _button;
+        }
 
         /**
          * @brief Set button number for this event
          */
-        void setButton(int button) { _button = button; }
+        void setButton(int button)
+        {
+            _button = button;
+        }
 
         /**
          * @brief Get pointer orientation matrix
          */
-        osg::Matrix & getTransform() { return _transform; }
+        osg::Matrix & getTransform()
+        {
+            return _transform;
+        }
 
         /**
          * @brief Set pointer orientation matrix
          */
-        void setTransform(osg::Matrix transform) { _transform = transform; }
+        void setTransform(osg::Matrix transform)
+        {
+            _transform = transform;
+        }
 
-        virtual InteractionEventType getEventType() { return TRACKED_BUTTON_INTER_EVENT; }
+        virtual InteractionEventType getEventType()
+        {
+            return TRACKED_BUTTON_INTER_EVENT;
+        }
 
-        virtual TrackedButtonInteractionEvent * asTrackedButtonEvent() { return this; }
+        virtual TrackedButtonInteractionEvent * asTrackedButtonEvent()
+        {
+            return this;
+        }
 
     protected:
         int _hand; ///< event hand
@@ -149,53 +201,81 @@ class TrackedButtonInteractionEvent : public InteractionEvent
 class MouseInteractionEvent : public TrackedButtonInteractionEvent
 {
     public:
-        MouseInteractionEvent() : TrackedButtonInteractionEvent(),_x(0),_y(0),_masterScreenNum(0) {}
+        MouseInteractionEvent() :
+                TrackedButtonInteractionEvent(), _x(0), _y(0), _masterScreenNum(
+                        0)
+        {
+        }
 
         /**
          * @brief Get the viewport X value for this event
          *
          * Note: Viewport origin is bottom left
          */
-        int getX() { return _x; }
+        int getX()
+        {
+            return _x;
+        }
 
         /**
          * @brief Set the viewport X value for this event
          *
          * Note: Viewport origin is bottom left
          */
-        void setX(int x) { _x = x; }
+        void setX(int x)
+        {
+            _x = x;
+        }
 
         /**
          * @brief Get the viewport Y value for this event
          *
          * Note: Viewport origin is bottom left
          */
-        int getY() { return _y; }
+        int getY()
+        {
+            return _y;
+        }
 
         /**
          * @brief Set the viewport Y value for this event
          *
          * Note: Viewport origin is bottom left
          */
-        void setY(int y) { _y = y; }
+        void setY(int y)
+        {
+            _y = y;
+        }
 
         /**
          * @brief Get the screen number on the headnode for this event
          *
          * This number can be used with the ScreenConfig getMasterScreenInfo function
          */
-        int getMasterScreenNum() { return _masterScreenNum; }
+        int getMasterScreenNum()
+        {
+            return _masterScreenNum;
+        }
 
         /**
          * @brief Set the screen number on the headnode for this event
          *
          * This number can be used with the ScreenConfig getMasterScreenInfo function
          */
-        void setMasterScreenNum(int screen) { _masterScreenNum = screen; }
+        void setMasterScreenNum(int screen)
+        {
+            _masterScreenNum = screen;
+        }
 
-        virtual InteractionEventType getEventType() { return MOUSE_INTER_EVENT; }
+        virtual InteractionEventType getEventType()
+        {
+            return MOUSE_INTER_EVENT;
+        }
 
-        virtual MouseInteractionEvent * asMouseEvent() { return this; }
+        virtual MouseInteractionEvent * asMouseEvent()
+        {
+            return this;
+        }
 
     protected:
         int _x; ///< viewport x coord
@@ -203,30 +283,56 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
         int _masterScreenNum; ///< screen on the master when this event was generated
 };
 
-
 /**
  * @brief Interaction event for a valuator
  */
 class ValuatorInteractionEvent : public InteractionEvent
 {
     public:
-        ValuatorInteractionEvent() : _value(0.0),_valuator(0),_hand(0) {}
+        ValuatorInteractionEvent() :
+                _value(0.0), _valuator(0), _hand(0)
+        {
+        }
 
-        int getValuator() { return _valuator; }
+        int getValuator()
+        {
+            return _valuator;
+        }
 
-        void setValuator(int valuator) { _valuator = valuator; }
+        void setValuator(int valuator)
+        {
+            _valuator = valuator;
+        }
 
-        float getValue() { return _value; }
+        float getValue()
+        {
+            return _value;
+        }
 
-        void setValue(float value) { _value = value; }
+        void setValue(float value)
+        {
+            _value = value;
+        }
 
-        int getHand() { return _hand; }
+        int getHand()
+        {
+            return _hand;
+        }
 
-        void setHand(int hand) { _hand = hand; }
+        void setHand(int hand)
+        {
+            _hand = hand;
+        }
 
-        virtual InteractionEventType getEventType() { return VALUATOR_INTER_EVENT; }
+        virtual InteractionEventType getEventType()
+        {
+            return VALUATOR_INTER_EVENT;
+        }
 
-        virtual ValuatorInteractionEvent * asValuatorEvent() { return this; }
+        virtual ValuatorInteractionEvent * asValuatorEvent()
+        {
+            return this;
+        }
 
     protected:
         int _valuator;
@@ -240,40 +346,60 @@ class ValuatorInteractionEvent : public InteractionEvent
 class KeyboardInteractionEvent : public InteractionEvent
 {
     public:
-        KeyboardInteractionEvent() : InteractionEvent(),_key(0),_mod(0) {}
-
+        KeyboardInteractionEvent() :
+                InteractionEvent(), _key(0), _mod(0)
+        {
+        }
 
         /**
          * @brief Get the key for this event
          *
          * This value is likely an ascii char, or a value from osgGA::GUIEventAdapter::KeySymbol
          */
-        int getKey() { return _key; }
+        int getKey()
+        {
+            return _key;
+        }
 
         /**
          * @brief Set the key for this event
          *
          * This value is likely an ascii char, or a value from osgGA::GUIEventAdapter::KeySymbol
          */
-        void setKey(int key) { _key = key; }
+        void setKey(int key)
+        {
+            _key = key;
+        }
 
         /**
          * @brief Get any modifiers on this key event
          *
          * This value is a mask created from osgGA::GUIEventAdapter::ModKeyMask
          */
-        int getMod() { return _mod; }
+        int getMod()
+        {
+            return _mod;
+        }
 
         /**
          * @brief Set any modifiers on this key event
          *
          * This value is a mask created from osgGA::GUIEventAdapter::ModKeyMask
          */
-        void setMod(int mod) { _mod = mod; }
+        void setMod(int mod)
+        {
+            _mod = mod;
+        }
 
-        virtual InteractionEventType getEventType() { return KEYBOARD_INTER_EVENT; }
+        virtual InteractionEventType getEventType()
+        {
+            return KEYBOARD_INTER_EVENT;
+        }
 
-        virtual KeyboardInteractionEvent * asKeyboardEvent() { return this; }
+        virtual KeyboardInteractionEvent * asKeyboardEvent()
+        {
+            return this;
+        }
 
     protected:
         int _key; ///< key value
@@ -289,7 +415,8 @@ class KeyboardInteractionEvent : public InteractionEvent
  * This function is needed since the class of the input event is unknown, but can be
  * identified from the type
  */
-InteractionEvent * loadEventWithType(InteractionEvent * event, InteractionEventType type);
+InteractionEvent * loadEventWithType(InteractionEvent * event,
+        InteractionEventType type);
 void storeEvent(InteractionEvent * event, void * des);
 int getEventSize(InteractionEventType type);
 

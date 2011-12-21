@@ -28,7 +28,7 @@ class MultiListenSocket;
  */
 class CVRKERNEL_EXPORT ComController
 {
-    friend class CalVR;
+        friend class CalVR;
     public:
 
         /**
@@ -113,7 +113,7 @@ class CVRKERNEL_EXPORT ComController
          * @brief Returns true if there has been a communication error, the program will exit 
          * at the end of this frame
          */
-        bool getIsSyncError() 
+        bool getIsSyncError()
         {
             return _CCError;
         }
@@ -126,7 +126,6 @@ class CVRKERNEL_EXPORT ComController
     protected:
         ComController();
         virtual ~ComController();
-
 
         bool setupConnections();
         bool connectMaster();

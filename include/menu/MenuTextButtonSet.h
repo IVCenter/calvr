@@ -26,8 +26,9 @@ class CVRMENU_EXPORT MenuTextButtonSet : public MenuItem
          * @param rowHeight sets the height of each row of buttons in the menu
          * @param buttonsPerRow the number of buttons put into each row before moving to the next one
          */
-        MenuTextButtonSet(bool radioButtons, float width, float rowHeight, int buttonsPerRow);
-        
+        MenuTextButtonSet(bool radioButtons, float width, float rowHeight,
+                int buttonsPerRow);
+
         /**
          * @brief Constructor
          * @param radioButtons If true, the button set will act as radio buttons where only a max of one can be down at a time
@@ -36,7 +37,8 @@ class CVRMENU_EXPORT MenuTextButtonSet : public MenuItem
          * @param buttonsPerRow the number of buttons put into each row before moving to the next one
          * @param buttons list of buttons to add to the item, states default to false
          */
-        MenuTextButtonSet(bool radioButtons, float width, float rowHeight, int buttonsPerRow, std::vector<std::string> & buttons);
+        MenuTextButtonSet(bool radioButtons, float width, float rowHeight,
+                int buttonsPerRow, std::vector<std::string> & buttons);
         virtual ~MenuTextButtonSet();
 
         /**

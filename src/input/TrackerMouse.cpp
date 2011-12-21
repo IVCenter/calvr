@@ -7,7 +7,8 @@
 
 using namespace cvr;
 
-TrackerMouse::TrackerMouse() : TrackerBase()
+TrackerMouse::TrackerMouse() :
+        TrackerBase()
 {
 }
 
@@ -35,7 +36,7 @@ TrackerBase::TrackedBody * TrackerMouse::getBody(int index)
 {
     if(index != 0)
     {
-	return NULL;
+        return NULL;
     }
 
     return &_mouseBody;
@@ -66,7 +67,8 @@ int TrackerMouse::getNumButtons()
     return CVR_NUM_MOUSE_BUTTONS;
 }
 
-void TrackerMouse::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
+void TrackerMouse::update(
+        std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
     osg::Matrix m = InteractionManager::instance()->getMouseMat();
 
@@ -85,7 +87,8 @@ void TrackerMouse::update(std::map<int,std::list<InteractionEvent*> > & eventMap
     //std::cerr << "Mouse queue size: " << InteractionManager::instance()->_mouseQueue.size() << std::endl;
     while(InteractionManager::instance()->_mouseQueue.size())
     {
-	eventMap[InteractionManager::instance()->_mouseQueue.front()->getEventType()].push_back(InteractionManager::instance()->_mouseQueue.front());
-	InteractionManager::instance()->_mouseQueue.pop();
+        eventMap[InteractionManager::instance()->_mouseQueue.front()->getEventType()].push_back(
+                InteractionManager::instance()->_mouseQueue.front());
+        InteractionManager::instance()->_mouseQueue.pop();
     }
 }

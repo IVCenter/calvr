@@ -28,7 +28,7 @@ CVRSocket::CVRSocket(int socket)
 }
 
 CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
-                     int sockType)
+        int sockType)
 {
     _type = type;
     _family = family;
@@ -40,54 +40,55 @@ CVRSocket::CVRSocket(SocketType type, std::string host, int port, int family,
     _socket = -1;
 
 #ifdef WIN32
-	static bool wsaInitDone = false;
-	static bool wsaInitGood = false;
+    static bool wsaInitDone = false;
+    static bool wsaInitGood = false;
 
-	if(!wsaInitDone)
-	{
-		WSADATA wsaData;
-		int iResult;
+    if(!wsaInitDone)
+    {
+        WSADATA wsaData;
+        int iResult;
 
         iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-        if (iResult != 0) 
-		{
+        if (iResult != 0)
+        {
             std::cerr << "WSAStartup failed: " << iResult << std::endl;
-			wsaInitGood = false;
+            wsaInitGood = false;
         }
-		else
-		{
-			wsaInitGood = true;
-		}
+        else
+        {
+            wsaInitGood = true;
+        }
 
-		wsaInitDone = true;
-	}
+        wsaInitDone = true;
+    }
 
-	if(!wsaInitGood)
-	{
-		std::cerr << "CVRSocket Error: WSAStartup has failed." << std::endl;
-		return;
-	}
+    if(!wsaInitGood)
+    {
+        std::cerr << "CVRSocket Error: WSAStartup has failed." << std::endl;
+        return;
+    }
 #endif
 
     struct ::addrinfo hints;
 
-    memset(&hints, 0, sizeof hints);
+    memset(&hints,0,sizeof hints);
     hints.ai_family = _family;
     hints.ai_socktype = _sockType;
 
     std::stringstream ss;
     ss << port;
 
-    if(getaddrinfo(_host.c_str(), ss.str().c_str(), &hints, &_res))
+    if(getaddrinfo(_host.c_str(),ss.str().c_str(),&hints,&_res))
     {
-	std::cerr << "Error socket getaddrinfo host: " << _host << " port: " << port << std::endl;
-	return;
+        std::cerr << "Error socket getaddrinfo host: " << _host << " port: "
+                << port << std::endl;
+        return;
     }
 
-    if((_socket = (int) socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol))
-            == -1)
+    if((_socket = (int)socket(_res->ai_family,_res->ai_socktype,
+            _res->ai_protocol)) == -1)
     {
-	perror("socket");
+        perror("socket");
     }
 }
 
@@ -117,12 +118,12 @@ bool CVRSocket::bind()
         return false;
     }
 
-    if(::bind(_socket, _res->ai_addr, (int)_res->ai_addrlen) == -1)
+    if(::bind(_socket,_res->ai_addr,(int)_res->ai_addrlen) == -1)
     {
-	if(_printErrors && errno)
-	{
-	    perror("bind");
-	}
+        if(_printErrors && errno)
+        {
+            perror("bind");
+        }
         return false;
     }
 
@@ -143,12 +144,12 @@ bool CVRSocket::listen(int backlog)
         return false;
     }
 
-    if(::listen(_socket, backlog) == -1)
+    if(::listen(_socket,backlog) == -1)
     {
-	if(_printErrors)
-	{
-	    perror("listen");
-	}
+        if(_printErrors)
+        {
+            perror("listen");
+        }
         return false;
     }
 
@@ -173,13 +174,13 @@ bool CVRSocket::accept()
     socklen_t addr_size;
     addr_size = sizeof(node_addr);
     int tmpSock;
-    if((tmpSock = (int) ::accept(_socket, (struct sockaddr *)&node_addr, &addr_size))
-            == -1)
+    if((tmpSock = (int)::accept(_socket,(struct sockaddr *)&node_addr,
+            &addr_size)) == -1)
     {
-	if(_printErrors && errno)
-	{
-	    perror("accept");
-	}
+        if(_printErrors && errno)
+        {
+            perror("accept");
+        }
 #ifdef WIN32
         closesocket(_socket);
 #else
@@ -214,23 +215,23 @@ bool CVRSocket::connect(int timeout)
     bool resetBlocking = false;
     if(timeout > 0)
     {
-	if(_blockingState)
-	{
-	    setBlocking(false);
-	    resetBlocking = true;
-	}
+        if(_blockingState)
+        {
+            setBlocking(false);
+            resetBlocking = true;
+        }
     }
 
     int currentTimeout = timeout;
 
-    while(::connect(_socket, _res->ai_addr, (int)_res->ai_addrlen) == -1)
+    while(::connect(_socket,_res->ai_addr,(int)_res->ai_addrlen) == -1)
     {
-	//perror("connect");
+        //perror("connect");
 #ifdef WIN32
         if(WSAGetLastError() == WSAEISCONN)
-		{
-			break;
-		}
+        {
+            break;
+        }
 #endif
 
         if(timeout == 0)
@@ -239,49 +240,49 @@ bool CVRSocket::connect(int timeout)
                     << " on port: " << _port << std::endl;
             return false;
         }
-	/*else if(errno == EINPROGRESS)
-	{
-	    continue;
-	}
-	else if(errno == EAGAIN || errno == EALREADY)
-	{
-	    FD_ZERO(&_connectTest);
+        /*else if(errno == EINPROGRESS)
+         {
+         continue;
+         }
+         else if(errno == EAGAIN || errno == EALREADY)
+         {
+         FD_ZERO(&_connectTest);
 
-	    FD_SET(_socket, &_connectTest);
+         FD_SET(_socket, &_connectTest);
 
-	    struct timeval tv;
-	    tv.tv_sec = currentTimeout;
-	    tv.tv_usec = 0;
+         struct timeval tv;
+         tv.tv_sec = currentTimeout;
+         tv.tv_usec = 0;
 
-	    select(_socket+1,NULL,&_connectTest,NULL,&tv);
-	    if(!FD_ISSET(_socket,&_connectTest))
-	    {
-		std::cerr << "Error: Unable to connect to host: " << _host
-                    << " on port: " << _port << std::endl;
-		return false;
-	    }
-	    break;
-	}*/
-	else
-	{
-	    if(currentTimeout <= 0)
-	    {
-		std::cerr << "Error: Unable to connect to host: " << _host
-                    << " on port: " << _port << std::endl;
-		return false;
-	    }
+         select(_socket+1,NULL,&_connectTest,NULL,&tv);
+         if(!FD_ISSET(_socket,&_connectTest))
+         {
+         std::cerr << "Error: Unable to connect to host: " << _host
+         << " on port: " << _port << std::endl;
+         return false;
+         }
+         break;
+         }*/
+        else
+        {
+            if(currentTimeout <= 0)
+            {
+                std::cerr << "Error: Unable to connect to host: " << _host
+                        << " on port: " << _port << std::endl;
+                return false;
+            }
 #ifndef WIN32
-	    sleep(1);
+            sleep(1);
 #else
-		Sleep(1000);
+            Sleep(1000);
 #endif
-	    currentTimeout--;
-	}
+            currentTimeout--;
+        }
     }
 
     if(resetBlocking)
     {
-	setBlocking(true);
+        setBlocking(true);
     }
 
     return true;
@@ -289,7 +290,7 @@ bool CVRSocket::connect(int timeout)
 
 int CVRSocket::setsockopt(int level, int optname, void * val, socklen_t len)
 {
-    return ::setsockopt(_socket, level, optname, (const char *)val, len);
+    return ::setsockopt(_socket,level,optname,(const char *)val,len);
 }
 
 void CVRSocket::setNoDelay(bool b)
@@ -310,8 +311,8 @@ void CVRSocket::setNoDelay(bool b)
         yes = 0;
     }
 
-    if(::setsockopt(_socket, IPPROTO_TCP, TCP_NODELAY, (const char *)&yes,
-                    sizeof(int)) == -1)
+    if(::setsockopt(_socket,IPPROTO_TCP,TCP_NODELAY,(const char *)&yes,
+            sizeof(int)) == -1)
     {
         perror("NO_DELAY");
     }
@@ -335,8 +336,8 @@ void CVRSocket::setReuseAddress(bool b)
         yes = 0;
     }
 
-    if(::setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes,
-                    sizeof(int)) == -1)
+    if(::setsockopt(_socket,SOL_SOCKET,SO_REUSEADDR,(const char *)&yes,
+            sizeof(int)) == -1)
     {
         perror("setsockopt");
     }
@@ -353,26 +354,26 @@ void CVRSocket::setBlocking(bool b)
     int res;
 
 #ifndef WIN32
-    int flags = fcntl(_socket, F_GETFL, 0);
+    int flags = fcntl(_socket,F_GETFL,0);
     if(b)
     {
-        res = fcntl(_socket, F_SETFL, flags & ~(O_NONBLOCK));
+        res = fcntl(_socket,F_SETFL,flags & ~(O_NONBLOCK));
     }
     else
     {
-        res = fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+        res = fcntl(_socket,F_SETFL,flags | O_NONBLOCK);
     }
 #else
-	u_long val;
-	if(b)
-	{
-		val = 0;
-	}
-	else
-	{
-		val = 1;
-	}
-	res = ioctlsocket(_socket, FIONBIO, &val);
+    u_long val;
+    if(b)
+    {
+        val = 0;
+    }
+    else
+    {
+        val = 1;
+    }
+    res = ioctlsocket(_socket, FIONBIO, &val);
 #endif
 
     if(res < 0)
@@ -381,7 +382,7 @@ void CVRSocket::setBlocking(bool b)
     }
     else
     {
-	_blockingState = b;
+        _blockingState = b;
     }
 }
 
@@ -399,19 +400,18 @@ bool CVRSocket::send(void * buf, size_t len, int flags)
         return false;
     }
 
-    int bytesToSend = (int) len;
+    int bytesToSend = (int)len;
     int sent;
     char * data = (char *)buf;
     while(bytesToSend > 0)
     {
-        if((sent = ::send(_socket, (const char *)data, bytesToSend, flags))
-                <= 0)
+        if((sent = ::send(_socket,(const char *)data,bytesToSend,flags)) <= 0)
         {
-	    if(_printErrors && errno)
-	    {
-		std::cerr << "Error sending data." << std::endl;
-		perror("send");
-	    }
+            if(_printErrors && errno)
+            {
+                std::cerr << "Error sending data." << std::endl;
+                perror("send");
+            }
             break;
         }
         bytesToSend -= sent;
@@ -439,21 +439,21 @@ bool CVRSocket::recv(void * buf, size_t len, int flags)
         return false;
     }
 
-    int bytesToRead = (int) len;
+    int bytesToRead = (int)len;
     int read;
     char * data = (char *)buf;
     while(bytesToRead > 0)
     {
-        if((read = ::recv(_socket, data, bytesToRead, flags)) <= 0)
+        if((read = ::recv(_socket,data,bytesToRead,flags)) <= 0)
         {
-            
+
             //if(errno != EAGAIN)
             //{
-	    if(_printErrors && errno)
-	    {
-		std::cerr << "Error on recv." << std::endl;
-		perror("recv");
-	    }
+            if(_printErrors && errno)
+            {
+                std::cerr << "Error on recv." << std::endl;
+                perror("recv");
+            }
             break;
             //}
             //std::cerr << "EAGAIN error" << std::endl;

@@ -3,7 +3,8 @@
 
 using namespace cvr;
 
-MenuList::MenuList() : MenuItem()
+MenuList::MenuList() :
+        MenuItem()
 {
     _index = 0;
     _focusMargin = 2;
@@ -21,9 +22,11 @@ MenuItemType MenuList::getType()
 
 void MenuList::setValue(const int index, const std::string & value)
 {
-    if (index < 0 || index >= _values.size())
+    if(index < 0 || index >= _values.size())
     {
-        std::cerr << "(MenuList) Warning: Attempting to set the value of an invalid index." << std::endl;
+        std::cerr
+                << "(MenuList) Warning: Attempting to set the value of an invalid index."
+                << std::endl;
         return;
     }
 
@@ -38,7 +41,7 @@ const std::string MenuList::getValue() const
 
 const std::string MenuList::getValue(int index) const
 {
-    if (index < 0 || index >= _values.size() || _values.empty())
+    if(index < 0 || index >= _values.size() || _values.empty())
         return "";
     return _values[index];
 }
@@ -69,12 +72,12 @@ const int MenuList::getIndex() const
     return _index;
 }
 
-void  MenuList::setIndex(const int index)
+void MenuList::setIndex(const int index)
 {
-    if (index < 0)
+    if(index < 0)
         _index = 0;
-    else if (index >= _values.size())
-        _index = (int) _values.size() - 1;
+    else if(index >= _values.size())
+        _index = (int)_values.size() - 1;
     else
         _index = index;
 
@@ -88,15 +91,15 @@ const unsigned int MenuList::getFocus() const
 
 void MenuList::matchIndexToValue(const std::string & str)
 {
-    for (unsigned int i = 0; i < _values.size(); i++)
-        if (_values[i] == str)
+    for(unsigned int i = 0; i < _values.size(); i++)
+        if(_values[i] == str)
         {
             setIndex(i);
             return;
         }
 }
 
-void  MenuList::setFocus(const unsigned int size)
+void MenuList::setFocus(const unsigned int size)
 {
     _focusMargin = size;
     setDirty(true);
@@ -114,7 +117,7 @@ void MenuList::setSensitivity(const float sensitivity)
 
 const float MenuList::getSensitivity()
 {
-    if (_sensitivity < 0)
+    if(_sensitivity < 0)
         return (float)getListSize();
     else
         return _sensitivity;

@@ -3,11 +3,11 @@
 namespace cvr
 {
 
-osg::Matrixd getLocalToWorldMatrix( osg::Node* node)
+osg::Matrixd getLocalToWorldMatrix(osg::Node* node)
 {
     getWorldCoordOfNodeVisitor* ncv = new getWorldCoordOfNodeVisitor();
     osg::Matrix retMat;
-    if (node && ncv)
+    if(node && ncv)
     {
         node->accept(*ncv);
         retMat = ncv->getMat();

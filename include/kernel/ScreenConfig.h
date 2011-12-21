@@ -38,11 +38,11 @@ struct WindowInfo
         int height;                 ///< height of window in pixels
         int pipeIndex;              ///< index for graphics pipe
         PipeInfo * myPipe;          ///< graphics pipe used for this window
-        int left;                   ///< left of window in pixels in x screen coords
-        int bottom;                 ///< bottom of window in pixels in x screen coords
-        bool decoration;            ///< puts on window boarder with title bar,etc.
+        int left;               ///< left of window in pixels in x screen coords
+        int bottom;           ///< bottom of window in pixels in x screen coords
+        bool decoration;         ///< puts on window boarder with title bar,etc.
         bool supportsResize;        ///< allow window to change size
-        bool overrideRedirect;      ///< override os redirects, can be used to force some window size/positions
+        bool overrideRedirect; ///< override os redirects, can be used to force some window size/positions
         bool useCursor;             ///< show mouse cursor in the window
         bool quadBuffer;            ///< true to enable quad buffered stereo
         osg::GraphicsContext * gc;  ///< osg graphics object for this window
@@ -75,8 +75,8 @@ struct ScreenInfo
         float width;            ///< screen width
         float height;           ///< screen height
         int channelIndex;       ///< index for channel holding this screen
-        ChannelInfo * myChannel;///< channel params for this screen
-        osg::Matrix transform;  ///< screen space to world space transform (from xyz,h,p,r)
+        ChannelInfo * myChannel;       ///< channel params for this screen
+        osg::Matrix transform; ///< screen space to world space transform (from xyz,h,p,r)
 };
 
 /**
@@ -85,7 +85,7 @@ struct ScreenInfo
  */
 class CVRKERNEL_EXPORT ScreenConfig
 {
-    friend class CalVR;
+        friend class CalVR;
     public:
         ScreenConfig();
 
@@ -122,7 +122,7 @@ class CVRKERNEL_EXPORT ScreenConfig
          * @param height height of found screen
          */
         void findScreenInfo(osg::Camera * c, osg::Vec3 & center, float & width,
-                            float & height);
+                float & height);
 
         /**
          * @brief Find screen number that contains a given camera
@@ -185,19 +185,19 @@ class CVRKERNEL_EXPORT ScreenConfig
 
         void syncMasterScreens();
 
-        std::vector<PipeInfo *> _pipeInfoList;      ///< list of pipe params from config file
-        std::vector<WindowInfo *> _windowInfoList;  ///< list of window params from config file
-        std::vector<ChannelInfo *> _channelInfoList;///< list of channel params from config file
-        std::vector<ScreenInfo *> _screenInfoList;  ///< list of screen params from config file
+        std::vector<PipeInfo *> _pipeInfoList; ///< list of pipe params from config file
+        std::vector<WindowInfo *> _windowInfoList; ///< list of window params from config file
+        std::vector<ChannelInfo *> _channelInfoList; ///< list of channel params from config file
+        std::vector<ScreenInfo *> _screenInfoList; ///< list of screen params from config file
 
-        std::vector<osg::Matrix> _screenTransformList;  ///< list of matrix transform for created screens
+        std::vector<osg::Matrix> _screenTransformList; ///< list of matrix transform for created screens
 
-        std::vector<ScreenBase *> _screenList;      ///< list of all created screens
+        std::vector<ScreenBase *> _screenList;  ///< list of all created screens
 
-        std::vector<PipeInfo *> _masterPipeInfoList;      ///< list of pipe params for master node
-        std::vector<WindowInfo *> _masterWindowInfoList;  ///< list of window params for master node
-        std::vector<ChannelInfo *> _masterChannelInfoList;///< list of channel params for master node
-        std::vector<ScreenInfo *> _masterScreenInfoList;  ///< list of screen params for master node
+        std::vector<PipeInfo *> _masterPipeInfoList; ///< list of pipe params for master node
+        std::vector<WindowInfo *> _masterWindowInfoList; ///< list of window params for master node
+        std::vector<ChannelInfo *> _masterChannelInfoList; ///< list of channel params for master node
+        std::vector<ScreenInfo *> _masterScreenInfoList; ///< list of screen params for master node
 };
 
 }

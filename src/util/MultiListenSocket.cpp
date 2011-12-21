@@ -23,33 +23,33 @@ MultiListenSocket::MultiListenSocket(int port, int queue)
     _valid = false;
 
 #ifdef WIN32
-	static bool wsaInitDone = false;
-	static bool wsaInitGood = false;
+    static bool wsaInitDone = false;
+    static bool wsaInitGood = false;
 
-	if(!wsaInitDone)
-	{
-		WSADATA wsaData;
-		int iResult;
+    if(!wsaInitDone)
+    {
+        WSADATA wsaData;
+        int iResult;
 
         iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
-        if (iResult != 0) 
-		{
+        if (iResult != 0)
+        {
             std::cerr << "WSAStartup failed: " << iResult << std::endl;
-			wsaInitGood = false;
+            wsaInitGood = false;
         }
-		else
-		{
-			wsaInitGood = true;
-		}
+        else
+        {
+            wsaInitGood = true;
+        }
 
-		wsaInitDone = true;
-	}
+        wsaInitDone = true;
+    }
 
-	if(!wsaInitGood)
-	{
-		std::cerr << "MultiListenSocket Error: WSAStartup has failed." << std::endl;
-		return;
-	}
+    if(!wsaInitGood)
+    {
+        std::cerr << "MultiListenSocket Error: WSAStartup has failed." << std::endl;
+        return;
+    }
 #endif
 
 }
@@ -59,9 +59,9 @@ MultiListenSocket::~MultiListenSocket()
     if(_valid)
     {
 #ifndef WIN32
-	close(_socket);
+        close(_socket);
 #else
-		closesocket(_socket);
+        closesocket(_socket);
 #endif
     }
 }
@@ -71,14 +71,14 @@ bool MultiListenSocket::setup()
     if(_valid)
     {
 #ifndef WIN32
-	close(_socket);
+        close(_socket);
 #else
-		closesocket(_socket);
+        closesocket(_socket);
 #endif
-	_valid = false;
+        _valid = false;
     }
 
-    _socket = (int) socket(AF_INET, SOCK_STREAM, 0);
+    _socket = (int)socket(AF_INET,SOCK_STREAM,0);
 
     if(_socket == -1)
     {
@@ -87,8 +87,8 @@ bool MultiListenSocket::setup()
     }
 
     int yes = 1;
-    if(setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (const char *)&yes,
-                  sizeof(int)) == -1)
+    if(setsockopt(_socket,SOL_SOCKET,SO_REUSEADDR,(const char *)&yes,
+            sizeof(int)) == -1)
     {
         perror("setsockopt");
         std::cerr << "Error setting reuseaddress option." << std::endl;
@@ -96,28 +96,28 @@ bool MultiListenSocket::setup()
     }
 
 #ifndef WIN32
-    int flags = fcntl(_socket, F_GETFL, 0);
-    fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
+    int flags = fcntl(_socket,F_GETFL,0);
+    fcntl(_socket,F_SETFL,flags | O_NONBLOCK);
 #else
-	u_long val = 1;
-	ioctlsocket(_socket, FIONBIO, &val);
+    u_long val = 1;
+    ioctlsocket(_socket, FIONBIO, &val);
 #endif
 
     sockaddr_in addr;
-    memset(&addr, 0, sizeof(addr));
+    memset(&addr,0,sizeof(addr));
 
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(_port);
 
-    if(bind(_socket, (struct sockaddr *)&addr, sizeof(addr)) == -1)
+    if(bind(_socket,(struct sockaddr *)&addr,sizeof(addr)) == -1)
     {
         std::cerr << "Error on socket bind." << std::endl;
-	perror("bind");
+        perror("bind");
         return false;
     }
 
-    if(listen(_socket, _queue) == -1)
+    if(listen(_socket,_queue) == -1)
     {
         std::cerr << "Error on socket listen." << std::endl;
         return false;
@@ -132,12 +132,12 @@ CVRSocket * MultiListenSocket::accept()
 {
     if(!_valid)
     {
-	return NULL;
+        return NULL;
     }
 
     sockaddr_in addr;
     int length;
-    int val = (int) ::accept(_socket, (sockaddr *)&addr, (socklen_t *)&length);
+    int val = (int)::accept(_socket,(sockaddr *)&addr,(socklen_t *)&length);
     if(val == -1)
     {
         if(errno && errno != EWOULDBLOCK)

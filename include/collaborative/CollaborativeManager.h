@@ -17,24 +17,24 @@ namespace cvr
 {
 
 /*struct ClientUpdate
-{
-        float headPos[3];
-        float headRot[4];
-        float handPos[3];
-        float handRot[4];
-        float objScale;
-        float objTrans[16];
-        int numMes;
-};*/
+ {
+ float headPos[3];
+ float headRot[4];
+ float handPos[3];
+ float handRot[4];
+ float objScale;
+ float objTrans[16];
+ int numMes;
+ };*/
 
 /**
  * @brief Information passed for a client update
  */
 struct ClientUpdate
 {
-    float objScale; ///< object space scale
-    float objTrans[16]; ///< object space transform matrix
-    int numMes; ///< number of collaborative messages to follow
+        float objScale; ///< object space scale
+        float objTrans[16]; ///< object space transform matrix
+        int numMes; ///< number of collaborative messages to follow
 };
 
 /**
@@ -159,17 +159,26 @@ class CVRCOLLAB_EXPORT CollaborativeManager
         /**
          * @brief Returns this system's id number in the collaborative session
          */
-        int getID() { return _id; }
+        int getID()
+        {
+            return _id;
+        }
 
         /**
          * @brief Returns this system's collaborative name
          */
-        const std::string & getName() { return _myName; }
+        const std::string & getName()
+        {
+            return _myName;
+        }
 
         /**
          * @brief Get the current mode of the collaborative session
          */
-        CollabMode getMode() { return _mode; }
+        CollabMode getMode()
+        {
+            return _mode;
+        }
 
         /**
          * @brief Set the mode of the collaborative session
@@ -179,7 +188,10 @@ class CVRCOLLAB_EXPORT CollaborativeManager
         /**
          * @brief Get the id number of the master client in the collaborative session
          */
-        int getMasterID() { return _masterID; }
+        int getMasterID()
+        {
+            return _masterID;
+        }
 
         /**
          * @brief Set the id for the master client in the collaborative session
@@ -189,7 +201,10 @@ class CVRCOLLAB_EXPORT CollaborativeManager
         /**
          * @brief Get the map of all clients in the collaborative session, indexed by id
          */
-        std::map<int,ClientInitInfo> & getClientInitMap() { return _clientInitMap; }
+        std::map<int,ClientInitInfo> & getClientInitMap()
+        {
+            return _clientInitMap;
+        }
 
         /**
          * @brief Get the number of tracked heads for a client id
@@ -228,7 +243,8 @@ class CVRCOLLAB_EXPORT CollaborativeManager
          * disposable and the buffer is deleted automatically after the message is sent.  If sendLocal is true, it happens before
          * the function returns.
          */
-        void sendCollaborativeMessageAsync(std::string target, int type, char * data, int size, bool sendLocal = false);
+        void sendCollaborativeMessageAsync(std::string target, int type,
+                char * data, int size, bool sendLocal = false);
 
         /**
          * @brief Sends a message to a plugin in a collaborative session (synchronous)
@@ -242,7 +258,8 @@ class CVRCOLLAB_EXPORT CollaborativeManager
          * This is a synchronous call.  The function does not return until the message is sent.  The time taken depends on the 
          * event in the collaborative queue and the network latency to the server.
          */
-        void sendCollaborativeMessageSync(std::string target, int type, char * data, int size, bool sendLocal = false);
+        void sendCollaborativeMessageSync(std::string target, int type,
+                char * data, int size, bool sendLocal = false);
 
     protected:
         CollaborativeManager();

@@ -56,12 +56,18 @@ class CVRKERNEL_EXPORT CalVR
         /**
          * @brief returns the set home directory for the CalVR install
          */
-        std::string & getHomeDir() { return _home; }
+        std::string & getHomeDir()
+        {
+            return _home;
+        }
 
         /**
          * @brief Get the host name for this node
          */
-        std::string & getHostName() { return _hostName; }
+        std::string & getHostName()
+        {
+            return _hostName;
+        }
 
     protected:
         static CalVR * _myPtr; ///< static self pointer

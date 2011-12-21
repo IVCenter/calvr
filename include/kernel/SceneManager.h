@@ -26,9 +26,9 @@ struct InteractionEvent;
  */
 class CVRKERNEL_EXPORT SceneManager
 {
-    friend class CVRViewer;
-    friend class CVRPlugin;
-    friend class SceneObject;
+        friend class CVRViewer;
+        friend class CVRPlugin;
+        friend class SceneObject;
     public:
         virtual ~SceneManager();
 
@@ -119,7 +119,10 @@ class CVRKERNEL_EXPORT SceneManager
         /**
          * @brief Get if the hand pointer graphic is hidden
          */
-        bool getHidePointer() { return _hidePointer; }
+        bool getHidePointer()
+        {
+            return _hidePointer;
+        }
 
         /**
          * @brief Get a pointer to the DepthPartitionNode for the left eye rendering
@@ -195,7 +198,8 @@ class CVRKERNEL_EXPORT SceneManager
         void initAxis();
 
         void updateActiveObject();
-        SceneObject * findChildActiveObject(SceneObject * object, osg::Vec3 & start, osg::Vec3 & end);
+        SceneObject * findChildActiveObject(SceneObject * object,
+                osg::Vec3 & start, osg::Vec3 & end);
         void removePluginObjects(CVRPlugin * plugin);
 
         static SceneManager * _myPtr;   ///< static self pointer
@@ -203,22 +207,22 @@ class CVRKERNEL_EXPORT SceneManager
         bool _showAxis;     ///< should debug axis be shown
         bool _hidePointer;
 
-        osg::ref_ptr<osg::MatrixTransform> _sceneRoot;      ///< root node of the scene
+        osg::ref_ptr<osg::MatrixTransform> _sceneRoot; ///< root node of the scene
         osg::ref_ptr<osg::Group> _actualRoot; ///< node assigned as viewer root
-        osg::ref_ptr<DepthPartitionNode> _depthPartitionLeft;   ///< partitions availible depth, good for large scenes, left eye
-        osg::ref_ptr<DepthPartitionNode> _depthPartitionRight;  ///< partitions availible depth, good for large scenes, right eye
-        osg::ref_ptr<osg::MatrixTransform> _menuRoot;       ///< root node for menu implementation
-        osg::ref_ptr<osg::ClipNode> _objectRoot;            ///< root of object space
-        osg::ref_ptr<osg::MatrixTransform> _objectTransform;///< object space translation/rotation
-        osg::ref_ptr<osg::MatrixTransform> _objectScale;    ///< object space scale transform
-        osg::ref_ptr<osg::Group> _axisNode;                 ///< holds the debug axis geometry
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionLeft; ///< partitions availible depth, good for large scenes, left eye
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionRight; ///< partitions availible depth, good for large scenes, right eye
+        osg::ref_ptr<osg::MatrixTransform> _menuRoot; ///< root node for menu implementation
+        osg::ref_ptr<osg::ClipNode> _objectRoot;       ///< root of object space
+        osg::ref_ptr<osg::MatrixTransform> _objectTransform; ///< object space translation/rotation
+        osg::ref_ptr<osg::MatrixTransform> _objectScale; ///< object space scale transform
+        osg::ref_ptr<osg::Group> _axisNode;   ///< holds the debug axis geometry
 
         osg::Matrixd _obj2world; ///< object to world space transform
         osg::Matrixd _world2obj; ///< world to object space transform
 
-        std::vector<osg::ref_ptr<osg::MatrixTransform> > _headAxisTransforms;   ///< head location debug axis transforms
-        std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms;       ///< current hand transforms
-        float _scale;                                                           ///< current scale of object space
+        std::vector<osg::ref_ptr<osg::MatrixTransform> > _headAxisTransforms; ///< head location debug axis transforms
+        std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms; ///< current hand transforms
+        float _scale;                         ///< current scale of object space
 
         SceneObject * _menuOpenObject; ///< object with an open menu
         std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
