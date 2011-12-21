@@ -30,14 +30,14 @@ void BoardMenuTextGeometry::createGeometry(MenuItem * item)
     float xoffset = 0;
     if(mb->getIndent())
     {
-	xoffset = _iconHeight + _boarder;
+	xoffset = _iconHeight + _border;
     }
 
     _text = makeText(mb->getText(), _textSize * mb->getSizeScale(), osg::Vec3(xoffset, -2,0), _textColor, osgText::Text::LEFT_TOP);
     /*osgText::Text * textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-    textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0));
     textNode->setColor(_textColor);
     textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
@@ -47,10 +47,10 @@ void BoardMenuTextGeometry::createGeometry(MenuItem * item)
     _text->setMaximumWidth(mb->getMaxWidth());
 
     osg::BoundingBox bb = _text->getBound();
-    _width = bb.xMax() - bb.xMin(); // + _iconHeight + _boarder;
+    _width = bb.xMax() - bb.xMin(); // + _iconHeight + _border;
     if(mb->getIndent())
     {
-	_width += _iconHeight + _boarder;
+	_width += _iconHeight + _border;
     }
     _height = bb.zMax() - bb.zMin();
     //_height = _iconHeight;
@@ -76,7 +76,7 @@ void BoardMenuTextGeometry::updateGeometry()
 	osg::Vec3 pos = _text->getPosition();
 	if(mb->getIndent())
 	{
-	    pos.x() = _iconHeight + _boarder;
+	    pos.x() = _iconHeight + _border;
 	}
 	else
 	{
@@ -85,11 +85,11 @@ void BoardMenuTextGeometry::updateGeometry()
 	_text->setPosition(pos);
 
 	osg::BoundingBox bb = _text->getBound();
-	_width = bb.xMax() - bb.xMin();// + _iconHeight + _boarder;
+	_width = bb.xMax() - bb.xMin();// + _iconHeight + _border;
 
 	if(mb->getIndent())
 	{
-	    _width += _iconHeight + _boarder;
+	    _width += _iconHeight + _border;
 	}
 
 	_height = bb.zMax() - bb.zMin();

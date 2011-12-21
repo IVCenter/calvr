@@ -15,6 +15,9 @@ DialogPanel::DialogPanel(float menuWidth, std::string title, std::string configT
 
 DialogPanel::~DialogPanel()
 {
+    removeMenuItem(_menuText);
+    setVisible(false);
+    delete _menuText;
 }
 
 void DialogPanel::setText(std::string text)

@@ -75,7 +75,7 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
 
     _listItem = dynamic_cast<MenuList*>(item);
 
-    _value = makeText(_listItem->getValue(), _textSize, osg::Vec3(2*_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
+    _value = makeText(_listItem->getValue(), _textSize, osg::Vec3(2*_iconHeight + _border, -2, -_iconHeight / 2.0), _textColor);
 
     _geode->addDrawable(_value);
 
@@ -83,18 +83,18 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
     const unsigned int valueCount = stringValues.size();
     const unsigned int margin = valueCount / 2; // Will truncate .5
     _valuesSelected.resize(valueCount,NULL);
-    float tHeight = _iconHeight * (valueCount/2.0 - 1) + _boarder * margin;
+    float tHeight = _iconHeight * (valueCount/2.0 - 1) + _border * margin;
     for (int i = 0; i < valueCount; i++)
     {
-        _valuesSelected[i] = makeText(stringValues[i], _textSize, osg::Vec3(2*_iconHeight + _boarder, -4, tHeight),
+        _valuesSelected[i] = makeText(stringValues[i], _textSize, osg::Vec3(2*_iconHeight + _border, -4, tHeight),
             i == margin ? _textColorSelected : _textColor);
-        tHeight -= _iconHeight + _boarder;
+        tHeight -= _iconHeight + _border;
     }
 
     _geodeSelected->addDrawable(_valuesSelected[margin]);
 
     osg::BoundingBox bb = _valuesSelected[margin]->getBound();
-    _width = bb.xMax() - bb.xMin() + _iconHeight*2 + _boarder;
+    _width = bb.xMax() - bb.xMin() + _iconHeight*2 + _border;
     _height = _iconHeight;
 
     _backboard = makeBackboard();
@@ -111,15 +111,15 @@ void BoardMenuListGeometry::updateGeometry()
     const unsigned int valueCount = stringValues.size();
     const unsigned int margin = valueCount/2; // Will truncate .5
     _valuesSelected.resize(valueCount,NULL);
-    float tHeight = _iconHeight * (valueCount/2.0 - 1) + _boarder * margin;
+    float tHeight = _iconHeight * (valueCount/2.0 - 1) + _border * margin;
     for (int i = 0; i < valueCount; i++)
     {
         if (_valuesSelected[i] == NULL)
-            _valuesSelected[i] = makeText(stringValues[i], _textSize, osg::Vec3(2*_iconHeight + _boarder, -4, tHeight),
+            _valuesSelected[i] = makeText(stringValues[i], _textSize, osg::Vec3(2*_iconHeight + _border, -4, tHeight),
                                  i == margin ? _textColorSelected : _textColor);
         else
             _valuesSelected[i]->setText(stringValues[i]);
-        tHeight -= _iconHeight + _boarder;
+        tHeight -= _iconHeight + _border;
     }
 
     _geode->addDrawable(_value.get());
@@ -130,7 +130,7 @@ void BoardMenuListGeometry::updateGeometry()
         for (int i = 0; i < valueCount; i++)
         {
             osg::BoundingBox bb = _valuesSelected[i]->getBound();
-            float width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+            float width = bb.xMax() - bb.xMin() + _iconHeight + _border;
             if (width > maxWidth)
                 maxWidth = width;
 
@@ -164,7 +164,7 @@ void BoardMenuListGeometry::updateGeometry()
         _geodeSelected->addDrawable(_valuesSelected[valueCount/2]);
 
         osg::BoundingBox bb = _value->getBound();
-        _width = bb.xMax() - bb.xMin() + _iconHeight*2 + _boarder;
+        _width = bb.xMax() - bb.xMin() + _iconHeight*2 + _border;
     }
 }
 
@@ -288,8 +288,8 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 osg::Geometry * BoardMenuListGeometry::makeBackboard()
 {
     const unsigned int margin = _listItem->getFocus();
-    float indent = _iconHeight + _boarder;
+    float indent = _iconHeight + _border;
     float bbWidth = _bbWidth - indent + _iconHeight * 2;
-    float bbHeight = (margin * 2 + 1) * _iconHeight + (margin * 2) * _boarder;
+    float bbHeight = (margin * 2 + 1) * _iconHeight + (margin * 2) * _border;
     return makeQuad(bbWidth, bbHeight, osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec3(indent,-3,(bbHeight+_iconHeight)/-2));
 }

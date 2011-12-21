@@ -46,6 +46,10 @@ PopupMenu::PopupMenu(std::string title, std::string configTag)
 PopupMenu::~PopupMenu()
 {
     MenuManager::instance()->removeMenuSystem(this);
+    if(_menu)
+    {
+	delete _menu;
+    }
 }
 
 void PopupMenu::addMenuItem(MenuItem * item)

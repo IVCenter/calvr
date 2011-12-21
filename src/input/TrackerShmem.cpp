@@ -42,22 +42,25 @@ TrackerShmem::~TrackerShmem()
 bool TrackerShmem::init(std::string tag)
 {
     int shmKey =
-            ConfigManager::getInt(tag + ".CaveLibConfig.TrackerSHMID", 4126);
+            ConfigManager::getInt(tag + ".SHMEM.TrackerID", 4126);
 
 #ifndef WIN32
     int shmID = shmget(shmKey, sizeof(struct tracker_header), 0);
     if(shmID == -1)
     {
-        std::cerr << "Unable to get Shared memory id for key: " << shmKey
-                << std::endl;
-        return false;
+        //std::cerr << "Unable to get Shared memory id for key: " << shmKey
+        //        << std::endl;
+        //return false;
     }
-
-    _tracker = (tracker_header *)shmat(shmID, NULL, 0);
-    if(_tracker == (tracker_header *)-1)
+    else
     {
-        std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
-        return false;
+	_tracker = (tracker_header *)shmat(shmID, NULL, 0);
+	if(_tracker == (tracker_header *)-1)
+	{
+	    _tracker = NULL;
+	    //std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
+	    //return false;
+	}
     }
 
 #else
@@ -71,36 +74,43 @@ bool TrackerShmem::init(std::string tag)
     }
     else
     {
-        std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
-        return false;
+	_tracker = NULL;
+        //std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
+        //return false;
     }
 
 #endif
 
-    _numBodies = _tracker->count;
-    for(int i = 0; i < _numBodies; i++)
+    if(_tracker)
     {
-        TrackedBody * tb = new TrackedBody;
-        tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0;
-        _bodyList.push_back(tb);
+	_numBodies = _tracker->count;
+	for(int i = 0; i < _numBodies; i++)
+	{
+	    TrackedBody * tb = new TrackedBody;
+	    tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0;
+	    _bodyList.push_back(tb);
+	}
     }
 
-    shmKey = ConfigManager::getInt(tag + ".CaveLibConfig.WandSHMID", 4127);
+    shmKey = ConfigManager::getInt(tag + ".SHMEM.ControllerID", 4127);
 
 #ifndef WIN32
     shmID = shmget(shmKey, sizeof(struct control_header), 0);
     if(shmID == -1)
     {
-        std::cerr << "Unable to get Shared memory id for key: " << shmKey
-                << std::endl;
-        return false;
+        //std::cerr << "Unable to get Shared memory id for key: " << shmKey
+        //        << std::endl;
+        //return false;
     }
-
-    _controller = (control_header *)shmat(shmID, NULL, 0);
-    if(_controller == (control_header *)-1)
+    else
     {
-        std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
-        return false;
+	_controller = (control_header *)shmat(shmID, NULL, 0);
+	if(_controller == (control_header *)-1)
+	{
+	    _controller = NULL;
+	    //std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
+	    //return false;
+	}
     }
 
 #else
@@ -113,25 +123,29 @@ bool TrackerShmem::init(std::string tag)
     }
     else
     {
-        std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
-        return false;
+	_controller = NULL;
+        //std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
+        //return false;
     }
 #endif
 
+    if(_controller)
+    {
 #ifndef WIN32
-    _numButtons = std::min(_controller->but_count,
-                                   (uint32_t)CVR_MAX_BUTTONS);
+	_numButtons = std::min(_controller->but_count,
+		(uint32_t)CVR_MAX_BUTTONS);
 #else
-    _numButtons = min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS);
+	_numButtons = min(_controller->but_count,(uint32_t)CVR_MAX_BUTTONS);
 #endif
+
+	_numVal = _controller->val_count;
+	for(int i = 0; i < _numVal; i++)
+	{
+	    _valList.push_back(0.0);
+	}
+    }
 
     _buttonMask = 0;
-
-    _numVal = _controller->val_count;
-    for(int i = 0; i < _numVal; i++)
-    {
-        _valList.push_back(0.0);
-    }
 
     return true;
 }

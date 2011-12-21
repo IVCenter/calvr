@@ -11,6 +11,8 @@
 #include <osg/Quat>
 #include <osg/Matrix>
 
+#include <map>
+
 namespace cvr
 {
 
@@ -52,7 +54,7 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         void updateMovement(TrackedButtonInteractionEvent * tie);
 
         float _moveDistance;
-        osg::Vec3 _currentPoint;
+        std::map<int,osg::Vec3> _currentPoint;
         osg::Vec3 _menuPoint;
 };
 

@@ -23,6 +23,9 @@ TabbedDialogPanel::TabbedDialogPanel(float menuWidth, float rowHeight, int butto
 
 TabbedDialogPanel::~TabbedDialogPanel()
 {
+    removeMenuItem(_textButtonSet);
+    setVisible(false);
+    delete _textButtonSet;
 }
 
 void TabbedDialogPanel::addTextTab(std::string name, std::string text)

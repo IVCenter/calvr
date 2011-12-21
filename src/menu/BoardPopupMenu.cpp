@@ -29,7 +29,7 @@ bool BoardPopupMenu::processIsect(IsectInfo & isect, int hand)
 {
     if(BoardMenu::processIsect(isect,hand))
     {
-	_currentPoint = isect.point;
+	_currentPoint[hand] = isect.point;
 	return true;
     }
     return false;
@@ -98,10 +98,10 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 		if(smg && smg->isMenuHead())
 		{
 		    osg::Vec3 ray;
-		    ray = _currentPoint - tie->getTransform().getTrans();
+		    ray = _currentPoint[tie->getHand()] - tie->getTransform().getTrans();
 
 		    _moveDistance = ray.length();
-		    _menuPoint = _currentPoint * osg::Matrix::inverse(_menuRoot->getMatrix());
+		    _menuPoint = _currentPoint[tie->getHand()] * osg::Matrix::inverse(_menuRoot->getMatrix());
 		    updateMovement(tie);
 		}
 		else if(smg && !smg->isMenuHead())

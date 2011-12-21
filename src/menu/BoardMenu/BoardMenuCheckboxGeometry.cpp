@@ -52,11 +52,11 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
                                    osg::Vec3(0, -2, 0));
     _geodeIcon->addDrawable(geo);
 
-    osgText::Text * textNode = makeText(checkbox->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColor);
+    osgText::Text * textNode = makeText(checkbox->getText(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColor);
     /*osgText::Text * textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-    textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0));
     textNode->setColor(osg::Vec4(1.0, 1.0, 1.0, 1.0));
     textNode->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 0.0));
@@ -64,17 +64,17 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
     textNode->setText(checkbox->getText());*/
 
     osg::BoundingBox bb = textNode->getBound();
-    _width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
     //mg->height = bb.zMax() - bb.zMin();
     _height = _iconHeight;
 
     _geode->addDrawable(textNode);
 
-    textNode = makeText(checkbox->getText(), _textSize, osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight / 2.0), _textColorSelected);
+    textNode = makeText(checkbox->getText(), _textSize, osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColorSelected);
     /*textNode = new osgText::Text();
     textNode->setCharacterSize(_textSize);
     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-    textNode->setPosition(osg::Vec3(_iconHeight + _boarder, -2, -_iconHeight
+    textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
             / 2.0));
     textNode->setColor(osg::Vec4(0.0, 1.0, 0.0, 1.0));
     textNode->setBackdropColor(osg::Vec4(0.0, 0.0, 0.0, 0.0));
@@ -130,7 +130,7 @@ void BoardMenuCheckboxGeometry::updateGeometry()
 	    {
 		text->setText(checkbox->getText());
 		osg::BoundingBox bb = text->getBound();
-		_width = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _border;
 		text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(0));
 		if(text)
 		{

@@ -41,15 +41,15 @@ class BoardMenu : public MenuBase
             UPCLICK
         };
 
-        /**
+        /*
          * @brief What is currently interacting with the menu
-         */
+         *
         enum ActiveInteractor
         {
             HAND,
             MOUSE,
             NONE
-        };
+        };*/
 
         /**
          * @brief Set the root SubMenu for this menu
@@ -133,7 +133,7 @@ class BoardMenu : public MenuBase
 
         MenuTrigger _trigger; ///< Method for spawning the menu
 
-        ActiveInteractor _activeInteractor; ///< currently active interaction type
+        //ActiveInteractor _activeInteractor; ///< currently active interaction type
         int _activeHand;
 
         bool _menuActive; ///< if the menu is open
@@ -145,16 +145,16 @@ class BoardMenu : public MenuBase
 
         float _distance; ///< distance on the wand to spawn the menu
         float _scale; ///< menu scale
-        int _primaryHand; ///< hand for menu clicking
+        //int _primaryHand; ///< hand for menu clicking
         int _primaryButton; ///< button for menu clicking
-        int _secondaryHand; ///< hand for menu spawning
+        //int _secondaryHand; ///< hand for menu spawning
         int _secondaryButton; ///< button for menu spawning
-        int _primaryMouseButton; ///< button used for mouse clicking
-        int _secondaryMouseButton; ///< mouse button used to spawn menu
+        //int _primaryMouseButton; ///< button used for mouse clicking
+        //int _secondaryMouseButton; ///< mouse button used to spawn menu
 
-        int _primaryIntersectHand; ///< hand used for menu intersection
+        //int _primaryIntersectHand; ///< hand used for menu intersection
 
-        float _boarder; ///< thickness of boarder around menu items
+        float _border; ///< thickness of border around menu items
 
         std::map<SubMenu*,float> _widthMap; ///< current width of the geometry of each SubMenu in this menu
         std::map<SubMenu*,osg::ref_ptr<osg::MatrixTransform> > _menuMap; ///< map of SubMenu to its geometry scenegraph root

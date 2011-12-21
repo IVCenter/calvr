@@ -90,19 +90,19 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     }
 
     _label = makeText(mrv->getLabel(), _textSize, osg::Vec3(_iconHeight
-            + _boarder, -2, -_iconHeight / 2.0), _textColor);
+            + _border, -2, -_iconHeight / 2.0), _textColor);
 
     _geode->addDrawable(_label.get());
 
     _geodeSelected->addDrawable(makeText(mrv->getLabel(), _textSize,
-                                         osg::Vec3(_iconHeight + _boarder, -2,
+                                         osg::Vec3(_iconHeight + _border, -2,
                                                    -_iconHeight / 2.0),
                                          _textColorSelected));
 
     char buffer[7];
     snprintf(buffer, 7, "%6f", mrv->getMin());
     _minValue = makeText(buffer, _textSize * 0.75, osg::Vec3(0, -2, -3.0
-            * _iconHeight / 2.0 - _boarder), _textColor);
+            * _iconHeight / 2.0 - _border), _textColor);
 
     _geode->addDrawable(_minValue.get());
     _geodeSelected->addDrawable(_minValue.get());
@@ -111,10 +111,10 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     osg::BoundingBox bbmin = _minValue->getBound();
 
-    width2 = bbmin.xMax() - bbmin.xMin() + _boarder;
+    width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
     geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
-                   osg::Vec3(width2, -2, -_iconHeight - _boarder));
+                   osg::Vec3(width2, -2, -_iconHeight - _border));
     _geodeBackIcon->addDrawable(geo);
 
     _backIcon = loadIcon("less.rgb");
@@ -126,21 +126,21 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
                                               osg::StateAttribute::ON);
     }
 
-    width2 += _iconHeight + _boarder;
+    width2 += _iconHeight + _border;
 
     snprintf(buffer, 7, printstr, mrv->getValue());
     _currentValue = makeText(buffer, _textSize, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _boarder), _textColor);
+            * _iconHeight / 2.0 - _border), _textColor);
 
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
     bbmin = _currentValue->getBound();
 
-    width2 += bbmin.xMax() - bbmin.xMin() + _boarder;
+    width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
     geo = makeQuad(_iconHeight, -_iconHeight, osg::Vec4(1.0, 1.0, 1.0, 1.0),
-                   osg::Vec3(width2, -2, -_iconHeight - _boarder));
+                   osg::Vec3(width2, -2, -_iconHeight - _border));
     _geodeForwardIcon->addDrawable(geo);
 
     _forwardIcon = loadIcon("greater.rgb");
@@ -152,11 +152,11 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
                                               osg::StateAttribute::ON);
     }
 
-    width2 += _iconHeight + _boarder;
+    width2 += _iconHeight + _border;
 
     snprintf(buffer, 7, "%6f", mrv->getMax());
     _maxValue = makeText(buffer, _textSize * 0.75, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _boarder), _textColor);
+            * _iconHeight / 2.0 - _border), _textColor);
 
     _geode->addDrawable(_maxValue.get());
     _geodeSelected->addDrawable(_maxValue.get());
@@ -164,10 +164,10 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     bbmin = _maxValue->getBound();
     width2 += bbmin.xMax() - bbmin.xMin();
 
-    _height = _iconHeight * 2.0 + _boarder;
+    _height = _iconHeight * 2.0 + _border;
 
     osg::BoundingBox bb = _label->getBound();
-    _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _boarder, width2);
+    _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border, width2);
 }
 
 void BoardMenuRangeValueGeometry::updateGeometry()
@@ -178,11 +178,11 @@ void BoardMenuRangeValueGeometry::updateGeometry()
     float width1 = 0.0;
 
     osg::BoundingBox bb = _label->getBound();
-    width1 = bb.xMax() - bb.xMin() + _iconHeight + _boarder;
+    width1 = bb.xMax() - bb.xMin() + _iconHeight + _border;
 
     float width2 = 0.0;
     bb = _minValue->getBound();
-    width2 = bb.xMax() - bb.xMin() + _boarder + _iconHeight + _boarder;
+    width2 = bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     char buffer[7];
     const char * printstr;
@@ -199,13 +199,13 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
     snprintf(buffer, 7, printstr, mrv->getValue());
     _currentValue = makeText(buffer, _textSize, osg::Vec3(width2, -2, -3.0
-            * _iconHeight / 2.0 - _boarder), _textColor);
+            * _iconHeight / 2.0 - _border), _textColor);
 
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
     bb = _currentValue->getBound();
-    width2 += bb.xMax() - bb.xMin() + _boarder + _iconHeight + _boarder;
+    width2 += bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     bb = _maxValue->getBound();
     width2 += bb.xMax() - bb.xMin();
