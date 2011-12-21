@@ -47,7 +47,6 @@ bool MenuManager::init()
 
     _menuSystemList.push_back(mainMenu);
 
-    //_primaryHand = ConfigManager::getInt("MenuSystem.PrimaryHand",0);
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
 	_handLastMenuSystem.push_back(NULL);
@@ -63,7 +62,6 @@ void MenuManager::update()
     }
 
     // call update on all menus
-    //_mainMenu->updateStart();
     for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin(); it != _menuSystemList.end(); it++)
     {
 	(*it)->updateStart();
@@ -127,48 +125,6 @@ void MenuManager::update()
     }
 
     updateEnd();
-
-    /*std::vector<IsectInfo> isecvec;
-
-    if(TrackingManager::instance()->getNumHands())
-    {
-	pointerStart = TrackingManager::instance()->getHandMat(_primaryHand).getTrans();
-	pointerEnd.set(0.0f, 10000.0f, 0.0f);
-	pointerEnd = pointerEnd
-	    * TrackingManager::instance()->getHandMat(_primaryHand);
-
-	isecvec = getObjectIntersection(SceneManager::instance()->getMenuRoot(),
-		pointerStart, pointerEnd);
-
-	for(int i = 0; i < isecvec.size(); i++)
-	{
-	    if(processWithOrder(isecvec[i],false))
-	    {
-		updateEnd();
-		return;
-	    }
-	}
-    }
-
-    // process mouse intersection
-    pointerStart = InteractionManager::instance()->getMouseMat().getTrans();
-    pointerEnd.set(0.0f, 10000.0f, 0.0f);
-    pointerEnd = pointerEnd * InteractionManager::instance()->getMouseMat();
-
-    isecvec = getObjectIntersection(SceneManager::instance()->getMenuRoot(),
-                                    pointerStart, pointerEnd);
-
-    for(int i = 0; i < isecvec.size(); i++)
-    {
-	if(processWithOrder(isecvec[i],true))
-	{
-	    updateEnd();
-	    return;
-	}
-    }
-
-    updateEnd();
-    //_mainMenu->updateEnd();*/
 }
 
 bool MenuManager::processEvent(InteractionEvent * event)

@@ -67,16 +67,10 @@ BoardMenu::BoardMenu()
     _menuRoot->addChild(_menuScale);
 
     osg::StateSet * stateset = _menuRoot->getOrCreateStateSet();
-    //stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-    //stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
     _menuActive = false;
     _activeItem = NULL;
-    //_openingMenu = NULL;
-    //_openingElapse = 0.0;
-
-    //_openingThreshold = ConfigManager::getFloat("MenuSystem.BoardMenu.OpenThreshold", 0.5);
 
     _clickActive = false;
 
@@ -135,7 +129,6 @@ void BoardMenu::setMenu(SubMenu * menu)
     _openMenus.push(menu);
     updateMenus();
 
-    //_menuRoot->addChild(_menuMap[_myMenu]);
     _menuScale->addChild(_menuMap[_myMenu]);
 }
 
@@ -143,10 +136,6 @@ void BoardMenu::updateStart()
 {
     updateMenus();
     _foundItem = false;
-    /*if(_menuActive && !_clickActive)
-    {
-        checkIntersection();
-    }*/
 }
 
 void BoardMenu::updateEnd()
@@ -287,8 +276,6 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
 void BoardMenu::itemDelete(MenuItem * item)
 {
-    //std::cerr << "Removing item" << std::endl;
-   
     if(!_myMenu)
     {
 	return;
@@ -308,7 +295,6 @@ void BoardMenu::itemDelete(MenuItem * item)
             {
 		if((*it) == item)
 		{
-		     //it = searchList[0]->getChildren().erase(it);
 		     removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
 		     continue;
 		}
@@ -320,11 +306,9 @@ void BoardMenu::itemDelete(MenuItem * item)
             }
 	    else if((*it) == item)
 	    {
-		//it = searchList[0]->getChildren().erase(it);
 		removeList.push_back(std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
 		continue;
 	    }
-	    //it++;
         }
         searchList.erase(searchList.begin());
     }
@@ -391,53 +375,13 @@ void BoardMenu::itemDelete(MenuItem * item)
     {
 	_myMenu = NULL;
     }
-
-    /*if(!_myMenu)
-    {
-	return;
-    }
-
-    std::vector<SubMenu*> searchList;
-    searchList.push_back(_myMenu);
-
-    while(searchList.size())
-    {
-        for(std::vector<MenuItem*>::iterator it =
-                searchList[0]->getChildren().begin(); it
-                != searchList[0]->getChildren().end();)
-        {
-            if((*it)->isSubMenu())
-            {
-		if((*it) == item)
-		{
-		     it = searchList[0]->getChildren().erase(it);
-		     continue;
-		}
-		else
-		{
-		    SubMenu * sm = dynamic_cast<SubMenu*> (*it);
-		    searchList.push_back(sm);
-		}
-            }
-	    else if((*it) == item)
-	    {
-		it = searchList[0]->getChildren().erase(it);
-		continue;
-	    }
-	    it++;
-        }
-        searchList.erase(searchList.begin());
-    }
-    updateMenus();*/
 }
 
 void BoardMenu::clear()
 {
     close();
     _myMenu = NULL;
-    //_menuRoot->removeChildren(0,_menuRoot->getNumChildren());
     _menuScale->removeChildren(0,_menuScale->getNumChildren());
-    //_activeInteractor = NONE;
     _menuActive = false;
     _activeItem = NULL;
     _clickActive = false;
@@ -524,16 +468,12 @@ void BoardMenu::updateMenus()
         searchList.erase(searchList.begin());
     }
 
-    //std::cerr << "Found " << foundList.size() << " SubMenus." << std::endl;
-
     for(int i = 0; i < foundList.size(); i++)
     {
         if(!foundList[i]->isDirty())
         {
             continue;
         }
-
-        //std::cerr << "Menu Gen." << std::endl;
 
         std::vector<BoardMenuGeometry *> geoList;
         if(_menuMap.find(foundList[i]) == _menuMap.end())
@@ -613,7 +553,6 @@ void BoardMenu::updateMenus()
                 width = geoList[j]->getWidth();
             }
         }
-        //_widthMap[foundList[i]] = (width + 2.0 * _border) * _scale;
 	_widthMap[foundList[i]] = (width + 2.0 * _border);
 
         // add invisible intersection test drawable
@@ -634,13 +573,6 @@ void BoardMenu::updateMenus()
 
         }
 
-        //osg::MatrixTransform * scaleMT = new osg::MatrixTransform();
-
-        //osg::Matrix scale;
-        //scale.makeScale(osg::Vec3(_scale, 1.0, _scale));
-
-        //scaleMT->setMatrix(scale);
-
         float offset = _border;
         for(int j = 0; j < geoList.size(); j++)
         {
@@ -648,7 +580,6 @@ void BoardMenu::updateMenus()
             m.makeTranslate(osg::Vec3(_border, 0, -offset));
             geoList[j]->getNode()->setMatrix(m);
             offset += geoList[j]->getHeight() + _border;
-            //scaleMT->addChild(geoList[j]->getNode());
 	    _menuMap[foundList[i]]->addChild(geoList[j]->getNode());
             _intersectMap[geoList[j]->getIntersect()] = geoList[j];
         }
@@ -700,8 +631,6 @@ void BoardMenu::updateMenus()
     }
 
     std::stack<SubMenu*> revMenuStack;
-    //std::cerr << "OpenMenus: " << _openMenus.size() << std::endl;
-    //std::cerr << "MenuNum: " << _menuRoot->getNumChildren() << std::endl;
     while(_openMenus.size())
     {
 	bool found = false;
@@ -747,50 +676,6 @@ void BoardMenu::updateMenus()
     }
 }
 
-/*BoardMenuGeometry * BoardMenu::createGeometry(MenuItem * item, bool head)
-{
-    switch(item->getType())
-    {
-        case BUTTON:
-        {
-            BoardMenuGeometry * mg = new BoardMenuButtonGeometry();
-            mg->createGeometry(item);
-
-            return mg;
-            break;
-        }
-        case CHECKBOX:
-        {
-            BoardMenuGeometry * mg = new BoardMenuCheckboxGeometry();
-            mg->createGeometry(item);
-
-            return mg;
-            break;
-        }
-        case SUBMENU:
-        {
-            BoardMenuGeometry * mg = new BoardMenuSubMenuGeometry(head);
-            mg->createGeometry(item);
-
-            return mg;
-            break;
-        }
-        case RANGEVALUE:
-        {
-            BoardMenuGeometry * mg = new BoardMenuRangeValueGeometry();
-            mg->createGeometry(item);
-
-            return mg;
-            break;
-        }
-        case OTHER:
-        default:
-            break;
-    }
-
-    return NULL;
-}*/
-
 bool BoardMenu::processIsect(IsectInfo & isect, int hand)
 {
     if(!_menuActive)
@@ -814,79 +699,12 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
 	}
 	_activeHand = hand;
 	selectItem(_intersectMap[isect.geode]);
-	/*if(mouse)
-	{
-	    _activeInteractor = MOUSE;
-	}
-	else
-	{
-	    _activeInteractor = HAND;
-	}*/
 	_foundItem = true;
 	return true;
     }
 
     return false;
 }
-
-/*void BoardMenu::checkIntersection()
-{
-    osg::Vec3 pointerStart =
-            TrackingManager::instance()->getHandMat(_primaryHand).getTrans(),
-            pointerEnd;
-    pointerEnd.set(0.0f, 10000.0f, 0.0f);
-    pointerEnd = pointerEnd
-            * TrackingManager::instance()->getHandMat(_primaryHand);
-
-    std::vector<IsectInfo> isecvec =
-            getObjectIntersection(SceneManager::instance()->getMenuRoot(),
-                                  pointerStart, pointerEnd);
-
-    BoardMenuGeometry * intersect = NULL;
-
-    for(int i = 0; i < isecvec.size(); i++)
-    {
-        if(_intersectMap.find(isecvec[i].geode) != _intersectMap.end())
-        {
-            intersect = _intersectMap[isecvec[i].geode];
-            break;
-        }
-    }
-
-    if(intersect)
-    {
-        selectItem(intersect);
-        _activeInteractor = HAND;
-        return;
-    }
-
-    pointerStart = InteractionManager::instance()->getMouseMat().getTrans();
-    pointerEnd.set(0.0f, 10000.0f, 0.0f);
-    pointerEnd = pointerEnd * InteractionManager::instance()->getMouseMat();
-
-    isecvec = getObjectIntersection(SceneManager::instance()->getMenuRoot(),
-                                    pointerStart, pointerEnd);
-
-    for(int i = 0; i < isecvec.size(); i++)
-    {
-        if(_intersectMap.find(isecvec[i].geode) != _intersectMap.end())
-        {
-            intersect = _intersectMap[isecvec[i].geode];
-            break;
-        }
-    }
-
-    if(intersect)
-    {
-        _activeInteractor = MOUSE;
-    }
-    else
-    {
-        _activeInteractor = NONE;
-    }
-
-    selectItem(intersect);
-}*/
 
 void BoardMenu::selectItem(BoardMenuGeometry * mg)
 {
@@ -901,41 +719,10 @@ void BoardMenu::selectItem(BoardMenuGeometry * mg)
 	if(mg)
 	{
 	    mg->selectItem(true);
-	    /*BoardMenuSubMenuGeometry * smg =
-		dynamic_cast<BoardMenuSubMenuGeometry *> (mg);
-	    if(smg && !smg->isMenuHead())
-	    {
-		//openMenu(smg);
-		_openingElapse = 0.0;
-		//_openingMenu = smg;
-	    }*/
 	}
 
 	_activeItem = mg;
     }
-    /*else if(_activeItem)
-    {
-	BoardMenuSubMenuGeometry * smg =
-		dynamic_cast<BoardMenuSubMenuGeometry *> (mg);
-	if(smg && !smg->isMenuHead())
-	{
-	    if(_openingElapse < _openingThreshold)
-	    {
-		_openingElapse += PluginHelper::getLastFrameDuration();
-		if(_openingElapse >= _openingThreshold)
-		{
-		    if(smg->isMenuOpen())
-		    {
-			closeMenu((SubMenu*)smg->getMenuItem());
-		    }
-		    else
-		    {
-			openMenu(smg);
-		    }
-		}
-	    }
-	}
-    }*/
 }
 
 void BoardMenu::openMenu(BoardMenuSubMenuGeometry * smg)
@@ -974,7 +761,6 @@ void BoardMenu::openMenu(BoardMenuSubMenuGeometry * smg)
     m.makeTranslate(pos);
 
     _menuMap[(SubMenu*)smg->getMenuItem()]->setMatrix(m);
-    //_menuRoot->addChild(_menuMap[(SubMenu*)smg->getMenuItem()]);
     _menuScale->addChild(_menuMap[(SubMenu*)smg->getMenuItem()]);
 
     _openMenus.push((SubMenu*)smg->getMenuItem());
@@ -1009,7 +795,6 @@ void BoardMenu::closeMenu(SubMenu * menu)
 
 	smg->openMenu(false);
 
-	//_menuRoot->removeChild(_menuMap[_openMenus.top()]);
 	_menuScale->removeChild(_menuMap[_openMenus.top()]);
 
 	if(_openMenus.top() == menu)

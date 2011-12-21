@@ -392,8 +392,6 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 
         int _moveButton;
         int _menuButton;
-        //int _moveMouseButton;
-        //int _menuMouseButton;
 
         int _activeHand;
         int _activeButton;

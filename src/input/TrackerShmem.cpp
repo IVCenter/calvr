@@ -48,9 +48,6 @@ bool TrackerShmem::init(std::string tag)
     int shmID = shmget(shmKey, sizeof(struct tracker_header), 0);
     if(shmID == -1)
     {
-        //std::cerr << "Unable to get Shared memory id for key: " << shmKey
-        //        << std::endl;
-        //return false;
     }
     else
     {
@@ -58,8 +55,6 @@ bool TrackerShmem::init(std::string tag)
 	if(_tracker == (tracker_header *)-1)
 	{
 	    _tracker = NULL;
-	    //std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
-	    //return false;
 	}
     }
 
@@ -75,8 +70,6 @@ bool TrackerShmem::init(std::string tag)
     else
     {
 	_tracker = NULL;
-        //std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
-        //return false;
     }
 
 #endif
@@ -98,9 +91,6 @@ bool TrackerShmem::init(std::string tag)
     shmID = shmget(shmKey, sizeof(struct control_header), 0);
     if(shmID == -1)
     {
-        //std::cerr << "Unable to get Shared memory id for key: " << shmKey
-        //        << std::endl;
-        //return false;
     }
     else
     {
@@ -108,8 +98,6 @@ bool TrackerShmem::init(std::string tag)
 	if(_controller == (control_header *)-1)
 	{
 	    _controller = NULL;
-	    //std::cerr << "Unable to attach to memory id: " << shmID << std::endl;
-	    //return false;
 	}
     }
 
@@ -124,8 +112,6 @@ bool TrackerShmem::init(std::string tag)
     else
     {
 	_controller = NULL;
-        //std::cerr << "Unable to attach to memory key: " << shmKey << std::endl;
-        //return false;
     }
 #endif
 

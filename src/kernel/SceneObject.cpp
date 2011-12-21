@@ -61,8 +61,6 @@ _name(name), _navigation(navigation), _movable(movable), _clip(clip), _contextMe
 
     _moveButton = 0;
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
-    //_moveMouseButton = 0;
-    //_menuMouseButton = SceneManager::instance()->_menuDefaultOpenButtonMouse;
 
     _activeHand = -2;
 }
@@ -316,7 +314,6 @@ void SceneObject::addChild(osg::Node * node)
 
     _childrenNodes.push_back(node);
 
-    //updateBoundsGeometry();
     dirtyBounds();
 }
 
@@ -341,7 +338,6 @@ void SceneObject::removeChild(osg::Node * node)
     }
 
     dirtyBounds();
-    //updateBoundsGeometry();
 }
 
 void SceneObject::addChild(SceneObject * so)
@@ -367,8 +363,6 @@ void SceneObject::addChild(SceneObject * so)
     so->_parent = this;
     _childrenObjects.push_back(so);
     so->updateMatrices();
-
-    //updateBoundsGeometry();
 }
 
 void SceneObject::removeChild(SceneObject * so)
@@ -391,8 +385,6 @@ void SceneObject::removeChild(SceneObject * so)
 	    break;
 	}
     }
-
-    //updateBoundsGeometry();
 }
 
 osg::Node * SceneObject::getChildNode(int node)
@@ -636,8 +628,6 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 		{
 		    SceneManager::instance()->closeOpenObjectMenu();
 		}
-		//_eventActive = true;
-		//_activeHand = tie->hand;
 		return true;
 	    }
 	}
@@ -767,27 +757,6 @@ void SceneObject::computeBoundingBox()
 	_childrenNodes[i]->accept(cbbv);
 	_bbLocal = cbbv.getBound();
     }
-
-    /*if(_clip)
-    {
-	_clipRoot->accept(cbbv);
-	_bbLocal = cbbv.getBound();
-    }
-    else
-    {
-	for(int i = 0; i < _root->getNumChildren(); i++)
-	{
-	    if(_root->getChild(i) != _boundsTransform.get())
-	    {
-		cbbv = ComputeBoundingBoxVisitor();
-		cbbv.setBound(_bb);
-		_root->getChild(i)->accept(cbbv);
-		_bb = cbbv.getBound();
-	    }
-	}
-    }*/
-
-    //updateBoundsGeometry();
 }
 
 void SceneObject::setRegistered(bool reg)
@@ -814,24 +783,7 @@ void SceneObject::processMove(osg::Matrix & mat)
     }
     _root->setMatrix(_lastobj2world * _lastHandInv * mat * m * _root2obj);
 
-    /*osg::Matrix t;
-    t = _root->getMatrix();
-    std::cerr << "m: ";
-    for(int i = 0; i < 16; i++)
-    {
-	std::cerr << t.ptr()[i] << " ";
-    }
-    std::cerr << std::endl;*/
-
     splitMatrix();
-
-    /*t = _root->getMatrix();
-    std::cerr << "After: ";
-    for(int i = 0; i < 16; i++)
-    {
-	std::cerr << t.ptr()[i] << " ";
-    }
-    std::cerr << std::endl;*/
 
     _lastHandMat = mat;
     _lastHandInv = osg::Matrix::inverse(mat);
@@ -840,7 +792,6 @@ void SceneObject::processMove(osg::Matrix & mat)
 
 void SceneObject::moveCleanup()
 {
-    //TODO: mod for nested
     // cleanup nav happening last in the event process
     if(_moving && getNavigationOn() && _movable)
     {
@@ -868,27 +819,10 @@ bool SceneObject::intersectsFast(osg::Vec3 & start, osg::Vec3 & end)
     startlocal = start * getWorldToObjectMatrix();
     endlocal = end * getWorldToObjectMatrix();
 
-    /*if(_navigation)
-    {
-	startlocal = start * PluginHelper::getWorldToObjectTransform() * _root2obj;
-	endlocal = end * PluginHelper::getWorldToObjectTransform() * _root2obj;
-    }
-    else
-    {
-	startlocal = start * _root2obj;
-	endlocal = end * _root2obj;
-    }*/
-
-    //std::cerr << "Start x: " << startlocal.x() << " y: " << startlocal.y() << " z: " << startlocal.z() << std::endl;
-    //std::cerr << "End x: " << endlocal.x() << " y: " << endlocal.y() << " z: " << endlocal.z() << std::endl;
-	
     osg::Vec3 normal = endlocal - startlocal;
     normal.normalize();
 
     float radius = bb.radius();
-
-    //std::cerr << "radius: " << radius << std::endl;
-    //std::cerr << "Center x: " << center.x() << " y: " << center.y() << " z: " << center.z() << std::endl;
 
     // see if bounding sphere is more then a radius behind the pointer
     float dist = (center - startlocal) * normal;
@@ -900,8 +834,6 @@ bool SceneObject::intersectsFast(osg::Vec3 & start, osg::Vec3 & end)
 
     // see if the bounding sphere is more then a radius away from the pointer
     dist = ((center - startlocal) ^ (center - endlocal)).length() / (endlocal - startlocal).length();
-    //dist = ((endlocal - startlocal) ^ (startlocal - center)).length() / (endlocal - startlocal).length();
-    //std::cerr << "dist to line: " << dist << std::endl;
     if(dist > radius)
     {
 	return false;
@@ -924,17 +856,6 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
     endlocal = end * getWorldToObjectMatrix();
 
     osg::Matrix obj2world = getObjectToWorldMatrix();
-
-    /*if(_navigation)
-    {
-	startlocal = start * PluginHelper::getWorldToObjectTransform() * _root2obj;
-	endlocal = end * PluginHelper::getWorldToObjectTransform() * _root2obj;
-    }
-    else
-    {
-	startlocal = start * _root2obj;
-	endlocal = end * _root2obj;
-    }*/
 
     linenorm = endlocal - startlocal;
     linenorm.normalize();
@@ -1172,15 +1093,6 @@ bool SceneObject::intersects(osg::Vec3 & start, osg::Vec3 & end, osg::Vec3 & int
 
 void SceneObject::createBoundsGeometry()
 {
-    /*osg::Box * box = new osg::Box(osg::Vec3(0,0,0),1.0,1.0,1.0);
-    osg::ShapeDrawable * sd = new osg::ShapeDrawable(box);
-    _boundsGeode->addDrawable(sd);
-
-    osg::StateSet * stateset = sd->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-    osg::PolygonMode * pm = new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
-    stateset->setAttributeAndModes(pm,osg::StateAttribute::ON);*/
-
     osg::Geometry * geometry = new osg::Geometry();
     osg::Vec3Array * verts = new osg::Vec3Array(0);
     osg::Vec4Array * colors = new osg::Vec4Array(1);
@@ -1243,7 +1155,6 @@ void SceneObject::updateBoundsGeometry()
 
 void SceneObject::updateMatrices()
 {
-    //std::cerr << "UpdateMatrices" << std::endl;
     _root->setMatrix(_scaleMat * _transMat);
     _invTransform = osg::Matrix::inverse(_root->getMatrix());
 
@@ -1270,12 +1181,7 @@ void SceneObject::splitMatrix()
     osg::Vec3 trans, scale;
     osg::Quat rot, so;
 
-    /*trans = _root->getMatrix().getTrans();
-    scale = _root->getMatrix().getScale();
-    rot = _root->getMatrix().getRotate();*/
     _root->getMatrix().decompose(trans,rot,scale,so);
-
-    //std::cerr << "Trans x: " << trans.x() << " y: " << trans.y() << " z: " << trans.z() << std::endl;
 
     _transMat = osg::Matrix::rotate(rot) * osg::Matrix::translate(trans);
     _scaleMat = osg::Matrix::scale(scale);

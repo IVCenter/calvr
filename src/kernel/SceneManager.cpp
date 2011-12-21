@@ -100,13 +100,9 @@ bool SceneManager::init()
     setHidePointer(b);
 
     _menuScale = ConfigManager::getFloat("value","ContextMenus.Scale",1.0);
-    //_menuScaleMouse = ConfigManager::getFloat("mouse","ContextMenus.Scale",1.0);
     _menuMinDistance = ConfigManager::getFloat("value","ContextMenus.MinDistance",750.0);
-    //_menuMinDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MinDistance",750.0);
     _menuMaxDistance = ConfigManager::getFloat("value","ContextMenus.MaxDistance",1000.0);
-    //_menuMaxDistanceMouse = ConfigManager::getFloat("mouse","ContextMenus.MaxDistance",1000.0);
     _menuDefaultOpenButton = ConfigManager::getInt("value","ContextMenus.DefaultOpenButton",1);
-    //_menuDefaultOpenButtonMouse = ConfigManager::getInt("mouse","ContextMenus.DefaultOpenButton",2);
 
     return true;
 }
@@ -534,10 +530,6 @@ void SceneManager::initSceneState()
     mat->setAlpha(osg::Material::FRONT_AND_BACK, 1.0f);
     mat->setColorMode(osg::Material::DIFFUSE);
 
-    //osg::ColorMask* rootColorMask = new osg::ColorMask;
-    //rootColorMask->setMask(true, true, true, true);
-
-    //stateset->setAttribute(rootColorMask);
     stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(mat, osg::StateAttribute::ON);
     stateset->setAttributeAndModes(lm, osg::StateAttribute::ON);
@@ -643,7 +635,6 @@ void SceneManager::updateActiveObject()
 		    }
 		    root->getOrComputeBoundingBox();
 		}
-		//_activeObjects[hand]->updateCallback(hand,handMatrix);
 		continue;
 	    }
 	}

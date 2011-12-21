@@ -210,24 +210,6 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     _threadedLoader = cvr::ThreadedLoader::instance();
 
-    //std::string commandLineFile;
-
-    // TODO: do this better
-    /*if(_communication->isMaster())
-    {
-        if(args.argc() > 1)
-        {
-            commandLineFile = args.argv()[1];
-        }
-    }
-    else
-    {
-        if(args.argc() > 7)
-        {
-            commandLineFile = args.argv()[7];
-        }
-    }*/
-
     osgViewer::StatsHandler * stats = new osgViewer::StatsHandler;
     stats->setKeyEventTogglesOnScreenStats((int)'S');
     stats->setKeyEventPrintsOutStats((int)'P');
@@ -244,11 +226,6 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     _plugins = cvr::PluginManager::instance();
     _plugins->init();
-
-    /*if(!commandLineFile.empty())
-    {
-        cvr::FileHandler::instance()->loadFile(commandLineFile);
-    }*/
 
     for(int i = 0; i < fileList.size(); i++)
     {

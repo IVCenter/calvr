@@ -49,20 +49,6 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
 
     TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
 
-    /*if(event->type == MOUSE_BUTTON_DOWN)
-      {
-      std::cerr << "Mouse down." << std::endl;
-      MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
-      std::cerr << "Button: " << mie->button << std::endl;
-
-      }
-      if(event->type == MOUSE_DOUBLE_CLICK)
-      {
-      std::cerr << "Mouse double click." << std::endl;
-      MouseInteractionEvent * mie = (MouseInteractionEvent*)event;
-      std::cerr << "Button: " << mie->button << std::endl;
-      }*/
-
     if(_clickActive)
     {
 	if(tie->getHand() == _activeHand)
