@@ -7,6 +7,7 @@
 
 #include <menu/Export.h>
 #include <menu/MenuSystemBase.h>
+#include <menu/SubMenu.h>
 
 #include <osg/Vec3>
 #include <osg/Quat>
@@ -18,12 +19,11 @@ namespace cvr
 
 class MenuManager;
 class PopupMenuBase;
-class SubMenu;
 
 /**
  * @brief Creates a popup menu that can hold all standard MenuItem members
  */
-class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
+class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
 {
         friend class MenuManager;
     public:
@@ -34,7 +34,7 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
          *
          * Looks for attibutes x,y,z,h,p,r,scale in configTag
          */
-        PopupMenu(std::string title, std::string configTag = "");
+        PopupMenu(std::string title, std::string configTag = "", bool closable = true);
         virtual ~PopupMenu();
 
         /**
@@ -104,6 +104,7 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase
         virtual bool processIsect(IsectInfo & isect, int hand);
         virtual void updateEnd();
         virtual void itemDelete(MenuItem * item);
+        virtual void menuCallback(MenuItem * item);
 
         SubMenu * _rootMenu; ///< root menu item of PopupMenu
         MenuType _type; ///< type value for the internal menu geometry implementation

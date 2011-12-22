@@ -11,6 +11,7 @@ SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuItem.h
     ${HEADER_PATH}/SubMenu.h
+    ${HEADER_PATH}/SubMenuClosable.h
     ${HEADER_PATH}/MenuButton.h
     ${HEADER_PATH}/MenuCheckbox.h
     ${HEADER_PATH}/MenuList.h
@@ -35,6 +36,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoardMenu/BoardMenuTextGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuTextButtonSetGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuClosableGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
     ${HEADER_PATH}/Export.h
 )
@@ -65,6 +67,7 @@ SET(LIB_SRC_FILES
     BoardMenu/BoardMenuTextButtonSetGeometry.cpp
     BoardMenu/BoardMenuImageGeometry.cpp
     BoardMenu/BoardMenuSubMenuGeometry.cpp
+    BoardMenu/BoardMenuSubMenuClosableGeometry.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES

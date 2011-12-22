@@ -20,6 +20,7 @@ enum MenuItemType
     BUTTON,
     CHECKBOX,
     SUBMENU,
+    SUBMENU_CLOSABLE,
     RANGEVALUE,
     TEXT,
     TEXTBUTTONSET,

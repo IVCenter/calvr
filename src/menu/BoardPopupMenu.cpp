@@ -108,8 +108,8 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
                         openMenu(smg);
                     }
                 }
+		_clickActive = true;
                 _activeItem->processEvent(event);
-                _clickActive = true;
                 return true;
             }
 
@@ -192,7 +192,8 @@ void BoardPopupMenu::setVisible(bool v)
     }
     else
     {
-        SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
+	BoardMenu::close();
+	_clickActive = false;
     }
 
     _menuActive = v;

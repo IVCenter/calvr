@@ -112,17 +112,21 @@ CalVR * CalVR::instance()
 bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
     _home = home;
-
-    char * chostname = getenv("CALVR_HOST_NAME");
-    if(chostname)
+    
+    
+    if(!args.read("--host-name",_hostName))
     {
-        _hostName = chostname;
-    }
-    else
-    {
-        char hostname[512];
-        gethostname(hostname,511);
-        _hostName = hostname;
+	char * chostname = getenv("CALVR_HOST_NAME");
+	if(chostname)
+	{
+	    _hostName = chostname;
+	}
+	else
+	{
+	    char hostname[512];
+	    gethostname(hostname,511);
+	    _hostName = hostname;
+	}
     }
 
     std::cerr << "HostName: " << _hostName << std::endl;
@@ -202,6 +206,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     }
 
     _scene->setViewerScene(_viewer);
+    //TODO: set this value based on threading model and window pipe mapping
     _viewer->setReleaseContextAtEndOfFrameHint(false);
     //_viewer.setReleaseContextAtEndOfFrameHint(true);
 

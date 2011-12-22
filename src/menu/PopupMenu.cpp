@@ -2,12 +2,13 @@
 #include <menu/BoardPopupMenu.h>
 #include <menu/MenuManager.h>
 #include <menu/PopupMenuBase.h>
+#include <menu/SubMenuClosable.h>
 
 #include <config/ConfigManager.h>
 
 using namespace cvr;
 
-PopupMenu::PopupMenu(std::string title, std::string configTag)
+PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
 {
     _title = title;
     _configName = configTag;
@@ -17,7 +18,15 @@ PopupMenu::PopupMenu(std::string title, std::string configTag)
 
     _menu = new BoardPopupMenu();
 
-    _rootMenu = new SubMenu(_title,_title);
+    if(closable)
+    {
+	_rootMenu = new SubMenuClosable(_title,_title);
+	_rootMenu->setCallback(this);
+    }
+    else
+    {
+	_rootMenu = new SubMenu(_title,_title);
+    }
     _menu->setMenu(_rootMenu);
 
     float x, y, z, h, p, r, scale;
@@ -140,4 +149,12 @@ void PopupMenu::updateEnd()
 void PopupMenu::itemDelete(MenuItem * item)
 {
     _menu->itemDelete(item);
+}
+
+void PopupMenu::menuCallback(MenuItem * item)
+{
+    if(item == _rootMenu)
+    {
+	setVisible(false);
+    }
 }

@@ -24,7 +24,7 @@ class MenuTextButtonSet;
 /**
  * @brief PopupMenu you can add text and image tabs to
  */
-class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu, public MenuCallback
+class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu
 {
     public:
         /**

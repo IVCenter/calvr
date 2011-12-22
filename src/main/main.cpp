@@ -6,6 +6,24 @@
 
 int main(int argc, char **argv)
 {
+    osg::ArgumentParser args(&argc,argv);
+
+    args.getApplicationUsage()->setApplicationName(args.getApplicationName());
+    args.getApplicationUsage()->setDescription(args.getApplicationName() +
+	    " is and OpenSceneGraph based virtual reality framework.");
+    args.getApplicationUsage()->setCommandLineUsage(args.getApplicationName() +
+	    " [options] [files to open]");
+    args.getApplicationUsage()->addCommandLineOption("--host-name <name>",
+            "String used to identify this host in config files, etc. default: gethostname()");
+    args.getApplicationUsage()->addCommandLineOption("-h or --help",
+            "Display command line parameters");
+
+    if(args.read("-h") || args.read("--help"))
+    {
+        args.getApplicationUsage()->write(std::cout);
+        return 0;
+    }
+
     char * cvrDir = getenv("CALVR_HOME");
     if(!cvrDir)
     {
@@ -16,7 +34,6 @@ int main(int argc, char **argv)
     }
 
     cvr::CalVR * calvr = new cvr::CalVR();
-    osg::ArgumentParser args(&argc,argv);
     if(!calvr->init(args,cvrDir))
     {
         return 0;

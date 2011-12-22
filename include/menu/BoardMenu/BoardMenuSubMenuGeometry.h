@@ -21,7 +21,7 @@ class BoardMenuSubMenuGeometry : public BoardMenuGeometry
         virtual bool isMenuHead();
         virtual bool isMenuOpen();
 
-        void resetMenuLine(float width);
+        virtual void resetMenuLine(float width);
 
     protected:
         bool _head;

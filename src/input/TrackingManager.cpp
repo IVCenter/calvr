@@ -8,7 +8,6 @@
 #endif
 
 #include <config/ConfigManager.h>
-
 #include <kernel/ComController.h>
 #include <kernel/InteractionManager.h>
 
@@ -20,7 +19,6 @@
 
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
-//#include <WinBase.h>
 #include <util/TimeOfDay.h>
 #else
 #include <sys/time.h>
@@ -288,13 +286,47 @@ bool TrackingManager::init()
             _handStationFilterMask[i].push_back((unsigned int)imask);
         }
 
-        _numEventValuators.push_back(
-                ConfigManager::getInt("value",handss.str() + ".NumValuators",
-                        0));
-        _eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
+	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
         _eventValuatorType.push_back(std::vector<ValuatorType>());
         _eventValuators.push_back(std::vector<float>());
         _lastEventValuators.push_back(std::map<int,float>());
+	_numEventValuators.push_back(0);
+
+	bool valFound = false;
+
+	do
+	{
+	    std::stringstream valss;
+            valss << handss.str() << ".Valuator" << _numEventValuators[i];
+            int system, number;
+            system = ConfigManager::getInt("system",valss.str(),0,&valFound);
+
+	    if(valFound)
+	    {
+		_numEventValuators[i]++;
+		number = ConfigManager::getInt("number",valss.str(),0);
+		_eventValuatorAddress[i].push_back(
+			std::pair<int,int>(system,number));
+		std::string type = ConfigManager::getEntry("type",valss.str(),
+			"NON_ZERO");
+		if(type == "CHANGE")
+		{
+		    _eventValuatorType[i].push_back(CHANGE);
+		}
+		else
+		{
+		    _eventValuatorType[i].push_back(NON_ZERO);
+		}
+
+		_eventValuators[i].push_back(0.0);
+	    }
+	}
+	while(valFound);
+
+        /*_numEventValuators.push_back(
+                ConfigManager::getInt("value",handss.str() + ".NumValuators",
+                        0));
+       
         for(int j = 0; j < _numEventValuators[i]; j++)
         {
             std::stringstream valss;
@@ -316,7 +348,7 @@ bool TrackingManager::init()
             }
 
             _eventValuators[i].push_back(0.0);
-        }
+        }*/
     }
 
     setGenHandDefaultButtonEvents();

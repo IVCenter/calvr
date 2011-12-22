@@ -51,19 +51,19 @@ ComController * ComController::instance()
 
 bool ComController::init(osg::ArgumentParser * ap)
 {
-    if(ap->read("-s",_slaveNum))
+    if(ap->read("--node-number",_slaveNum))
     {
-        if(!ap->read("-h",_masterInterface))
+        if(!ap->read("--master-interface",_masterInterface))
         {
             std::cerr
-                    << "Error: no \"-h\" (master interface) option given on command line."
+                    << "Error: no \"--master-interface\" option given on command line."
                     << std::endl;
             return false;
         }
-        if(!ap->read("-p",_port))
+        if(!ap->read("--master-port",_port))
         {
             std::cerr
-                    << "Error: no \"-p\" (master port) option given on command line."
+                    << "Error: no \"--master-port\" option given on command line."
                     << std::endl;
             return false;
         }
@@ -462,7 +462,7 @@ bool ComController::setupConnections()
             it != _startupMap.end(); it++)
     {
         std::stringstream ss;
-        ss << "CalVR -s " << it->first << " -h " << _masterInterface << " -p "
+        ss << "CalVR --node-number " << it->first << " --master-interface " << _masterInterface << " --master-port "
                 << baseport;
         size_t location = it->second.find("CalVR");
         if(location != std::string::npos)
