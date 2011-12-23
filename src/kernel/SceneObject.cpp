@@ -32,7 +32,7 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
 
     if(_contextMenu)
     {
-        _myMenu = new PopupMenu(_name);
+        _myMenu = new PopupMenu(_name,"",false);
     }
     else
     {
