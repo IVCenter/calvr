@@ -108,7 +108,7 @@ bool SceneManager::init()
     _menuMinDistance = ConfigManager::getFloat("value",
             "ContextMenus.MinDistance",750.0);
     _menuMaxDistance = ConfigManager::getFloat("value",
-            "ContextMenus.MaxDistance",1000.0);
+            "ContextMenus.MaxDistance",1500.0);
     _menuDefaultOpenButton = ConfigManager::getInt("value",
             "ContextMenus.DefaultOpenButton",1);
 
