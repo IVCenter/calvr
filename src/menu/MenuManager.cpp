@@ -13,10 +13,12 @@ MenuManager * MenuManager::_myPtr = NULL;
 
 MenuManager::MenuManager()
 {
+    _inDestructor = false;
 }
 
 MenuManager::~MenuManager()
 {
+    _inDestructor = true;
     for(std::list<MenuSystemBase *>::iterator it = _menuSystemList.begin();
             it != _menuSystemList.end();)
     {
@@ -158,6 +160,11 @@ void MenuManager::addMenuSystem(MenuSystemBase * ms)
 
 void MenuManager::removeMenuSystem(MenuSystemBase * ms)
 {
+    if(_inDestructor)
+    {
+	return;
+    }
+
     for(int i = 0; i < _handLastMenuSystem.size(); i++)
     {
         if(_handLastMenuSystem[i] == ms)

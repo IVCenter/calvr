@@ -70,6 +70,7 @@ class CVRMENU_EXPORT MenuManager
         std::vector<MenuSystemBase*> _handLastMenuSystem;
 
         int _primaryHand;
+        bool _inDestructor;
 };
 
 }
