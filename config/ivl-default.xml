@@ -95,15 +95,19 @@
       </HandDevice>
     </Input-->
 
+   <ContextMenus>
+     <Scale value="1.0" />
+     <MinDistance value="750" />
+     <MaxDistance value="1500" />
+     <DefaultOpenButton value="1" />
+   </ContextMenus>
 
-   <MenuSystem type="BOARDMENU" useHints="false">
-    <PrimaryHand value="0" />
+   <MenuSystem type="BOARDMENU">
     <BoardMenu>
      <Position distance="3000" />
      <Scale value="1.0" />
-     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Buttons select="0" open="1" />
      <Trigger value="DOUBLECLICK" />
-     <OpenThreshold value="0.5" />
     </BoardMenu>
    </MenuSystem>
 
