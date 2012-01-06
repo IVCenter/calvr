@@ -1181,11 +1181,10 @@
      <Hand0>
        <Address system="0" body="1" />
        <ButtonMask system0="0xFFFF" system1="0x0" />
-       <NumValuators value="4" />
-       <Valuator0 station="0" number="0" />
-       <Valuator1 station="0" number="1" />
-       <Valuator2 station="0" number="2" />
-       <Valuator3 station="0" number="3" />
+       <Valuator0 system="0" number="0" />
+       <Valuator1 system="0" number="1" />
+       <Valuator2 system="0" number="2" />
+       <Valuator3 system="0" number="3" />
      </Hand0>
      <Hand1>
        <Address system="1" body="0" />
