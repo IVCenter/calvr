@@ -1,25 +1,3 @@
-IF(NOT WIN32)
-    SET(COLLAB_LINK_LIBS util)
-	SET(COLLAB_SOURCE CollaborativeServer.cpp)
-ELSE(NOT WIN32)
-    SET(COLLAB_LINK_LIBS ${CALVR_WIN_LIB})
-	SET(COLLAB_SOURCE collaborative/CollaborativeServer.cpp)
-ENDIF(NOT WIN32)
-
-INCLUDE_DIRECTORIES(${OSG_INCLUDE_DIR})
-
-ADD_EXECUTABLE(CollabServer ${COLLAB_SOURCE})
-
-IF(WIN32)
-    REMOVE_OUTPUT_DIRS(CollabServer)
-ENDIF(WIN32)
-
-TARGET_LINK_LIBRARIES(CollabServer ${COLLAB_LINK_LIBS})
-TARGET_LINK_LIBRARIES(CollabServer ${OSG_LIBRARIES})
-
-INSTALL(TARGETS CollabServer DESTINATION bin)
-
-
 IF(WIN32)
 	IF(CALVR_WIN_DYNAMIC)
 		ADD_DEFINITIONS(-DCVRCOLLAB_LIBRARY)
@@ -33,14 +11,14 @@ SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CollaborativeManager.h
     ${HEADER_PATH}/CollaborativeThread.h
-	${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/Export.h
 )
 
 SET(EXTRA_SOURCE)
 
 SET(LIB_SRC_FILES
     ${EXTRA_SOURCE}
-	CollaborativeManager.cpp
+    CollaborativeManager.cpp
     CollaborativeThread.cpp
 )
 

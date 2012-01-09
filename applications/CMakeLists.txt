@@ -1,3 +1,5 @@
+INCLUDE_DIRECTORIES(${CALVR_INCLUDE_DIR})
+
 #If your app has dependencies, use this format
 #OPTION(APPS_YOURNAMEHERE "Build yournamehere application" OFF)
 

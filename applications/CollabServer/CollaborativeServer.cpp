@@ -1,4 +1,4 @@
-#include <collaborative/CollaborativeServer.h>
+#include "CollaborativeServer.h"
 
 #ifdef WIN32
 #undef CVRUTIL_LIBRARY
