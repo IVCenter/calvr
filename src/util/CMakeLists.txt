@@ -18,7 +18,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ComputeBoundingBoxVisitor.h
     ${HEADER_PATH}/CVRMulticastSocket.h
     ${HEADER_PATH}/OsgMath.h
-	${HEADER_PATH}/LocalToWorldVisitor.h
+    ${HEADER_PATH}/LocalToWorldVisitor.h
+    ${HEADER_PATH}/TextureVisitors.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -43,7 +44,8 @@ SET(LIB_SRC_FILES
     ComputeBoundingBoxVisitor.cpp
     CVRMulticastSocket.cpp
     OsgMath.cpp
-	LocalToWorldVisitor.cpp
+    LocalToWorldVisitor.cpp
+    TextureVisitors.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES
