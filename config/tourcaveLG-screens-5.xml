@@ -5,9 +5,9 @@
  </GLOBAL>
 
  <GLOBAL>
-   <NumPipes value="5" />
-   <NumScreens value="4" />
-   <NumWindows value="4" />
+   <NumPipes value="6" />
+   <NumScreens value="5" />
+   <NumWindows value="5" />
 
    <PipeConfig>
      <Pipe server="0" screen="0" name="0" />
