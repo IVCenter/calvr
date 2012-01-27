@@ -4,10 +4,29 @@
 pthread_t       oas::Server::_serverThread;
 std::string     oas::Server::_cacheDirectory;
 unsigned short  oas::Server::_port;
+std::string     oas::Server::_deviceString;
+
+std::string     oas::Server::_defaultConfigFile;
 
 // static, private
-void oas::Server::_readConfigFile()
+void oas::Server::_readConfigFile(int argc, char **argv)
 {
+    char *configFile;
+
+    // If no config file specified for command line argument
+    if (argc < 2)
+    {
+        // Use default, hard-coded config file location.
+        // If config file at this location is not found,
+        // generate the config file at the default location
+        // using default, hard-coded values, and then read from generated file
+    }
+    // Else, read in values from specified config file location
+    else
+    {
+
+    }
+    oas::Server::_deviceString = "";
     oas::Server::_cacheDirectory = "/home/schowkwa/OAS";
     oas::Server::_port = 31231;
 }
@@ -49,26 +68,21 @@ void oas::Server::_processMessage(const Message &message)
             }
             break;
         case oas::Message::MT_RHDL_HL:
-//            oas::Logger::logf("RHDL %d", message.getHandle());
             // Look through sources to see if handle exists. If exists, delete source. Else, do nothing
             oas::AudioHandler::deleteSource(message.getHandle());
             break;
         case oas::Message::MT_PTFI_FN_1I:
             // Shouldn't need to do anything!
-//            oas::Logger::logf("PTFI");
             break;
         case oas::Message::MT_PLAY_HL:
-//            oas::Logger::logf("PLAY %d", message.getHandle());
             oas::Logger::logf("Playing sound #%d", message.getHandle());
             oas::AudioHandler::playSource(message.getHandle());
             break;
         case oas::Message::MT_STOP_HL:
-//            oas::Logger::logf("STOP %d", message.getHandle());
             oas::Logger::logf("Stopping sound #%d", message.getHandle());
             oas::AudioHandler::stopSource(message.getHandle());
             break;
         case oas::Message::MT_SSPO_HL_3F:
-//            oas::Logger::logf("SSPO");
             oas::AudioHandler::setSourcePosition( message.getHandle(), 
                                                   message.getFloatParam(0), 
                                                   message.getFloatParam(1),
@@ -79,7 +93,6 @@ void oas::Server::_processMessage(const Message &message)
                                               message.getFloatParam(0));
             break;
         case oas::Message::MT_SSLP_HL_1I:
- //           oas::Logger::logf("SSLP");
             oas::AudioHandler::setSourceLoop( message.getHandle(),
                                               message.getIntegerParam());
             break;
@@ -129,7 +142,7 @@ void oas::Server::_processMessage(const Message &message)
             oas::AudioHandler::release();
 
             // If for some reason initialization fails, try again
-            while (!oas::AudioHandler::initialize())
+            while (!oas::AudioHandler::initialize(oas::Server::_deviceString))
             {
                 oas::Logger::errorf("Failed to reset audio resources. Trying again in %d seconds.", delay);
                 sleep(delay);
@@ -145,7 +158,7 @@ void oas::Server::_processMessage(const Message &message)
 // public, static
 void oas::Server::initialize(int argc, char **argv)
 {
-    oas::Server::_readConfigFile();
+    oas::Server::_readConfigFile(argc, argv);
 
     if (!oas::ServerWindow::initialize(argc, argv))
     {
@@ -157,7 +170,7 @@ void oas::Server::initialize(int argc, char **argv)
         _fatalError("Could not initialize the File Handler!");
     }
 
-    if (!oas::AudioHandler::initialize())
+    if (!oas::AudioHandler::initialize(oas::Server::_deviceString))
     {
         _fatalError("Could not initialize the Audio Handler!");
     }
@@ -205,7 +218,6 @@ void* oas::Server::_serverLoop(void *parameter)
         {
             Message *nextMessage = messages.front();
             oas::Server::_processMessage(*nextMessage);
-            //oas::Logger::logf("%.4lf, %.4lf, %.4lf", convert(nextMessage->start, nextMessage->added), convert(nextMessage->start, nextMessage->retrieved), convert(nextMessage->start, nextMessage->processed));
             oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
             delete nextMessage;
             messages.pop();

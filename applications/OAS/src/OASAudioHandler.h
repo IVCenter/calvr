@@ -43,7 +43,7 @@ typedef std::pair<ALuint, Source*>          SourcePair;
 class AudioHandler
 {
 public:
-    static bool initialize();
+    static bool initialize(std::string& deviceString);
     static void release();
 
     /**
@@ -131,6 +131,9 @@ private:
 
     static Source* _getSource(const ALuint source);
 
+    static std::string _deviceString;
+    static ALCdevice* _device;
+    static ALCcontext* _context;
 };
 
 }

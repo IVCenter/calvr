@@ -27,8 +27,13 @@ private:
     static pthread_t _serverThread;
     static std::string _cacheDirectory;
     static unsigned short _port;
-     
-    static void _readConfigFile();
+    static std::string _deviceString;
+
+    // defaults
+    static std::string _defaultConfigFile;
+    
+    // private worker methods
+    static void _readConfigFile(int argc, char **argv);
     static void* _serverLoop(void *parameter);
     static void _processMessage(const Message &message);
     static void _fatalError(const char *errorMessage);
