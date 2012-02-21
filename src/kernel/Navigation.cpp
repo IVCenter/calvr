@@ -3,6 +3,7 @@
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
 #include <kernel/ScreenConfig.h>
+#include <kernel/CVRViewer.h>
 
 #include <iostream>
 #include <cmath>
@@ -14,6 +15,7 @@ Navigation * Navigation::_myPtr = NULL;
 
 Navigation::Navigation()
 {
+    _eventActive = false;
     _activeHand = 0;
     _scale = 1.0;
 }
@@ -33,8 +35,6 @@ Navigation * Navigation::instance()
 
 bool Navigation::init()
 {
-    _eventActive = false;
-
     // TODO: read button mapping from config file
     for(int i = 0; i < TrackingManager::instance()->getNumButtons(); i++)
     {
@@ -44,6 +44,31 @@ bool Navigation::init()
     _buttonMap[1] = FLY;
     _buttonMap[2] = DRIVE;
     //_buttonMap[3] = SCALE;
+
+    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+    {
+	NavImplementationBase * navbase = NULL;
+	switch(TrackingManager::instance()->getHandNavType(i))
+	{
+	    case MOUSE_NAV:
+	    {
+		navbase = new NavMouse();
+		break;
+	    }
+	    case TRACKER_NAV:
+	    {
+		navbase = new NavTracker();
+		break;
+	    }
+	    default:
+	    {
+		navbase = new NavImplementationBase();
+		break;
+	    }
+	}
+	navbase->_hand = i;
+	_navImpMap[i] = navbase;
+    }
 
     return true;
 }
@@ -56,6 +81,21 @@ void Navigation::setPrimaryButtonMode(NavMode nm)
 NavMode Navigation::getPrimaryButtonMode()
 {
     return _buttonMap[0];
+}
+
+void Navigation::setButtonMode(int button, NavMode nm)
+{
+    _buttonMap[button] = nm;
+}
+
+NavMode Navigation::getButtonMode(int button)
+{
+    if(_buttonMap.find(button) == _buttonMap.end())
+    {
+	return NONE;
+    }
+
+    return _buttonMap[button];
 }
 
 void Navigation::setScale(float scale)
@@ -71,6 +111,12 @@ float Navigation::getScale()
     return _scale;
 }
 
+void Navigation::setEventActive(bool value, int hand)
+{
+    _eventActive = value;
+    _activeHand = hand;
+}
+
 void Navigation::update()
 {
     if(ComController::instance()->getIsSyncError())
@@ -78,108 +124,81 @@ void Navigation::update()
         return;
     }
 
-    if(_eventActive
-            && TrackingManager::instance()->getHandNavType(_activeHand)
-                    == MOUSE_NAV)
+    if(_eventActive)
     {
-        processMouseNav(_eventMode,NULL);
+        _navImpMap[_activeHand]->update();
     }
 }
 
 void Navigation::processEvent(InteractionEvent * iEvent)
 {
-
-    //TODO: use tracking system nav type to allow custom nav systems
-
-    if(iEvent->asMouseEvent())
-    {
-        processMouseEvent(iEvent->asMouseEvent());
-        return;
-    }
-
     TrackedButtonInteractionEvent * event = iEvent->asTrackedButtonEvent();
 
-    if(!event)
+    if(event)
     {
+	if(_eventActive)
+	{
+	    if(event->getHand() == _activeHand)
+	    {
+		_navImpMap[_activeHand]->processEvent(event);
+	    }
+	}
+	else
+	{
+	    _navImpMap[event->getHand()]->processEvent(event);
+	}
         return;
     }
-
-    if(event->getInteraction() == BUTTON_UP && !_eventActive)
+    else
     {
-        return;
-    }
-
-    if(_eventActive
-            && (_eventID != event->getButton()
-                    || _activeHand != event->getHand()))
-    {
-        return;
-    }
-
-    //std::cerr << "Event type " << event->type << std::endl;
-
-    if(!_eventActive
-            && (event->getInteraction() == BUTTON_DOWN
-                    || event->getInteraction() == BUTTON_DOUBLE_CLICK))
-    {
-        //std::cerr << "In button down." << std::endl;
-        _eventMode = _buttonMap[event->getButton()];
-        _eventID = event->getButton();
-        _startScale = SceneManager::instance()->getObjectScale();
-        _startXForm =
-                SceneManager::instance()->getObjectTransform()->getMatrix();
-        switch(_eventMode)
-        {
-            case WALK:
-            case DRIVE:
-            case FLY:
-            case MOVE_WORLD:
-            case SCALE:
-                //std::cerr << "Starting event." << std::endl;
-                _eventActive = true;
-                _activeHand = event->getHand();
-                _eventPos = event->getTransform().getTrans();
-                _eventRot = event->getTransform().getRotate();
-                break;
-            case NONE:
-            default:
-                break;
-        }
-    }
-    else if(_eventActive && event->getInteraction() == BUTTON_UP)
-    {
-        processNav(_eventMode,event->getTransform());
-        _eventActive = false;
-    }
-    else if(_eventActive && event->getInteraction() == BUTTON_DRAG)
-    {
-        processNav(_eventMode,event->getTransform());
+	if(_eventActive)
+	{
+	    _navImpMap[_activeHand]->processEvent(iEvent);
+	}
+	else
+	{
+	    //TODO: maybe add bool return to see if event is used
+	    for(std::map<int,NavImplementationBase*>::iterator it = _navImpMap.begin(); it != _navImpMap.end(); it++)
+	    {
+		it->second->processEvent(iEvent);
+	    }
+	}
+	return;
     }
 }
 
-void Navigation::processMouseEvent(MouseInteractionEvent * event)
+void NavMouse::processEvent(InteractionEvent * ie)
 {
-    if(event->getInteraction() == BUTTON_UP && !_eventActive)
+    if(ie->asKeyboardEvent())
+    {
+	std::cerr << "Key event." << std::endl;
+    }
+
+    MouseInteractionEvent * event = ie->asMouseEvent();
+
+    if(!event)
+    {
+	return;
+    }
+
+    if(event->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
     {
         return;
     }
 
-    if(_eventActive
-            && (_eventID != event->getButton()
-                    || _activeHand != event->getHand()))
+    if(Navigation::instance()->getEventActive()
+            && (_eventButton != event->getButton()))
     {
         return;
     }
 
-    //std::cerr << "Event type " << event->type << std::endl;
-
-    if(!_eventActive
+    if(!Navigation::instance()->getEventActive()
             && (event->getInteraction() == BUTTON_DOWN
                     || event->getInteraction() == BUTTON_DOUBLE_CLICK))
     {
         //std::cerr << "In button down." << std::endl;
-        _eventMode = _buttonMap[event->getButton()];
-        _eventID = event->getButton();
+        _eventMode = Navigation::instance()->getButtonMode(event->getButton());
+        _eventButton = event->getButton();
         _startScale = SceneManager::instance()->getObjectScale();
         _startXForm =
                 SceneManager::instance()->getObjectTransform()->getMatrix();
@@ -193,137 +212,27 @@ void Navigation::processMouseEvent(MouseInteractionEvent * event)
                 //std::cerr << "Starting event." << std::endl;
                 _eventX = event->getX();
                 _eventY = event->getY();
-                _activeHand = event->getHand();
-                _eventActive = true;
+		Navigation::instance()->setEventActive(true,_hand);
                 break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(_eventActive && event->getInteraction() == BUTTON_UP)
+    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_UP)
     {
         processMouseNav(_eventMode,event);
-        _eventActive = false;
+        Navigation::instance()->setEventActive(false,_hand);
     }
 }
 
-void Navigation::processNav(NavMode nm, osg::Matrix & mat)
+void NavMouse::update()
 {
-
-    switch(nm)
-    {
-        case WALK:
-        case DRIVE:
-        {
-            osg::Vec3 offset = -(mat.getTrans() - _eventPos) / 10.0;
-            offset = offset * _scale;
-            osg::Matrix m;
-
-            osg::Matrix r;
-            r.makeRotate(_eventRot);
-            osg::Vec3 pointInit = osg::Vec3(0,1,0);
-            pointInit = pointInit * r;
-            pointInit.z() = 0.0;
-
-            r.makeRotate(mat.getRotate());
-            osg::Vec3 pointFinal = osg::Vec3(0,1,0);
-            pointFinal = pointFinal * r;
-            pointFinal.z() = 0.0;
-
-            osg::Matrix turn;
-            if(pointInit.length2() > 0 && pointFinal.length2() > 0)
-            {
-                pointInit.normalize();
-                pointFinal.normalize();
-                float dot = pointInit * pointFinal;
-                float angle = acos(dot) / 15.0;
-                if(dot > 1.0 || dot < -1.0)
-                {
-                    angle = 0.0;
-                }
-                else if((pointInit ^ pointFinal).z() < 0)
-                {
-                    angle = -angle;
-                }
-                turn.makeRotate(-angle,osg::Vec3(0,0,1));
-            }
-
-            osg::Matrix objmat =
-                    SceneManager::instance()->getObjectTransform()->getMatrix();
-
-            osg::Vec3 origin = mat.getTrans();
-            m.makeTranslate(offset + origin);
-            m = objmat * osg::Matrix::translate(-origin) * turn * m;
-            SceneManager::instance()->setObjectMatrix(m);
-            break;
-        }
-        case FLY:
-        {
-            osg::Matrix rotOffset = osg::Matrix::rotate(_eventRot.inverse())
-                    * osg::Matrix::rotate(mat.getRotate());
-            osg::Quat rot = rotOffset.getRotate();
-            rot = rot.inverse();
-            //rot.w() = 1.0;//(rot.w() + 99.0) / 100.0;
-            double angle;
-            osg::Vec3 vec;
-            rot.getRotate(angle,vec);
-            rot.makeRotate(angle / 20.0,vec);
-            rotOffset.makeRotate(rot);
-            osg::Vec3 posOffset = (mat.getTrans() - _eventPos) / 20.0;
-            posOffset = posOffset * _scale;
-            osg::Matrix objmat =
-                    SceneManager::instance()->getObjectTransform()->getMatrix();
-            objmat = objmat * osg::Matrix::translate(-_eventPos) * rotOffset
-                    * osg::Matrix::translate(_eventPos - posOffset);
-            SceneManager::instance()->setObjectMatrix(objmat);
-            break;
-        }
-        case MOVE_WORLD:
-        {
-            osg::Matrix objmat = _startXForm
-                    * osg::Matrix::translate(-_eventPos)
-                    * osg::Matrix::rotate(_eventRot.inverse()) * mat;
-            SceneManager::instance()->setObjectMatrix(objmat);
-            break;
-        }
-        case SCALE:
-        {
-            osg::Vec3 pos = mat.getTrans();
-            float xdiff = pos.x() - _eventPos.x();
-            xdiff = xdiff / 300.0;
-            float newScale;
-            osg::Vec3 objectPos =
-                    (_eventPos * osg::Matrix::inverse(_startXForm))
-                            / _startScale;
-            //std::cerr << "Pos x: " << objectPos.x() << " y: " << objectPos.y() << " z: " << objectPos.z() << std::endl;
-            if(xdiff >= 0)
-            {
-                newScale = _startScale * (1.0 + xdiff);
-            }
-            else
-            {
-                newScale = _startScale / (1.0 + fabs(xdiff));
-            }
-            SceneManager::instance()->setObjectScale(newScale);
-            //std::cerr << "StartScale: " << _startScale << " newScale: " << newScale << std::endl;
-            osg::Matrix objmat =
-                    SceneManager::instance()->getObjectTransform()->getMatrix();
-            osg::Vec3 offset = -((objectPos * newScale * objmat)
-                    - (objectPos * _startScale * objmat));
-            osg::Matrix m;
-            m.makeTranslate(offset);
-            m = _startXForm * m;
-            SceneManager::instance()->setObjectMatrix(m);
-            break;
-        }
-        case NONE:
-        default:
-            break;
-    }
+    std::cerr << "Update" << std::endl;
+    processMouseNav(_eventMode,NULL);
 }
 
-void Navigation::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
+void NavMouse::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
 {
     float localX, localY;
     if(mie)
@@ -337,6 +246,8 @@ void Navigation::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
         localY = InteractionManager::instance()->getMouseY();
     }
 
+    double fdur = CVRViewer::instance()->getLastFrameDuration();
+
     switch(nm)
     {
         case FLY:
@@ -347,10 +258,10 @@ void Navigation::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
             float yOffset = localY - _eventY;
 
             osg::Matrix m;
-            m.makeRotate(xOffset / 7000.0,osg::Vec3(0,0,1));
+            m.makeRotate(xOffset * fdur * 60.0 / 7000.0,osg::Vec3(0,0,1));
 
             osg::Matrix m2;
-            m2.makeTranslate(osg::Vec3(0,(-yOffset / 5.0) * _scale,0));
+            m2.makeTranslate(osg::Vec3(0,(-yOffset * fdur * 60.0 / 5.0) * Navigation::instance()->getScale(),0));
 
             osg::Vec3 viewerPos =
                     TrackingManager::instance()->getHeadMat().getTrans();
@@ -507,6 +418,178 @@ void Navigation::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
             float newScale;
             osg::Vec3 objectPos = (pos * osg::Matrix::inverse(_startXForm))
                     / _startScale;
+            //std::cerr << "Pos x: " << objectPos.x() << " y: " << objectPos.y() << " z: " << objectPos.z() << std::endl;
+            if(xdiff >= 0)
+            {
+                newScale = _startScale * (1.0 + xdiff);
+            }
+            else
+            {
+                newScale = _startScale / (1.0 + fabs(xdiff));
+            }
+            SceneManager::instance()->setObjectScale(newScale);
+            //std::cerr << "StartScale: " << _startScale << " newScale: " << newScale << std::endl;
+            osg::Matrix objmat =
+                    SceneManager::instance()->getObjectTransform()->getMatrix();
+            osg::Vec3 offset = -((objectPos * newScale * objmat)
+                    - (objectPos * _startScale * objmat));
+            osg::Matrix m;
+            m.makeTranslate(offset);
+            m = _startXForm * m;
+            SceneManager::instance()->setObjectMatrix(m);
+            break;
+        }
+        case NONE:
+        default:
+            break;
+    }
+}
+
+void NavTracker::processEvent(InteractionEvent * ie)
+{
+    TrackedButtonInteractionEvent * event = ie->asTrackedButtonEvent();
+
+    if(!event)
+    {
+	return;
+    }
+
+    if(event->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    {
+        return;
+    }
+
+    if(Navigation::instance()->getEventActive()
+            && (_eventButton != event->getButton()))
+    {
+        return;
+    }
+
+    if(!Navigation::instance()->getEventActive()
+            && (event->getInteraction() == BUTTON_DOWN
+                    || event->getInteraction() == BUTTON_DOUBLE_CLICK))
+    {
+        //std::cerr << "In button down." << std::endl;
+        _eventMode = Navigation::instance()->getButtonMode(event->getButton());
+        _eventButton = event->getButton();
+        _startScale = SceneManager::instance()->getObjectScale();
+        _startXForm =
+                SceneManager::instance()->getObjectTransform()->getMatrix();
+        switch(_eventMode)
+        {
+            case WALK:
+            case DRIVE:
+            case FLY:
+            case MOVE_WORLD:
+            case SCALE:
+                //std::cerr << "Starting event." << std::endl;
+                _eventPos = event->getTransform().getTrans();
+                _eventRot = event->getTransform().getRotate();
+		Navigation::instance()->setEventActive(true,_hand);
+                break;
+            case NONE:
+            default:
+                break;
+        }
+    }
+    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_UP)
+    {
+        processNav(_eventMode,event->getTransform());
+        Navigation::instance()->setEventActive(false,_hand);
+    }
+    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_DRAG)
+    {
+        processNav(_eventMode,event->getTransform());
+    }
+}
+
+void NavTracker::processNav(NavMode nm, osg::Matrix & mat)
+{
+    switch(nm)
+    {
+        case WALK:
+        case DRIVE:
+        {
+            osg::Vec3 offset = -(mat.getTrans() - _eventPos) / 10.0;
+            offset = offset * Navigation::instance()->getScale();
+            osg::Matrix m;
+
+            osg::Matrix r;
+            r.makeRotate(_eventRot);
+            osg::Vec3 pointInit = osg::Vec3(0,1,0);
+            pointInit = pointInit * r;
+            pointInit.z() = 0.0;
+
+            r.makeRotate(mat.getRotate());
+            osg::Vec3 pointFinal = osg::Vec3(0,1,0);
+            pointFinal = pointFinal * r;
+            pointFinal.z() = 0.0;
+
+            osg::Matrix turn;
+            if(pointInit.length2() > 0 && pointFinal.length2() > 0)
+            {
+                pointInit.normalize();
+                pointFinal.normalize();
+                float dot = pointInit * pointFinal;
+                float angle = acos(dot) / 15.0;
+                if(dot > 1.0 || dot < -1.0)
+                {
+                    angle = 0.0;
+                }
+                else if((pointInit ^ pointFinal).z() < 0)
+                {
+                    angle = -angle;
+                }
+                turn.makeRotate(-angle,osg::Vec3(0,0,1));
+            }
+
+            osg::Matrix objmat =
+                    SceneManager::instance()->getObjectTransform()->getMatrix();
+
+            osg::Vec3 origin = mat.getTrans();
+            m.makeTranslate(offset + origin);
+            m = objmat * osg::Matrix::translate(-origin) * turn * m;
+            SceneManager::instance()->setObjectMatrix(m);
+            break;
+        }
+        case FLY:
+        {
+            osg::Matrix rotOffset = osg::Matrix::rotate(_eventRot.inverse())
+                    * osg::Matrix::rotate(mat.getRotate());
+            osg::Quat rot = rotOffset.getRotate();
+            rot = rot.inverse();
+            //rot.w() = 1.0;//(rot.w() + 99.0) / 100.0;
+            double angle;
+            osg::Vec3 vec;
+            rot.getRotate(angle,vec);
+            rot.makeRotate(angle / 20.0,vec);
+            rotOffset.makeRotate(rot);
+            osg::Vec3 posOffset = (mat.getTrans() - _eventPos) / 20.0;
+            posOffset = posOffset * Navigation::instance()->getScale();
+            osg::Matrix objmat =
+                    SceneManager::instance()->getObjectTransform()->getMatrix();
+            objmat = objmat * osg::Matrix::translate(-_eventPos) * rotOffset
+                    * osg::Matrix::translate(_eventPos - posOffset);
+            SceneManager::instance()->setObjectMatrix(objmat);
+            break;
+        }
+        case MOVE_WORLD:
+        {
+            osg::Matrix objmat = _startXForm
+                    * osg::Matrix::translate(-_eventPos)
+                    * osg::Matrix::rotate(_eventRot.inverse()) * mat;
+            SceneManager::instance()->setObjectMatrix(objmat);
+            break;
+        }
+        case SCALE:
+        {
+            osg::Vec3 pos = mat.getTrans();
+            float xdiff = pos.x() - _eventPos.x();
+            xdiff = xdiff / 300.0;
+            float newScale;
+            osg::Vec3 objectPos =
+                    (_eventPos * osg::Matrix::inverse(_startXForm))
+                            / _startScale;
             //std::cerr << "Pos x: " << objectPos.x() << " y: " << objectPos.y() << " z: " << objectPos.z() << std::endl;
             if(xdiff >= 0)
             {

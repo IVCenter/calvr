@@ -57,6 +57,8 @@
        <ButtonMask system0="0xF0" system1="0x00" />
        <NumValuators value="1" />
        <Valuator0 system="1" number="0" type="NON_ZERO" />
+       <!--PointerType /-->
+       <!--NavType /-->
      </Hand1>
    </Input>
     

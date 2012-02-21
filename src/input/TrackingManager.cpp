@@ -286,13 +286,67 @@ bool TrackingManager::init()
             _handStationFilterMask[i].push_back((unsigned int)imask);
         }
 
+	bool valFound = false;
+	SceneManager::PointerGraphicType pgt = SceneManager::NONE;
+	std::string pgtstr = ConfigManager::getEntry("value",handss.str() + ".PointerType","NONE",&valFound);
+	if(valFound)
+	{
+	    if(pgtstr == "CONE")
+	    {
+		pgt = SceneManager::CONE;
+	    }
+	}
+	else
+	{
+	    if(_handAddress[i].first >= 0
+		    && _handAddress[i].first < _systemInfo.size())
+	    {
+		if(_handAddress[i].second >= 0
+			&& _handAddress[i].second
+			< _systemInfo[_handAddress[i].first]->numBodies)
+		{
+		    pgt = _systemInfo[_handAddress[i].first]->defaultPointerType;
+		}
+	    }
+	}
+	_handGraphicType.push_back(pgt);
+
+	valFound = false;
+	Navigation::NavImplementation ni = Navigation::NONE_NAV;
+	std::string nistr = ConfigManager::getEntry("value",handss.str() + ".NavType","NONE",&valFound);
+	if(valFound)
+	{
+	    if(nistr == "MOUSE")
+	    {
+		ni = Navigation::MOUSE_NAV;
+	    }
+	    else if(nistr == "TRACKER")
+	    {
+		ni = Navigation::TRACKER_NAV;
+	    }
+	}
+	else
+	{
+	    if(_handAddress[i].first < 0
+		    || _handAddress[i].first >= _systemInfo.size()
+		    || _handAddress[i].second < 0
+		    || _handAddress[i].second
+		    >= _systemInfo[_handAddress[i].first]->numBodies)
+	    {
+		ni = Navigation::NONE_NAV;
+	    }
+
+	    ni = _systemInfo[_handAddress[i].first]->navImp;
+	}
+	_handNavImplementation.push_back(ni);
+
 	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
         _eventValuatorType.push_back(std::vector<ValuatorType>());
         _eventValuators.push_back(std::vector<float>());
         _lastEventValuators.push_back(std::map<int,float>());
 	_numEventValuators.push_back(0);
 
-	bool valFound = false;
+	valFound = false;
 
 	do
 	{
@@ -783,18 +837,9 @@ void TrackingManager::quitThread()
 SceneManager::PointerGraphicType TrackingManager::getPointerGraphicType(
         int hand)
 {
-    if(hand >= 0 && hand < _numHands)
+    if(hand >= 0 && hand < _handGraphicType.size())
     {
-        if(_handAddress[hand].first >= 0
-                && _handAddress[hand].first < _systemInfo.size())
-        {
-            if(_handAddress[hand].second >= 0
-                    && _handAddress[hand].second
-                            < _systemInfo[_handAddress[hand].first]->numBodies)
-            {
-                return _systemInfo[_handAddress[hand].first]->defaultPointerType;
-            }
-        }
+	return _handGraphicType[hand];
     }
 
     return SceneManager::NONE;
@@ -871,16 +916,12 @@ TrackerBase::TrackerType TrackingManager::getHandTrackerType(int hand)
 
 Navigation::NavImplementation TrackingManager::getHandNavType(int hand)
 {
-    if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0
-            || _handAddress[hand].first >= _systemInfo.size()
-            || _handAddress[hand].second < 0
-            || _handAddress[hand].second
-                    >= _systemInfo[_handAddress[hand].first]->numBodies)
+    if(hand >= 0 && hand < _handNavImplementation.size())
     {
-        return Navigation::NONE_NAV;
+	return _handNavImplementation[hand];
     }
 
-    return _systemInfo[_handAddress[hand].first]->navImp;
+    return Navigation::NONE_NAV;
 }
 
 int TrackingManager::getNumButtons(int system)

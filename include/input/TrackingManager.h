@@ -277,6 +277,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<unsigned int> _lastHandButtonMask; ///< list of last sampled button mask for each hand
         std::vector<unsigned int> _rawButtonMask; ///< list of current raw button masks from tracker
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
+        std::vector<SceneManager::PointerGraphicType> _handGraphicType;
+        std::vector<Navigation::NavImplementation> _handNavImplementation;
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
 
         std::vector<int> _numEventValuators;

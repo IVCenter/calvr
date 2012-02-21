@@ -30,6 +30,8 @@ enum NavMode
     SCALE
 };
 
+class NavImplementationBase;
+
 /**
  * @brief Uses tracking events to interact with object space
  */
@@ -59,11 +61,6 @@ class CVRKERNEL_EXPORT Navigation
         void processEvent(InteractionEvent * iEvent);
 
         /**
-         * @brief Process a mouse event into a scale/navigation operation
-         */
-        void processMouseEvent(MouseInteractionEvent * event);
-
-        /**
          * @brief Set the navigation mode for the main button
          * @param nm New navigation mode to set
          */
@@ -74,6 +71,10 @@ class CVRKERNEL_EXPORT Navigation
          */
         NavMode getPrimaryButtonMode();
 
+        void setButtonMode(int button, NavMode nm);
+
+        NavMode getButtonMode(int button);
+
         /**
          * @brief Set a scale value for the translational movement in the nav modes
          */
@@ -83,6 +84,10 @@ class CVRKERNEL_EXPORT Navigation
          * @brief Get the scale value for the translational movement in the nav modes
          */
         float getScale();
+
+        void setEventActive(bool value, int hand);
+
+        bool getEventActive() { return _eventActive; }
 
         /**
          * @brief Navigation Implementation types
@@ -97,26 +102,70 @@ class CVRKERNEL_EXPORT Navigation
     protected:
         Navigation();
         virtual ~Navigation();
-        void processNav(NavMode nm, osg::Matrix & mat);
-        void processMouseNav(NavMode nm, MouseInteractionEvent * mie);
 
+        bool _eventActive;
+        int _activeHand;    ///< hand for the active event
+
+        float _scale;           ///< nav movement scale
+
+        std::map<int,NavImplementationBase*> _navImpMap;
+        
         static Navigation * _myPtr;     ///< static self pointer
 
         std::map<int,NavMode> _buttonMap; ///< map of what navigation mode is set for each button
-        bool _eventActive;  ///< is there a navigation event in progress
-        int _activeHand;    ///< hand for the active event
-        int _eventID;       ///< button for the active event
-        NavMode _eventMode; ///< mode for the active event
+};
 
-        osg::Vec3 _eventPos;    ///< world space position at start of event
-        osg::Quat _eventRot;    ///< rotation at start of event
-        float _startScale;      ///< scale at start of event
-        osg::Matrix _startXForm;   ///< object space transform at start of event
+class NavImplementationBase
+{
+    friend class Navigation;
+    public:
+        virtual void processEvent(InteractionEvent * ie) {}
+        virtual void update() {}
 
-        int _eventX;            ///< mouse viewport x coord at start of event
-        int _eventY;            ///< mouse viewport y coord at start of event
+    protected:
+        int _hand;
+};
 
-        float _scale;           ///< nav movement scale
+class NavMouse : public NavImplementationBase
+{
+    public:
+        virtual void processEvent(InteractionEvent * ie);
+        virtual void update();
+    protected:
+        void processMouseNav(NavMode nm, MouseInteractionEvent * mie);
+
+        int _eventButton;
+        NavMode _eventMode;
+        float _startScale;
+        osg::Matrix _startXForm;
+
+        int _eventX;
+        int _eventY;
+};
+
+class NavTracker : public NavImplementationBase
+{
+    public:
+        virtual void processEvent(InteractionEvent * ie);
+    protected:
+        void processNav(NavMode nm, osg::Matrix & mat);
+
+        int _eventButton;
+        NavMode _eventMode;
+        float _startScale;
+        osg::Matrix _startXForm;
+        osg::Vec3 _eventPos;
+        osg::Quat _eventRot;
+};
+
+class NavMouseKeyboard : public NavImplementationBase
+{
+    public:
+        NavMouseKeyboard();
+        virtual ~NavMouseKeyboard();
+        virtual void processEvent(InteractionEvent * ie);
+    protected:
+        bool _ctrlDown;
 };
 
 }
