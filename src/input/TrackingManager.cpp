@@ -320,6 +320,10 @@ bool TrackingManager::init()
 	    {
 		ni = Navigation::MOUSE_NAV;
 	    }
+	    else if(nistr == "MOUSEKEYBOARD")
+	    {
+		ni = Navigation::MOUSEKEYBOARD_NAV;
+	    }
 	    else if(nistr == "TRACKER")
 	    {
 		ni = Navigation::TRACKER_NAV;

@@ -3,6 +3,7 @@
 #include <menu/BoardMenu/BoardMenuCheckboxGeometry.h>
 #include <menu/BoardMenu/BoardMenuListGeometry.h>
 #include <menu/BoardMenu/BoardMenuRangeValueGeometry.h>
+#include <menu/BoardMenu/BoardMenuRangeValueCompactGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextButtonSetGeometry.h>
 #include <menu/BoardMenu/BoardMenuImageGeometry.h>
@@ -72,6 +73,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
         case RANGEVALUE:
         {
             BoardMenuGeometry * mg = new BoardMenuRangeValueGeometry();
+            mg->createGeometry(item);
+
+            return mg;
+            break;
+        }
+	case RANGEVALUECOMPACT:
+        {
+            BoardMenuGeometry * mg = new BoardMenuRangeValueCompactGeometry();
             mg->createGeometry(item);
 
             return mg;

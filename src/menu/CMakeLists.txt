@@ -16,6 +16,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuCheckbox.h
     ${HEADER_PATH}/MenuList.h
     ${HEADER_PATH}/MenuRangeValue.h
+    ${HEADER_PATH}/MenuRangeValueCompact.h
     ${HEADER_PATH}/MenuText.h
     ${HEADER_PATH}/MenuTextButtonSet.h
     ${HEADER_PATH}/MenuImage.h
@@ -33,6 +34,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoardMenu/BoardMenuCheckboxGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuListGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuRangeValueGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuRangeValueCompactGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuTextGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuTextButtonSetGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
@@ -48,6 +50,7 @@ SET(LIB_SRC_FILES
     MenuCheckbox.cpp
     MenuList.cpp
     MenuRangeValue.cpp
+    MenuRangeValueCompact.cpp
     MenuText.cpp
     MenuTextButtonSet.cpp
     MenuImage.cpp
@@ -63,6 +66,7 @@ SET(LIB_SRC_FILES
     BoardMenu/BoardMenuCheckboxGeometry.cpp
     BoardMenu/BoardMenuListGeometry.cpp
     BoardMenu/BoardMenuRangeValueGeometry.cpp
+    BoardMenu/BoardMenuRangeValueCompactGeometry.cpp
     BoardMenu/BoardMenuTextGeometry.cpp
     BoardMenu/BoardMenuTextButtonSetGeometry.cpp
     BoardMenu/BoardMenuImageGeometry.cpp

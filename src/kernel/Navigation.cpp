@@ -1,13 +1,16 @@
 #include <kernel/Navigation.h>
+#include <config/ConfigManager.h>
 #include <input/TrackingManager.h>
 #include <kernel/SceneManager.h>
 #include <kernel/ComController.h>
 #include <kernel/ScreenConfig.h>
 #include <kernel/CVRViewer.h>
+#include <kernel/PluginHelper.h>
 
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 using namespace cvr;
 
@@ -55,6 +58,11 @@ bool Navigation::init()
 		navbase = new NavMouse();
 		break;
 	    }
+	    case MOUSEKEYBOARD_NAV:
+	    {
+		navbase = new NavMouseKeyboard();
+		break;
+	    }
 	    case TRACKER_NAV:
 	    {
 		navbase = new NavTracker();
@@ -68,6 +76,33 @@ bool Navigation::init()
 	}
 	navbase->_hand = i;
 	_navImpMap[i] = navbase;
+    }
+
+    bool found = true;
+    int index = 0;
+    while(found)
+    {
+	std::stringstream ss;
+	ss << "Input.NavDevice" << index;
+	std::string type = ConfigManager::getEntry("value",ss.str(),"NONE",&found);
+	if(!found)
+	{
+	    continue;
+	}
+
+	NavDeviceBase * ndb = NULL;
+
+	//check type for valid device type
+	
+	if(ndb)
+	{
+	    if(ndb->init(ss.str()))
+	    {
+		_navDeviceList.push_back(ndb);
+	    }
+	}
+
+	index++;
     }
 
     return true;
@@ -128,6 +163,11 @@ void Navigation::update()
     {
         _navImpMap[_activeHand]->update();
     }
+
+    for(int i = 0; i < _navDeviceList.size(); i++)
+    {
+	_navDeviceList[i]->update();
+    }
 }
 
 void Navigation::processEvent(InteractionEvent * iEvent)
@@ -157,10 +197,13 @@ void Navigation::processEvent(InteractionEvent * iEvent)
 	}
 	else
 	{
-	    //TODO: maybe add bool return to see if event is used
 	    for(std::map<int,NavImplementationBase*>::iterator it = _navImpMap.begin(); it != _navImpMap.end(); it++)
 	    {
 		it->second->processEvent(iEvent);
+		if(_eventActive)
+		{
+		    break;
+		}
 	    }
 	}
 	return;
@@ -171,7 +214,7 @@ void NavMouse::processEvent(InteractionEvent * ie)
 {
     if(ie->asKeyboardEvent())
     {
-	std::cerr << "Key event." << std::endl;
+	//std::cerr << "Key event." << std::endl;
     }
 
     MouseInteractionEvent * event = ie->asMouseEvent();
@@ -228,7 +271,7 @@ void NavMouse::processEvent(InteractionEvent * ie)
 
 void NavMouse::update()
 {
-    std::cerr << "Update" << std::endl;
+    //std::cerr << "Update" << std::endl;
     processMouseNav(_eventMode,NULL);
 }
 
@@ -614,5 +657,298 @@ void NavTracker::processNav(NavMode nm, osg::Matrix & mat)
         case NONE:
         default:
             break;
+    }
+}
+
+NavMouseKeyboard::NavMouseKeyboard()
+{
+    _ctrlDown = false;
+    _forwardDown = false;
+    _backDown = false;
+    _leftDown = false;
+    _rightDown = false;
+    _scaleUpDown = false;
+    _scaleDownDown = false;
+}
+
+NavMouseKeyboard::~NavMouseKeyboard()
+{
+}
+
+void NavMouseKeyboard::processEvent(InteractionEvent * ie)
+{
+    KeyboardInteractionEvent * kie = ie->asKeyboardEvent();
+    if(kie)
+    {
+	//std::cerr << "Key: " << kie->getKey() << std::endl;
+	if(kie->getInteraction() == KEY_DOWN)
+	{
+	    switch((char)kie->getKey())
+	    {
+		case 'w':
+		case 23:
+		{
+		    _forwardDown = true;
+		    break;
+		}
+		case 'a':
+		case 1:
+		{
+		    _leftDown = true;
+		    break;
+		}
+		case 's':
+		case 19:
+		{
+		    _backDown = true;
+		    break;
+		}
+		case 'd':
+		case 4:
+		{
+		    _rightDown = true;
+		    break;
+		}
+		case 'e':
+		{
+		    _scaleUpDown = true;
+		    break;
+		}
+		case 'q':
+		{
+		    _scaleDownDown = true;
+		    break;
+		}
+		default:
+		{
+		    if(kie->getKey() == 65507)
+		    {
+			_ctrlDown = true;
+		    }
+		    break;
+		}
+	    }
+	}
+	else if(kie->getInteraction() == KEY_UP)
+	{
+	    switch((char)kie->getKey())
+	    {
+		case 'w':
+		case 23:
+		{
+		    _forwardDown = false;
+		    break;
+		}
+		case 'a':
+		case 1:
+		{
+		    _leftDown = false;
+		    break;
+		}
+		case 's':
+		case 19:
+		{
+		    _backDown = false;
+		    break;
+		}
+		case 'd':
+		case 4:
+		{
+		    _rightDown = false;
+		    break;
+		}
+		case 'e':
+		{
+		    _scaleUpDown = false;
+		    break;
+		}
+		case 'q':
+		{
+		    _scaleDownDown = false;
+		    break;
+		}
+		default:
+		    if(kie->getKey() == 65507)
+		    {
+			_ctrlDown = false;
+		    }
+		    break;
+	    }
+	}
+	if(_forwardDown || _backDown || _leftDown || _rightDown || _scaleUpDown || _scaleDownDown)
+	{
+	    if(!Navigation::instance()->getEventActive())
+	    {
+		Navigation::instance()->setEventActive(true,_hand);
+	    }
+	}
+	else
+	{
+	    if(Navigation::instance()->getEventActive() && !_mouseMove)
+	    {
+		Navigation::instance()->setEventActive(false,_hand);
+	    }
+	}
+	return;
+    }
+
+    MouseInteractionEvent * mie = ie->asMouseEvent();
+    if(mie)
+    {
+	mouseMove(mie);
+    }
+}
+
+void NavMouseKeyboard::update()
+{
+    if(_forwardDown || _backDown || _leftDown || _rightDown)
+    {
+	double distance = CVRViewer::instance()->getLastFrameDuration() * 2000.0 * Navigation::instance()->getScale();
+	osg::Vec3d dir(0,0,0);
+	if(!_ctrlDown)
+	{
+	    if(_forwardDown)
+	    {
+		dir = osg::Vec3d(0,1.0,0);
+	    }
+	    if(_backDown)
+	    {
+		dir = dir + osg::Vec3d(0,-1.0,0);
+	    }
+	    if(_leftDown)
+	    {
+		dir = dir + osg::Vec3d(-1.0,0,0);
+	    }
+	    if(_rightDown)
+	    {
+		dir = dir + osg::Vec3d(1.0,0,0);
+	    }
+	    dir.normalize();
+	    if(dir.length() < 0.9)
+	    {
+		return;
+	    }
+	    dir = dir * distance;
+	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(-dir);
+	    PluginHelper::setObjectMatrix(objXform);
+	}
+	else
+	{
+	    double rotation = 0;
+	    double roffset = CVRViewer::instance()->getLastFrameDuration() * M_PI / 6;
+	    if(_leftDown)
+	    {
+		rotation = roffset;
+	    }
+	    if(_rightDown)
+	    {
+		rotation += -roffset;
+	    }
+	    if(_forwardDown)
+	    {
+		dir = osg::Vec3d(0,0,-1.0);
+	    }
+	    if(_backDown)
+	    {
+		dir = dir + osg::Vec3d(0,0,1.0);
+	    }
+	    osg::Matrix trans;
+	    osg::Matrix rot;
+	    dir.normalize();
+	    if(dir.length() > 0.9)
+	    {
+		dir = dir * distance;
+		trans.makeTranslate(dir);
+	    }
+	    if(rotation)
+	    {
+		rot.makeRotate(rotation,osg::Vec3d(0,1.0,0));
+	    }
+	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * rot * trans;
+	    PluginHelper::setObjectMatrix(objXform);
+	}
+    }
+    if(_scaleDownDown || _scaleUpDown)
+    {
+	float base = 2.0;
+	float currentLScale = log(PluginHelper::getObjectScale()) / log(base);
+	float scalediff = 0.0;
+	float scaleChange = 1.0 * CVRViewer::instance()->getLastFrameDuration();
+	if(_scaleDownDown)
+	{
+	    scalediff -= scaleChange; 
+	}
+	if(_scaleUpDown)
+	{
+	    scalediff += scaleChange;
+	}
+	if(!_scaleDownDown || !_scaleUpDown)
+	{
+	    float newScale = pow(base, currentLScale+scalediff);
+	    osg::Vec3d headpoint = TrackingManager::instance()->getHeadMat().getTrans();
+	    osg::Vec3d headobjpoint = headpoint * PluginHelper::getWorldToObjectTransform();
+	    PluginHelper::setObjectScale(newScale);
+	    osg::Vec3d newheadpoint = headobjpoint * PluginHelper::getObjectToWorldTransform();
+	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(headpoint - newheadpoint);
+	    PluginHelper::setObjectMatrix(objXform);
+	}
+    }
+}
+
+void NavMouseKeyboard::mouseMove(MouseInteractionEvent * mie)
+{
+    if(mie->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    {
+        return;
+    }
+
+    if(Navigation::instance()->getEventActive()
+            && mie->getButton())
+    {
+        return;
+    }
+
+    if(!Navigation::instance()->getEventActive()
+            && (mie->getInteraction() == BUTTON_DOWN
+                    || mie->getInteraction() == BUTTON_DOUBLE_CLICK))
+    {
+	if(_ctrlDown)
+	{
+	    osg::Vec3d dir(0,1.0,0);
+	    dir = dir * mie->getTransform();
+	    dir = dir - mie->getTransform().getTrans();
+	    dir.normalize();
+	    _lastDir = dir;
+	    _lastScreenNum = mie->getMasterScreenNum();
+	    _mouseMove = true;
+	    Navigation::instance()->setEventActive(true,_hand);
+	}
+    }
+    else if(Navigation::instance()->getEventActive() && !mie->getButton() && _mouseMove && (mie->getInteraction() == BUTTON_UP || mie->getInteraction() == BUTTON_DRAG))
+    {
+	osg::Vec3d dir(0,1.0,0);
+	dir = dir * mie->getTransform();
+	dir = dir - mie->getTransform().getTrans();
+	dir.normalize();
+	if(mie->getMasterScreenNum() != _lastScreenNum)
+	{
+	    _lastDir = dir;
+	    _lastScreenNum = mie->getMasterScreenNum();
+	}
+	else
+	{
+	    //TODO add head hand mapping
+	    osg::Vec3d headpoint = TrackingManager::instance()->getHeadMat().getTrans();
+
+	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(-headpoint) * osg::Matrix::rotate(_lastDir,dir) * osg::Matrix::translate(headpoint);
+	    PluginHelper::setObjectMatrix(objXform);
+	    _lastDir = dir;
+	}
+
+	if(mie->getInteraction() == BUTTON_UP)
+	{
+	    _mouseMove = false;
+	    Navigation::instance()->setEventActive(false,_hand);
+	}
     }
 }

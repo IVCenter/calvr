@@ -153,16 +153,21 @@ void SceneManager::postEventUpdate()
         if(it->second)
         {
             it->second->moveCleanup();
-            if(it->first >= 0)
-            {
-                it->second->updateCallback(it->first,
-                        TrackingManager::instance()->getHandMat(it->first));
-            }
-            else
-            {
-                it->second->updateCallback(it->first,
-                        InteractionManager::instance()->getMouseMat());
-            }
+	    SceneObject * object = it->second;
+	    while(object)
+	    {
+		if(it->first >= 0)
+		{
+		    object->updateCallback(it->first,
+			    TrackingManager::instance()->getHandMat(it->first));
+		}
+		else
+		{
+		    object->updateCallback(it->first,
+			    InteractionManager::instance()->getMouseMat());
+		}
+		object = object->_parent;
+	    }
         }
     }
 }
@@ -757,20 +762,71 @@ void SceneManager::updateActiveObject()
             currentObject = findChildActiveObject(currentObject,start,end);
             if(_activeObjects[hand] != currentObject)
             {
+		std::list<SceneObject*> lastObjList;
+		std::list<SceneObject*> currentObjList;
+		SceneObject * object = _activeObjects[hand];
+		while(object)
+		{
+		    lastObjList.push_front(object);
+		    object = object->_parent;
+		}
+		object = currentObject;
+		while(object)
+		{
+		    currentObjList.push_front(object);
+		    object = object->_parent;
+		}
+
+		std::list<SceneObject*>::iterator lastIt = lastObjList.begin();
+		std::list<SceneObject*>::iterator curIt = currentObjList.begin();
+		while(lastIt != lastObjList.end() && curIt != currentObjList.end())
+		{
+		    if(*lastIt != *curIt)
+		    {
+			break;
+		    }
+		    
+		    lastIt++;
+		    curIt++;    
+		}
+
+		if(lastIt != lastObjList.end())
+		{
+		    for(std::list<SceneObject*>::reverse_iterator it = lastObjList.rbegin(); ; it++)
+		    {
+			(*it)->leaveCallback(hand);
+			if(*it == *lastIt)
+			{
+			    break;
+			}
+		    }
+		}
+
+		if(curIt != currentObjList.end())
+		{
+		    for(std::list<SceneObject*>::iterator it = curIt; it != currentObjList.end() ; it++)
+		    {
+			(*it)->enterCallback(hand,handMatrix);
+		    }
+		}
+
                 if(_activeObjects[hand])
                 {
-                    _activeObjects[hand]->leaveCallback(hand);
                     _activeObjects[hand]->interactionCountDec();
                 }
                 _activeObjects[hand] = currentObject;
-                currentObject->enterCallback(hand,handMatrix);
                 currentObject->interactionCountInc();
             }
         }
         else if(_activeObjects[hand])
         {
-            _activeObjects[hand]->leaveCallback(hand);
             _activeObjects[hand]->interactionCountDec();
+	    SceneObject * object = _activeObjects[hand];
+	    while(object)
+	    {
+		object->leaveCallback(hand);
+		object = object->_parent;
+	    }
             _activeObjects[hand] = NULL;
         }
     }

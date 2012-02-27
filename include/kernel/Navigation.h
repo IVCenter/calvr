@@ -13,6 +13,8 @@
 #include <osg/Vec3>
 
 #include <map>
+#include <vector>
+#include <string>
 
 namespace cvr
 {
@@ -31,6 +33,7 @@ enum NavMode
 };
 
 class NavImplementationBase;
+class NavDeviceBase;
 
 /**
  * @brief Uses tracking events to interact with object space
@@ -95,6 +98,7 @@ class CVRKERNEL_EXPORT Navigation
         enum NavImplementation
         {
             MOUSE_NAV = 0,
+            MOUSEKEYBOARD_NAV,
             TRACKER_NAV,
             NONE_NAV
         };
@@ -113,6 +117,15 @@ class CVRKERNEL_EXPORT Navigation
         static Navigation * _myPtr;     ///< static self pointer
 
         std::map<int,NavMode> _buttonMap; ///< map of what navigation mode is set for each button
+
+        std::vector<NavDeviceBase*> _navDeviceList;
+};
+
+class NavDeviceBase
+{
+    public:
+        virtual bool init(std::string tagBase) = 0;
+        virtual void update() {}
 };
 
 class NavImplementationBase
@@ -164,8 +177,21 @@ class NavMouseKeyboard : public NavImplementationBase
         NavMouseKeyboard();
         virtual ~NavMouseKeyboard();
         virtual void processEvent(InteractionEvent * ie);
+        virtual void update();
     protected:
+        void mouseMove(MouseInteractionEvent * mie);
+
         bool _ctrlDown;
+        bool _forwardDown;
+        bool _backDown;
+        bool _leftDown;
+        bool _rightDown;
+        bool _scaleUpDown;
+        bool _scaleDownDown;
+
+        bool _mouseMove;
+        osg::Vec3d _lastDir;
+        int _lastScreenNum;
 };
 
 }
