@@ -48,7 +48,7 @@ struct syncOperation : public osg::Operation
         }
 };
 
-struct vSyncOperation : public osg::Operation
+/*struct vSyncOperation : public osg::Operation
 {
         vSyncOperation(bool value) :
                 osg::Operation("vSyncOperation",true)
@@ -68,7 +68,7 @@ struct vSyncOperation : public osg::Operation
             }
         }
         bool _val;
-};
+};*/
 
 /*struct sleepOperation : public osg::Operation
  {
@@ -1032,7 +1032,6 @@ void CVRViewer::startThreading()
     getContexts(contexts);
 
     //OSG_NOTIFY(osg::INFO)<<"Viewer::startThreading() - contexts.size()="<<contexts.size()<<std::endl;
-
     Cameras cameras;
     getCameras(cameras);
 
@@ -1338,6 +1337,12 @@ void CVRViewer::startThreading()
     _threadsRunning = true;
 
     //OSG_NOTIFY(osg::INFO)<<"Set up threading"<<std::endl;
+    // try setting compile operation parameters
+    //osgUtil::IncrementalCompileOperation* compile = new osgUtil::IncrementalCompileOperation();
+    //compile->setTargetFrameRate(40.0);
+    //compile->setMinimumTimeAvailableForGLCompileAndDeletePerFrame(0.001);
+    //compile->setMaximumNumOfObjectsToCompilePerFrame(8);
+    //setIncrementalCompileOperation(compile);
 }
 
 void CVRViewer::frameStart()

@@ -54,15 +54,19 @@ ScreenConfig * ScreenConfig::instance()
 
 bool ScreenConfig::init()
 {
-
+    char gsyncenv[128];
+    memset(gsyncenv,'\0',128);
     if(ConfigManager::getBool("SyncToVBlank"))
     {
-        putenv("__GL_SYNC_TO_VBLANK=1");
+        strncpy(gsyncenv,"__GL_SYNC_TO_VBLANK=1",128);
+        //putenv("__GL_SYNC_TO_VBLANK=1");
     }
     else
     {
-        putenv("__GL_SYNC_TO_VBLANK=0");
+        strncpy(gsyncenv,"__GL_SYNC_TO_VBLANK=0",128);
+        //putenv("__GL_SYNC_TO_VBLANK=0");
     }
+    putenv(gsyncenv);
 
     if(!readPipes() || !readWindows() || !readChannels() || !readScreens())
     {
