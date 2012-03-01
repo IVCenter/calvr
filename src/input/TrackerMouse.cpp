@@ -29,6 +29,8 @@ bool TrackerMouse::init(std::string tag)
 
     _mouseButtonMask = 0;
 
+    _mouseValuator = 0;
+
     return true;
 }
 
@@ -49,6 +51,10 @@ unsigned int TrackerMouse::getButtonMask()
 
 float TrackerMouse::getValuator(int index)
 {
+    if(index == 0)
+    {
+	return _mouseValuator;
+    }
     return 0;
 }
 
@@ -59,7 +65,7 @@ int TrackerMouse::getNumBodies()
 
 int TrackerMouse::getNumValuators()
 {
-    return 0;
+    return 1;
 }
 
 int TrackerMouse::getNumButtons()
@@ -83,6 +89,20 @@ void TrackerMouse::update(
     _mouseBody.qw = rot.w();
 
     _mouseButtonMask = InteractionManager::instance()->getMouseButtonMask();
+
+    int mouseWheel = InteractionManager::instance()->getMouseWheel();
+    if(mouseWheel > 0)
+    {
+	_mouseValuator = 1.0;
+    }
+    else if(mouseWheel < 0)
+    {
+	_mouseValuator = -1.0;
+    }
+    else
+    {
+	_mouseValuator = 0.0;
+    }
 
     //std::cerr << "Mouse queue size: " << InteractionManager::instance()->_mouseQueue.size() << std::endl;
     while(InteractionManager::instance()->_mouseQueue.size())

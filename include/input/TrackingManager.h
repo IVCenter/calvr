@@ -285,6 +285,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<std::pair<int,int> > > _eventValuatorAddress;
         std::vector<std::vector<ValuatorType> > _eventValuatorType;
         std::vector<std::vector<float> > _eventValuators;
+        std::vector<std::vector<double> > _eventValuatorTime;
         std::vector<std::map<int,float> > _lastEventValuators;
 
         std::vector<std::vector<bool> > _genHandDefaultButtonEvents; ///< lookup to see if a hand button should have default events generated

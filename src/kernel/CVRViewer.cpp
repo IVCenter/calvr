@@ -509,6 +509,27 @@ void CVRViewer::eventTraversal()
                             evnt.param2 = event->getModKeyMask();
                             eventList.push_back(evnt);
                             break;
+			case  (osgGA::GUIEventAdapter::SCROLL):
+			{
+			    evnt.param1 = event->getScrollingMotion();
+			    /*switch(event->getScrollingMotion())
+			    {
+				case (osgGA::GUIEventAdapter::SCROLL_UP) :
+				{
+				    std::cerr << "Scroll up." << std::endl;
+				    break;
+				}
+				case (osgGA::GUIEventAdapter::SCROLL_DOWN) :
+				{
+				    std::cerr << "Scroll down." << std::endl;
+				    break;
+				}
+				default:
+				    break;
+			    }*/
+			    eventList.push_back(evnt);
+			    break;
+			}
                         case (osgGA::GUIEventAdapter::QUIT_APPLICATION):
                         case (osgGA::GUIEventAdapter::CLOSE_WINDOW):
                             eventList.push_back(evnt);
@@ -677,6 +698,18 @@ void CVRViewer::eventTraversal()
                 InteractionManager::instance()->addEvent(kie);
                 break;
             }
+	    case  (osgGA::GUIEventAdapter::SCROLL):
+	    {
+		if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_UP)
+		{
+		    InteractionManager::instance()->setMouseWheel(1);
+		}
+		else if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_DOWN)
+		{
+		    InteractionManager::instance()->setMouseWheel(-1);
+		}
+		break;
+	    }
             case (UPDATE_ACTIVE_SCREEN):
                 _activeMasterScreen = events[i].param1;
                 break;
@@ -720,6 +753,8 @@ void CVRViewer::eventTraversal()
     {
         delete[] events;
     }
+
+    InteractionManager::instance()->checkWheelTimeout();
 
     if(getViewerStats() && getViewerStats()->collectStats("event"))
     {

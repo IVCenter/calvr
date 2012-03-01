@@ -1,0 +1,16 @@
+ADD_EXECUTABLE(vrpn_libusb_server vrpn_libusb.cpp vrpn_libusb_server.cpp)
+
+IF(WIN32)
+    REMOVE_OUTPUT_DIRS(vrpn_libusb_server)
+ENDIF(WIN32)
+
+FIND_PACKAGE(VRPN)
+FIND_PACKAGE(libusb-1)
+
+INCLUDE_DIRECTORIES(${VRPN_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${LIBUSB1_INCLUDE_DIR})
+
+TARGET_LINK_LIBRARIES(vrpn_libusb_server ${VRPN_LIBRARY})
+TARGET_LINK_LIBRARIES(vrpn_libusb_server ${LIBUSB1_LIBRARY})
+
+INSTALL(TARGETS vrpn_libusb_server DESTINATION bin)

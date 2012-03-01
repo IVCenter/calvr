@@ -28,6 +28,10 @@ InteractionManager::InteractionManager()
 
     _mouseX = 0;
     _mouseY = 0;
+
+    _mouseWheelTimeout = ConfigManager::getDouble("value","Input.MouseWheelTimeout",0.05);
+    _mouseWheelTime = 0;
+    _mouseWheel = 0;
 }
 
 InteractionManager::~InteractionManager()
@@ -212,6 +216,12 @@ int InteractionManager::getMouseY()
     return _mouseY;
 }
 
+void InteractionManager::setMouseWheel(int w)
+{
+    _mouseWheel = w;
+    _mouseWheelTime = 0;
+}
+
 void InteractionManager::processMouse()
 {
     if(!_mouseActive)
@@ -343,5 +353,25 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
             return;
         }
         bit = bit << 1;
+    }
+}
+
+void InteractionManager::checkWheelTimeout()
+{
+    if(_mouseWheel == 0)
+    {
+	return;
+    }
+
+    double timeintv = CVRViewer::instance()->getLastFrameDuration();
+    if(timeintv >= _mouseWheelTimeout)
+    {
+	timeintv = _mouseWheelTimeout - 0.0001;
+    }
+    _mouseWheelTime += timeintv;
+    if(_mouseWheelTime > _mouseWheelTimeout)
+    {
+	_mouseWheel = 0;
+	_mouseWheelTime = 0;
     }
 }

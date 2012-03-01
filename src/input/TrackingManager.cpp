@@ -347,6 +347,7 @@ bool TrackingManager::init()
 	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
         _eventValuatorType.push_back(std::vector<ValuatorType>());
         _eventValuators.push_back(std::vector<float>());
+	_eventValuatorTime.push_back(std::vector<double>());
         _lastEventValuators.push_back(std::map<int,float>());
 	_numEventValuators.push_back(0);
 
@@ -377,6 +378,7 @@ bool TrackingManager::init()
 		}
 
 		_eventValuators[i].push_back(0.0);
+		_eventValuatorTime[i].push_back(0.0);
 	    }
 	}
 	while(valFound);
@@ -1254,14 +1256,26 @@ void TrackingManager::generateValuatorEvents()
             {
                 if(fabs(_eventValuators[j][i]) > 0.05)
                 {
-                    ValuatorInteractionEvent * vie =
-                            new ValuatorInteractionEvent();
-                    vie->setValuator(i);
-                    vie->setHand(j);
-                    vie->setValue(_eventValuators[j][i]);
-                    InteractionManager::instance()->addEvent(
-                            (InteractionEvent*)vie);
+		    // attempt to output 60 events per second to be consistent with the threaded version
+		    static double timeSlice = 1.0 / 60.0;
+		    _eventValuatorTime[j][i] += CVRViewer::instance()->getLastFrameDuration();
+
+		    while(_eventValuatorTime[j][i] > timeSlice)
+		    {
+			ValuatorInteractionEvent * vie =
+			    new ValuatorInteractionEvent();
+			vie->setValuator(i);
+			vie->setHand(j);
+			vie->setValue(_eventValuators[j][i]);
+			InteractionManager::instance()->addEvent(
+				(InteractionEvent*)vie);
+			_eventValuatorTime[j][i] -= timeSlice;
+		    }
                 }
+		else
+		{
+		    _eventValuatorTime[j][i] = 0.0;
+		}
             }
             else if(_eventValuatorType[j][i] == CHANGE)
             {
