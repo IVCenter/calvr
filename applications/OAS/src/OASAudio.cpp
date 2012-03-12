@@ -87,11 +87,20 @@ Buffer::Buffer(const std::string& filename)
 
     if (!filename.empty())
     {
-        _handle = oas::FileHandler::readFileIntoBuffer(filename);
+        oas::FileHandler fileHandler;
+        int fileSize;
+        void *data;
 
-        if (AL_NONE != _handle)
+        data = fileHandler.readFile(filename, fileSize);
+
+        if (data)
         {
-            _filename = std::string(filename);
+            _handle = alutCreateBufferFromFileImage(data, fileSize);
+
+            if (AL_NONE != _handle)
+            {
+                _filename = std::string(filename);
+            }
         }
     }
 }
@@ -143,13 +152,13 @@ Source::Source(ALuint buffer)
     alGetError();
 
     // Generate source
-    alGenSources(1, &_handle);
+    alGenSources(1, &_id);
     // Bind buffer to source
-    alSourcei(_handle, AL_BUFFER, buffer);
+    alSourcei(_id, AL_BUFFER, buffer);
     _buffer = buffer;
 
     // Set the source to be relative to the listener
-    alSourcei(_handle, AL_SOURCE_RELATIVE, AL_TRUE);
+    alSourcei(_id, AL_SOURCE_RELATIVE, AL_TRUE);
 
     ALenum error = alGetError();
 
@@ -168,19 +177,30 @@ Source::Source()
 Source::~Source()
 {
     _isValid = false;
-    alDeleteSources(1, &_handle);
+    alDeleteSources(1, &_id);
 }
 
 // private
 void Source::_init()
 {
-    _handle = AL_NONE;
+    _id = AL_NONE;
+    _handle = this->_generateNextHandle();
     _buffer = AL_NONE;
     _positionX = _positionY = _positionZ = 0.0;
     _velocityX = _velocityY = _velocityZ = 0.0;
     _directionX = _directionY = _directionZ = 0.0;
     _gain = 1.0;
     _isValid = false;
+}
+
+// private
+ALuint Source::_generateNextHandle()
+{
+    static ALuint nextHandle = 0;
+
+    nextHandle++;
+
+    return nextHandle;
 }
 
 bool Source::isValid() const
@@ -210,7 +230,7 @@ void Source::play()
         // Clear OpenAL error state
         alGetError();
 
-        alSourcePlay(_handle);
+        alSourcePlay(_id);
     }
 }
 
@@ -221,7 +241,7 @@ void Source::stop()
         // Clear OpenAL error state
         alGetError();
 
-        alSourceStop(_handle);
+        alSourceStop(_id);
     }
 }
 
@@ -232,7 +252,7 @@ void Source::setPosition(ALfloat x, ALfloat y, ALfloat z)
         // Clear OpenAL error state
         alGetError();
 
-        alSource3f(_handle, AL_POSITION, x, y, z);
+        alSource3f(_id, AL_POSITION, x, y, z);
 
         _positionX = x;
         _positionY = y;
@@ -248,7 +268,7 @@ void Source::setGain(ALfloat gain)
         // Clear OpenAL error state
         alGetError();
 
-        alSourcef(_handle, AL_GAIN, gain);
+        alSourcef(_id, AL_GAIN, gain);
         _gain = gain;
     }
 }
@@ -261,7 +281,7 @@ void Source::setLoop(ALint isLoop)
         alGetError();
 
         _isLooping = ((isLoop != 0) ? AL_TRUE : AL_FALSE);
-        alSourcei(_handle, AL_LOOPING, _isLooping);
+        alSourcei(_id, AL_LOOPING, _isLooping);
     }
 }
 
@@ -272,7 +292,7 @@ void Source::setVelocity(ALfloat x, ALfloat y, ALfloat z)
         // Clear OpenAL error state
         alGetError();
 
-        alSource3f(_handle, AL_VELOCITY, x, y, z);
+        alSource3f(_id, AL_VELOCITY, x, y, z);
 
         _velocityX = x;
         _velocityY = y;
@@ -287,7 +307,7 @@ void Source::setDirection(ALfloat x, ALfloat y, ALfloat z)
         // Clear OpenAL error state
         alGetError();
 
-        alSource3f(_handle, AL_DIRECTION, x, y, z);
+        alSource3f(_id, AL_DIRECTION, x, y, z);
 
         _directionX = x;
         _directionY = y;
@@ -303,8 +323,8 @@ void Source::setDirection(ALfloat x, ALfloat y, ALfloat z)
         else if (!isDirectional())
         {
             // Set the inner and outer cone angles
-            alSourcef(_handle, AL_CONE_INNER_ANGLE, Source::_kConeInnerAngle);
-            alSourcef(_handle, AL_CONE_OUTER_ANGLE, Source::_kConeOuterAngle);
+            alSourcef(_id, AL_CONE_INNER_ANGLE, Source::_kConeInnerAngle);
+            alSourcef(_id, AL_CONE_OUTER_ANGLE, Source::_kConeOuterAngle);
             _isDirectional = true;
         }
     }

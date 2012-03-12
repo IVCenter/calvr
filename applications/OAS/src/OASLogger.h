@@ -25,6 +25,7 @@ public:
 private:
     static void _sendFormattedOutput(const char *format, va_list args);
     static void _replaceBottomLineFormattedOutput(const char *format, va_list args);
+    static void _sendToConsole(const char *buf);
 };
 }
 

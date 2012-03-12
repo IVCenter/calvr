@@ -283,6 +283,10 @@ void* SocketHandler::_socketLoop(void* parameter)
                 bufPtr = circularBuf;
             }
 
+            // Zero out the section of the buffer we're reading into
+            memset(bufPtr, 0, MAX_TRANSMIT_BUFFER_SIZE);
+
+            // Read from the socket
             amountRead = read(connection, bufPtr, MAX_TRANSMIT_BUFFER_SIZE);
 
             // Error occured
@@ -365,6 +369,7 @@ void SocketHandler::_receiveBinaryFile(int connection, const Message& ptfi)
 {
     char *data, *dataPtr;
 	int fileSize, bytesLeft, bytesRead;
+    oas::FileHandler fileHandler;
 	bool errorOccured = false;
 
 	fileSize = ptfi.getIntegerParam();
@@ -404,7 +409,7 @@ void SocketHandler::_receiveBinaryFile(int connection, const Message& ptfi)
 	}
 
     // Write data to file
-    if (!errorOccured && !oas::FileHandler::writeFile(ptfi.getFilename(), data, fileSize))
+    if (!errorOccured && !fileHandler.writeFile(ptfi.getFilename(), data, fileSize))
     {
         oas::Logger::errorf("SocketHandler - Error occured while writing %s to disk.",
                             ptfi.getFilename().c_str());

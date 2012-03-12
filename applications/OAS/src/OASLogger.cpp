@@ -82,13 +82,14 @@ void Logger::_sendFormattedOutput(const char *format, va_list args)
 
     vsprintf(buf, format, args);
 
+    // If the server window is initialized, output to it
     if (ServerWindow::isInitialized())
     {
         ServerWindow::addToBrowser(buf);
     }
     else
     {
-        std::cerr << "OAS: " << buf << std::endl;
+        Logger::_sendToConsole(buf);
     }
 }
 
@@ -105,7 +106,24 @@ void Logger::_replaceBottomLineFormattedOutput(const char *format, va_list args)
     }   
     else
     {
-        std::cerr << "OAS: " << buf << std::endl;
+        Logger::_sendToConsole(buf);
     }
+}
+
+// private, static
+void Logger::_sendToConsole(const char *buf)
+{
+    if (!buf)
+        return;
+   
+    // We have to skip over the formatting characters, if any
+    // We assume that the formatters are terminated by a null formatter
+    const char *ptr = strstr(buf, ServerWindow::getNullBrowserFormatter());
+
+    // If we didn't find the null formatter, then just print the string as is
+    if (!ptr)
+        std::cerr << buf << std::endl;
+    else
+        std::cerr << (ptr + ServerWindow::getBrowserFormatterLength()) << std::endl;
 }
 

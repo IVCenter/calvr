@@ -11,6 +11,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <pthread.h>
 #include <iostream>
+#include "OASLogger.h"
 
 namespace oas
 {
@@ -23,11 +24,13 @@ public:
     // Create new thread, make double window, set up browser
     static bool initialize(int argc, char **argv);
 
-    static void addToBrowser(const char *line);
+    static void addToBrowser(char *line);
     static void replaceBottomLine(const char *line);
     static const char* const getBoldBrowserFormatter();
     static const char* const getItalicsBrowserFormatter();
     static const char* const getNullBrowserFormatter();
+    static const int getBrowserFormatterLength();
+    static int getBrowserSize();
     static bool isInitialized();
 
 protected:
@@ -42,9 +45,11 @@ protected:
     static const char* const _boldBrowserFormatter;
     static const char* const _italicsBrowserFormatter;
     static const char* const _nullBrowserFormatter;
+    static const int _browserFormatterLength;
     
 private:
 	static void* _windowLoop(void *parameter);
+    static void _incrementBrowserSize();
 };
 
 }

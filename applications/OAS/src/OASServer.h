@@ -1,3 +1,8 @@
+/**
+ * @file OASServer.h
+ * @author Shreenidhi Chowkwale
+ */
+
 #ifndef _OAS_SERVER_H_
 #define _OAS_SERVER_H_
 
@@ -13,6 +18,7 @@
 #include "OASSocketHandler.h"
 #include "OASMessage.h"
 #include "OASAudioHandler.h"
+#include "OASServerInfo.h"
 #include "OASLogger.h"
 
 
@@ -21,22 +27,22 @@ namespace oas
 class Server
 {
 public:
-    static void initialize(int argc, char **argv);
+    static Server& getInstance();
+    void initialize(int argc, char **argv);
+    ServerInfo const* getServerInfo();
 
 private:
-    static pthread_t _serverThread;
-    static std::string _cacheDirectory;
-    static unsigned short _port;
-    static std::string _deviceString;
+    pthread_t _serverThread;
 
-    // defaults
-    static std::string _defaultConfigFile;
-    
+    ServerInfo* _serverInfo;
+
     // private worker methods
-    static void _readConfigFile(int argc, char **argv);
+    void _readConfigFile(int argc, char **argv);
     static void* _serverLoop(void *parameter);
-    static void _processMessage(const Message &message);
-    static void _fatalError(const char *errorMessage);
+    void _processMessage(const Message &message);
+    void _fatalError(const char *errorMessage);
+
+    double _computeElapsedTime(struct timeval start, struct timeval end);
 
 };
 }

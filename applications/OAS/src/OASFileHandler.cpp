@@ -8,9 +8,10 @@
 
 using namespace oas;
 
-// Statics
-std::string     FileHandler::_cacheDirectoryPath;
+// static 
+std::string FileHandler::_cacheDirectoryPath;
 
+// static
 bool FileHandler::initialize(const std::string &cacheDirectoryPath)
 {
     // struct that contains file information
@@ -75,71 +76,8 @@ bool FileHandler::writeFile(const std::string& filename, const char *data, unsig
     fileOut.close();
     return true;
 }
-//void FileHandler::newFile(const std::string& filename)
-//{
-//    // If a file is already open, close it
-//    if(FileHandler::_fileOut.is_open())
-//    {
-//        FileHandler::_fileOut.close();
-//    }
-//
-//    // Set file path
-//    FileHandler::_fileOutPath = FileHandler::_cacheDirectoryPath + "/" + filename;
-//
-//    // If the file already exists, clear it out first
-//    if (FileHandler::doesFileExist(FileHandler::_fileOutPath))
-//    {
-//        FileHandler::_fileOut.open(FileHandler::_fileOutPath.c_str(),
-//                                   std::ios::out | std::ios::trunc | std::ios::binary);
-//        FileHandler::endFile();
-//    }
-//
-//    FileHandler::_fileOut.open(FileHandler::_fileOutPath.c_str(),
-//                               std::ios::out | std::ios::app | std::ios::binary);
-//
-//    if (!FileHandler::_fileOut.is_open())
-//    {
-//        oas::Logger::errorf("FileHandler - Could not open \"%s\" for writing!",
-//                            FileHandler::_fileOutPath.c_str());
-//        FileHandler::_fileOut.close();
-//    }
-//    else if (FileHandler::_fileOut.bad())
-//    {
-//        oas::Logger::errorf("FileHandler - Could not create file \"%s\"!",
-//                            FileHandler::_fileOutPath.c_str());
-//        FileHandler::_fileOut.close();
-//    }
-//}
-//
-//bool FileHandler::writeToFile(const char *data, unsigned int size)
-//{
-//	// If file isn't open or data is NULL, return false and do nothing.
-//    if (!FileHandler::_fileOut.is_open() || !data)
-//    {
-//        return false;
-//    }
-//
-//	FileHandler::_fileOut.write(data, size);
-//
-//	if (FileHandler::_fileOut.bad())
-//	{
-//        oas::Logger::errorf("FileHandler - Writing to file \"%s\" failed. Data may be corrupted.",
-//                            FileHandler::_fileOutPath.c_str());
-//        FileHandler::endFile();
-//        return false;
-//	}
-//	return true;
-//}
-//
-//void FileHandler::endFile()
-//{
-//    if (FileHandler::_fileOut.is_open())
-//    {
-//        FileHandler::_fileOut.close();
-//    }
-//}
 
-ALuint FileHandler::readFileIntoBuffer(const std::string& filename)
+void* FileHandler::readFile(const std::string& filename, int& fileSize)
 {
     std::string filePath;
     struct stat fileInfo;
@@ -152,7 +90,7 @@ ALuint FileHandler::readFileIntoBuffer(const std::string& filename)
     if (0 != stat(filePath.c_str(), &fileInfo)) // stat returns 0 on success
     {
         oas::Logger::warnf("FileHandler - Could not access \"%s\"", filePath.c_str());
-        return AL_NONE;
+        return NULL;
     }
 
     data = new char[fileInfo.st_size];
@@ -165,20 +103,109 @@ ALuint FileHandler::readFileIntoBuffer(const std::string& filename)
         oas::Logger::errorf("FileHandler - Failed to read \"%s\" from disk.",
                             filePath.c_str());
         delete data;
-        return AL_NONE;
+        return NULL;
     }
-    ALuint retval =  alutCreateBufferFromFileImage(data, fileInfo.st_size);
 
-    // If retval is invalid, print error message
-    if (AL_NONE == retval)
+    fileSize = fileInfo.st_size;
+    return data;
+}
+
+bool FileHandler::loadXML(const std::string& filename, const std::string& root)
+{
+    // The Mini-XML library requires C-style file handling. 
+
+    FILE *fp;
+
+    // Open the file
+    fp = fopen(filename.c_str(), "r");
+    if (!fp)
     {
-        oas::Logger::errorf("FileHandler - Failed to convert \"%s\" to an audio source. "
-                            "Reason: \"%s\"",
-                            filePath.c_str(),
-                            alutGetErrorString(alutGetError()));
+        oas::Logger::errorf("FileHandler - Unable to open XML file \"%s\".", filename.c_str());
+        return false;
     }
 
-    delete data;
-    return retval;
+    // Release any XML tree that may have already been loaded
+    this->unloadXML();
+
+    // Generate XML tree from file contents
+    mxml_node_t *tree = mxmlLoadFile(NULL, fp, MXML_TEXT_CALLBACK);
+
+    if (!tree)
+    {
+        oas::Logger::errorf("FileHandler - Could not process \"%s\" as an XML file!", 
+                            filename.c_str());
+        fclose(fp);
+        return false;
+    }
+
+    this->_tree = tree;
+
+    this->_root = mxmlFindElement(this->_tree,
+                                  this->_tree,
+                                  root.c_str(),
+                                  NULL,
+                                  NULL,
+                                  MXML_DESCEND_FIRST);
+
+    if (!this->_root)
+    {
+        oas::Logger::errorf("FileHandler - Could not find \"%s\" as root of the XML file!",
+                            root.c_str());
+        fclose(fp);
+        return false;
+    }
+
+    // Close the file, and return true for success
+    fclose(fp);
+
+    return true;
+}
+
+void FileHandler::unloadXML()
+{
+    if (this->_tree)
+    {
+        mxmlDelete(this->_tree);
+        this->_tree = NULL;
+    }
+}
+
+bool FileHandler::findXML(const char *name, const char *attr, const char *value, std::string& output)
+{
+    if (!this->_root)
+    {
+        oas::Logger::errorf("FileHandler - No valid XML file initialized!");
+        return false;
+    }
+
+    mxml_node_t *node = mxmlFindElement(this->_root, 
+                                        this->_root, 
+                                        name, 
+                                        attr, 
+                                        value, 
+                                        MXML_DESCEND_FIRST);
+
+
+    if (node)
+    {
+        if (node->child && node->child->value.text.string)
+            output = node->child->value.text.string;
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+FileHandler::FileHandler()
+{
+    this->_tree = NULL;
+}
+
+FileHandler::~FileHandler()
+{
+
 }
 

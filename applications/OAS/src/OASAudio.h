@@ -108,7 +108,7 @@ class Source
 {
 public:
     /**
-     * @brief Get the unique, identifying handle for this source
+     * @brief Get the handle for this source
      */
     ALuint getHandle() const;
 
@@ -177,9 +177,20 @@ public:
 
 private:
     void _init();
+    ALuint _generateNextHandle();
 
+    /*
+     * 'id' is used to interact with the OpenAL library, and the values are arbitrary.
+     * The 'id' is strictly internal to the source, and no other object needs to know it.
+     */
+    ALuint _id;
 
+    /*
+     * 'handle' is used to interact with the client, and the values are guaranteed to
+     * start from 1 and increment by 1 for each source that is generated.
+     */
     ALuint _handle;
+
     ALuint _buffer;
     ALfloat _positionX, _positionY, _positionZ;
     ALfloat _velocityX, _velocityY, _velocityZ;
