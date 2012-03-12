@@ -123,7 +123,7 @@ class CVRKERNEL_EXPORT InteractionManager
         /**
          * @brief Create mouse drag events from current button mask
          */
-        void createMouseDragEvents();
+        void createMouseDragEvents(bool single);
 
         void createMouseDoubleClickEvent(int button);
 
@@ -145,6 +145,7 @@ class CVRKERNEL_EXPORT InteractionManager
         double _mouseWheelTime;
         int _mouseWheel;
 
+        double _dragEventTime;
 };
 
 }

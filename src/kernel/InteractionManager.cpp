@@ -32,6 +32,8 @@ InteractionManager::InteractionManager()
     _mouseWheelTimeout = ConfigManager::getDouble("value","Input.MouseWheelTimeout",0.05);
     _mouseWheelTime = 0;
     _mouseWheel = 0;
+
+    _dragEventTime = 0;
 }
 
 InteractionManager::~InteractionManager()
@@ -272,43 +274,61 @@ void InteractionManager::processMouse()
     _lastMouseButtonMask = _mouseButtonMask;
 }
 
-void InteractionManager::createMouseDragEvents()
+void InteractionManager::createMouseDragEvents(bool single)
 {
     if(!_mouseActive)
     {
         return;
     }
 
-    unsigned int bit = 1;
-    for(int i = 0; i < 10; i++)
+    int numEvents = 0;
+
+    if(single)
     {
-        if((_mouseButtonMask & bit))
-        {
-            MouseInteractionEvent * dEvent = new MouseInteractionEvent();
-            dEvent->setInteraction(BUTTON_DRAG);
-            //TODO: make config file flag
-            // makes the right click button 1
-            if(i == 1)
-            {
-                dEvent->setButton(2);
-            }
-            else if(i == 2)
-            {
-                dEvent->setButton(1);
-            }
-            else
-            {
-                dEvent->setButton(i);
-            }
-            dEvent->setX(_mouseX);
-            dEvent->setY(_mouseY);
-            dEvent->setTransform(_mouseMat);
-            dEvent->setHand(_mouseHand);
-            dEvent->setMasterScreenNum(
-                    CVRViewer::instance()->getActiveMasterScreen());
-            _mouseQueue.push(dEvent);
-        }
-        bit = bit << 1;
+	numEvents = 1;
+	_dragEventTime = 0;
+    }
+    else
+    {
+	static const double slice = 1.0 / 60.0;
+	_dragEventTime += CVRViewer::instance()->getLastFrameDuration();
+	numEvents = (int)(_dragEventTime / slice);
+	_dragEventTime -= slice * ((double)numEvents);
+    }
+
+    for(int j = 0; j < numEvents; j++)
+    {
+	unsigned int bit = 1;
+	for(int i = 0; i < 10; i++)
+	{
+	    if((_mouseButtonMask & bit))
+	    {
+		MouseInteractionEvent * dEvent = new MouseInteractionEvent();
+		dEvent->setInteraction(BUTTON_DRAG);
+		//TODO: make config file flag
+		// makes the right click button 1
+		if(i == 1)
+		{
+		    dEvent->setButton(2);
+		}
+		else if(i == 2)
+		{
+		    dEvent->setButton(1);
+		}
+		else
+		{
+		    dEvent->setButton(i);
+		}
+		dEvent->setX(_mouseX);
+		dEvent->setY(_mouseY);
+		dEvent->setTransform(_mouseMat);
+		dEvent->setHand(_mouseHand);
+		dEvent->setMasterScreenNum(
+			CVRViewer::instance()->getActiveMasterScreen());
+		_mouseQueue.push(dEvent);
+	    }
+	    bit = bit << 1;
+	}
     }
 }
 

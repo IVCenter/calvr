@@ -6,6 +6,7 @@
 #include <menu/BoardMenu/BoardMenuRangeValueCompactGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextGeometry.h>
 #include <menu/BoardMenu/BoardMenuTextButtonSetGeometry.h>
+#include <menu/BoardMenu/BoardMenuScrollTextGeometry.h>
 #include <menu/BoardMenu/BoardMenuImageGeometry.h>
 #include <menu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <menu/BoardMenu/BoardMenuSubMenuClosableGeometry.h>
@@ -102,6 +103,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             return mg;
             break;
         }
+	case TEXTSCROLL:
+	{
+	    BoardMenuGeometry * mg = new BoardMenuScrollTextGeometry();
+            mg->createGeometry(item);
+
+            return mg;
+            break;
+	}
         case IMAGE:
         {
             BoardMenuGeometry * mg = new BoardMenuImageGeometry();

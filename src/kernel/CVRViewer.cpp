@@ -460,6 +460,7 @@ void CVRViewer::eventTraversal()
 
                     evnt.eventType = event->getEventType();
 
+		    //std::cerr << "Event time: " << event->getTime() << std::endl;
                     switch(event->getEventType())
                     {
                         case (osgGA::GUIEventAdapter::PUSH):
@@ -670,7 +671,7 @@ void CVRViewer::eventTraversal()
                 {
                     InteractionManager::instance()->setMouse(events[i].param1,
                             events[i].param2);
-                    InteractionManager::instance()->createMouseDragEvents();
+                    InteractionManager::instance()->createMouseDragEvents(true);
                 }
                 break;
             }
@@ -754,6 +755,7 @@ void CVRViewer::eventTraversal()
         delete[] events;
     }
 
+    InteractionManager::instance()->createMouseDragEvents(false);
     InteractionManager::instance()->checkWheelTimeout();
 
     if(getViewerStats() && getViewerStats()->collectStats("event"))
