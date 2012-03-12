@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<OAS>
+
+    <audio_device></audio_device>
+    <cache_directory>/home/calvr/CalVR/applications/OAS/cache</cache_directory>
+    <port>31231</port>
+    <gui></gui>
+</OAS>
