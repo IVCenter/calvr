@@ -100,6 +100,8 @@ void BoardMenuScrollTextGeometry::createGeometry(MenuItem * item)
 	mb->appendDone();
     }
 
+    _textLength = mb->getLength();
+
     _text = makeText(_display,_textSize*_textScale,osg::Vec3(0,-2,-_baselineHeight),_textColor,osgText::Text::LEFT_BASE_LINE);
     _textGeode = new osg::Geode();
     _textGeode->addDrawable(_text);
@@ -321,12 +323,28 @@ void BoardMenuScrollTextGeometry::updateGeometry()
 {
     MenuScrollText * mb = dynamic_cast<MenuScrollText*>(_item);
 
+    if(mb->getLength() < _textLength)
+    {
+	_textLength = 0;
+	_lastVisibleRow = 0;
+	_words.clear();
+	_wordsraw.clear();
+	_rowindex.clear();
+	_lines = 0;
+	// doing this to reset active interactions
+	selectItem(false);
+	makeDisplay();
+	_text->setText(_display);
+    }
+
     if(mb->getAppendText().length())
     {
 	parseString(mb->getAppendText());
 	prepDisplay(true);
 	makeDisplay();	
+	_text->setText(_display);
 	mb->appendDone();
+	_textLength = mb->getLength();
     }
 
     //TODO check if other things have been changed
@@ -726,6 +744,11 @@ void BoardMenuScrollTextGeometry::makeDisplay()
       {
       std::cerr << "first word: " << (*it)->first << std::endl;
       }*/
+
+    if(_lines == 0)
+    {
+	return;
+    }
 
     std::list< std::pair< std::string, float > >::iterator end;
     if(_lines == _lastVisibleRow)

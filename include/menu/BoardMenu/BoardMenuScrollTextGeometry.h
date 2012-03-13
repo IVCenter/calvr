@@ -48,7 +48,7 @@ class BoardMenuScrollTextGeometry : public BoardMenuGeometry
         bool _scrollActive;
         Arrow _activeArrow;
 
-        unsigned int _textLength;
+        int _textLength;
         int _lastVisibleRow;
         osg::ref_ptr<osgText::Text> _text;
         osg::ref_ptr<osg::Geode> _textGeode;

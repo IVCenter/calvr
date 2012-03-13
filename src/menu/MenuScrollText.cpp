@@ -34,6 +34,20 @@ void MenuScrollText::appendDone()
     _appendText.clear();
 }
 
+void MenuScrollText::clear()
+{
+    _appendText.clear();
+    if(_text.length())
+    {
+	_text.clear();
+	setDirty(true);
+    }
+    else
+    {
+	setDirty(false);
+    }
+}
+
 void MenuScrollText::setIndent(bool ind)
 {
     _indent = ind;

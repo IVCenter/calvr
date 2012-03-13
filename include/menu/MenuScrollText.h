@@ -45,6 +45,10 @@ class CVRMENU_EXPORT MenuScrollText : public MenuItem
 
         void appendDone();
 
+        void clear();
+
+        int getLength() { return _text.length(); }
+
         /**
          * @brief Get if the text should be indented to align with checkboxes, etc
          */
