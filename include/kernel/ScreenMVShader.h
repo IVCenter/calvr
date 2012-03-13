@@ -1,8 +1,8 @@
 /**
- * @file ScreenMultiViewer.h
+ * @file ScreenMVShader.h
  */
-#ifndef SCREEN_MULTI_VIEWER_H
-#define SCREEN_MULTI_VIEWER_H
+#ifndef SCREEN_MV_SHADER_H
+#define SCREEN_MV_SHADER_H
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -22,11 +22,11 @@ namespace cvr
  * @brief Screen for rendering with two tracked users using shaders
  * to blend perspective
  */
-class ScreenMultiViewer : public ScreenMVSimulator
+class ScreenMVShader : public ScreenMVSimulator
 {
     public:
-        ScreenMultiViewer();
-        virtual ~ScreenMultiViewer();
+        ScreenMVShader();
+        virtual ~ScreenMVShader();
 
         virtual void init(int mode = 0);
 
@@ -62,7 +62,7 @@ class ScreenMultiViewer : public ScreenMVSimulator
                 };
 
                 virtual void operator()(osg::RenderInfo & ri) const;
-                ScreenMultiViewer * _screen;
+                ScreenMVShader * _screen;
                 mutable int _index;
                 IndexState _indexState;
                 mutable bool _init;
@@ -74,7 +74,7 @@ class ScreenMultiViewer : public ScreenMVSimulator
         {
                 virtual void operator()(osg::RenderInfo & ri) const;
                 PreDrawCallback * _pdc;
-                ScreenMultiViewer * _screen;
+                ScreenMVShader * _screen;
                 mutable bool first;
         };
 

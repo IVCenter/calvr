@@ -2,10 +2,10 @@
 #include <kernel/ScreenMono.h>
 #include <kernel/ScreenStereo.h>
 #include <kernel/ScreenInterlacedTopBottom.h>
-#include <kernel/ScreenMultiViewer.h>
-#include <kernel/ScreenMultiViewer2.h>
+#include <kernel/ScreenMVShader.h>
+#include <kernel/ScreenMVZones.h>
 #include <kernel/ScreenMVMaster.h>
-#include <kernel/MultiViewScreen.h>
+#include <kernel/ScreenMVStencil.h>
 #include <kernel/ScreenFixedViewer.h>
 #include <kernel/ScreenHMD.h>
 #include <kernel/ComController.h>
@@ -553,46 +553,46 @@ bool ScreenConfig::makeScreens()
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER")
         {
-            screen = new MultiViewScreen();
+            screen = new ScreenMVStencil();
             screen->_myInfo = _screenInfoList[i];
             screen->init();
         }
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "MULTI_VIEWER_LEFT")
         {
-            screen = new MultiViewScreen();
+            screen = new ScreenMVStencil();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "MULTI_VIEWER_RIGHT")
         {
-            screen = new MultiViewScreen();
+            screen = new ScreenMVStencil();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::RIGHT_EYE);
         }
 #ifdef WITH_SCREEN_MULTI_VIEWER
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP")
         {
-            screen = new ScreenMultiViewer();
+            screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_LEFT")
         {
-            screen = new ScreenMultiViewer();
+            screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_RIGHT")
         {
-            screen = new ScreenMultiViewer();
+            screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::RIGHT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_HORIZONTAL_INTERLACE")
         {
-            screen = new ScreenMultiViewer();
+            screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::HORIZONTAL_INTERLACE);
         }
@@ -600,21 +600,21 @@ bool ScreenConfig::makeScreens()
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "MULTI_VIEWER_2_LEFT")
         {
-            screen = new ScreenMultiViewer2();
+            screen = new ScreenMVZones();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "MULTI_VIEWER_2_RIGHT")
         {
-            screen = new ScreenMultiViewer2();
+            screen = new ScreenMVZones();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::RIGHT_EYE);
         }
         else if(_screenInfoList[i]->myChannel->stereoMode
                 == "MULTI_VIEWER_2_HORIZONTAL_INTERLACE")
         {
-            screen = new ScreenMultiViewer2();
+            screen = new ScreenMVZones();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::HORIZONTAL_INTERLACE);
         }

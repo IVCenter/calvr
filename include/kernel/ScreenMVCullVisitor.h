@@ -1,5 +1,5 @@
-#ifndef MULTI_VIEWER_CULL_VISITOR_H
-#define MULTI_VIEWER_CULL_VISITOR_H
+#ifndef CALVR_SCREEN_MV_CULL_VISITOR_H
+#define CALVR_SCREEN_MV_CULL_VISITOR_H
 
 #include <kernel/NodeMask.h>
 
@@ -14,14 +14,14 @@
 namespace cvr
 {
 
-class MultiViewerCullVisitor : public osgUtil::CullVisitor
+class ScreenMVCullVisitor : public osgUtil::CullVisitor
 {
     public:
-        MultiViewerCullVisitor();
-        MultiViewerCullVisitor(const MultiViewerCullVisitor& cv);
+        ScreenMVCullVisitor();
+        ScreenMVCullVisitor(const ScreenMVCullVisitor& cv);
         virtual CullVisitor* clone() const
         {
-            return new MultiViewerCullVisitor(*this);
+            return new ScreenMVCullVisitor(*this);
         }
 
         inline void printDebug(osg::Vec3 point)

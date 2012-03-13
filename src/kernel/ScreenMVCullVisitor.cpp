@@ -1,4 +1,4 @@
-#include <kernel/MultiViewerCullVisitor.h>
+#include <kernel/ScreenMVCullVisitor.h>
 #include <osg/Geode>
 #include <osg/OcclusionQueryNode>
 #include <osg/Billboard>
@@ -15,7 +15,7 @@ using namespace cvr;
 using namespace osgUtil;
 using namespace osg;
 
-MultiViewerCullVisitor::MultiViewerCullVisitor() :
+ScreenMVCullVisitor::ScreenMVCullVisitor() :
         CullVisitor()
 {
     //std::cerr << "My cull visitor created." << std::endl;
@@ -24,7 +24,7 @@ MultiViewerCullVisitor::MultiViewerCullVisitor() :
     _skipCull = false;
 }
 
-MultiViewerCullVisitor::MultiViewerCullVisitor(const MultiViewerCullVisitor& cv) :
+ScreenMVCullVisitor::ScreenMVCullVisitor(const ScreenMVCullVisitor& cv) :
         CullVisitor(cv)
 {
     _cullingStatus = cv._cullingStatus;
@@ -44,7 +44,7 @@ inline CullVisitor::value_type distance(const osg::Vec3& coord,
                     * (CullVisitor::value_type)matrix(2,2) + matrix(3,2));
 }
 
-void MultiViewerCullVisitor::apply(Node& node)
+void ScreenMVCullVisitor::apply(Node& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -76,7 +76,7 @@ void MultiViewerCullVisitor::apply(Node& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(Geode& node)
+void ScreenMVCullVisitor::apply(Geode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -179,7 +179,7 @@ void MultiViewerCullVisitor::apply(Geode& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(Billboard& node)
+void ScreenMVCullVisitor::apply(Billboard& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -267,7 +267,7 @@ void MultiViewerCullVisitor::apply(Billboard& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(LightSource& node)
+void ScreenMVCullVisitor::apply(LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -296,7 +296,7 @@ void MultiViewerCullVisitor::apply(LightSource& node)
         popStateSet();
 }
 
-void MultiViewerCullVisitor::apply(ClipNode& node)
+void ScreenMVCullVisitor::apply(ClipNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -326,7 +326,7 @@ void MultiViewerCullVisitor::apply(ClipNode& node)
         popStateSet();
 }
 
-void MultiViewerCullVisitor::apply(TexGenNode& node)
+void ScreenMVCullVisitor::apply(TexGenNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -351,7 +351,7 @@ void MultiViewerCullVisitor::apply(TexGenNode& node)
         popStateSet();
 }
 
-void MultiViewerCullVisitor::apply(Group& node)
+void ScreenMVCullVisitor::apply(Group& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -384,7 +384,7 @@ void MultiViewerCullVisitor::apply(Group& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(Transform& node)
+void ScreenMVCullVisitor::apply(Transform& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -423,7 +423,7 @@ void MultiViewerCullVisitor::apply(Transform& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(Projection& node)
+void ScreenMVCullVisitor::apply(Projection& node)
 {
 
     // push the culling mode.
@@ -482,12 +482,12 @@ void MultiViewerCullVisitor::apply(Projection& node)
     popCurrentMask();
 }
 
-void MultiViewerCullVisitor::apply(Switch& node)
+void ScreenMVCullVisitor::apply(Switch& node)
 {
     apply((Group&)node);
 }
 
-void MultiViewerCullVisitor::apply(LOD& node)
+void ScreenMVCullVisitor::apply(LOD& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -520,7 +520,7 @@ void MultiViewerCullVisitor::apply(LOD& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(osg::ClearNode& node)
+void ScreenMVCullVisitor::apply(osg::ClearNode& node)
 {
     // simply override the current earth sky.
     if(node.getRequiresClear())
@@ -584,7 +584,7 @@ class RenderStageCache : public osg::Object
 
 }
 
-void MultiViewerCullVisitor::apply(osg::Camera& camera)
+void ScreenMVCullVisitor::apply(osg::Camera& camera)
 {
     //std::cerr << "MVCV camera" << std::endl;
     // push the node's state.
@@ -862,7 +862,7 @@ void MultiViewerCullVisitor::apply(osg::Camera& camera)
 
 }
 
-void MultiViewerCullVisitor::apply(osg::OccluderNode& node)
+void ScreenMVCullVisitor::apply(osg::OccluderNode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -903,7 +903,7 @@ void MultiViewerCullVisitor::apply(osg::OccluderNode& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::apply(osg::OcclusionQueryNode& node)
+void ScreenMVCullVisitor::apply(osg::OcclusionQueryNode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -950,7 +950,7 @@ void MultiViewerCullVisitor::apply(osg::OcclusionQueryNode& node)
     _cullingStatus = status;
 }
 
-void MultiViewerCullVisitor::pushModelViewMatrix(RefMatrix* matrix,
+void ScreenMVCullVisitor::pushModelViewMatrix(RefMatrix* matrix,
         Transform::ReferenceFrame referenceFrame)
 {
     //std::cerr << "Push Matrix" << std::endl;
@@ -1014,7 +1014,7 @@ void MultiViewerCullVisitor::pushModelViewMatrix(RefMatrix* matrix,
 
 }
 
-void MultiViewerCullVisitor::popModelViewMatrix()
+void ScreenMVCullVisitor::popModelViewMatrix()
 {
     //std::cerr << "Pop Matrix" << std::endl;
     _modelviewStack.pop_back();
@@ -1046,7 +1046,7 @@ void MultiViewerCullVisitor::popModelViewMatrix()
     _bbCornerNear = (~_bbCornerFar) & 7;
 }
 
-void MultiViewerCullVisitor::setFrustums(osg::Polytope & near,
+void ScreenMVCullVisitor::setFrustums(osg::Polytope & near,
         osg::Polytope & far)
 {
     _nearFrustum = near;

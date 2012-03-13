@@ -4,10 +4,10 @@
 #pragma comment(lib, "Opengl32.lib")
 #endif
 
-#include <kernel/ScreenMultiViewer.h>
+#include <kernel/ScreenMVShader.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/SceneManager.h>
-#include <kernel/MultiViewerCullVisitor.h>
+#include <kernel/ScreenMVCullVisitor.h>
 #include <input/TrackingManager.h>
 #include <config/ConfigManager.h>
 
@@ -27,7 +27,7 @@
 
 using namespace cvr;
 
-ScreenMultiViewer::ScreenMultiViewer() :
+ScreenMVShader::ScreenMVShader() :
         ScreenMVSimulator()
 {
     std::cerr << "Using Multi Viewer Screen" << std::endl;
@@ -35,11 +35,11 @@ ScreenMultiViewer::ScreenMultiViewer() :
     _frameDelay = -5;
 }
 
-ScreenMultiViewer::~ScreenMultiViewer()
+ScreenMVShader::~ScreenMVShader()
 {
 }
 
-void ScreenMultiViewer::init(int mode)
+void ScreenMVShader::init(int mode)
 {
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
 
@@ -98,13 +98,13 @@ void ScreenMultiViewer::init(int mode)
             renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
             renderer->getSceneView(0)->setCullVisitorLeft(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
             renderer->getSceneView(1)->setCullVisitorLeft(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
             renderer->getSceneView(0)->setCullVisitorRight(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
             renderer->getSceneView(1)->setCullVisitorRight(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
         }
     }
     else
@@ -126,9 +126,9 @@ void ScreenMultiViewer::init(int mode)
             renderer->getSceneView(1)->setComputeStereoMatricesCallback(sc);
 
             renderer->getSceneView(0)->setCullVisitor(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
             renderer->getSceneView(1)->setCullVisitor(
-                    new MultiViewerCullVisitor());
+                    new ScreenMVCullVisitor());
         }
 
         pdc->_index = 0;
@@ -330,7 +330,7 @@ void ScreenMultiViewer::init(int mode)
     _camera->getOrCreateStateSet()->addUniform(texture);
 }
 
-void ScreenMultiViewer::computeViewProj()
+void ScreenMVShader::computeViewProj()
 {
     {
         osg::Vec3d eyePos;
@@ -785,15 +785,15 @@ void ScreenMultiViewer::computeViewProj()
         {
             if(_stereoMode == osg::DisplaySettings::HORIZONTAL_INTERLACE)
             {
-                MultiViewerCullVisitor * mvcv =
-                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                ScreenMVCullVisitor * mvcv =
+                        dynamic_cast<ScreenMVCullVisitor*>(renderer->getSceneView(
                                 i)->getCullVisitorLeft());
                 if(mvcv)
                 {
                     mvcv->setFrustums(_cullFrustumNear[0],_cullFrustumFar[0]);
                 }
                 mvcv =
-                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                        dynamic_cast<ScreenMVCullVisitor*>(renderer->getSceneView(
                                 i)->getCullVisitorRight());
                 if(mvcv)
                 {
@@ -802,8 +802,8 @@ void ScreenMultiViewer::computeViewProj()
             }
             else
             {
-                MultiViewerCullVisitor * mvcv =
-                        dynamic_cast<MultiViewerCullVisitor*>(renderer->getSceneView(
+                ScreenMVCullVisitor * mvcv =
+                        dynamic_cast<ScreenMVCullVisitor*>(renderer->getSceneView(
                                 i)->getCullVisitor());
                 if(mvcv)
                 {
@@ -820,7 +820,7 @@ void ScreenMultiViewer::computeViewProj()
     //algtest();
 }
 
-void ScreenMultiViewer::updateCamera()
+void ScreenMVShader::updateCamera()
 {
     //std::cerr << "Frame" << std::endl;
     if(!_testGeoAdded && _frameDelay > 0)
@@ -837,12 +837,12 @@ void ScreenMultiViewer::updateCamera()
     _camera->setProjectionMatrix(_proj);
 }
 
-void ScreenMultiViewer::setClearColor(osg::Vec4 color)
+void ScreenMVShader::setClearColor(osg::Vec4 color)
 {
     _camera->setClearColor(color);
 }
 
-ScreenInfo * ScreenMultiViewer::findScreenInfo(osg::Camera * c)
+ScreenInfo * ScreenMVShader::findScreenInfo(osg::Camera * c)
 {
     if(c == _camera.get())
     {
@@ -851,7 +851,7 @@ ScreenInfo * ScreenMultiViewer::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
-void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos,
+void ScreenMVShader::computeDefaultViewProj(osg::Vec3d eyePos,
         osg::Matrix & view, osg::Matrix & proj, float & dist,
         struct FrustumPoints & fp, osg::Vec3 & viewerScreenPos,
         osg::Vec3 & nearPoint, osg::Vec3 & farPoint, osg::Vec3 & nfNormal)
@@ -928,7 +928,7 @@ void ScreenMultiViewer::computeDefaultViewProj(osg::Vec3d eyePos,
     farPoint = point;
 }
 
-void ScreenMultiViewer::algtest()
+void ScreenMVShader::algtest()
 {
     /*osg::Vec4 point0,point1,point2;
      point0 = osg::Vec4(10,500,0,1.0);
@@ -1035,7 +1035,7 @@ void ScreenMultiViewer::algtest()
      std::cerr << "realnear post proj x: " << realnear.x() << " y: " << realnear.y() << " z: " << realnear.z() << " w: " << realnear.w() << std::endl;*/
 }
 
-void ScreenMultiViewer::addTestGeometry()
+void ScreenMVShader::addTestGeometry()
 {
     static bool geoadded = false;
     if(geoadded)
@@ -1168,7 +1168,7 @@ void ScreenMultiViewer::addTestGeometry()
     SceneManager::instance()->getObjectsRoot()->addChild(geode);
 }
 
-void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
+void ScreenMVShader::PreDrawCallback::operator()(osg::RenderInfo & ri) const
 {
     _screen->_viewer0Pos->set(_screen->_viewer0PosLocal[_index]);
     _screen->_viewer1Pos->set(_screen->_viewer1PosLocal[_index]);
@@ -1254,7 +1254,7 @@ void ScreenMultiViewer::PreDrawCallback::operator()(osg::RenderInfo & ri) const
     }
 }
 
-void ScreenMultiViewer::PostDrawCallback::operator()(osg::RenderInfo & ri) const
+void ScreenMVShader::PostDrawCallback::operator()(osg::RenderInfo & ri) const
 {
 #ifdef FRAGMENT_QUERY
 
@@ -1274,7 +1274,7 @@ void ScreenMultiViewer::PostDrawCallback::operator()(osg::RenderInfo & ri) const
 #endif
 }
 
-void ScreenMultiViewer::calcScreenMinMaxRatio()
+void ScreenMVShader::calcScreenMinMaxRatio()
 {
     float bottomLeft, bottomRight, topLeft, topRight;
 
@@ -1509,7 +1509,7 @@ void ScreenMultiViewer::calcScreenMinMaxRatio()
     }
 }
 
-float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
+float ScreenMVShader::getRatio(float x, float y, int eyeNum)
 {
     osg::Vec3 pos = _corner + _rightPer * x + _upPer * y;
     osg::Vec3 dir = pos - _viewer0PosLocal[eyeNum];
@@ -1531,14 +1531,14 @@ float ScreenMultiViewer::getRatio(float x, float y, int eyeNum)
     return weight.y() / (weight.x() + weight.y());
 }
 
-ScreenMultiViewer::StateSetVisitor::StateSetVisitor() :
+ScreenMVShader::StateSetVisitor::StateSetVisitor() :
         osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
 {
     _lighting = true;
     _texture = false;
 }
 
-void ScreenMultiViewer::StateSetVisitor::apply(osg::Node& node)
+void ScreenMVShader::StateSetVisitor::apply(osg::Node& node)
 {
     bool lastL = _lighting;
     bool lastT = _texture;
@@ -1631,7 +1631,7 @@ void ScreenMultiViewer::StateSetVisitor::apply(osg::Node& node)
     _texture = lastT;
 }
 
-void ScreenMultiViewer::StateSetVisitor::apply(osg::Geode& node)
+void ScreenMVShader::StateSetVisitor::apply(osg::Geode& node)
 {
     bool lastL = _lighting;
     bool lastT = _texture;
