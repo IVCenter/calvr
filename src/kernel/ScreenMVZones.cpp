@@ -1,4 +1,4 @@
-#include <kernel/ScreenMultiViewer2.h>
+#include <kernel/ScreenMVZones.h>
 #include <kernel/CVRCullVisitor.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/NodeMask.h>
@@ -19,21 +19,21 @@ using namespace cvr;
 #define MAX_ZONES_DEFAULT 16
 
 // Statics
-setContributionFunc ScreenMultiViewer2::setContribution;
-std::vector<setContributionFunc> ScreenMultiViewer2::setContributionFuncs;
-bool ScreenMultiViewer2::_orientation3d;
-bool ScreenMultiViewer2::_autoAdjust;
-bool ScreenMultiViewer2::_multipleUsers;
-bool ScreenMultiViewer2::_zoneColoring;
-float ScreenMultiViewer2::_autoAdjustTarget;
-float ScreenMultiViewer2::_autoAdjustOffset;
-int ScreenMultiViewer2::_setZoneColumns;
-int ScreenMultiViewer2::_setZoneRows;
-int ScreenMultiViewer2::_maxZoneColumns;
-int ScreenMultiViewer2::_maxZoneRows;
-osg::Vec4 ScreenMultiViewer2::_clearColor = osg::Vec4(0,0,0,0);
-bool ScreenMultiViewer2::_autoContributionVar = true;
-float ScreenMultiViewer2::_contributionVar = M_PI;
+setContributionFunc ScreenMVZones::setContribution;
+std::vector<setContributionFunc> ScreenMVZones::setContributionFuncs;
+bool ScreenMVZones::_orientation3d;
+bool ScreenMVZones::_autoAdjust;
+bool ScreenMVZones::_multipleUsers;
+bool ScreenMVZones::_zoneColoring;
+float ScreenMVZones::_autoAdjustTarget;
+float ScreenMVZones::_autoAdjustOffset;
+int ScreenMVZones::_setZoneColumns;
+int ScreenMVZones::_setZoneRows;
+int ScreenMVZones::_maxZoneColumns;
+int ScreenMVZones::_maxZoneRows;
+osg::Vec4 ScreenMVZones::_clearColor = osg::Vec4(0,0,0,0);
+bool ScreenMVZones::_autoContributionVar = true;
+float ScreenMVZones::_contributionVar = M_PI;
 
 /*** Declarations for setContribution functions ***/
 void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
@@ -44,16 +44,16 @@ void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1);
 /**************************************************/
 
-ScreenMultiViewer2::ScreenMultiViewer2() :
+ScreenMVZones::ScreenMVZones() :
         ScreenMVSimulator()
 {
 }
 
-ScreenMultiViewer2::~ScreenMultiViewer2()
+ScreenMVZones::~ScreenMVZones()
 {
 }
 
-void ScreenMultiViewer2::init(int mode)
+void ScreenMVZones::init(int mode)
 {
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
 
@@ -119,7 +119,7 @@ void ScreenMultiViewer2::init(int mode)
     }
 }
 
-void ScreenMultiViewer2::computeViewProj()
+void ScreenMVZones::computeViewProj()
 {
     // Calculate zone quantity - sets _zonesChanged
     determineZoneQuantity();
@@ -252,7 +252,7 @@ void ScreenMultiViewer2::computeViewProj()
     }
 }
 
-void ScreenMultiViewer2::updateCamera()
+void ScreenMVZones::updateCamera()
 {
     if(_viewPtr == NULL || _projPtr == NULL)
         return; // Not in StarCAVE
@@ -264,31 +264,31 @@ void ScreenMultiViewer2::updateCamera()
     }
 }
 
-osg::Matrixd ScreenMultiViewer2::StereoCallback::computeLeftEyeProjection(
+osg::Matrixd ScreenMVZones::StereoCallback::computeLeftEyeProjection(
         const osg::Matrixd &) const
 {
     return _projLeft;
 }
 
-osg::Matrixd ScreenMultiViewer2::StereoCallback::computeLeftEyeView(
+osg::Matrixd ScreenMVZones::StereoCallback::computeLeftEyeView(
         const osg::Matrixd &) const
 {
     return _viewLeft;
 }
 
-osg::Matrixd ScreenMultiViewer2::StereoCallback::computeRightEyeProjection(
+osg::Matrixd ScreenMVZones::StereoCallback::computeRightEyeProjection(
         const osg::Matrixd &) const
 {
     return _projRight;
 }
 
-osg::Matrixd ScreenMultiViewer2::StereoCallback::computeRightEyeView(
+osg::Matrixd ScreenMVZones::StereoCallback::computeRightEyeView(
         const osg::Matrixd &) const
 {
     return _viewRight;
 }
 
-void ScreenMultiViewer2::setClearColor(osg::Vec4 color)
+void ScreenMVZones::setClearColor(osg::Vec4 color)
 {
     _clearColor = color;
 
@@ -296,7 +296,7 @@ void ScreenMultiViewer2::setClearColor(osg::Vec4 color)
         _camera[i]->setClearColor(color);
 }
 
-ScreenInfo * ScreenMultiViewer2::findScreenInfo(osg::Camera * c)
+ScreenInfo * ScreenMVZones::findScreenInfo(osg::Camera * c)
 {
     for(int i = 0; i < _camera.size(); i++)
     {
@@ -308,7 +308,7 @@ ScreenInfo * ScreenMultiViewer2::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
-void ScreenMultiViewer2::createCameras()
+void ScreenMVZones::createCameras()
 {
     osg::GraphicsContext* gc = _myInfo->myChannel->myWindow->gc;
     GLenum buffer =
@@ -386,7 +386,7 @@ void ScreenMultiViewer2::createCameras()
     }
 }
 
-void ScreenMultiViewer2::determineZoneQuantity()
+void ScreenMVZones::determineZoneQuantity()
 {
     _zonesChanged = true; // assume true, set false if wrong
 
@@ -456,7 +456,7 @@ void ScreenMultiViewer2::determineZoneQuantity()
     }
 }
 
-void ScreenMultiViewer2::setupZones()
+void ScreenMVZones::setupZones()
 {
     for(int i = _zoneCenter.size(); i < _zones; i++)
     {
@@ -479,7 +479,7 @@ void ScreenMultiViewer2::setupZones()
     }
 }
 
-void ScreenMultiViewer2::setupCameras()
+void ScreenMVZones::setupCameras()
 {
     float left = _myInfo->myChannel->left;
     float bottom = _myInfo->myChannel->bottom;
@@ -510,7 +510,7 @@ void ScreenMultiViewer2::setupCameras()
     }
 }
 
-void ScreenMultiViewer2::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,
+void ScreenMVZones::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,
         std::vector<osg::Vec3> &eyeRight)
 {
     // For a single user, just use the default eye positions
@@ -587,7 +587,7 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
     // contribution factors for each user
-    float var = ScreenMultiViewer2::getContributionVar();
+    float var = ScreenMVZones::getContributionVar();
 
     float angle = acos(toZone0 * orientation0);
     if(angle >= var)
@@ -618,7 +618,7 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
     // contribution factors for each user
-    float var = ScreenMultiViewer2::getContributionVar();
+    float var = ScreenMVZones::getContributionVar();
 
     float angle = acos(toZone0 * orientation0);
     if(angle >= var)
@@ -680,7 +680,7 @@ void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         osg::Vec3 toZone1, osg::Vec3 orientation1, float &contribution1)
 {
     // contribution factors for each user
-    float var = ScreenMultiViewer2::getContributionVar();
+    float var = ScreenMVZones::getContributionVar();
     float sigma = var / 3;
 
     float angle = acos(toZone0 * orientation0);
@@ -708,7 +708,7 @@ void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
     contribution1 /= cTotal;
 }
 
-bool ScreenMultiViewer2::setSetContributionFunc(int funcNum)
+bool ScreenMVZones::setSetContributionFunc(int funcNum)
 {
     if(funcNum < 0 || funcNum >= setContributionFuncs.size())
         return false;
@@ -717,17 +717,17 @@ bool ScreenMultiViewer2::setSetContributionFunc(int funcNum)
     return true;
 }
 
-void ScreenMultiViewer2::setOrientation3d(bool o3d)
+void ScreenMVZones::setOrientation3d(bool o3d)
 {
     _orientation3d = o3d;
 }
 
-bool ScreenMultiViewer2::getOrientation3d()
+bool ScreenMVZones::getOrientation3d()
 {
     return _orientation3d;
 }
 
-void ScreenMultiViewer2::setZoneColumns(int columns)
+void ScreenMVZones::setZoneColumns(int columns)
 {
     if(columns < 1 || columns > _maxZoneColumns)
         return;
@@ -739,7 +739,7 @@ void ScreenMultiViewer2::setZoneColumns(int columns)
     _setZoneColumns = columns;
 }
 
-void ScreenMultiViewer2::setZoneRows(int rows)
+void ScreenMVZones::setZoneRows(int rows)
 {
     if(rows < 1 || rows > _maxZoneRows)
         return;
@@ -751,36 +751,36 @@ void ScreenMultiViewer2::setZoneRows(int rows)
     _setZoneRows = rows;
 }
 
-int ScreenMultiViewer2::getZoneColumns()
+int ScreenMVZones::getZoneColumns()
 {
     return _setZoneColumns;
 }
 
-int ScreenMultiViewer2::getMaxZoneColumns()
+int ScreenMVZones::getMaxZoneColumns()
 {
     return _maxZoneColumns;
 }
-int ScreenMultiViewer2::getZoneRows()
+int ScreenMVZones::getZoneRows()
 {
     return _setZoneRows;
 }
 
-int ScreenMultiViewer2::getMaxZoneRows()
+int ScreenMVZones::getMaxZoneRows()
 {
     return _maxZoneRows;
 }
 
-void ScreenMultiViewer2::setAutoAdjust(bool adjust)
+void ScreenMVZones::setAutoAdjust(bool adjust)
 {
     _autoAdjust = adjust;
 }
 
-bool ScreenMultiViewer2::getAutoAdjust()
+bool ScreenMVZones::getAutoAdjust()
 {
     return _autoAdjust;
 }
 
-void ScreenMultiViewer2::setAutoAdjustTarget(float target)
+void ScreenMVZones::setAutoAdjustTarget(float target)
 {
     if(target < 0)
         return;
@@ -788,12 +788,12 @@ void ScreenMultiViewer2::setAutoAdjustTarget(float target)
     _autoAdjustTarget = target;
 }
 
-float ScreenMultiViewer2::getAutoAdjustTarget()
+float ScreenMVZones::getAutoAdjustTarget()
 {
     return _autoAdjustTarget;
 }
 
-void ScreenMultiViewer2::setAutoAdjustOffset(float offset)
+void ScreenMVZones::setAutoAdjustOffset(float offset)
 {
     if(offset < 0)
         return;
@@ -801,47 +801,47 @@ void ScreenMultiViewer2::setAutoAdjustOffset(float offset)
     _autoAdjustOffset = offset;
 }
 
-float ScreenMultiViewer2::getAutoAdjustOffset()
+float ScreenMVZones::getAutoAdjustOffset()
 {
     return _autoAdjustOffset;
 }
 
-void ScreenMultiViewer2::setMultipleUsers(bool multipleUsers)
+void ScreenMVZones::setMultipleUsers(bool multipleUsers)
 {
     _multipleUsers = multipleUsers;
 }
 
-bool ScreenMultiViewer2::getMultipleUsers()
+bool ScreenMVZones::getMultipleUsers()
 {
     return _multipleUsers;
 }
 
-void ScreenMultiViewer2::setZoneColoring(bool zoneColoring)
+void ScreenMVZones::setZoneColoring(bool zoneColoring)
 {
     _zoneColoring = zoneColoring;
 }
 
-bool ScreenMultiViewer2::getZoneColoring()
+bool ScreenMVZones::getZoneColoring()
 {
     return _zoneColoring;
 }
 
-void ScreenMultiViewer2::setContributionVar(float var)
+void ScreenMVZones::setContributionVar(float var)
 {
     _contributionVar = var;
 }
 
-float ScreenMultiViewer2::getContributionVar()
+float ScreenMVZones::getContributionVar()
 {
     return _contributionVar;
 }
 
-void ScreenMultiViewer2::setAutoContributionVar(bool autoCV)
+void ScreenMVZones::setAutoContributionVar(bool autoCV)
 {
     _autoContributionVar = autoCV;
 }
 
-bool ScreenMultiViewer2::getAutoContributionVar()
+bool ScreenMVZones::getAutoContributionVar()
 {
     return _autoContributionVar;
 }

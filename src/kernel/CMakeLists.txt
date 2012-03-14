@@ -16,14 +16,14 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScreenStereo.h
     ${HEADER_PATH}/ScreenInterlacedTopBottom.h
     ${HEADER_PATH}/ScreenLenticular.h
-    ${HEADER_PATH}/ScreenMultiViewer.h
-    ${HEADER_PATH}/MultiViewerCullVisitor.h
+    ${HEADER_PATH}/ScreenMVShader.h
+    ${HEADER_PATH}/ScreenMVCullVisitor.h
     ${HEADER_PATH}/ScreenMVMaster.h
     ${HEADER_PATH}/ScreenMVSimulator.h
-    ${HEADER_PATH}/ScreenMultiViewer2.h
+    ${HEADER_PATH}/ScreenMVZones.h
     ${HEADER_PATH}/ScreenFixedViewer.h
     ${HEADER_PATH}/ScreenHMD.h
-    ${HEADER_PATH}/MultiViewScreen.h
+    ${HEADER_PATH}/ScreenMVStencil.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
     ${HEADER_PATH}/SceneManager.h
@@ -47,11 +47,11 @@ IF(WIN32)
 	IF(GLEW_FOUND)
 	    SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES} ${GLEW_INCLUDE_DIR})
 		SET(LIB_EXTERNAL_LIBRARIES ${LIB_EXTERNAL_LIBRARIES} ${GLEW_LIBRARY})
-		SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMultiViewer.cpp)
+		SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMVShader.cpp)
 		ADD_DEFINITIONS(-DWITH_SCREEN_MULTI_VIEWER)
 	ENDIF(GLEW_FOUND)
 ELSE(WIN32)
-    SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMultiViewer.cpp)
+    SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMVShader.cpp)
 	ADD_DEFINITIONS(-DWITH_SCREEN_MULTI_VIEWER)
 ENDIF(WIN32)
 
@@ -71,13 +71,13 @@ SET(LIB_SRC_FILES
     ScreenMono.cpp
     ScreenStereo.cpp
     ScreenInterlacedTopBottom.cpp
-    MultiViewerCullVisitor.cpp
+    ScreenMVCullVisitor.cpp
     ScreenMVMaster.cpp
     ScreenMVSimulator.cpp
-    ScreenMultiViewer2.cpp
+    ScreenMVZones.cpp
     ScreenFixedViewer.cpp
     ScreenHMD.cpp
-    MultiViewScreen.cpp
+    ScreenMVStencil.cpp
     ComController.cpp
     CVRViewer.cpp
     SceneManager.cpp

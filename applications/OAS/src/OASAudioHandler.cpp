@@ -7,17 +7,69 @@ BufferMap       AudioHandler::_bufferMap;
 SourceMap       AudioHandler::_sourceMap;
 Source*         AudioHandler::_recentSource;
 
+std::string     AudioHandler::_deviceString;
+ALCdevice*      AudioHandler::_device;
+ALCcontext*     AudioHandler::_context;
+
 // public, static
-bool AudioHandler::initialize()
+bool AudioHandler::initialize(std::string &deviceString)
 {
-    if (!alutInit(NULL, NULL))
+    // If we have a specific device we're going to try to use,
+    // we have to set up OpenAL manually
+    if (0 < deviceString.length())
+    {
+        // Try to Init ALUT
+        if (!alutInitWithoutContext(NULL, NULL))
+        {
+            ALenum error = alutGetError();
+            oas::Logger::errorf("AudioHandler - %s", alutGetErrorString(error));
+            return false;
+        }
+
+        // Try to open the device
+        AudioHandler::_device = alcOpenDevice(deviceString.c_str());
+        if (!AudioHandler::_device)
+        {
+            oas::Logger::errorf("AudioHandler - Failed to open device \"%s\"",
+                                deviceString.c_str());
+            return false;
+        }
+
+        // Try to create the context
+        AudioHandler::_context = alcCreateContext(AudioHandler::_device, NULL);
+        if (!AudioHandler::_context)
+        {
+            oas::Logger::errorf("AudioHandler - Failed to create audio context for device \"%s\"",
+                                deviceString.c_str());
+            alcCloseDevice(AudioHandler::_device);
+            return false;
+        }
+
+        // Try to make the context current
+        if (!alcMakeContextCurrent(AudioHandler::_context))
+        {
+            oas::Logger::errorf("AudioHandler - Failed to make context current for device \"%s\"",
+                                deviceString.c_str());
+            alcDestroyContext(AudioHandler::_context);
+            alcCloseDevice(AudioHandler::_device);
+            return false;
+        }
+    }
+    // Else, let ALUT automatically set up our OpenAL context and devices, using defaults
+    else if (!alutInit(NULL, NULL))
     {
         ALenum error = alutGetError();
         oas::Logger::errorf("AudioHandler - %s", alutGetErrorString(error));
         return false;
     }
 
-    _recentSource = NULL;
+    if (0 < deviceString.length())
+        oas::Logger::logf("AudioHandler initialized with device \"%s\"", deviceString.c_str());
+    else
+        oas::Logger::logf("AudioHandler initialized! Using system default device to drive sound.");
+
+    AudioHandler::_deviceString = deviceString;
+    AudioHandler::_recentSource = NULL;
 
     return true;
 }
@@ -45,6 +97,12 @@ void AudioHandler::release()
 
     _bufferMap.clear();
 
+    if (0 < AudioHandler::_deviceString.length())
+    {
+        alcMakeContextCurrent(NULL);
+        alcDestroyContext(AudioHandler::_context);
+        alcCloseDevice(AudioHandler::_device);
+    }
     // Let ALUT do any remaining cleanup to destroy the context
     if (!alutExit())
     {

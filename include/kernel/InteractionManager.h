@@ -100,6 +100,9 @@ class CVRKERNEL_EXPORT InteractionManager
          */
         int getMouseY();
 
+        void setMouseWheel(int w);
+        int getMouseWheel() { return _mouseWheel; }
+
     protected:
         InteractionManager();
         virtual ~InteractionManager();
@@ -120,9 +123,11 @@ class CVRKERNEL_EXPORT InteractionManager
         /**
          * @brief Create mouse drag events from current button mask
          */
-        void createMouseDragEvents();
+        void createMouseDragEvents(bool single);
 
         void createMouseDoubleClickEvent(int button);
+
+        void checkWheelTimeout();
 
         bool _mouseEvents;
         bool _mouseTracker;
@@ -136,6 +141,11 @@ class CVRKERNEL_EXPORT InteractionManager
         int _mouseY; ///< current mouse y position
         int _mouseHand;
 
+        double _mouseWheelTimeout;
+        double _mouseWheelTime;
+        int _mouseWheel;
+
+        double _dragEventTime;
 };
 
 }

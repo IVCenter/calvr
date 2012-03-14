@@ -48,7 +48,7 @@ struct syncOperation : public osg::Operation
         }
 };
 
-struct vSyncOperation : public osg::Operation
+/*struct vSyncOperation : public osg::Operation
 {
         vSyncOperation(bool value) :
                 osg::Operation("vSyncOperation",true)
@@ -68,7 +68,7 @@ struct vSyncOperation : public osg::Operation
             }
         }
         bool _val;
-};
+};*/
 
 /*struct sleepOperation : public osg::Operation
  {
@@ -460,6 +460,7 @@ void CVRViewer::eventTraversal()
 
                     evnt.eventType = event->getEventType();
 
+		    //std::cerr << "Event time: " << event->getTime() << std::endl;
                     switch(event->getEventType())
                     {
                         case (osgGA::GUIEventAdapter::PUSH):
@@ -509,6 +510,27 @@ void CVRViewer::eventTraversal()
                             evnt.param2 = event->getModKeyMask();
                             eventList.push_back(evnt);
                             break;
+			case  (osgGA::GUIEventAdapter::SCROLL):
+			{
+			    evnt.param1 = event->getScrollingMotion();
+			    /*switch(event->getScrollingMotion())
+			    {
+				case (osgGA::GUIEventAdapter::SCROLL_UP) :
+				{
+				    std::cerr << "Scroll up." << std::endl;
+				    break;
+				}
+				case (osgGA::GUIEventAdapter::SCROLL_DOWN) :
+				{
+				    std::cerr << "Scroll down." << std::endl;
+				    break;
+				}
+				default:
+				    break;
+			    }*/
+			    eventList.push_back(evnt);
+			    break;
+			}
                         case (osgGA::GUIEventAdapter::QUIT_APPLICATION):
                         case (osgGA::GUIEventAdapter::CLOSE_WINDOW):
                             eventList.push_back(evnt);
@@ -649,7 +671,7 @@ void CVRViewer::eventTraversal()
                 {
                     InteractionManager::instance()->setMouse(events[i].param1,
                             events[i].param2);
-                    InteractionManager::instance()->createMouseDragEvents();
+                    InteractionManager::instance()->createMouseDragEvents(true);
                 }
                 break;
             }
@@ -677,6 +699,18 @@ void CVRViewer::eventTraversal()
                 InteractionManager::instance()->addEvent(kie);
                 break;
             }
+	    case  (osgGA::GUIEventAdapter::SCROLL):
+	    {
+		if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_UP)
+		{
+		    InteractionManager::instance()->setMouseWheel(1);
+		}
+		else if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_DOWN)
+		{
+		    InteractionManager::instance()->setMouseWheel(-1);
+		}
+		break;
+	    }
             case (UPDATE_ACTIVE_SCREEN):
                 _activeMasterScreen = events[i].param1;
                 break;
@@ -720,6 +754,9 @@ void CVRViewer::eventTraversal()
     {
         delete[] events;
     }
+
+    InteractionManager::instance()->createMouseDragEvents(false);
+    InteractionManager::instance()->checkWheelTimeout();
 
     if(getViewerStats() && getViewerStats()->collectStats("event"))
     {
@@ -1032,7 +1069,6 @@ void CVRViewer::startThreading()
     getContexts(contexts);
 
     //OSG_NOTIFY(osg::INFO)<<"Viewer::startThreading() - contexts.size()="<<contexts.size()<<std::endl;
-
     Cameras cameras;
     getCameras(cameras);
 
@@ -1338,6 +1374,12 @@ void CVRViewer::startThreading()
     _threadsRunning = true;
 
     //OSG_NOTIFY(osg::INFO)<<"Set up threading"<<std::endl;
+    // try setting compile operation parameters
+    //osgUtil::IncrementalCompileOperation* compile = new osgUtil::IncrementalCompileOperation();
+    //compile->setTargetFrameRate(40.0);
+    //compile->setMinimumTimeAvailableForGLCompileAndDeletePerFrame(0.001);
+    //compile->setMaximumNumOfObjectsToCompilePerFrame(8);
+    //setIncrementalCompileOperation(compile);
 }
 
 void CVRViewer::frameStart()

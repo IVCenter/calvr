@@ -1,10 +1,10 @@
 /**
- * @file ScreenMultiViewer2.h
+ * @file ScreenMVZones.h
  * @author John Mangan
  */
 
-#ifndef CALVR_SCREEN_MULTIVIEWER2_H
-#define CALVR_SCREEN_MULTIVIEWER2_H
+#ifndef CALVR_SCREEN_MV_ZONES_H
+#define CALVR_SCREEN_MV_ZONES_H
 
 #include <vector>
 #include <kernel/Export.h>
@@ -21,11 +21,11 @@ typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0,
 /**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
  */
-class CVRKERNEL_EXPORT ScreenMultiViewer2 : public ScreenMVSimulator
+class CVRKERNEL_EXPORT ScreenMVZones : public ScreenMVSimulator
 {
     public:
-        ScreenMultiViewer2();
-        virtual ~ScreenMultiViewer2();
+        ScreenMVZones();
+        virtual ~ScreenMVZones();
 
         /**
          * @brief Receives callbacks from osg render for view and projection matrices

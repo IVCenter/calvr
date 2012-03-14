@@ -58,6 +58,7 @@ class TrackerMouse : public cvr::TrackerBase
     protected:
         TrackedBody _mouseBody; ///< information representing the mouse orientation
         unsigned int _mouseButtonMask; ///< button mask for the mouse
+        float _mouseValuator;
 };
 
 }

@@ -1,4 +1,4 @@
-#include <kernel/MultiViewScreen.h>
+#include <kernel/ScreenMVStencil.h>
 #include <kernel/CVRCullVisitor.h>
 #include <kernel/CVRViewer.h>
 #include <kernel/NodeMask.h>
@@ -23,28 +23,28 @@
 
 using namespace cvr;
 
-const float MultiViewScreen::EPSILON = 0.00001;
-const float MultiViewScreen::T_MAX = 1.0;
-const float MultiViewScreen::T_MIN = -1.0;
+const float ScreenMVStencil::EPSILON = 0.00001;
+const float ScreenMVStencil::T_MAX = 1.0;
+const float ScreenMVStencil::T_MIN = -1.0;
 
-cvr::MenuCheckbox *MultiViewScreen::_debug_mode = NULL;
-cvr::MenuCheckbox *MultiViewScreen::_align_head = NULL;
-cvr::SubMenu *MultiViewScreen::_mvs_menu = NULL;
-cvr::MenuRangeValue *MultiViewScreen::_fov_dial = NULL;
+cvr::MenuCheckbox *ScreenMVStencil::_debug_mode = NULL;
+cvr::MenuCheckbox *ScreenMVStencil::_align_head = NULL;
+cvr::SubMenu *ScreenMVStencil::_mvs_menu = NULL;
+cvr::MenuRangeValue *ScreenMVStencil::_fov_dial = NULL;
 
-MultiViewScreen::MultiViewScreen() :
+ScreenMVStencil::ScreenMVStencil() :
         ScreenBase()
 {
 }
 
-MultiViewScreen::~MultiViewScreen()
+ScreenMVStencil::~ScreenMVStencil()
 {
 }
 
-void MultiViewScreen::init(int mode)
+void ScreenMVStencil::init(int mode)
 {
     //this is passed in from ScreenConfig
-    //creates MultiViewScreen() for each eye in StarCave
+    //creates ScreenMVStencil() for each eye in StarCave
     _stereoMode = (osg::DisplaySettings::StereoMode)mode;
     osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
@@ -61,7 +61,7 @@ void MultiViewScreen::init(int mode)
 
     if(_mvs_menu == NULL)
     {
-        _mvs_menu = new SubMenu("MultiViewScreen","MultiViewScreen");
+        _mvs_menu = new SubMenu("ScreenMVStencil","ScreenMVStencil");
         _mvs_menu->addItem(_debug_mode);
         _mvs_menu->addItem(_align_head);
         _mvs_menu->addItem(_fov_dial);
@@ -72,7 +72,7 @@ void MultiViewScreen::init(int mode)
     createCameras(_num_render);
 }
 
-void MultiViewScreen::computeScreenInfoXZ()
+void ScreenMVStencil::computeScreenInfoXZ()
 {
     _screenInfoXZ = (ScreenInfoXZ *)malloc(sizeof(ScreenInfoXZ));
 
@@ -93,7 +93,7 @@ void MultiViewScreen::computeScreenInfoXZ()
     _screenInfoXZ->inv_transform = osg::Matrixd::inverse(_myInfo->transform);
 }
 
-void MultiViewScreen::createCameras(unsigned int quantity)
+void ScreenMVStencil::createCameras(unsigned int quantity)
 {
     std::string shaderDir;
     char * cvrHome = getenv("CALVR_HOME");
@@ -145,7 +145,7 @@ void MultiViewScreen::createCameras(unsigned int quantity)
     }
 }
 
-void MultiViewScreen::computeViewProj()
+void ScreenMVStencil::computeViewProj()
 {
     std::vector<osg::Vec3> iLeft;
     std::vector<osg::Vec3> iRight;
@@ -164,7 +164,7 @@ void MultiViewScreen::computeViewProj()
     }
 }
 
-void MultiViewScreen::updateCamera()
+void ScreenMVStencil::updateCamera()
 {
     if(osg::DisplaySettings::HORIZONTAL_INTERLACE == _stereoMode)
         return;
@@ -189,37 +189,37 @@ void MultiViewScreen::updateCamera()
     }
 }
 
-osg::Matrixd MultiViewScreen::StereoCallback::computeLeftEyeProjection(
+osg::Matrixd ScreenMVStencil::StereoCallback::computeLeftEyeProjection(
         const osg::Matrixd &projection) const
 {
     return _projLeft;
 }
 
-osg::Matrixd MultiViewScreen::StereoCallback::computeLeftEyeView(
+osg::Matrixd ScreenMVStencil::StereoCallback::computeLeftEyeView(
         const osg::Matrixd &view) const
 {
     return _viewLeft;
 }
 
-osg::Matrixd MultiViewScreen::StereoCallback::computeRightEyeProjection(
+osg::Matrixd ScreenMVStencil::StereoCallback::computeRightEyeProjection(
         const osg::Matrixd &projection) const
 {
     return _projRight;
 }
 
-osg::Matrixd MultiViewScreen::StereoCallback::computeRightEyeView(
+osg::Matrixd ScreenMVStencil::StereoCallback::computeRightEyeView(
         const osg::Matrixd &view) const
 {
     return _viewRight;
 }
 
-void MultiViewScreen::setClearColor(osg::Vec4 color)
+void ScreenMVStencil::setClearColor(osg::Vec4 color)
 {
     for(int i = 0; i < _cameras.size(); i++)
         _cameras[i]->setClearColor(color);
 }
 
-ScreenInfo * MultiViewScreen::findScreenInfo(osg::Camera * c)
+ScreenInfo * ScreenMVStencil::findScreenInfo(osg::Camera * c)
 {
     for(unsigned int i = 0; i < _cameras.size(); ++i)
     {
@@ -231,7 +231,7 @@ ScreenInfo * MultiViewScreen::findScreenInfo(osg::Camera * c)
     return NULL;
 }
 
-bool MultiViewScreen::handleLineScreenIntersection(
+bool ScreenMVStencil::handleLineScreenIntersection(
         IntersectionPlane & plane) const
 {
     osg::Vec3f xz_point = plane.point;
@@ -260,7 +260,7 @@ bool MultiViewScreen::handleLineScreenIntersection(
             || plane.hit_left;
 }
 
-void MultiViewScreen::stencilOutView(const CameraOrient &cam,
+void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
         IntersectionPlane & l_p, IntersectionPlane & r_p, GLint ref,
         GLuint mask, GLuint write_mask) const
 {
@@ -374,7 +374,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
      if(
      list_of_points.size() == 2 && l_p.hit_left && l_p.hit_bottom)) {
      list_of_points.push_back(osg::Vec3f(T_MIN, T_MIN, T_MIN));
-     MultiViewScreen::sortXYPolarStartRight(list_of_points);
+     ScreenMVStencil::sortXYPolarStartRight(list_of_points);
      fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
      list_of_points.at(2));
      return;
@@ -382,7 +382,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
      list_of_points.size() == 2 && r_p.hit_right &&
      r_p.hit_bottom) {
      list_of_points.push_back(osg::Vec3f(T_MAX, T_MIN, T_MIN));
-     MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+     ScreenMVStencil::sortXYPolarStartLeft(list_of_points);
      fullscreenTriangle(list_of_points.at(0), list_of_points.at(1),
      list_of_points.at(2));
      return;
@@ -413,8 +413,8 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
     if(!lp_list.empty() && !rp_list.empty())
     {
         std::vector<int> final_list;
-        std::sort(lp_list.begin(),lp_list.end(),MultiViewScreen::sort_by_int);
-        std::sort(rp_list.begin(),rp_list.end(),MultiViewScreen::sort_by_int);
+        std::sort(lp_list.begin(),lp_list.end(),ScreenMVStencil::sort_by_int);
+        std::sort(rp_list.begin(),rp_list.end(),ScreenMVStencil::sort_by_int);
 
         std::set_intersection(lp_list.begin(),lp_list.end(),rp_list.begin(),
                 rp_list.end(),back_inserter(final_list));
@@ -422,13 +422,13 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
     }
     else if(lp_list.empty())
     {
-        std::sort(rp_list.begin(),rp_list.end(),MultiViewScreen::sort_by_int);
+        std::sort(rp_list.begin(),rp_list.end(),ScreenMVStencil::sort_by_int);
 
         AddScreenCorners(rp_list,list_of_points);
     }
     else if(rp_list.empty())
     {
-        std::sort(lp_list.begin(),lp_list.end(),MultiViewScreen::sort_by_int);
+        std::sort(lp_list.begin(),lp_list.end(),ScreenMVStencil::sort_by_int);
 
         AddScreenCorners(lp_list,list_of_points);
     }
@@ -436,7 +436,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
     if(list_of_points.empty())
         return;
 
-    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+    ScreenMVStencil::sortXYPolarStartRight(list_of_points);
 
     std::cerr << l_p.hit_left << " " << l_p.hit_right << " " << l_p.hit_top
             << " " << l_p.hit_bottom << " " << list_of_points.size() << " "
@@ -467,7 +467,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
             {
                 list_of_points.push_back(result_point);
 
-                MultiViewScreen::sortXYPolarStartRight(list_of_points);
+                ScreenMVStencil::sortXYPolarStartRight(list_of_points);
                 fullscreenTriangle(list_of_points.at(0),list_of_points.at(1),
                         list_of_points.at(2));
             }
@@ -485,7 +485,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
                     list_of_points.push_back(osg::Vec3f(T_MIN,T_MIN,T_MIN));
                     list_of_points.push_back(osg::Vec3f(T_MAX,T_MIN,T_MIN));
                 }
-                MultiViewScreen::sortXYPolarStartRight(list_of_points);
+                ScreenMVStencil::sortXYPolarStartRight(list_of_points);
 
                 fullscreenTriangle(list_of_points.at(0),list_of_points.at(1),
                         list_of_points.at(2));
@@ -497,34 +497,34 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
                 if(l_p.hit_left && r_p.hit_top)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MIN,T_MAX,T_MIN));
-                    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartRight(list_of_points);
                 }
                 else if(l_p.hit_top && r_p.hit_right)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MAX,T_MAX,T_MIN));
-                    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartLeft(list_of_points);
                 }
                 else if(l_p.hit_left && r_p.hit_bottom)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MIN,T_MIN,T_MIN));
-                    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartRight(list_of_points);
                 }
                 else if(l_p.hit_bottom && r_p.hit_right)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MAX,T_MIN,T_MIN));
-                    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartLeft(list_of_points);
                 }
                 else if(l_p.hit_top && r_p.hit_bottom)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MIN,T_MAX,T_MIN));
                     list_of_points.push_back(osg::Vec3f(T_MIN,T_MIN,T_MIN));
-                    MultiViewScreen::sortXYPolarStartRight(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartRight(list_of_points);
                 }
                 else if(l_p.hit_bottom && r_p.hit_top)
                 {
                     list_of_points.push_back(osg::Vec3f(T_MAX,T_MAX,T_MIN));
                     list_of_points.push_back(osg::Vec3f(T_MAX,T_MIN,T_MIN));
-                    MultiViewScreen::sortXYPolarStartLeft(list_of_points);
+                    ScreenMVStencil::sortXYPolarStartLeft(list_of_points);
                 }
 
                 for(unsigned idx = 0; idx < list_of_points.size() - 1; ++idx)
@@ -561,7 +561,7 @@ void MultiViewScreen::stencilOutView(const CameraOrient &cam,
     }
 }
 
-bool MultiViewScreen::IsInsideOfFrustum(const CameraOrient &cam,
+bool ScreenMVStencil::IsInsideOfFrustum(const CameraOrient &cam,
         const osg::Vec3f &p) const
 {
     return IsInsideOfPlane(cam.leftPlanePoint,cam.leftPlaneNormal,p)
@@ -569,7 +569,7 @@ bool MultiViewScreen::IsInsideOfFrustum(const CameraOrient &cam,
             && IsInsideOfPlane(cam.eye,cam.viewDir,p);
 }
 
-bool MultiViewScreen::handleCameraScreenIntersection(const CameraOrient & cam,
+bool ScreenMVStencil::handleCameraScreenIntersection(const CameraOrient & cam,
         GLint ref, GLuint mask, GLuint write_mask) const
 {
     bool top_left_in = IsInsideOfFrustum(cam,_screenInfoXZ->top_left);
@@ -631,7 +631,7 @@ bool MultiViewScreen::handleCameraScreenIntersection(const CameraOrient & cam,
 // 1 - one person is looking there
 // 2 - other person is looking there
 // 3 - both of them have views overlapping
-void MultiViewScreen::setupZones(CameraOrient & cam0, CameraOrient & cam1) const
+void ScreenMVStencil::setupZones(CameraOrient & cam0, CameraOrient & cam1) const
 {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
@@ -677,9 +677,9 @@ void MultiViewScreen::setupZones(CameraOrient & cam0, CameraOrient & cam1) const
     }
 }
 
-OpenThreads::Mutex MultiViewScreen::PreDrawCallback::mutex;
+OpenThreads::Mutex ScreenMVStencil::PreDrawCallback::mutex;
 
-void MultiViewScreen::debugStencilBuffer(GLint x, GLint y, GLsizei w, GLsizei h,
+void ScreenMVStencil::debugStencilBuffer(GLint x, GLint y, GLsizei w, GLsizei h,
         char * file_name) const
 {
     unsigned char * buf = (unsigned char *)malloc(w * h);
@@ -697,7 +697,7 @@ void MultiViewScreen::debugStencilBuffer(GLint x, GLint y, GLsizei w, GLsizei h,
     myfile.close();
 }
 
-void MultiViewScreen::PreDrawCallback::operator()(osg::RenderInfo & ri) const
+void ScreenMVStencil::PreDrawCallback::operator()(osg::RenderInfo & ri) const
 {
     static float fov = 120;	// * 0.5 * M_PI / 180.0;//screen->_fov_dial->getValue();
     //PreDrawCallbacks have no state

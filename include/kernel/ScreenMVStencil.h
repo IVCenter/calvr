@@ -1,9 +1,9 @@
 /**
- * @file MultiViewScreen.h
+ * @file ScreenMVStencil.h
  */
 
-#ifndef CALVR_MULTI_VIEW_SCREEN_H
-#define CALVR_MULTI_VIEW_SCREEN_H
+#ifndef CALVR_SCREEN_MV_STENCIL_H
+#define CALVR_SCREEN_MV_STENCIL_H
 
 #include <kernel/ScreenBase.h>
 
@@ -28,7 +28,7 @@ namespace cvr
 /**
  * @brief Creates a stereo screen using osg stereo modes
  */
-class MultiViewScreen : public ScreenBase
+class ScreenMVStencil : public ScreenBase
 {
     public:
 #define k_Top_Right 0
@@ -383,27 +383,27 @@ class MultiViewScreen : public ScreenBase
         static bool sort_by_polar_start_left(const osg::Vec3f & a,
                 const osg::Vec3f b)
         {
-            return MultiViewScreen::toPolarStartLeft(a)
-                    < MultiViewScreen::toPolarStartLeft(b);
+            return ScreenMVStencil::toPolarStartLeft(a)
+                    < ScreenMVStencil::toPolarStartLeft(b);
         }
 
         static bool sort_by_polar_start_right(const osg::Vec3f & a,
                 const osg::Vec3f b)
         {
-            return MultiViewScreen::toPolarStartRight(a)
-                    < MultiViewScreen::toPolarStartRight(b);
+            return ScreenMVStencil::toPolarStartRight(a)
+                    < ScreenMVStencil::toPolarStartRight(b);
         }
 
         static void sortXYPolarStartLeft(std::vector<osg::Vec3f> & list)
         {
             sort(list.begin(),list.end(),
-                    MultiViewScreen::sort_by_polar_start_left);
+                    ScreenMVStencil::sort_by_polar_start_left);
         }
 
         static void sortXYPolarStartRight(std::vector<osg::Vec3f> & list)
         {
             sort(list.begin(),list.end(),
-                    MultiViewScreen::sort_by_polar_start_right);
+                    ScreenMVStencil::sort_by_polar_start_right);
         }
 
         void extractViewerMat(const osg::Matrixd &viewerMat, osg::Vec3f &eye,
@@ -560,8 +560,8 @@ class MultiViewScreen : public ScreenBase
 
             glMatrixMode(currentMatrixMode);
         }
-        MultiViewScreen();
-        virtual ~MultiViewScreen();
+        ScreenMVStencil();
+        virtual ~ScreenMVStencil();
 
         /**
          * @brief Receives callbacks from osg render for view and projection matrices
@@ -584,7 +584,7 @@ class MultiViewScreen : public ScreenBase
 
         struct PreDrawCallback : public osg::Camera::DrawCallback
         {
-                MultiViewScreen * screen;
+                ScreenMVStencil * screen;
                 unsigned int render_state;
                 std::string vertShader;
                 std::string fragShader;

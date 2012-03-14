@@ -25,6 +25,7 @@ enum MenuItemType
     RANGEVALUECOMPACT,
     TEXT,
     TEXTBUTTONSET,
+    TEXTSCROLL,
     IMAGE,
     LIST,
     OTHER
