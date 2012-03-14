@@ -103,7 +103,7 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 
         // Creates a new Camera object with default settings
         osg::Camera* createOrReuseCamera(const osg::Matrix& proj, double znear,
-                double zfar, const unsigned int &camNum, int context);
+                double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam);
 
         bool _active; // Whether partitioning is active on the scene
 
