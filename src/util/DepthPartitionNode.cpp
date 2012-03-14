@@ -49,7 +49,7 @@ void CURRENT_CLASS::init()
     _active = true;
     _numCameras = 0;
     setCullingActive(false);
-    _renderOrder = osg::Camera::POST_RENDER;
+    _renderOrder = osg::Camera::NESTED_RENDER;
     _clearColorBuffer = true;
 }
 
@@ -174,6 +174,8 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
             _daMap[contextId]->getCameraPairs();
     unsigned int numCameras = camPairs.size(); // Get the number of cameras
 
+    osg::Camera * rootCam = cv->getCurrentCamera();
+
     // Create the Cameras, and add them as children.
     if(numCameras > 0)
     {
@@ -185,10 +187,7 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
             // Create the camera, and clamp it's projection matrix
             currPair = camPairs[i];  // (near,far) pair for current camera
             currCam = createOrReuseCamera(projection,currPair.first,
-                    currPair.second,i,contextId);
-
-            // TEMP fix Philip
-            currCam->setLODScale(0.0001);
+                    currPair.second,i,contextId,rootCam);
 
             // Set the modelview matrix and viewport of the camera
             currCam->setViewMatrix(modelview);
@@ -280,38 +279,58 @@ bool DepthPartitionNode::getForwardOtherTraversals()
 }
 
 osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
-        double znear, double zfar, const unsigned int &camNum, int context)
+        double znear, double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam)
 {
     if(_cameraList[context].size() <= camNum)
-        _cameraList[context].resize(camNum + 1);
+	_cameraList[context].resize(camNum + 1);
     osg::Camera *camera = _cameraList[context][camNum].get();
 
-    if(!camera) // Create a new Camera
+    if(!camera)
     {
-        camera = new osg::Camera;
-        camera->setCullingActive(false);
-        camera->setRenderOrder(_renderOrder);
-        camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-
-        // We will compute the near/far planes ourselves
-        camera->setComputeNearFarMode(
-                osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
-        camera->setCullingMode(osg::CullSettings::ENABLE_ALL_CULLING);
-
-        if(camNum == 0 && _clearColorBuffer)
-            camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        else
-            camera->setClearMask(GL_DEPTH_BUFFER_BIT);
-
-        // Add our children to the new Camera's children
-        unsigned int numChildren = _children.size();
-        for(unsigned int i = 0; i < numChildren; i++)
-        {
-            camera->addChild(_children[i].get());
-        }
-
-        _cameraList[context][camNum] = camera;
+	camera = new osg::Camera;
+	camera->setCullingMode(osg::CullSettings::ENABLE_ALL_CULLING);
     }
+    if(rootCam)
+    {
+	camera->setClearMask(rootCam->getClearMask());
+	camera->setClearColor(rootCam->getClearColor());
+	camera->setClearAccum(rootCam->getClearAccum());
+	camera->setClearDepth(rootCam->getClearDepth());
+	camera->setClearStencil(rootCam->getClearStencil());
+	camera->setColorMask(rootCam->getColorMask());
+	camera->setRenderTargetImplementation(rootCam->getRenderTargetImplementation());
+	camera->setDrawBuffer(rootCam->getDrawBuffer());
+	camera->setReadBuffer(rootCam->getReadBuffer());
+	camera->getBufferAttachmentMap().clear();
+	for(osg::Camera::BufferAttachmentMap::iterator it = rootCam->getBufferAttachmentMap().begin(); it != rootCam->getBufferAttachmentMap().end(); it++)
+	{
+	    camera->getBufferAttachmentMap()[it->first] = it->second;
+	}
+    }
+
+    camera->removeChildren(0,camera->getNumChildren());
+    camera->setCullingActive(false);
+    camera->setRenderOrder(_renderOrder);
+    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+
+    // We will compute the near/far planes ourselves
+    camera->setComputeNearFarMode(
+	    osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
+
+    if(camNum == 0 && _clearColorBuffer)
+	camera->setClearMask(camera->getClearMask() | GL_COLOR_BUFFER_BIT);
+    else
+	camera->setClearMask(camera->getClearMask() & ~(GL_COLOR_BUFFER_BIT));
+
+    // Add our children to the new Camera's children
+    unsigned int numChildren = _children.size();
+    for(unsigned int i = 0; i < numChildren; i++)
+    {
+	camera->addChild(_children[i].get());
+    }
+
+    _cameraList[context][camNum] = camera;
+
 
     osg::Matrixd &projection = camera->getProjectionMatrix();
     projection = proj;
@@ -324,24 +343,24 @@ osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
     // Clamp the projection matrix z values to the range (near, far)
     double epsilon = 1.0e-6;
     if(fabs(projection(0,3)) < epsilon && fabs(projection(1,3)) < epsilon
-            && fabs(projection(2,3)) < epsilon) // Projection is Orthographic
+	    && fabs(projection(2,3)) < epsilon) // Projection is Orthographic
     {
-        epsilon = -1.0 / (zfar - znear); // Used as a temp variable
-        projection(2,2) = 2.0 * epsilon;
-        projection(3,2) = (zfar + znear) * epsilon;
+	epsilon = -1.0 / (zfar - znear); // Used as a temp variable
+	projection(2,2) = 2.0 * epsilon;
+	projection(3,2) = (zfar + znear) * epsilon;
     }
     else // Projection is Perspective
     {
-        double trans_near = (-znear * projection(2,2) + projection(3,2))
-                / (-znear * projection(2,3) + projection(3,3));
-        double trans_far = (-zfar * projection(2,2) + projection(3,2))
-                / (-zfar * projection(2,3) + projection(3,3));
-        double ratio = fabs(2.0 / (trans_near - trans_far));
-        double center = -0.5 * (trans_near + trans_far);
+	double trans_near = (-znear * projection(2,2) + projection(3,2))
+	    / (-znear * projection(2,3) + projection(3,3));
+	double trans_far = (-zfar * projection(2,2) + projection(3,2))
+	    / (-zfar * projection(2,3) + projection(3,3));
+	double ratio = fabs(2.0 / (trans_near - trans_far));
+	double center = -0.5 * (trans_near + trans_far);
 
-        projection.postMult(
-                osg::Matrixd(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,ratio,0.0,
-                        0.0,0.0,center * ratio,1.0));
+	projection.postMult(
+		osg::Matrixd(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,ratio,0.0,
+		    0.0,0.0,center * ratio,1.0));
     }
 
     return camera;
