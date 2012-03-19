@@ -335,6 +335,7 @@ void BoardMenuScrollTextGeometry::updateGeometry()
 	selectItem(false);
 	makeDisplay();
 	_text->setText(_display);
+	updateScrollbar();
     }
 
     if(mb->getAppendText().length())
@@ -345,6 +346,7 @@ void BoardMenuScrollTextGeometry::updateGeometry()
 	_text->setText(_display);
 	mb->appendDone();
 	_textLength = mb->getLength();
+	updateScrollbar();
     }
 
     //TODO check if other things have been changed
