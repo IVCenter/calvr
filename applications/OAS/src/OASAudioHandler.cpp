@@ -12,7 +12,7 @@ ALCdevice*      AudioHandler::_device;
 ALCcontext*     AudioHandler::_context;
 
 // public, static
-bool AudioHandler::initialize(std::string &deviceString)
+bool AudioHandler::initialize(std::string const& deviceString)
 {
     // If we have a specific device we're going to try to use,
     // we have to set up OpenAL manually

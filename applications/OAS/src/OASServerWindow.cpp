@@ -18,6 +18,7 @@ const unsigned int  ServerWindow::_kWindowHeight;
 const char* const   ServerWindow::_boldBrowserFormatter     = "@b";
 const char* const   ServerWindow::_italicsBrowserFormatter  = "@i";
 const char* const   ServerWindow::_nullBrowserFormatter     = "@.";
+const int     ServerWindow::_browserFormatterLength   = 2;
 
 // public, static
 bool ServerWindow::initialize(int argc, char **argv)
@@ -41,12 +42,18 @@ bool ServerWindow::initialize(int argc, char **argv)
 	
     ServerWindow::_browserSize = 1;
 	ServerWindow::_browser->add("Starting up the OpenAL Audio Server...");
-    ServerWindow::_browserSize++;
+    ServerWindow::_incrementBrowserSize();
 
-    // This lock should be the first Fl::lock() called during initialization.
-    // It lets fltk know to enable multi-threading support for the rest of the program,
-    // and the function call should not block on anything, returning immediately
-    Fl::lock();
+    // This lock() should be the first Fl::lock() called during initialization.
+    // It lets fltk know to enable multi-threading support for the GUI,
+    // and the function call should not block on anything, returning immediately.
+    // If multi-threading support is available, the method returns 0.
+    if (Fl::lock())
+    {
+        oas::Logger::warnf("FLTK does not support threading on this platform.\n"
+                            "Make sure FLTK was compiled with threading enabled.\n"
+                            "OAS will attempt to continue running...");
+    }
 
     // Create the window thread
 	pthread_attr_t threadAttr;
@@ -63,7 +70,7 @@ bool ServerWindow::initialize(int argc, char **argv)
 	
 	if (threadError)
 	{
-		std::cerr << "Could not create window thread!\n";
+		oas::Logger::errorf("Could not create window thread!\n");
         return false;
 	}
 
@@ -73,17 +80,42 @@ bool ServerWindow::initialize(int argc, char **argv)
 }
 
 // public, static
-void ServerWindow::addToBrowser(const char *line)
+void ServerWindow::addToBrowser(char *line)
 {
+    // If the window wasn't initialized, do nothing
+    if (!ServerWindow::isInitialized())
+        return;
+
     // Wait for a lock on the GUI environment in case other threads are using it
     Fl::lock();
 
-    // Add the line
-    ServerWindow::_browser->add(line);
-    ServerWindow::_browserSize++;
+    // FlBrowser does not like newline characters in the string.
+    // So, we split the string into multiple lines for each linefeed character that is found.
+    char *pNewline, *pStr = line;
+    int numNewLines = 0;
+
+    // Keep looping until we don't find any newline characters in the string
+    while (NULL != (pNewline = strchr(pStr, '\n')))
+    {
+        // Set the newline character to the null character
+        *pNewline = '\0';
+        // Add pStr to the browser window
+        ServerWindow::_browser->add(pStr);
+        ServerWindow::_incrementBrowserSize();
+        // Move pStr
+        pStr = pNewline + 1;
+        numNewLines++;
+    }
     
+    // If there were no newline characters found, just add the entire line
+    if (0 == numNewLines)
+    {
+        ServerWindow::_browser->add(line);
+        ServerWindow::_incrementBrowserSize();
+    }
+
     // Scroll the browser to the bottom, as necessary
-    ServerWindow::_browser->bottomline(ServerWindow::_browserSize);
+    ServerWindow::_browser->bottomline(ServerWindow::getBrowserSize());
 
     // Release the lock
     Fl::unlock();
@@ -98,7 +130,7 @@ void ServerWindow::replaceBottomLine(const char *line)
     Fl::lock();
 
     // Replaces the text on the bottommost line
-    ServerWindow::_browser->text(ServerWindow::_browserSize, line);
+    ServerWindow::_browser->text(ServerWindow::getBrowserSize(), line);
     
     // Release lock, let main thread know
     Fl::unlock();
@@ -136,3 +168,20 @@ const char* const ServerWindow::getNullBrowserFormatter()
     return ServerWindow::_nullBrowserFormatter;
 }
 
+// public, static
+const int ServerWindow::getBrowserFormatterLength()
+{
+    return ServerWindow::_browserFormatterLength;
+}
+
+// private, static
+void ServerWindow::_incrementBrowserSize()
+{
+    ServerWindow::_browserSize++;
+}
+
+// private, static
+int ServerWindow::getBrowserSize()
+{
+    return ServerWindow::_browserSize;
+}

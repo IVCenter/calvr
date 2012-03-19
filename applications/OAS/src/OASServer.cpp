@@ -1,37 +1,118 @@
 #include "OASServer.h"
 
-// Statics
-pthread_t       oas::Server::_serverThread;
-std::string     oas::Server::_cacheDirectory;
-unsigned short  oas::Server::_port;
-std::string     oas::Server::_deviceString;
-
-std::string     oas::Server::_defaultConfigFile;
-
-// static, private
-void oas::Server::_readConfigFile(int argc, char **argv)
+// static
+oas::Server& oas::Server::getInstance()
 {
-    char *configFile;
+    static oas::Server instance;
 
-    // If no config file specified for command line argument
-    if (argc < 2)
-    {
-        // Use default, hard-coded config file location.
-        // If config file at this location is not found,
-        // generate the config file at the default location
-        // using default, hard-coded values, and then read from generated file
-    }
-    // Else, read in values from specified config file location
-    else
-    {
-
-    }
-    oas::Server::_deviceString = "";
-    oas::Server::_cacheDirectory = "/home/schowkwa/OAS";
-    oas::Server::_port = 31231;
+    return instance;
 }
 
-// static, private
+// private
+void oas::Server::_readConfigFile(int argc, char **argv)
+{
+    const std::string defaultConfigFileLocation = "/home/schowkwa/oas_config.xml";
+    std::string configFile;
+    bool fileExists = false;
+
+    oas::FileHandler fileHandler;
+
+    // If there are command line arguments
+    if (argc > 1)
+    {
+        // Check the first argument as the config file location
+        if (fileHandler.doesFileExist(argv[1]))
+        {
+            // File exists, so use it
+            fileExists = true;
+            configFile = argv[1];
+        }
+        else
+        {
+            oas::Logger::logf(  "The file at '%s' does not exist. Checking for a default configuration file at: ",
+                                "'%s'\n", argv[1], defaultConfigFileLocation.c_str());
+        }
+    }
+    else
+    {
+        oas::Logger::logf(  "Usage: \"%s [config file]\"\n", argv[0]);
+        oas::Logger::logf(  "No config file parameter given. Checking for a default configuration file at: "
+                            "'%s'\n", defaultConfigFileLocation.c_str());
+    }
+
+    // If no valid config file has been found
+    if (!fileExists)
+    {
+        // Try the default config file location
+        if (fileHandler.doesFileExist(defaultConfigFileLocation))
+        {
+            configFile = defaultConfigFileLocation;
+            fileExists = true;
+        }
+        // Else, we have failed to load any configuration
+        else
+        {
+            // @TODO: Use default settings, and generate default config file
+            // For now, we say this is a warning, and load the hardcoded defaults.
+            oas::Logger::warnf("Unable to load configuration file.");
+
+            // Use defaults
+            this->_serverInfo = new ServerInfo("/home/calvr/CalVR/applications/OAS/cache/", 31231);
+           
+            return;
+        }
+    }
+
+    // At this point, we have guaranteed that a config file exists.
+    
+    // Load the XML file
+    oas::FileHandler fh;
+    if (!fh.loadXML(configFile, "OAS"))
+    {
+        this->_fatalError("Unable to load a valid configuration file.");
+    }
+
+    std::string cacheDirectory; 
+    std::string port;
+
+    // The config file MUST contain a cache directory and the port number the server will listen on
+    // Find these two items in the XML file
+    if (fh.findXML("cache_directory", NULL, NULL, cacheDirectory) &&
+        fh.findXML("port", NULL, NULL, port))
+    {
+        this->_serverInfo = new ServerInfo(cacheDirectory, atol(port.c_str()));
+    }
+    else
+    {
+        if (!cacheDirectory.size())
+            this->_fatalError("Could not retrieve cache directory information from configuration file.");
+        else if (!port.size())
+            this->_fatalError("Could not retrieve port number information from configuration file.");
+    }
+
+    // Optional sections of the config file
+    std::string audioDevice;
+    std::string gui;
+
+    if (fh.findXML("audio_device", NULL, NULL, audioDevice) && audioDevice.size())
+        this->_serverInfo->setAudioDeviceString(audioDevice);
+
+    // GUI is enabled by default. We disable it only if explicitly specified
+    this->_serverInfo->setGUI(true);
+
+    if (fh.findXML("gui", NULL, NULL, gui) && gui.size())
+        if (!gui.compare("off") 
+            || !gui.compare("false")
+            || !gui.compare("no")
+            || !gui.compare("disable")
+            || !gui.compare("disabled"))
+        {
+            oas::Logger::logf("The GUI has been disabled, as requested by the configuration file.");
+            this->_serverInfo->setGUI(false);
+        }
+}
+
+// private
 void oas::Server::_processMessage(const Message &message)
 {
     // If error, don't process message contents
@@ -142,7 +223,7 @@ void oas::Server::_processMessage(const Message &message)
             oas::AudioHandler::release();
 
             // If for some reason initialization fails, try again
-            while (!oas::AudioHandler::initialize(oas::Server::_deviceString))
+            while (!oas::AudioHandler::initialize(this->_serverInfo->getAudioDeviceString()))
             {
                 oas::Logger::errorf("Failed to reset audio resources. Trying again in %d seconds.", delay);
                 sleep(delay);
@@ -155,27 +236,28 @@ void oas::Server::_processMessage(const Message &message)
     gettimeofday(&((Message *) (&message))->processed, NULL);
 }
 
-// public, static
+// public
 void oas::Server::initialize(int argc, char **argv)
 {
-    oas::Server::_readConfigFile(argc, argv);
+    this->_readConfigFile(argc, argv);
 
-    if (!oas::ServerWindow::initialize(argc, argv))
+    if (this->_serverInfo->useGUI() 
+        && !oas::ServerWindow::initialize(argc, argv))
     {
         _fatalError("Could not initialize the windowed user interface!");
     }
     
-    if (!oas::FileHandler::initialize(oas::Server::_cacheDirectory))
+    if (!oas::FileHandler::initialize(this->_serverInfo->getCacheDirectory()))
     {
         _fatalError("Could not initialize the File Handler!");
     }
 
-    if (!oas::AudioHandler::initialize(oas::Server::_deviceString))
+    if (!oas::AudioHandler::initialize(this->_serverInfo->getAudioDeviceString()))
     {
         _fatalError("Could not initialize the Audio Handler!");
     }
 
-    if (!oas::SocketHandler::initialize(oas::Server::_port))
+    if (!oas::SocketHandler::initialize(this->_serverInfo->getPort()))
     {
         _fatalError("Could not initialize the Socket Handler!");
     }
@@ -189,8 +271,8 @@ void oas::Server::initialize(int argc, char **argv)
     // Set joinable thread attribute
     pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_JOINABLE);
 
-    // Spawn thread to run the loop that handles connections
-    int threadError = pthread_create(&oas::Server::_serverThread, &threadAttr, &oas::Server::_serverLoop, NULL);
+    // Spawn thread to run the core server loop
+    int threadError = pthread_create(&this->_serverThread, &threadAttr, &this->_serverLoop, NULL);
     
     // Destroy thread attribute
     pthread_attr_destroy(&threadAttr);
@@ -200,24 +282,23 @@ void oas::Server::initialize(int argc, char **argv)
         _fatalError("Could not create server thread!");
     }
 
-    return;
+    // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
+    Fl::run();
 }
 
-double convert(struct timeval start, struct timeval end);
-
-// private, static
+// private
 void* oas::Server::_serverLoop(void *parameter)
 {
     std::queue<Message*> messages;
     while (1)
     {
-        // If there are no messages, getNextIncomingMessage() will block
+        // If there are no messages, populateQueueWithIncomingMessages() will block
         oas::SocketHandler::populateQueueWithIncomingMessages(messages);
 
         while (!messages.empty())
         {
             Message *nextMessage = messages.front();
-            oas::Server::_processMessage(*nextMessage);
+            oas::Server::getInstance()._processMessage(*nextMessage);
             oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
             delete nextMessage;
             messages.pop();
@@ -227,7 +308,7 @@ void* oas::Server::_serverLoop(void *parameter)
     return NULL;
 }
 
-double convert(struct timeval start, struct timeval end)
+double oas::Server::_computeElapsedTime(struct timeval start, struct timeval end)
 {
     return ((end.tv_sec + ((double) end.tv_usec / 1000000.0)) - (start.tv_sec + ((double) start.tv_usec / 1000000.0))); 
 }
@@ -235,17 +316,19 @@ double convert(struct timeval start, struct timeval end)
 // private, static
 void oas::Server::_fatalError(const char *errorMessage)
 {
-    std::cerr << "\n\nOAS: Fatal Error occured!\n     Error: " << errorMessage;
-    std::cerr << "\nExiting OAS...\n\n";
+    std::cerr << "\n\n" 
+              << "OAS: Fatal Error occured!\n"
+              << "     Error: " << errorMessage << "\n"
+              << "Exiting OAS...\n\n";
     exit(1);
 }
 
 // Main
 int main(int argc, char **argv)
 {
-    // This method will initialize all of the components of the server
-    oas::Server::initialize(argc, argv);
+    // Initialize all of the components of the server
+    oas::Server::getInstance().initialize(argc, argv);
 
-    return Fl::run();
+    return 0;
 }
 

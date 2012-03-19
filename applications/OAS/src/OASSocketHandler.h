@@ -37,7 +37,6 @@ namespace oas
  */
 class SocketHandler
 {
-
     public:
         static bool initialize(unsigned short listeningPort);
         static bool isSocketOpen();
