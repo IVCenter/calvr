@@ -9,8 +9,10 @@
 
       <Background r="0.0" g="0.0" b="0.0" /> 
       <MultiThreaded value="CullDrawThreadPerContext" />
+      <!-- MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" / -->
       <!-- MultiThreaded value="SingleThreaded" / -->
-      <MultiSample value="2" />
+      <!-- CullingMode value="DEFAULT" / -->
+      <MultiSample value="4" />
       <SyncToVBlank value="on" device="DFP-1" />
       <FloorHeight value="-1663" />
       <Near value="100" />
@@ -35,10 +37,11 @@
         <ClipPlane value="off" />
         <Vrml97 value="off" />
 <!-- Demoable plugins: -->
+	<OsgEarth value="off" />
         <VisualAcuity value="off" />
-        <OsgMovie value="on" />
-        <OsgEarth value="off" />
-	<GreenLight value="off" />
+        <Kacst value="off" />
+        <Points value="off" />
+	<GreenLight value="on" />
         <Volume value="off" />
         <Molecules value="off" />
         <CAMERAVis value="off" />
@@ -142,6 +145,47 @@
         <OsgPathRecorder value="off">
           <DataDir value="/home/calvr/data/OsgPathRecorder" />
         </OsgPathRecorder>
+
+
+    <OsgEarth>
+	<!-- <Earth value="/home/calvr/data/osgearth/SimpleEarth.earth" /> -->
+	<Earth value="/home/calvr/data/osgearth/SanDiego.earth" />
+    </OsgEarth>
+
+    <Points>
+       <ShaderPath value="/home/calvr/CVRPlugins/calit2/Points/shaders" />
+       <ColorTable value="/home/calvr/CVRPlugins/calit2/Points/shaders/colortable.rgb" />
+    </Points>
+
+    <Kacst>
+        <Basepath value="/fastdata/SaudiModels/" />
+        <Terrain value="/fastdata/Sauditerrain/best/SaudiTest1.osgb" />
+        <Scale value="111135.807957324" />
+        <Position x="-3757811.703119" y="-2834370.716792" z="-1385393.745914" />
+        <Orientation x="0.319817" y="0.049315" z="0.123303" w="0.938127" />
+<!--
+        <Scale value="1111358.079573238" />
+        <Position x="-37578117.031197" y="-28343707.167929" z="-13853937.459145" />
+        <Orientation x="0.319817" y="0.049315" z="0.123303" w="0.938127" />
+-->
+        <Models>
+        	<Mecca name="mecca2/models/warehouse_model.dae" scale="0.0328083991" lat="21.422790906608" lon="39.826135251600" />
+        	<!-- <Kacst name="kacst/models/model.dae" scale="0.001" lat="24.714393042032" lon="46.648192381353" /> -->
+                <Makkah name="Makkah/models/warehouse_model.dae" heading="0.302810043363" lat="21.422550000000" lon="39.828706000000" />
+                <Qasr name="qasr/models/warehouse_model.dae" scale="0.1" lat="26.774053747122" lon="37.961227856026" />
+                <AlBaladDistrict,Jeddah name="AlBaladDistrict,Jeddah/models/warehouse_model.dae" heading="0.067083836547" lat="21.483896000000" lon="39.183101000000" />
+                <Alfaisaliahcenter,riad name="Alfaisaliahcenter,riad/models/model.dae" scale="0.01" lat="24.690595049559" lon="46.685340084527" />
+                <AlGharbiyahDistrict,Jeddah name="AlGharbiyahDistrict,Jeddah/models/model.dae" scale="0.01" heading="0.066971815500" lat="21.489189176031" lon="39.182752370945" />
+                <AlMurjanTower,Jeddah name="AlMurjanTower,Jeddah/models/warehouse_model.dae" heading="0.064417617377" lat="21.509689000000" lon="39.175623000000" />
+                <Al-NaghiMosque,Jeddah name="Al-NaghiMosque,Jeddah/models/model.dae" heading="0.067365778991" lat="21.482705425869" lon="39.183880242867" />
+                <BurjAlAnoud,riad name="BurjAlAnoud,riad/models/warehouse_model.dae" scale="0.01" lat="24.706956483734" lon="46.675378374465" />
+                <cornichmosque,Jeddah name="cornichmosque,Jeddah/models/model.dae" lat="21.596789606206" lon="39.105642509964" />
+                <KhouzamTowerinjeddah name="KhouzamTowerinjeddah/models/warehouse_model.dae" heading="0.075303243095" lat="21.477988598027" lon="39.205444731285" />
+                <king_fahd_fountain name="king_fahd_fountain/models/model.dae" lat="21.515377173401" lon="39.145136508325" />
+                <LighthouseofJeddahIslamicPort name="LighthouseofJeddahIslamicPort/models/warehouse_model.dae" lat="21.468638000000" lon="39.149646000000" />
+                <RoyalPalace,Mecca name="RoyalPalace,Mecca/models/warehouse_model.dae" heading="0.302810043363" lat="21.422550000000" lon="39.828706000000" />
+	</Models>
+    </Kacst>
 
     <TourCave value="off">
      <AudioBase value="/CalVR-OSSIMPlanet" />
@@ -287,7 +331,7 @@
             <ImageSearchPath value="/fastdata/PansLOD:/state/partition1/data/pan:/home/calvr/data/PansLOD" />
             <DefaultConfigDir value="/home/calvr/data/PansLOD/config/" />
             <CacheSize value="2048" />
-            <SpinScale value="0.15" />
+            <SpinScale value="0.33" />
             <ZoomScale value="-1.0" />
             <DiskCacheSize value="4096" />
             <ReadThreads value="1" />
@@ -320,7 +364,10 @@
                     <wiscoSet />
                 </Wisconsin>
                 <BluebonnetSet />
-                <BearPan />
+                <CineGrid />
+                <KACST-Indoor2 />
+                <KACST-Outdoor1 />
+                <Dr-Seuss />
             </Pans>
         </PanoViewLOD>
 
@@ -328,6 +375,7 @@
           <FloorOffset value="1500.00" />
           <RenderOnMaster value="true" />
           <ScreenConfig value="/home/calvr/plugins/calit2/PanoView360-temp/xpol.xml" />
+          <HighRamLoad value="true" />
           <Files>
            <Madaen-Saleh>
             <Madaen-Saleh-AlKhuraymat reye="/home/calvr/data/SpherePans/Pans/Bowl3/P1430157-Panorama-R.jpg" leye="/home/calvr/data/SpherePans/Pans/Bowl3/P1130157-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
@@ -1015,8 +1063,8 @@
      </TrackingSystem1>
 
      <TrackingSystem0 value="VRPN">
-       <!--Offset x="0" y="0" z="-630" /-->
-       <Offset x="0" y="0" z="-1500" />
+       <Offset x="0" y="0" z="-630" />
+       <!--Offset x="0" y="0" z="-1500" /-->
        <Orientation h="0" p="0" r="0" />
 
        <VRPN>
