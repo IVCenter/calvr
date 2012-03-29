@@ -5,6 +5,7 @@
 #define CALVR_INTERACTION_EVENT_H
 
 #include <osg/Matrix>
+#include <osg/Vec3>
 
 #include <iostream>
 
@@ -23,7 +24,8 @@ enum Interaction
     BUTTON_DOUBLE_CLICK = 0x10000003,
     VALUATOR = 0x20000000,
     KEY_UP = 0x04000000,
-    KEY_DOWN = 0x04000001
+    KEY_DOWN = 0x04000001,
+    MOVE = 0x08000000
 };
 
 /**
@@ -37,6 +39,8 @@ enum InteractionEventType
     MOUSE_INTER_EVENT,
     VALUATOR_INTER_EVENT,
     KEYBOARD_INTER_EVENT,
+    POSITION_INTER_EVENT,
+    HAND_INTER_EVENT,
     INTER_EVENT,
     NUM_INTER_EVENT_TYPES
 // must be last item
@@ -46,6 +50,8 @@ class TrackedButtonInteractionEvent;
 class MouseInteractionEvent;
 class ValuatorInteractionEvent;
 class KeyboardInteractionEvent;
+class PositionInteractionEvent;
+class HandInteractionEvent;
 
 //TODO: add timestamps
 
@@ -116,18 +122,24 @@ class InteractionEvent
             return NULL;
         }
 
+        virtual PositionInteractionEvent * asPositionEvent()
+        {
+            return NULL;
+        }
+
+        virtual HandInteractionEvent * asHandEvent()
+        {
+            return NULL;
+        }
+
     protected:
         Interaction _interaction; ///< event interaction value
 };
 
-/**
- * @brief Interaction event representing a button event for a tracked hand device
- */
-class TrackedButtonInteractionEvent : public InteractionEvent
+class HandInteractionEvent : public InteractionEvent
 {
     public:
-        TrackedButtonInteractionEvent() :
-                InteractionEvent(), _hand(0), _button(0)
+        HandInteractionEvent() : InteractionEvent(), _hand(0)
         {
         }
 
@@ -145,6 +157,31 @@ class TrackedButtonInteractionEvent : public InteractionEvent
         void setHand(int hand)
         {
             _hand = hand;
+        }
+
+        virtual InteractionEventType getEventType()
+        {
+            return HAND_INTER_EVENT;
+        }
+
+        virtual HandInteractionEvent * asHandEvent()
+        {
+            return this;
+        }
+
+    protected:
+        int _hand;
+};
+
+/**
+ * @brief Interaction event representing a button event for a tracked hand device
+ */
+class TrackedButtonInteractionEvent : public HandInteractionEvent
+{
+    public:
+        TrackedButtonInteractionEvent() :
+                HandInteractionEvent(), _button(0)
+        {
         }
 
         /**
@@ -190,7 +227,6 @@ class TrackedButtonInteractionEvent : public InteractionEvent
         }
 
     protected:
-        int _hand; ///< event hand
         int _button; ///< event button
         osg::Matrix _transform; ///< event orientation
 };
@@ -286,11 +322,11 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
 /**
  * @brief Interaction event for a valuator
  */
-class ValuatorInteractionEvent : public InteractionEvent
+class ValuatorInteractionEvent : public HandInteractionEvent
 {
     public:
-        ValuatorInteractionEvent() :
-                _value(0.0), _valuator(0), _hand(0)
+        ValuatorInteractionEvent() : HandInteractionEvent(),
+                _value(0.0), _valuator(0)
         {
         }
 
@@ -314,16 +350,6 @@ class ValuatorInteractionEvent : public InteractionEvent
             _value = value;
         }
 
-        int getHand()
-        {
-            return _hand;
-        }
-
-        void setHand(int hand)
-        {
-            _hand = hand;
-        }
-
         virtual InteractionEventType getEventType()
         {
             return VALUATOR_INTER_EVENT;
@@ -336,7 +362,6 @@ class ValuatorInteractionEvent : public InteractionEvent
 
     protected:
         int _valuator;
-        int _hand;
         float _value;
 };
 
@@ -404,6 +429,38 @@ class KeyboardInteractionEvent : public InteractionEvent
     protected:
         int _key; ///< key value
         int _mod; ///< key modifier
+};
+
+class PositionInteractionEvent : public HandInteractionEvent
+{
+    public:
+        PositionInteractionEvent() :
+                HandInteractionEvent()
+        {
+        }
+
+        osg::Vec3 & getPosition()
+        {
+            return _position;
+        }
+
+        void setPosition(osg::Vec3 pos)
+        {
+            _position = pos;
+        }
+
+        virtual InteractionEventType getEventType()
+        {
+            return POSITION_INTER_EVENT;
+        }
+
+        virtual PositionInteractionEvent * asPositionEvent()
+        {
+            return this;
+        }
+
+    protected:
+        osg::Vec3 _position;
 };
 
 /**

@@ -344,6 +344,8 @@ bool TrackingManager::init()
 	}
 	_handNavImplementation.push_back(ni);
 
+	_handGenPositionEvents.push_back(ConfigManager::getBool("value",handss.str() + ".GenPositionEvents",false));
+
 	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
         _eventValuatorType.push_back(std::vector<ValuatorType>());
         _eventValuators.push_back(std::vector<float>());
@@ -785,6 +787,7 @@ void TrackingManager::run()
         updateThreadHandMask();
         generateThreadButtonEvents();
         generateThreadValuatorEvents();
+	generateThreadPositionEvents();
 
         _updateLock.unlock();
 
@@ -1264,6 +1267,7 @@ void TrackingManager::generateValuatorEvents()
 		    {
 			ValuatorInteractionEvent * vie =
 			    new ValuatorInteractionEvent();
+			vie->setInteraction(VALUATOR);
 			vie->setValuator(i);
 			vie->setHand(j);
 			vie->setValue(_eventValuators[j][i]);
@@ -1288,6 +1292,7 @@ void TrackingManager::generateValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
+		    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1349,6 +1354,7 @@ void TrackingManager::generateThreadValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
+		    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1366,6 +1372,7 @@ void TrackingManager::generateThreadValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
+		    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1375,6 +1382,39 @@ void TrackingManager::generateThreadValuatorEvents()
                 _lastEventValuators[j][i] = _eventValuators[j][i];
             }
         }
+    }
+}
+
+void TrackingManager::generatePositionEvents()
+{
+}
+
+void TrackingManager::generateThreadPositionEvents()
+{
+    for(int i = 0; i < _numHands; i++)
+    {
+	if(!_handGenPositionEvents[i])
+	{
+	    continue;
+	}
+	if(_handAddress[i].first >= 0
+		&& _handAddress[i].first < _systems.size())
+	{
+	    if(!_systemInfo[_handAddress[i].first]->thread)
+	    {
+		continue;
+	    }
+	}
+	else
+	{
+	    continue;
+	}
+
+	PositionInteractionEvent * pie = new PositionInteractionEvent();
+	pie->setInteraction(cvr::MOVE);
+	pie->setPosition(_threadHandMatList[i].getTrans());
+	pie->setHand(i);
+	_eventMap[pie->getEventType()].push_back(pie);
     }
 }
 
