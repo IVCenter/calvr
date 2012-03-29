@@ -21,7 +21,6 @@
       <Far value="100000000" /> 
       <!-- Enable/disable plugins here -->
       <Plugin>
-        <GreenLight value="on" />
         <PluginTest value="off" />
         <LightEditor value="off" />
         <MVSim value="off" /> <!-- Only to be used with MultiViewerScreen configurations! -->
@@ -33,19 +32,39 @@
 	</Scatter>
         <Argus value="off" />
         <WebMonitor value="off" />
-	<Site value="on" />
+	<Site value="off" />
       	<HMI value="off" />
         <ClipPlane value="on" />
         <Vrml97 value="on" />
         <FileBrowser value="off" />
-        <PDB value="on" />
-        <GML value="on" />
+        <PDB value="off" />
+        <GML value="off" />
         <Scale value="off" />
       	<PanoView360 value="on" />
-        <FloorPlan value="on" />
+	<PanoViewLOD value="on" />
+        <FloorPlan value="off" />
         <LSystems value="off" />
         <Maze value="off" />
+	<Maze2 value="off" />
+        <Maze2>
+		<AudioServer value="off" />
+		<AudioServerAddress value="137.110.118.77" />
+		<AudioServerPort value="15003" />
+
+		<!--  <EOGDataServerAddress value="137.110.118.239" />  -->
+		<EOGDataServerAddress value="128.54.36.176" />
+		<EOGDataServerPort value="8084" />
+
+		<DataDir value="/home/covise/data/maze2" />
+        </Maze2> 
         <CaveCAD value="off" />
+	<CaveCADBeta value="off" />
+	<CaveCADBeta>
+                <AudioServer value="on" />
+		<AudioServerAddress value="137.110.118.77" /> 
+          	<AudioServerPort value="15003" />
+ 		<DataDir value="/home/covise/data/CaveCADBeta" />
+	</CaveCADBeta>
 	<SpaceNavigator value="off" />
 	<AndroidNavigator value = "off" />
         <SPH value = "off">
@@ -68,7 +87,8 @@
  		<DataDir value="/home/covise/data/EEGListener" />
 	</EEGListener>
         <BlackBoxInfo value="off" />
-        <Sound value="on" />
+	<GreenLight value="on" />
+        <Sound value="off" />
         <Sound_Nick value="off" />
 	<AirCurrents value="off" />
 	<Look value="off" />
@@ -78,7 +98,8 @@
 	<MipMapVideo value="off" />
 	<MultiVolume value="off" />
 	<Volume value="off" />
-        <ArtifactVis value="off" />
+	<ArchField value="on" />
+        <ArtifactVis value="on" />
         <Talha value="off" />
         <Seismic value="off" /> 
         <StructView value="off" />
@@ -317,14 +338,43 @@
           <PhotoDataPath value = "/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/WebMonitor/photos/" />
         </WebMonitor>
 
-        <ArtifactVis>
+        <ArchField>
           <ArchInterfaceFolder value="/home/covise/data/ArchInterface/" />
           <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-          <3DModelFolder value="/home/cdefanti/models/dcode_models/Finished/obj/" />
-          <Offset>
-            <X value="-304670000.000" />
+          <LociFile value="/home/covise/data/kyle/AreaMLociDepth.kml" />
+          <!--Offset>
+            <X value="-304670000.000"/>
             <Y value="1450800.00" />
             <Z value="-354990000.00" />
+          </Offset-->
+	  <Offset>
+            <X value="-700000" />
+            <Y value="-3300000" />
+            <Z value="0" />
+          </Offset>
+          <Tessellation value=".2" />
+          <ArtifactPanel x="-200" y="1000" z="100" scale="1.0" />
+          <SelectionStatsPanel x="500" y="1300" />
+        </ArchField>
+
+        <ArtifactVis>
+          <Database value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
+	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
+          <!--ArchInterfaceFolder value="/home/covise/data/ArchInterface/" /-->
+          <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+          <!--3DModelFolder value="/home/covise/data/ArchInterface/data/" /-->
+	  <DCInfoFile value="/home/covise/data/kyle/DCCategories.txt" />
+	  <LociFile value="/home/covise/data/kyle/AreaMLociDepth.kml" />
+	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+          <!--Offset>
+            <X value="-700000" />
+            <Y value="-3300000" />
+            <Z value="0" />
+          </Offset-->
+	  <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
           </Offset>
           <Site>
             <Longitude value="35.491239" />
@@ -333,7 +383,8 @@
             <!--Scale value="1" /-->
           </Site>
           <Tessellation value=".2" />
-          <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
+          <ArtifactPanel x="-200" y="1000" z="100" scale="1.0" />
+	  <SelectionStatsPanel x="500" y="1000" />
         </ArtifactVis>
 
         <Volume>
@@ -478,17 +529,135 @@
           <ScreenShotDirectory value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/FloorPlan/screenshots/" />
         </FloorPlan>
 
+        <PanoViewLOD>
+	    <ShaderDir value="/home/covise/data/PansLOD/glsl/" />
+	    <FloorOffset value="1759.425" />
+	    <ImageSearchPath value="/state/partition1/data/pan:/home/covise/data/PansLOD" />
+	    <DefaultConfigDir value="/home/covise/data/PansLOD/config/" />
+	    <Pans>
+		<Luxor>
+		    <LuxorKarnakObelisks />
+		    <LuxorMedinetColumnsBlueCeiling />
+		    <LuxorMedinetHabuCourt />
+		    <LuxorMedinetHabuRoyalTreasure1 />
+		    <LuxorMedinetHabuRoyalTreasure2 />
+		    <LuxorMHoutback />
+		    <LuxorMHwall />
+		    <LuxorRamasseum />
+		    <LuxorSet />
+		    <LuxorTempleChapel />
+		    <LuxorTempleEntryNight />
+		    <LuxorTempleNight2 />
+		    <LuxorTempleOutsideColumn />
+		</Luxor>
+		<KAUST>
+		    <KAUSTmuseum1 />
+		    <KAUSTmuseum2 />
+		    <SaudiMar11 />
+		</KAUST>
+		<Wisconsin>
+		    <Taliesin-Path />
+		    <UPset />
+		    <UW-Madison-2 />
+		    <wiscoSet />
+		</Wisconsin>
+		<BluebonnetSet />
+		<CineGrid />
+	    </Pans>
+	</PanoViewLOD>
+
         <PanoView360>
           <FloorOffset value="1759.425" />
           <ScreenConfig value="/home/aprudhom/CalVR/plugins/calit2/PanoView360/config/starcave.xml" />
-          <Files>      
-            <Taliesin_Garden_13 reye="/state/partition1/data/SpherePans/Taliesin-Garden-13-R16_8.tif" leye="/state/partition1/data/SpherePans/Taliesin-Garden-13-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
-            <Wisconsin_Capitol_Dome_2 reye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-R16_8.tif" leye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+          <Files>
+	   <Wisconsin>
+	    <RockIsland>
+	     <RockIsland_16_8 reye="/state/partition1/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_R.jpg" leye="/state/partition1/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_L.jpg" radius="9144" viewanglev="112" viewangleh="250" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	     <RI_Tower_1_16_8 reye="/state/partition1/data/SpherePans/Rock-Island-Tower-1-16_8-R.tif" leye="/state/partition1/data/SpherePans/Rock-Island-Tower-1-16_8-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+             <RI_Cliff_1_16_8 reye="/state/partition1/data/SpherePans/Rock-Island-Cliff-1-16_8-R.tif" leye="/state/partition1/data/SpherePans/Rock-Island-Cliff-1-16_8-L.tif" radius="9144" viewanglev="66" viewangleh="120" camHeight="-1128.0" segments="30" tsize="4096" />
+             <RI_Path_23_16_8 reye="/state/partition1/data/SpherePans/Rock-Island-Path-23-16_8-R.tif" leye="/state/partition1/data/SpherePans/Rock-Island-Path-23-16_8-L.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    </RockIsland>
+
+	    <Taliesin>
+	     <Taliesin_Garden_13 reye="/state/partition1/data/SpherePans/Taliesin-Garden-13-R16_8.tif" leye="/state/partition1/data/SpherePans/Taliesin-Garden-13-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+             <Taliesin_Entrance_11 reye="/state/partition1/data/SpherePans/Taliesin-Entrance-11-R16_8.tif" leye="/state/partition1/data/SpherePans/Taliesin-Entrance-11-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	     <Taliesin_Hillside_16_8 reye="/home/dan/AnsPans01_11/Taliesin-Hillside-3-R_16x8k.jpg" leye="/home/dan/AnsPans01_11/Taliesin-Hillside-3-L_16x8k.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1" />
+	     <Taliesin-Hillside reye="/state/partition1/data/SpherePans/Taliesin-Hillside-3-R.jpg" leye="/state/partition1/data/SpherePans/Taliesin-Hillside-3-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+             <Taliesin_Entrance_16_8 reye="/home/dan/AnsPans07_10/Taliesin-Entrance-11-R_16x8k.jpg" leye="/home/dan/AnsPans07_10/Taliesin-Entrance-11-L_16x8k.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1" />
+	    </Taliesin>
+
+	    <Milwaukee1_8_4 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_8_4.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_8_4.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+            <Milwaukee1_16_8 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_16_8.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+            <Milwaukee3_16_8 reye="/home/covise/data/Pans/MilwaukeeArtMuseum3R_16_8.jpg" leye="/home/covise/data/Pans/MilwaukeeArtMuseum3L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-128.0" segments="30" tsize="4096" />
+	    <TomWI1_8_4 leye="/home/covise/dan/data/MilArtMus/TomWI1R_8_4.jpg" reye="/home/covise/dan/data/MilArtMus/TomWI1L_8_4.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
+            <TomWI1_16_8 leye="/home/covise/dan/data/MilArtMus/TomWI1R_16_8.jpg" reye="/home/covise/dan/data/MilArtMus/TomWI1L_16_8.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
             <HOTR_16_4 reye="/home/covise/dan/data/starCaveIM/HOTR_1_R_16_4.png" leye="/home/covise/dan/data/starCaveIM/HOTR_1_L_16_4.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
-            <Luxor_1220891 reye="/state/partition1/data/SpherePans/P1220891-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1220891-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
-            <Luxor_1220980 reye="/state/partition1/data/SpherePans/P1220980-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1220980-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
-            <Luxor_1230059 reye="/state/partition1/data/SpherePans/P1230059-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1230059-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
-            <Luxor_1500067 reye="/state/partition1/data/SpherePans/P1500067-Panorama-L.jpg" leye="/state/partition1/data/SpherePans/P1500067-Panorama-R.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <HOTR_16_8 reye="/home/covise/dan/data/starCaveIM/HOTR_1_R_16_8.png" leye="/home/covise/dan/data/starCaveIM/HOTR_1_L_16_8.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <!--HOTR_32_8
+	    reye="/state/partition1/data/dan/data/starCaveIM/HOTR_1_R_32_8.png"
+	    leye="/state/partition1/data/dan/data/starCaveIM/HOTR_1_L_32_8.png"
+	    radius="9144" viewanglev="100" camHeight="-1750.0" segments="30"
+	    tsize="4096" /-->
+	    <OvertureHall_16_8 reye="/state/partition1/data/SpherePans/OvertureHall_360x180_16k_8k_R.jpg" leye="/state/partition1/data/SpherePans/OvertureHall_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />   
+            <WI_Capitol_16_8 reye="/state/partition1/data/SpherePans/WI_Capitol_360x180_16k_8k_R.jpg" leye="/state/partition1/data/SpherePans/WI_Capitol_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Back_Yard_16_8 reye="/state/partition1/data/SpherePans/Back-Yard-R16_8.tif" leye="/state/partition1/data/SpherePans/Back-Yard-L16_8.tif" radius="9144" viewanglev="115" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Mill_Creek_16_8 reye="/state/partition1/data/SpherePans/Mill-Creek-R16_8-t.tif" leye="/state/partition1/data/SpherePans/Mill-Creek-L16_8-t.tif" radius="9144" viewanglev="115" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <West_Office_16_8 reye="/state/partition1/data/SpherePans/West-Office-R16_8.tif" leye="/state/partition1/data/SpherePans/West-Office-L16_8.tif" radius="9144" viewanglev="120" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Wisconsin_Capitol_Dome_2 reye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-R16_8.tif" leye="/state/partition1/data/SpherePans/Wisconsin-Capitol-Dome-2-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <BlueMounds_16_8 reye="/home/dan/AnsPans01_11/Blue-Mounds-8-R_16x8k.jpg" leye="/home/dan/AnsPans01_11/Blue-Mounds-8-L_16x8k.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1" />
+	    <Blue-Mounds reye="/state/partition1/data/SpherePans/Blue-Mounds-8-R.jpg" leye="/state/partition1/data/SpherePans/Blue-Mounds-8-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Hydes_Mill_16_8 reye="/home/covise/data/Pans/Hydes-Mill-5-R_16x8k.jpg" leye="/home/covise/data/Pans/Hydes-Mill-5-L_16x8k.jpg" radius="9144" viewanglev="45" viewangleh="150" camHeight="-1128.0" segments="30" tsize="4096" />
+            <Shake_Rag_Cabin_16_8 reye="/home/dan/AnsPans01_11/Shake-Rag-Cabin-5-R_16x8k.jpg" leye="/home/dan/AnsPans01_11/Shake-Rag-Cabin-5-L_16x8k.jpg" radius="9144" viewanglev="55" viewangleh="90" camHeight="-1128.0" segments="30" tsize="4096"  sphere="1" />
+            <Rock-Formation reye="/home/covise/data/SpherePans/Pans/RockForm/Rock-Formation-R.jpg" leye="/home/covise/data/SpherePans/Pans/RockForm/Rock-Formation-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	   </Wisconsin>
+
+	   <Luxor>
+	    <LuxorMedinetColumnsBlueCeiling reye="/state/partition1/data/SpherePans/P1220891-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1220891-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorMedinetHabuRoyalTreasure2 reye="/state/partition1/data/SpherePans/P1220980-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1220980-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorMedinetHabuRoyalTreasure1 reye="/state/partition1/data/SpherePans/P1230059-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1230059-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorTempleFirstCourtNight reye="/state/partition1/data/SpherePans/P1500067-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1500067-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <LuxorTempleChapel reye="/state/partition1/data/SpherePans/P1200612-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1200612-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorKarnakObelisks reye="/state/partition1/data/SpherePans/P1210224-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1210224-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorRamasseum reye="/state/partition1/data/SpherePans/P1220580-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1220580-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorMedinetHabuCourt reye="/state/partition1/data/SpherePans/P1230138-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1230138-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <LuxorTempleEntryNight reye="/state/partition1/data/SpherePans/P1500141-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1500141-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <LuxorPharaohsNight reye="/state/partition1/data/SpherePans/P1220049-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1220049-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <MadainAbu2 reye="/state/partition1/data/SpherePans/MadainAbu2-R.jpg" leye="/state/partition1/data/SpherePans/MadainAbu2-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <P1210750 reye="/state/partition1/data/SpherePans/P1210750-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1210750-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <P1220731 reye="/state/partition1/data/SpherePans/P1220731-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1220731-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <P1230332 reye="/state/partition1/data/SpherePans/P1230332-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1230332-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	   </Luxor>
+
+           <Madaen-Saleh>
+	    <Madaen-Saleh-AlKhuraymat reye="/home/covise/data/SpherePans/Pans/Bowl3/P1430157-Panorama-R.jpg" leye="/home/covise/data/SpherePans/Pans/Bowl3/P1130157-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Madaen-Saleh-QasrAlBint-Tomb reye="/home/covise/data/SpherePans/Pans/Tomb_Interior/P1420385-PanoramaB-R.jpg" leye="/home/covise/data/SpherePans/Pans/Tomb_Interior/P1120385-PanoramaB-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Madaen-Saleh-QasrAlBint-Tomb2 reye="/home/covise/data/SpherePans/Pans/Tomb_Interior/Second-Tomb-Interior-R.jpg" leye="/home/covise/data/SpherePans/Pans/Tomb_Interior/Second-Tomb-Interior-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Adaen-Saleh-Diwan reye="/home/covise/data/SpherePans/Pans/Al-Diwan/P1420084-Panorama-R.jpg" leye="/home/covise/data/SpherePans/Pans/Al-Diwan/P1120084-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	   </Madaen-Saleh>
+
+           <KAUST>
+	    <KaustCampus reye="/state/partition1/data/SpherePans/Campus-1-R.jpg" leye="/state/partition1/data/SpherePans/Campus-1-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <P1200089 reye="/state/partition1/data/SpherePans/P1200089-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1200089-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <P1200010 reye="/state/partition1/data/SpherePans/P1200010-Panorama-R.jpg" leye="/state/partition1/data/SpherePans/P1200010-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	   </KAUST>
+
+           <!--Mars>
+	    <McMurdo1_16_4 reye="/state/partition1/data/dan/data/MarsIm/McMurdo_L257F_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <McMurdo2_16_4 reye="/state/partition1/data/dan/data/MarsIm/McMurdo_L456atc_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <Duck_Bay1_16_4 reye="/state/partition1/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256atc_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Duck_Bay2_16_4 reye="/state/partition1/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256F_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Cape_Verdeana1_16_4 reye="/state/partition1/data/dan/data/MarsIm/Sol991B_Cape_Verdeana_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana2_16_4 reye="/state/partition1/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257atc_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana3_16_4 reye="/state/partition1/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257F_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+	   </Mars-->
+            <GDSP_6_16_4 reye="/home/covise/dan/data/starCaveIM/GDSP_6_R16K_4K.jpg" leye="/home/covise/dan/data/starCaveIM/GDSP_6_L16K_4K.jpg" radius="9144" viewanglev="73.7" camHeight="3100.0" segments="30" tsize="4096" />
+            <GDSP_701_16_4 reye="/home/covise/dan/data/ans360A/GDSP_701_16_4.png" leye="/home/covise/dan/data/ans360A/GDSP_702_16_4.png" radius="9144" viewanglev="85" camHeight="0.0" segments="30" tsize="4096" />
+            <FLRT_702_16_4 reye="/home/covise/dan/data/flrt/FLRT_702_R_16_4.png" leye="/home/covise/dan/data/flrt/FLRT_703_L_16_4.png" radius="9144" viewanglev="85" camHeight="250.0" segments="30" tsize="4096" />
+            <FLRT_712_16_4 reye="/home/covise/dan/data/flrt/FLRT_712_R_16_4.png" leye="/home/covise/dan/data/flrt/FLRT_713_L_16_4.png" radius="9144" viewanglev="85" camHeight="2300.0" segments="30" tsize="4096" />
+            <BKfull_16_4 reye="/home/covise/data/Pans/BKfull_16_4.tif" leye="" radius="9144" viewanglev="80" camHeight="1000.0" segments="30" tsize="4096" />
+            <DrZeus reye="/state/partition1/data/SpherePans/DrZeus-1-R.jpg" leye="/state/partition1/data/SpherePans/DrZeus-1-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <SF_Ship reye="/state/partition1/data/SpherePans/SF-Ship-1-R.jpg" leye="/state/partition1/data/SpherePans/SF-Ship-1-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  /> 
+	    <Gallery reye="/state/partition1/data/SpherePans/GalleryPan_UCSD_Right.jpg" leye="/state/partition1/data/SpherePans/GalleryPan_UCSD_Left.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />      
           </Files>
         </PanoView360>
 
@@ -658,7 +827,7 @@
       
    <MultiPC>
      <SyncMode value="TCP" />
-     <NumSlaves value="16" />   <!-- use 17 for all Cave machines -->
+     <NumSlaves value="17" />   <!-- use 17 for all Cave machines -->
 <!--
      <MasterInterface value="starcave.calit2.optiputer.net" />
      <Startup arch="x11" value="ssh ${USER}@starcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
@@ -682,8 +851,8 @@
 
      <MasterInterface value="calit2-vis06.ucsd.edu" />
      <CleanupScript value="tentakel killall -9 CalVR" />
-     <Startup arch="x11" value="ssh ${USER}@tile-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
-     <Startup arch="x11" value="ssh ${USER}@tile-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
+     <Startup arch="x11" value="ssh ${USER}@tile-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />
+     <Startup arch="x11" value="ssh ${USER}@tile-4-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
      <Startup arch="x11" value="ssh ${USER}@tile-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
      <Startup arch="x11" value="ssh ${USER}@tile-3-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
      <Startup arch="x11" value="ssh ${USER}@tile-3-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
@@ -698,7 +867,7 @@
      <Startup arch="x11" value="ssh ${USER}@tile-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="13" />
      <Startup arch="x11" value="ssh ${USER}@tile-4-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="14" />
      <Startup arch="x11" value="ssh ${USER}@tile-4-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="15" /> 
-     <Startup arch="x11" value="ssh ${USER}@tile-4-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="16" />  
+     <Startup arch="x11" value="ssh ${USER}@tile-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="16" />  
     
     </MultiPC>
  
