@@ -33,6 +33,18 @@ InteractionEvent * loadEventWithType(InteractionEvent * event,
             *kie = *((KeyboardInteractionEvent*)event);
             return kie;
         }
+	case POSITION_INTER_EVENT:
+	{
+	    PositionInteractionEvent * pie = new PositionInteractionEvent();
+	    *pie = *((PositionInteractionEvent*)event);
+	    return pie;
+	}
+	case HAND_INTER_EVENT:
+        {
+            HandInteractionEvent * hie = new HandInteractionEvent();
+            *hie = *((HandInteractionEvent*)event);
+            return hie;
+        }
         case INTER_EVENT:
         {
             InteractionEvent * ie = new InteractionEvent();
@@ -61,6 +73,12 @@ void storeEvent(InteractionEvent * event, void * des)
         case KEYBOARD_INTER_EVENT:
             *((KeyboardInteractionEvent*)des) = *event->asKeyboardEvent();
             break;
+	case POSITION_INTER_EVENT:
+            *((PositionInteractionEvent*)des) = *event->asPositionEvent();
+            break;
+	case HAND_INTER_EVENT:
+	    *((HandInteractionEvent*)des) = *event->asHandEvent();
+            break;
         case INTER_EVENT:
             *((InteractionEvent*)des) = *event;
             break;
@@ -83,6 +101,10 @@ int getEventSize(InteractionEventType type)
             return sizeof(ValuatorInteractionEvent);
         case KEYBOARD_INTER_EVENT:
             return sizeof(KeyboardInteractionEvent);
+	case POSITION_INTER_EVENT:
+	    return sizeof(PositionInteractionEvent);
+	case HAND_INTER_EVENT:
+	    return sizeof(HandInteractionEvent);
         case INTER_EVENT:
             return sizeof(InteractionEvent);
         default:

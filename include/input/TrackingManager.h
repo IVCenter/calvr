@@ -202,6 +202,10 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 
         void generateThreadValuatorEvents();
 
+        void generatePositionEvents();
+
+        void generateThreadPositionEvents();
+
         /**
          * @brief Update thread's local head/hand matrix transforms from tracker
          */
@@ -279,6 +283,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
         std::vector<SceneManager::PointerGraphicType> _handGraphicType;
         std::vector<Navigation::NavImplementation> _handNavImplementation;
+        std::vector<bool> _handGenPositionEvents;
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
 
         std::vector<int> _numEventValuators;
