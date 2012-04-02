@@ -41,6 +41,7 @@ private:
     static void* _serverLoop(void *parameter);
     void _processMessage(const Message &message);
     void _fatalError(const char *errorMessage);
+    static void _atExit();
 
     double _computeElapsedTime(struct timeval start, struct timeval end);
 

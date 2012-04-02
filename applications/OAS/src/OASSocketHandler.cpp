@@ -71,6 +71,14 @@ bool SocketHandler::initialize(unsigned short listeningPort)
     return true;
 }
 
+// static, public
+void SocketHandler::terminate()
+{
+    // Close the socket and kill of the socket processing thread
+    SocketHandler::_closeSocket();
+    pthread_cancel(SocketHandler::_socketThread);
+}
+
 // static, private
 bool SocketHandler::_openSocket()
 {
@@ -242,9 +250,9 @@ void* SocketHandler::_socketLoop(void* parameter)
 
     // Strategy:
     // One outer infinite loop keeps the server listening for connections over time, allowing 
-    // multiple clients to connect. The inner infinite loop reads data from the current active 
-    // connection, parses the data into messages, and queues up the messages to be read by 
-    // another thread.
+    // multiple clients to connect and disconnect. The inner infinite loop reads data from the
+    // current active connection, parses the data into messages, and queues up the messages to 
+    // be read by another thread.
 
     while (1)
     {

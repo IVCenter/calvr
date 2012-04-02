@@ -39,6 +39,7 @@ class SocketHandler
 {
     public:
         static bool initialize(unsigned short listeningPort);
+        static void terminate();
         static bool isSocketOpen();
         static unsigned int numberOfIncomingMessages();
         static void populateQueueWithIncomingMessages(std::queue<Message*> &destination);
