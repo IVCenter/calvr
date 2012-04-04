@@ -3,8 +3,10 @@
 using namespace oas;
 
 // Statics
+ALuint Source::_nextHandle;
 const ALfloat Source::_kConeInnerAngle;
 const ALfloat Source::_kConeOuterAngle;
+
 Listener* Listener::_instance = NULL;
 
 // private constructor
@@ -196,11 +198,15 @@ void Source::_init()
 // private
 ALuint Source::_generateNextHandle()
 {
-    static ALuint nextHandle = 0;
+    _nextHandle++;
 
-    nextHandle++;
+    return _nextHandle;
+}
 
-    return nextHandle;
+// static, public
+void Source::resetSources()
+{
+    _nextHandle = 0;
 }
 
 bool Source::isValid() const

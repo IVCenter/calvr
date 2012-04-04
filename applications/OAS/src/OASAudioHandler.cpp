@@ -86,6 +86,7 @@ void AudioHandler::release()
     }
     
     _sourceMap.clear();
+    oas::Source::resetSources();
 
     // Release the buffers
     BufferMapIterator bIter;

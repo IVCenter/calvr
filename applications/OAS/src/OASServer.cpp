@@ -326,6 +326,7 @@ void oas::Server::_fatalError(const char *errorMessage)
 void oas::Server::_atExit()
 {
     oas::SocketHandler::terminate();
+    oas::AudioHandler::release();
 }
 
 // Main

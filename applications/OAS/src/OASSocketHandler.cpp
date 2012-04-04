@@ -74,9 +74,10 @@ bool SocketHandler::initialize(unsigned short listeningPort)
 // static, public
 void SocketHandler::terminate()
 {
-    // Close the socket and kill of the socket processing thread
-    SocketHandler::_closeSocket();
+    // End the socket processing thread
     pthread_cancel(SocketHandler::_socketThread);
+    // Close the socket and clean up the associated data
+    SocketHandler::_closeSocket();
 }
 
 // static, private
@@ -277,13 +278,13 @@ void* SocketHandler::_socketLoop(void* parameter)
 
         int amountRead;
         unsigned int amountParsed = 0;
+        bool validConnection = true;
 
         // Use a circular buffer to read data
         static char circularBuf[MAX_CIRCULAR_BUFFER_SIZE] = {0};
         char *bufPtr = circularBuf;
-        Message::MessageError parseError;
 
-        while (1)
+        while (validConnection)
         {
             // If the circular buffer is out of space, reset it to the beginning
             if ( ((bufPtr + MAX_TRANSMIT_BUFFER_SIZE) - circularBuf) >= MAX_CIRCULAR_BUFFER_SIZE)
@@ -318,53 +319,69 @@ void* SocketHandler::_socketLoop(void* parameter)
              *              for a more robust implementation.
              */
 
-            // Message needs to be parsed, starting from bufPtr
-            Message *newMessage = new Message();
-
-            parseError = newMessage->parseString(bufPtr, (unsigned int) amountRead, amountParsed);
-
-            // check parseError to keep track as necessary
-            if (Message::MERROR_NONE != parseError)
+            // Keep parsing the current input data until the amount parsed is equal to the amount read 
+            while (amountParsed < amountRead)
             {
-                if (Message::MERROR_EMPTY_MESSAGE != parseError)
-                {
-                    oas::Logger::warnf("SocketHandler - Parsing failed for incoming message: \"%s\" "
-                            "This message will be ignored.",  bufPtr);
-                }
-            }
-            // Else, there was no error in parsing
-            else
-            {
-                // If the message is to quit
-                if (Message::MT_QUIT == newMessage->getMessageType())
-                {
-                    oas::Logger::logf("SocketHandler - Client disconnected.");
-                    delete newMessage;
-                    SocketHandler::_closeConnection(connection);
-                    break;
-                }
+                oas::Logger::logf("amtParsed = %d, amtRead = %d", amountParsed, amountRead);
+                // Message needs to be parsed, starting from bufPtr
+                Message *newMessage = new Message();
+                Message::MessageError parseError;
 
-                // If a binary file is incoming, call _receiveBinaryFile(),
-                // which will use FileHandler to append binary data to file
-                else if (Message::MT_PTFI_FN_1I == newMessage->getMessageType())
-                {
-                    SocketHandler::_receiveBinaryFile(connection, *newMessage);
-                }
+                parseError = newMessage->parseString(bufPtr, (unsigned int) amountRead, amountParsed);
 
-                SocketHandler::_addToIncomingMessages(newMessage);
-
-                // If the server needs to send a response back to the client for this message
-                if (newMessage->needsResponse())
+                // check parseError to keep track as necessary
+                if (Message::MERROR_NONE != parseError)
                 {
-                    // The socket thread will block until the server has generated the response
-                    char *response = SocketHandler::_getNextOutgoingResponse();
-                    // write the response to the socket connection
-                    write(connection, response, strlen(response) + 1);
-                    // delete the response that was allocated
-                    delete[] response;
+                    // If the message is empty, we are done parsing this input
+                    if (Message::MERROR_EMPTY_MESSAGE == parseError)
+                    {
+                        delete newMessage;
+                        break;
+                    }
+                    // Else there was some parsing error 
+                    else
+                    {
+                        oas::Logger::warnf("SocketHandler - Parsing failed for incoming message: \"%s\" "
+                                            "This message will be ignored.",  bufPtr);
+                        break;
+                    }
                 }
-            }
-        } // End inner infinite loop. Client has disconnected, or an error occured.
+                // Else, there was no error in parsing
+                else
+                {
+                    // If the message is to quit
+                    if (Message::MT_QUIT == newMessage->getMessageType())
+                    {
+                        oas::Logger::logf("SocketHandler - Client disconnected.");
+                        delete newMessage;
+                        SocketHandler::_closeConnection(connection);
+                        validConnection = false;
+                        break;
+                    }
+
+                    // If a binary file is incoming, call _receiveBinaryFile(),
+                    // which will use FileHandler to append binary data to file
+                    else if (Message::MT_PTFI_FN_1I == newMessage->getMessageType())
+                    {
+                        SocketHandler::_receiveBinaryFile(connection, *newMessage);
+                    }
+
+                    // Queue up the parsed message
+                    SocketHandler::_addToIncomingMessages(newMessage);
+
+                    // If the server needs to send a response back to the client for this message
+                    if (newMessage->needsResponse())
+                    {
+                        // The socket thread will block until the server has generated the response
+                        char *response = SocketHandler::_getNextOutgoingResponse();
+                        // write the response to the socket connection
+                        write(connection, response, strlen(response) + 1);
+                        // delete the response that was allocated
+                        delete[] response;
+                    }
+                }
+            } // End message parsing loop
+        } // End connection loop. Client has disconnected, or an error occured.
     }
 
     close(SocketHandler::_socketHandle);

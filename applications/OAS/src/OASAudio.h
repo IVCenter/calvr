@@ -171,6 +171,11 @@ public:
     ALfloat getDirectionY();
     ALfloat getDirectionZ();
 
+    /**
+     * @brief Resets the handle counter, and any other state applicable to all sources
+     */
+    static void resetSources();
+
     Source(ALuint buffer);
     Source();
     ~Source();
@@ -200,6 +205,8 @@ private:
     bool _isValid;
     bool _isDirectional;
 
+    static ALuint _nextHandle;
+    
     static const ALfloat _kConeInnerAngle = 45.0;
     static const ALfloat _kConeOuterAngle = 360.0;
 };
