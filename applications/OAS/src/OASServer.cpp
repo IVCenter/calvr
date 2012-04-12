@@ -242,7 +242,7 @@ void oas::Server::initialize(int argc, char **argv)
     this->_readConfigFile(argc, argv);
 
     if (this->_serverInfo->useGUI() 
-        && !oas::ServerWindow::initialize(argc, argv))
+        && !oas::ServerWindow::initialize(argc, argv, &oas::Server::_atExit))
     {
         _fatalError("Could not initialize the windowed user interface!");
     }
@@ -321,6 +321,11 @@ void oas::Server::_fatalError(const char *errorMessage)
               << "     Error: " << errorMessage << "\n"
               << "Exiting OAS...\n\n";
     exit(1);
+}
+
+void oas::Server::_atExit()
+{
+    oas::SocketHandler::terminate();
 }
 
 // Main
