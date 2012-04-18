@@ -1,48 +1,71 @@
 <?xml version="1.0"?>
 
- <GLOBAL>
    <Stereo separation="64.0" />
- </GLOBAL>
 
- <GLOBAL>
-   <NumPipes value="7" />
-   <NumScreens value="6" />
-   <NumWindows value="6" />
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
 
    <PipeConfig>
      <Pipe server="0" screen="0" name="0" />
      <Pipe server="0" screen="1" name="1" />
-     <Pipe server="0" screen="2" name="2" />
-     <Pipe server="0" screen="3" name="3" />
-     <Pipe server="0" screen="4" name="4" />
-     <Pipe server="0" screen="5" name="5" />
-     <Pipe server="0" screen="6" name="6" />
    </PipeConfig>
 
    <WindowConfig>
-     <Window width="1920" comment="MAIN" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1920" comment="MAIN" window="1" pipeIndex="2" height="1080" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1920" comment="MAIN" window="2" pipeIndex="3" height="1080" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1920" comment="MAIN" window="3" pipeIndex="4" height="1080" left="0" bottom="0" name="3" decoration="false" />
-     <Window width="1920" comment="MAIN" window="4" pipeIndex="5" height="1080" left="0" bottom="0" name="4" decoration="false" />
-     <Window width="1920" comment="MAIN" window="4" pipeIndex="6" height="1080" left="0" bottom="0" name="5" decoration="false" />
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
    </WindowConfig>
 
    <ChannelConfig>
     <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
     <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="1" name="1" comment="RIGHT" />
-    <Channel channel="2" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="2" name="2" comment="RIGHT" />
-    <Channel channel="3" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="3" name="3" comment="RIGHT" />
-    <Channel channel="3" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="4" name="4" comment="RIGHT" />
-    <Channel channel="3" left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="5" name="5" comment="RIGHT" />
    </ChannelConfig>
 
+  <LOCAL host="" >
    <ScreenConfig>
-    <Screen height="805" h="63.0" width="1432" p="0.0"   originX="-1415"  comment="S_A" originY="721"  r="-90.0" name="0" originZ="0"    screen="0" />
-    <Screen height="805" h="32.0" width="1432" p="0.0"   originX="-816"  comment="S_A" originY="1308"  r="-90.0" name="1" originZ="0"    screen="1" />
-    <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1500"      r="-90.0" name="2" originZ="0"    screen="2" />
-    <Screen height="805" h="-32.0" width="1432" p="0.0"   originX="774"  comment="S_A" originY="1235"  r="-90.0" name="3" originZ="-160"    screen="3" />
-    <Screen height="805" h="-65.0" width="1432" p="0.0"   originX="1283"  comment="S_A" originY="598"  r="-90.0" name="4" originZ="0"    screen="4" />
-    <Screen height="805" h="-32.0" width="1432" p="0.0"   originX="810"  comment="S_A" originY="1275"  r="-90.0" name="5" originZ="1337"    screen="5" />
+    <Screen height="805" h="74.0" width="1432" p="0.0"   originX="-1949"  comment="S_A" originY="577"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="74.0" width="1432" p="0.0"   originX="-1997"  comment="S_A" originY="592"  r="-90.0" name="1" originZ="1490"    screen="1" />
    </ScreenConfig>
- </GLOBAL>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="50.0" width="1432" p="0.0"   originX="-1489"  comment="S_A" originY="1236"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="50.0" width="1432" p="0.0"   originX="-1527"  comment="S_A" originY="1268"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="26.0" width="1432" p="0.0"   originX="-802"  comment="S_A" originY="1657"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="26.0" width="1432" p="0.0"   originX="-823"  comment="S_A" originY="1702"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1750"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1800"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="-26.0" width="1432" p="0.0"   originX="738"  comment="S_A" originY="1481"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="-26.0" width="1432" p="0.0"   originX="760"  comment="S_A" originY="1526"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="-55.0" width="1432" p="0.0"   originX="1276"  comment="S_A" originY="904"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="-55.0" width="1432" p="0.0"   originX="1317"  comment="S_A" originY="932"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
+
+  <LOCAL host="" >
+   <ScreenConfig>
+    <Screen height="805" h="-85.0" width="1432" p="0.0"   originX="1471"  comment="S_A" originY="135"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="-85.0" width="1432" p="0.0"   originX="1521"  comment="S_A" originY="139"  r="-90.0" name="1" originZ="1490"    screen="1" />
+   </ScreenConfig>
+  <LOCAL>
