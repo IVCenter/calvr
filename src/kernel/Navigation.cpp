@@ -669,6 +669,7 @@ NavMouseKeyboard::NavMouseKeyboard()
     _rightDown = false;
     _scaleUpDown = false;
     _scaleDownDown = false;
+    _mouseMove = false;
 }
 
 NavMouseKeyboard::~NavMouseKeyboard()
