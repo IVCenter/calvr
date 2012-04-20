@@ -1,0 +1,97 @@
+IF(WIN32)
+	IF(CALVR_WIN_DYNAMIC)
+		ADD_DEFINITIONS(-DCVRMENU_LIBRARY)
+	ELSE(CALVR_WIN_DYNAMIC)
+		ADD_DEFINITIONS(-DCVRMENU_LIBRARY_STATIC)
+	ENDIF(CALVR_WIN_DYNAMIC)
+ENDIF(WIN32)
+
+SET(LIB_NAME cvrMenu)
+SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
+SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/MenuItem.h
+    ${HEADER_PATH}/SubMenu.h
+    ${HEADER_PATH}/SubMenuClosable.h
+    ${HEADER_PATH}/MenuButton.h
+    ${HEADER_PATH}/MenuCheckbox.h
+    ${HEADER_PATH}/MenuList.h
+    ${HEADER_PATH}/MenuRangeValue.h
+    ${HEADER_PATH}/MenuRangeValueCompact.h
+    ${HEADER_PATH}/MenuText.h
+    ${HEADER_PATH}/MenuTextButtonSet.h
+    ${HEADER_PATH}/MenuScrollText.h
+    ${HEADER_PATH}/MenuImage.h
+    ${HEADER_PATH}/MenuBase.h
+    ${HEADER_PATH}/PopupMenuBase.h
+    ${HEADER_PATH}/BoardMenu.h
+    ${HEADER_PATH}/MenuSystem.h
+    ${HEADER_PATH}/MenuManager.h
+    ${HEADER_PATH}/PopupMenu.h
+    ${HEADER_PATH}/DialogPanel.h
+    ${HEADER_PATH}/TabbedDialogPanel.h
+    ${HEADER_PATH}/ScrollingDialogPanel.h
+    ${HEADER_PATH}/BoardPopupMenu.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuButtonGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuCheckboxGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuListGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuRangeValueGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuRangeValueCompactGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuTextGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuTextButtonSetGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuScrollTextGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuClosableGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
+    ${HEADER_PATH}/Export.h
+)
+
+SET(LIB_SRC_FILES
+    MenuItem.cpp
+    SubMenu.cpp
+    MenuButton.cpp
+    MenuCheckbox.cpp
+    MenuList.cpp
+    MenuRangeValue.cpp
+    MenuRangeValueCompact.cpp
+    MenuText.cpp
+    MenuTextButtonSet.cpp
+    MenuScrollText.cpp
+    MenuImage.cpp
+    MenuSystem.cpp
+    BoardMenu.cpp
+    MenuManager.cpp
+    PopupMenu.cpp
+    DialogPanel.cpp
+    ScrollingDialogPanel.cpp
+    TabbedDialogPanel.cpp
+    BoardPopupMenu.cpp
+    BoardMenu/BoardMenuGeometry.cpp
+    BoardMenu/BoardMenuButtonGeometry.cpp
+    BoardMenu/BoardMenuCheckboxGeometry.cpp
+    BoardMenu/BoardMenuListGeometry.cpp
+    BoardMenu/BoardMenuRangeValueGeometry.cpp
+    BoardMenu/BoardMenuRangeValueCompactGeometry.cpp
+    BoardMenu/BoardMenuTextGeometry.cpp
+    BoardMenu/BoardMenuTextButtonSetGeometry.cpp
+    BoardMenu/BoardMenuScrollTextGeometry.cpp
+    BoardMenu/BoardMenuImageGeometry.cpp
+    BoardMenu/BoardMenuSubMenuGeometry.cpp
+    BoardMenu/BoardMenuSubMenuClosableGeometry.cpp
+)
+
+SET(LIB_EXTERNAL_INCLUDES
+    ${OSG_INCLUDE_DIR}
+)
+
+SET(LIB_EXTERNAL_LIBRARIES
+    ${OSG_LIBRARIES}
+)
+
+SET(LIB_INTERNAL_LIBRARIES
+    config
+    util
+	input
+)
+
+SETUP_CORE_LIBRARY(${LIB_NAME})
