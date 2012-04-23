@@ -108,6 +108,10 @@ class InteractionEvent
             return NULL;
         }
 
+        /**
+         * @brief Get a pointer to this class as a ValuatorInteractionEvent pointer
+         * @return NULL is returned if this class can not be cast to a ValuatorInteractionEvent
+         */
         virtual ValuatorInteractionEvent * asValuatorEvent()
         {
             return NULL;
@@ -122,11 +126,19 @@ class InteractionEvent
             return NULL;
         }
 
+        /**
+         * @brief Get a pointer to this class as a PositionInteractionEvent pointer
+         * @return NULL is returned if this class can not be cast to a PositionInteractionEvent
+         */
         virtual PositionInteractionEvent * asPositionEvent()
         {
             return NULL;
         }
 
+        /**
+         * @brief Get a pointer to this class as a HandInteractionEvent pointer
+         * @return NULL is returned if this class can not be cast to a HandInteractionEvent
+         */
         virtual HandInteractionEvent * asHandEvent()
         {
             return NULL;
@@ -136,6 +148,9 @@ class InteractionEvent
         Interaction _interaction; ///< event interaction value
 };
 
+/**
+ * @brief Interaction event representing an event for a hand device
+ */
 class HandInteractionEvent : public InteractionEvent
 {
     public:
@@ -170,7 +185,7 @@ class HandInteractionEvent : public InteractionEvent
         }
 
     protected:
-        int _hand;
+        int _hand; ///< hand id for this event
 };
 
 /**
@@ -330,21 +345,33 @@ class ValuatorInteractionEvent : public HandInteractionEvent
         {
         }
 
+        /**
+         * @brief Get the valuator id
+         */
         int getValuator()
         {
             return _valuator;
         }
 
+        /**
+         * @brief Set the valuator id
+         */
         void setValuator(int valuator)
         {
             _valuator = valuator;
         }
 
+        /**
+         * @brief Get the valuator value
+         */
         float getValue()
         {
             return _value;
         }
 
+        /**
+         * @brief Set the valuator value
+         */
         void setValue(float value)
         {
             _value = value;
@@ -361,8 +388,8 @@ class ValuatorInteractionEvent : public HandInteractionEvent
         }
 
     protected:
-        int _valuator;
-        float _value;
+        int _valuator; ///< valuator id
+        float _value; ///< valuator value
 };
 
 /**
@@ -431,6 +458,9 @@ class KeyboardInteractionEvent : public InteractionEvent
         int _mod; ///< key modifier
 };
 
+/**
+ * @brief Interaction event with a 3dof position
+ */
 class PositionInteractionEvent : public HandInteractionEvent
 {
     public:
@@ -439,11 +469,17 @@ class PositionInteractionEvent : public HandInteractionEvent
         {
         }
 
+        /**
+         * @brief Get event position
+         */
         osg::Vec3 & getPosition()
         {
             return _position;
         }
 
+        /**
+         * @brief Set event position
+         */
         void setPosition(osg::Vec3 pos)
         {
             _position = pos;
@@ -460,7 +496,7 @@ class PositionInteractionEvent : public HandInteractionEvent
         }
 
     protected:
-        osg::Vec3 _position;
+        osg::Vec3 _position; ///< event position
 };
 
 /**
@@ -474,7 +510,15 @@ class PositionInteractionEvent : public HandInteractionEvent
  */
 InteractionEvent * loadEventWithType(InteractionEvent * event,
         InteractionEventType type);
+
+/**
+ * @brief Store an InteractionEvent of some type at some destination address
+ */
 void storeEvent(InteractionEvent * event, void * des);
+
+/**
+ * @brief Get the size of and InteractionEvent given its type
+ */
 int getEventSize(InteractionEventType type);
 
 }

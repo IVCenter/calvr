@@ -67,7 +67,7 @@ class ScreenHMD : public ScreenBase
         virtual void adjustViewportCoords(int & x, int & y);
 
     protected:
-        bool _stereo;
+        bool _stereo; ///< is a stereo mode active
         osg::DisplaySettings::StereoMode _stereoMode; ///< osg stereo mode for this screen
         osg::Matrix _viewLeft; ///< left eye view matrix
         osg::Matrix _viewRight; ///< right eye view matrix

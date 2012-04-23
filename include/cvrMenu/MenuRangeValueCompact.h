@@ -16,7 +16,8 @@ namespace cvr
 {
 
 /**
- * @brief Menu item to select a value within a range
+ * @brief Menu item to select a value within a range, more compact than the regular
+ * MenuRangeValue
  */
 class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
 {
@@ -28,6 +29,8 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
          * @param min minimum value in range
          * @param max maximum value in range
          * @param current initial value
+         * @param log should the range scale be logarithmic
+         * @param base log base
          */
         MenuRangeValueCompact(std::string label, float min, float max, float current,
                 bool log = false, float base = 10);
@@ -63,16 +66,22 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
          */
         float getMax();
 
+        /**
+         * @brief Get if the range scale is logarithmic
+         */
         bool getIsLog();
 
+        /**
+         * @brief Get base of log scale
+         */
         float getLogBase();
     protected:
         std::string _label; ///< text label
         float _min; ///< minimum value
         float _max; ///< maximum value
         float _value; ///< current value
-        bool _log;
-        float _logBase;
+        bool _log; ///< is scale logarithmic
+        float _logBase; ///< log scale base
 };
 
 }

@@ -130,8 +130,14 @@ class CVRKERNEL_EXPORT ScreenConfig
          */
         int findScreenNumber(osg::Camera * c);
 
+        /**
+         * @brief Get the number of created opengl windows
+         */
         int getNumWindows();
 
+        /**
+         * @brief Get the information for a given window number
+         */
         WindowInfo * getWindowInfo(int window);
 
         /**

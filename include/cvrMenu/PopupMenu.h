@@ -31,6 +31,7 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
          * @brief Constructor
          * @param title title for this popup menu
          * @param configTag config location when position/orientation/scale values can be found
+         * @param closable should this menu have a button that closes it
          *
          * Looks for attibutes x,y,z,h,p,r,scale in configTag
          */

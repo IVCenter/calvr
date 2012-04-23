@@ -111,6 +111,9 @@ class CVRKERNEL_EXPORT PluginHelper
          */
         static osg::Matrix & getHeadMat(int head = 0);
 
+        /**
+         * @brief get the number of loaded tracking systems
+         */
         static int getNumTrackingSystems();
 
         /**

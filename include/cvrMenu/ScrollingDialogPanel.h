@@ -21,11 +21,14 @@ class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
     public:
         /**
          * @brief Constructor
-         * @param menuWidth maximum width of the text before wrapping
+         * @param textWidth width of the text before wrapping
+         * @param textRows number of rows of text to display
+         * @param textScale scale factor for text size
+         * @param followEnd should the end of the text be followed on appends
          * @param title title for the PopupMenu
          * @param configTag location in config file for initial position/rotation/scale
          */
-        ScrollingDialogPanel(float textWidth, int textrows, float textscale, bool followEnd, std::string title, std::string configTag =
+        ScrollingDialogPanel(float textWidth, int textRows, float textScale, bool followEnd, std::string title, std::string configTag =
                 "");
         virtual ~ScrollingDialogPanel();
 
@@ -34,16 +37,22 @@ class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
          */
         void addText(std::string text);
 
+        /**
+         * @brief Get the current menu text
+         */
         const std::string & getText() { return _text; }
 
+        /**
+         * @brief Clear the menu text
+         */
         void clear();
 
     protected:
         std::string _text; ///< menu text
-        MenuScrollText * _menuScrollText; ///< menu item for text
-        float _textWidth; ///< maximum width of text
-        int _textRows;
-        float _textScale;
+        MenuScrollText * _menuScrollText; ///< menu item for text box
+        float _textWidth; ///< width of text box
+        int _textRows; ///< rows of text
+        float _textScale; ///< scale factor for text size
 };
 
 }

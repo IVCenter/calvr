@@ -100,7 +100,18 @@ class CVRKERNEL_EXPORT InteractionManager
          */
         int getMouseY();
 
+        /**
+         * @brief Set the state of the mouse wheel
+         *
+         * Valid values are -1, 0, 1
+         */
         void setMouseWheel(int w);
+
+        /**
+         * @brief Get the state of the mouse wheel
+         *
+         * Valid values are -1, 0, 1
+         */
         int getMouseWheel() { return _mouseWheel; }
 
     protected:
@@ -110,6 +121,7 @@ class CVRKERNEL_EXPORT InteractionManager
         /// queue for events, flushed every frame
         std::queue<InteractionEvent *,std::list<InteractionEvent *> > _eventQueue;
 
+        /// queue for mouse events, read by TrackerMouse, flushed each frame
         std::queue<InteractionEvent *,std::list<InteractionEvent *> > _mouseQueue;
         OpenThreads::Mutex _queueLock; ///< lock for queue add/removes
 
@@ -125,12 +137,16 @@ class CVRKERNEL_EXPORT InteractionManager
          */
         void createMouseDragEvents(bool single);
 
+        /**
+         * @brief Create DOUBLE_CLICK MouseInteractionEvent for a given button
+         */
         void createMouseDoubleClickEvent(int button);
 
+        /**
+         * @brief Check if the mouse wheel timeout has expired and the wheel state
+         *  should be set back to zero
+         */
         void checkWheelTimeout();
-
-        bool _mouseEvents;
-        bool _mouseTracker;
 
         unsigned int _lastMouseButtonMask; ///< last used mouse button mask
         unsigned int _mouseButtonMask; ///< current mouse button mask
@@ -139,13 +155,13 @@ class CVRKERNEL_EXPORT InteractionManager
         osg::Matrix _mouseMat; ///< mouse orientation
         int _mouseX; ///< current mouse x position
         int _mouseY; ///< current mouse y position
-        int _mouseHand;
+        int _mouseHand; ///< hand id to use for mouse events
 
-        double _mouseWheelTimeout;
-        double _mouseWheelTime;
-        int _mouseWheel;
+        double _mouseWheelTimeout; ///< time the mouse wheel will stay active without an event
+        double _mouseWheelTime; ///< time since last mouse wheel event
+        int _mouseWheel; ///< current mouse wheel state
 
-        double _dragEventTime;
+        double _dragEventTime; ///< time since last drag event
 };
 
 }

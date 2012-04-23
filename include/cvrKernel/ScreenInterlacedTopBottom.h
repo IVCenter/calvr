@@ -21,7 +21,8 @@ namespace cvr
 {
 
 /**
- * @brief Creates a stereo screen using osg stereo modes
+ * @brief Creates a screen that renders top/bottom stereo to textures, then uses a 
+ *  shader to interlace it
  */
 class ScreenInterlacedTopBottom : public ScreenBase
 {
@@ -45,18 +46,25 @@ class ScreenInterlacedTopBottom : public ScreenBase
                 ScreenInterlacedTopBottom * screen;
         };
 
+        /**
+         * @brief Osg camera callback that interlaces the right/left eye images using
+         *  a shader
+         */
         struct InterlaceCallback : public osg::Camera::DrawCallback
         {
+                /**
+                 * @brief Called by osg camera draw callback
+                 */
                 virtual void operator()(osg::RenderInfo &renderInfo) const;
-                ScreenInterlacedTopBottom * screen;
+                ScreenInterlacedTopBottom * screen; ///< screen for this callback
 
-                mutable std::map<int,bool> _initMap;
-                mutable std::map<int,osg::ref_ptr<osg::Program> > _programMap;
-                mutable std::map<int,osg::ref_ptr<osg::Geometry> > _geometryMap;
-                mutable bool odd;
-                mutable bool first;
-                static OpenThreads::Mutex _initLock;
-                osg::Texture2D * _texture;
+                mutable std::map<int,bool> _initMap; ///< map of shader initialization per context
+                mutable std::map<int,osg::ref_ptr<osg::Program> > _programMap; ///< shader program
+                mutable std::map<int,osg::ref_ptr<osg::Geometry> > _geometryMap; ///< screen filling quad
+                mutable bool odd; ///< draw to odd or even lines
+                mutable bool first; ///< if first to draw, clear color/depth buffers
+                static OpenThreads::Mutex _initLock; ///< lock for multithread init ops
+                osg::Texture2D * _texture; ///< texture of rendered eye
         };
 
         /**
@@ -94,12 +102,12 @@ class ScreenInterlacedTopBottom : public ScreenBase
         osg::Matrix _projLeft; ///< left eye projection matrix
         osg::Matrix _projRight; ///< right eye projection matrix
 
-        osg::ref_ptr<osg::Camera> _cameraL; ///< osg::Camera for this screen
-        osg::ref_ptr<osg::Camera> _cameraR;
-        osg::ref_ptr<osg::Texture2D> _colorTextureL;
-        osg::ref_ptr<osg::Texture2D> _colorTextureR;
+        osg::ref_ptr<osg::Camera> _cameraL; ///< osg::Camera for left eye
+        osg::ref_ptr<osg::Camera> _cameraR; ///< osg::Camera for right eye
+        osg::ref_ptr<osg::Texture2D> _colorTextureL; ///< texture render target of left eye
+        osg::ref_ptr<osg::Texture2D> _colorTextureR; ///< texture render target of right eye
 
-        osg::Image * image;
+        //osg::Image * image;
 };
 
 }

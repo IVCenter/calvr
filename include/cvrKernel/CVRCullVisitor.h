@@ -1,3 +1,7 @@
+/**
+ * @file CVRCullVisitor.h
+ */
+
 #ifndef CVR_CULL_VISITOR_H
 #define CVR_CULL_VISITOR_H
 
@@ -12,6 +16,12 @@
 namespace cvr
 {
 
+/**
+ * @brief Modified osg cull visitor
+ *
+ * Uses CalVR defined node masks to force each object to draw the first
+ *  time it is seen
+ */
 class CVRCullVisitor : public osgUtil::CullVisitor
 {
     public:

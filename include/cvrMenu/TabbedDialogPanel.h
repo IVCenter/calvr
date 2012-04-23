@@ -156,16 +156,16 @@ class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu
     protected:
         void menuCallback(MenuItem * item);
 
-        MenuTextButtonSet * _textButtonSet;
+        MenuTextButtonSet * _textButtonSet; ///< MenuItem for tab buttons
 
-        std::map<std::string,MenuItem *> _menuItemMap;
+        std::map<std::string,MenuItem *> _menuItemMap; ///< map of tab names to MenuItem
 
         std::string _title;
         std::string _configName;
 
-        std::string _activeTab;
+        std::string _activeTab; ///< currently active tab name
 
-        float _menuWidth;
+        float _menuWidth; ///< width of dialog panel
 };
 
 }

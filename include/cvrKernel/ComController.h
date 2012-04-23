@@ -151,9 +151,9 @@ class CVRKERNEL_EXPORT ComController
         cvr::MultiListenSocket * _listenSocket; ///< sock that listens for slave node connections
         std::map<int,std::string> _startupMap; ///< startup commands indexed by node number
 
-        bool _multicastUsable;
-        CVRMulticastSocket * _masterMCSocket;
-        CVRMulticastSocket * _slaveMCSocket;
+        bool _multicastUsable; ///< is a multicast socket set up
+        CVRMulticastSocket * _masterMCSocket; ///< multicast socket for master node
+        CVRMulticastSocket * _slaveMCSocket; ///< multicast socket for render node
 
         static ComController * _myPtr; ///< static self pointer
 

@@ -220,6 +220,7 @@ osg::Texture2D * BoardMenuGeometry::loadIcon(std::string name)
     {
         if(_iconCache[name])
         {
+	    _iconCache[name]->setResizeNonPowerOfTwoHint(false);
             return _iconCache[name].get();
         }
         else

@@ -1,3 +1,7 @@
+/**
+ * @file TextureVisitors.h
+ */
+
 #ifndef CALVR_TEXTURE_VISITORS_H
 #define CALVR_TEXTURE_VISITORS_H
 
@@ -6,9 +10,17 @@
 namespace cvr
 {
 
+/**
+ * @brief Node visitor that sets the texture resize hint for all textures
+ * in a subgraph
+ */
 class TextureResizeNonPowerOfTwoHintVisitor : public osg::NodeVisitor
 {
     public:
+        /**
+         * @brief Constructor
+         * @param hint value to set for texture resize hint
+         */
         TextureResizeNonPowerOfTwoHintVisitor(bool hint);
         ~TextureResizeNonPowerOfTwoHintVisitor();
 

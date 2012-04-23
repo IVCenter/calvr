@@ -29,7 +29,6 @@ ENDIF(VRPN_FOUND)
 SET(LIB_SRC_FILES
     ${EXTRA_SOURCE}
     TrackingManager.cpp
-    TrackerBase.cpp
     TrackerShmem.cpp
     TrackerSlave.cpp
     TrackerMouse.cpp

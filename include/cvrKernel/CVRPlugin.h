@@ -51,6 +51,16 @@ class CVRPlugin
         {
         }
 
+        /**
+         * @brief Interface function for CalVR events
+         * @param event InteractionEvent to process
+         * @return if true, the event is consumed and does not continue to 
+         *  be processed
+         *
+         * Use the InteractionEvent's as functions to determine the event type
+         * and if you want to use it.  If you want to keep others from using 
+         * this event after you, return true.
+         */
         virtual bool processEvent(InteractionEvent * event)
         {
             return false;

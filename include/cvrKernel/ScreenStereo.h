@@ -66,10 +66,17 @@ class ScreenStereo : public ScreenBase
 
         virtual void adjustViewportCoords(int & x, int & y);
 
+        /**
+         * @brief Get the currently set osg stereo mode
+         */
         osg::DisplaySettings::StereoMode getStereoMode()
         {
             return _stereoMode;
         }
+
+        /**
+         * @brief Set the osg stereo mode for this screen
+         */
         void setStereoMode(osg::DisplaySettings::StereoMode sm);
 
     protected:

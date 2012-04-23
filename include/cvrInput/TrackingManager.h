@@ -198,12 +198,24 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void generateThreadButtonEvents();
 
+        /**
+         * @brief Generate valuator events for non-threaded hands
+         */
         void generateValuatorEvents();
 
+        /**
+         * @brief Generate valuator events for threaded hands
+         */
         void generateThreadValuatorEvents();
 
+        /**
+         * @brief Generate position events for non-threaded hands
+         */
         void generatePositionEvents();
 
+        /**
+         * @brief Generate position events for threaded hands
+         */
         void generateThreadPositionEvents();
 
         /**
@@ -222,6 +234,9 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void setGenHandDefaultButtonEvents();
 
+        /**
+         * @brief Get if a given hand is being updated by the tracking thread
+         */
         bool getIsHandThreaded(int hand);
 
         /**
@@ -281,17 +296,17 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<unsigned int> _lastHandButtonMask; ///< list of last sampled button mask for each hand
         std::vector<unsigned int> _rawButtonMask; ///< list of current raw button masks from tracker
         std::vector<std::vector<unsigned int> > _handStationFilterMask; ///< collection of masks used to assign buttons to hands
-        std::vector<SceneManager::PointerGraphicType> _handGraphicType;
-        std::vector<Navigation::NavImplementation> _handNavImplementation;
-        std::vector<bool> _handGenPositionEvents;
+        std::vector<SceneManager::PointerGraphicType> _handGraphicType; ///< the graphic to use for display of a hand
+        std::vector<Navigation::NavImplementation> _handNavImplementation; ///< navigation type used for each hand
+        std::vector<bool> _handGenPositionEvents; ///< if the tracking system should create position events for a hand
         std::vector<std::vector<float> > _valuatorList; ///< list of current valuator values
 
-        std::vector<int> _numEventValuators;
-        std::vector<std::vector<std::pair<int,int> > > _eventValuatorAddress;
-        std::vector<std::vector<ValuatorType> > _eventValuatorType;
-        std::vector<std::vector<float> > _eventValuators;
-        std::vector<std::vector<double> > _eventValuatorTime;
-        std::vector<std::map<int,float> > _lastEventValuators;
+        std::vector<int> _numEventValuators; ///< number of valuator for each hand
+        std::vector<std::vector<std::pair<int,int> > > _eventValuatorAddress; ///< system/index pair address for each hand valuator
+        std::vector<std::vector<ValuatorType> > _eventValuatorType; ///< type of each valuator
+        std::vector<std::vector<float> > _eventValuators; ///< current value of each valuator
+        std::vector<std::vector<double> > _eventValuatorTime; ///< time since last valuator event was created
+        std::vector<std::map<int,float> > _lastEventValuators; ///< previous value of valuator, used for CHANGE type
 
         std::vector<std::vector<bool> > _genHandDefaultButtonEvents; ///< lookup to see if a hand button should have default events generated
 
