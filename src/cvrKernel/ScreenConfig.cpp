@@ -20,7 +20,7 @@
 #include <cstring>
 
 #ifdef WITH_INTERLEAVER
-#include <kernel/ScreenLenticular.h>
+#include <cvrKernel/ScreenLenticular.h>
 #endif
 
 #ifdef WIN32
