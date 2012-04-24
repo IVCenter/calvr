@@ -4,8 +4,8 @@
 #undef CVRUTIL_LIBRARY
 #endif
 
-#include <util/MultiListenSocket.h>
-#include <util/CVRSocket.h>
+#include <cvrUtil/MultiListenSocket.h>
+#include <cvrUtil/CVRSocket.h>
 
 #include <osg/ArgumentParser>
 
