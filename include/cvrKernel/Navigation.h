@@ -84,6 +84,21 @@ class CVRKERNEL_EXPORT Navigation
          */
         NavMode getButtonMode(int button);
 
+        void setSnapToGround(bool snap)
+        {
+            _snapToGround = snap;
+        }
+
+        bool getSnapToGround()
+        {
+            return _snapToGround;
+        }
+
+        float getFloorOffset()
+        {
+            return _floorOffset;
+        }
+
         /**
          * @brief Set a scale value for the translational movement in the nav modes
          */
@@ -120,6 +135,9 @@ class CVRKERNEL_EXPORT Navigation
     protected:
         Navigation();
         virtual ~Navigation();
+
+        bool _snapToGround;
+        float _floorOffset;
 
         bool _eventActive; ///< if there is currenly active navigation
         int _activeHand;    ///< hand for the active event

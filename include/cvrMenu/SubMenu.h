@@ -55,10 +55,27 @@ class CVRMENU_EXPORT SubMenu : public MenuItem
         virtual void addItem(MenuItem * item);
 
         /**
+         * @brief Add a MenuItem to this submenu at a given position
+         * @param item MenuItem to add
+         *
+         * If the position is out of range, item is added to the end
+         */
+        virtual void addItem(MenuItem * item, int position);
+
+        /**
          * @brief Remove a MenuItem from this submenu
          * @param item MenuItem to remove
          */
         virtual void removeItem(MenuItem * item);
+
+        /**
+         * @brief Get the position of a MenuItem in the SubMenu
+         * @param item MenuItem to locate
+         * @return position of MenuItem
+         *
+         * If the item is not in the menu, -1 is returned
+         */
+        virtual int getItemPosition(MenuItem * item);
 
         /**
          * @brief Get this menu's child at location i

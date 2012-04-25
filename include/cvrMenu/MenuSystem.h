@@ -6,6 +6,7 @@
 
 #include <cvrMenu/Export.h>
 #include <cvrMenu/MenuSystemBase.h>
+#include <cvrMenu/SubMenu.h>
 
 class IsectInfo;
 
@@ -14,7 +15,6 @@ namespace cvr
 
 struct InteractionEvent;
 class MenuBase;
-class SubMenu;
 class MenuManager;
 
 /**
@@ -44,6 +44,14 @@ class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
          * @brief Remove an item from the main SubMenu
          */
         void removeMenuItem(MenuItem * item);
+
+        /**
+         * @brief Get the root SubMenu
+         */
+        SubMenu * getMenu()
+        {
+            return _rootMenu;
+        }
 
         /**
          * @brief Function called before the Isect results are processed

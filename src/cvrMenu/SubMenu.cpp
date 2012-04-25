@@ -39,6 +39,32 @@ void SubMenu::addItem(MenuItem * item)
     _dirty = true;
 }
 
+void SubMenu::addItem(MenuItem * item, int position)
+{
+    if(!item)
+    {
+	return;
+    }
+
+    if(getItemPosition(item) >= 0)
+    {
+	return;
+    }
+
+    if(position < 0 || position >= _children.size())
+    {
+	_children.push_back(item);
+    }
+    else
+    {
+	std::vector<MenuItem*>::iterator it = _children.begin();
+	it += position;
+	_children.insert(it,item);
+    }
+
+    _dirty = true;
+}
+
 void SubMenu::removeItem(MenuItem * item)
 {
     for(std::vector<MenuItem*>::iterator it = _children.begin();
@@ -51,6 +77,18 @@ void SubMenu::removeItem(MenuItem * item)
             return;
         }
     }
+}
+
+int SubMenu::getItemPosition(MenuItem * item)
+{
+    for(int i = 0; i < _children.size(); i++)
+    {
+	if(_children[i] == item)
+	{
+	    return i;
+	}
+    }
+    return -1;
 }
 
 MenuItem * SubMenu::getChild(int i)

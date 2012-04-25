@@ -6,6 +6,7 @@
 #include <cvrKernel/ScreenConfig.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/PluginHelper.h>
+#include <cvrUtil/Intersection.h>
 
 #include <iostream>
 #include <cmath>
@@ -18,6 +19,7 @@ Navigation * Navigation::_myPtr = NULL;
 
 Navigation::Navigation()
 {
+    _snapToGround = false;
     _eventActive = false;
     _activeHand = 0;
     _scale = 1.0;
@@ -104,6 +106,8 @@ bool Navigation::init()
 
 	index++;
     }
+
+    _floorOffset = ConfigManager::getFloat("value","FloorOffset",1500);
 
     return true;
 }
@@ -593,6 +597,30 @@ void NavTracker::processNav(NavMode nm, osg::Matrix & mat)
             m.makeTranslate(offset + origin);
             m = objmat * osg::Matrix::translate(-origin) * turn * m;
             SceneManager::instance()->setObjectMatrix(m);
+
+	    if(Navigation::instance()->getSnapToGround())
+	    {
+		float thresh = 400;
+		if(mat.getTrans().z() - _eventPos.z() < thresh)
+		{
+		    float range = 200;
+		    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
+
+		    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
+		    if(isecvec.size())
+		    {
+			if(isecvec[0].point.z() < -Navigation::instance()->getFloorOffset() + range)
+			{
+			    float adjust = isecvec[0].point.z() + Navigation::instance()->getFloorOffset();
+			    osg::Matrix adjMat;
+			    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
+			    m = m * adjMat;
+			    SceneManager::instance()->setObjectMatrix(m);
+			}
+		    }
+		}
+	    }
+
             break;
         }
         case FLY:
