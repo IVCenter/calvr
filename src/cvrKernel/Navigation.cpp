@@ -601,9 +601,9 @@ void NavTracker::processNav(NavMode nm, osg::Matrix & mat)
 	    if(Navigation::instance()->getSnapToGround())
 	    {
 		float thresh = 400;
-		if(mat.getTrans().z() - _eventPos.z() < thresh)
+		if(fabs(mat.getTrans().z() - _eventPos.z()) < thresh)
 		{
-		    float range = 200;
+		    float range = 300;
 		    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
 
 		    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
