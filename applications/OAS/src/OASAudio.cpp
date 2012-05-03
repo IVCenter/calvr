@@ -151,7 +151,7 @@ Source::Source(ALuint buffer)
     _init();
 
     // Clear OpenAL error state
-    alGetError();
+    _clearError();
 
     // Generate source
     alGenSources(1, &_id);
@@ -162,13 +162,7 @@ Source::Source(ALuint buffer)
     // Set the source to be relative to the listener
     alSourcei(_id, AL_SOURCE_RELATIVE, AL_TRUE);
 
-    ALenum error = alGetError();
-
-    // If error didn't occur
-    if (AL_NO_ERROR == error)
-    {
-        _isValid = true;
-    }
+    _isValid = _wasOperationSuccessful();
 }
 
 Source::Source()
@@ -178,8 +172,11 @@ Source::Source()
 
 Source::~Source()
 {
+    _state = ST_UNKNOWN;
+    if (isValid())
+        alDeleteSources(1, &_id);
+   
     _isValid = false;
-    alDeleteSources(1, &_id);
 }
 
 // private
@@ -193,6 +190,7 @@ void Source::_init()
     _directionX = _directionY = _directionZ = 0.0;
     _gain = 1.0;
     _isValid = false;
+    _state = ST_UNKNOWN;
 }
 
 // private
@@ -201,6 +199,23 @@ ALuint Source::_generateNextHandle()
     _nextHandle++;
 
     return _nextHandle;
+}
+
+// private
+void Source::_clearError()
+{
+    // Error is retrieved and discarded
+    alGetError();
+}
+
+// private
+bool Source::_wasOperationSuccessful()
+{
+    // If there was no error, return true
+    if (AL_NO_ERROR == alGetError())
+        return true;
+    else
+        return false;
 }
 
 // static, public
@@ -219,6 +234,11 @@ bool Source::isDirectional() const
     return _isDirectional;
 }
 
+bool Source::isLooping() const
+{
+    return _isLooping;
+}
+
 ALuint Source::getHandle() const
 {
     return _handle;
@@ -229,125 +249,244 @@ ALuint Source::getBuffer() const
     return _buffer;
 }
 
-void Source::play()
+bool Source::play()
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSourcePlay(_id);
+
+        // Change state and return true iff operation successful
+        if (_wasOperationSuccessful())
+        {
+            float offset = 0, prevOffset = 0;
+            ALint state;
+            alSourcef(_id, AL_SEC_OFFSET, 1.0);
+/*
+            do {
+                alGetSourcef(_id, AL_SEC_OFFSET, &offset);
+                alGetSourcei(_id, AL_SOURCE_STATE, &state);
+                if (prevOffset != offset)
+                {
+                    std::cerr << offset << std::endl;
+                    prevOffset = offset;
+                }
+            } while (state == AL_PLAYING);
+*/
+            _state = ST_PLAYING;
+            return true;
+        }
     }
+    
+    return false;
 }
 
-void Source::stop()
+bool Source::stop()
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSourceStop(_id);
+
+        // Change state and return true iff operation successful
+        if (_wasOperationSuccessful())
+        {
+            _state = ST_STOPPED;
+            return true;
+        }
     }
+    
+    return false;
 }
 
-void Source::setPosition(ALfloat x, ALfloat y, ALfloat z)
+bool Source::setPosition(ALfloat x, ALfloat y, ALfloat z)
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSource3f(_id, AL_POSITION, x, y, z);
 
-        _positionX = x;
-        _positionY = y;
-        _positionZ = z;
-
+        if (_wasOperationSuccessful())
+        {
+            _positionX = x;
+            _positionY = y;
+            _positionZ = z;
+            return true;
+        }
     }
+
+    return false;
 }
 
-void Source::setGain(ALfloat gain)
+bool Source::setGain(ALfloat gain)
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSourcef(_id, AL_GAIN, gain);
-        _gain = gain;
+
+        if (_wasOperationSuccessful())
+        {
+            _gain = gain;
+            return true;
+        }
     }
+
+    return false;
 }
 
-void Source::setLoop(ALint isLoop)
+bool Source::setLoop(ALint isLoop)
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
-        _isLooping = ((isLoop != 0) ? AL_TRUE : AL_FALSE);
-        alSourcei(_id, AL_LOOPING, _isLooping);
+        alSourcei(_id, AL_LOOPING, (isLoop != 0) ? AL_TRUE : AL_FALSE);
+        
+        if (_wasOperationSuccessful())
+        {
+            _isLooping = ((isLoop != 0) ? AL_TRUE : AL_FALSE);
+            return true;
+        }
     }
+
+    return false;
 }
 
-void Source::setVelocity(ALfloat x, ALfloat y, ALfloat z)
+bool Source::setVelocity(ALfloat x, ALfloat y, ALfloat z)
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSource3f(_id, AL_VELOCITY, x, y, z);
 
-        _velocityX = x;
-        _velocityY = y;
-        _velocityZ = z;
+        if (_wasOperationSuccessful())
+        {
+            _velocityX = x;
+            _velocityY = y;
+            _velocityZ = z;
+            return true;
+        }
     }
+
+    return false;
 }
 
-void Source::setDirection(ALfloat x, ALfloat y, ALfloat z)
+bool Source::setDirection(ALfloat x, ALfloat y, ALfloat z)
 {
     if (isValid())
     {
         // Clear OpenAL error state
-        alGetError();
+        _clearError();
 
         alSource3f(_id, AL_DIRECTION, x, y, z);
 
-        _directionX = x;
-        _directionY = y;
-        _directionZ = z;
+        if (_wasOperationSuccessful())
+        {
+            _directionX = x;
+            _directionY = y;
+            _directionZ = z;
 
-        // If zero vector, i.e. no direction, then set source as non-directional
-        if ((x == 0.0) && (y == 0.0) && (z == 0.0))
-        {
-            _isDirectional = false;
-        }
-        // Else, the vector specifies some direction. 
-        // Set directional cone properties if they weren't already set
-        else if (!isDirectional())
-        {
-            // Set the inner and outer cone angles
-            alSourcef(_id, AL_CONE_INNER_ANGLE, Source::_kConeInnerAngle);
-            alSourcef(_id, AL_CONE_OUTER_ANGLE, Source::_kConeOuterAngle);
-            _isDirectional = true;
+            // If zero vector, i.e. no direction, then set source as non-directional
+            if ((x == 0.0) && (y == 0.0) && (z == 0.0))
+            {
+                _isDirectional = false;
+            }
+            // Else, the vector specifies some direction. 
+            // Set directional cone properties if they weren't already set
+            else if (!isDirectional())
+            {
+                // Set the inner and outer cone angles
+                alSourcef(_id, AL_CONE_INNER_ANGLE, Source::_kConeInnerAngle);
+                alSourcef(_id, AL_CONE_OUTER_ANGLE, Source::_kConeOuterAngle);
+                _isDirectional = true;
+            }
+
+            return true;
         }
     }
+
+    return false;
 }
 
-ALfloat Source::getDirectionX()
+bool Source::deleteSource()
+{
+    if (isValid())
+    {
+        // Clear OpenAL error state
+        _clearError();
+
+        alDeleteSources(1, &_id);
+
+        if (_wasOperationSuccessful())
+        {
+            _state = ST_DELETED;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Source::SourceState Source::getState() const
+{
+    return _state;
+}
+
+float Source::getPositionX() const
+{
+    return _positionX;
+}
+
+float Source::getPositionY() const
+{
+    return _positionY;
+}
+
+float Source::getPositionZ() const
+{
+    return _positionZ;
+}
+
+float Source::getDirectionX() const
 {
     return _directionX;
 }
 
-ALfloat Source::getDirectionY()
+float Source::getDirectionY() const
 {
     return _directionY;
 }
 
-ALfloat Source::getDirectionZ()
+float Source::getDirectionZ() const
 {
     return _directionZ;
 }
+
+float Source::getVelocityX() const
+{
+    return _velocityX;
+}
+
+float Source::getVelocityY() const
+{
+    return _velocityY;
+}
+
+float Source::getVelocityZ() const
+{
+    return _velocityZ;
+}
+
 

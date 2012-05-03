@@ -71,7 +71,7 @@ private:
 /**
  * Contains the sound from one particular file.
  */
-class Buffer
+class AudioBuffer
 {
 public:
     
@@ -90,9 +90,9 @@ public:
      */
     bool isValid() const;
 
-    Buffer(const std::string& filename);
-    Buffer();
-    ~Buffer();
+    AudioBuffer(const std::string& filename);
+    AudioBuffer();
+    ~AudioBuffer();
 
 private:
     void _init();  
@@ -108,6 +108,23 @@ class Source
 {
 public:
     /**
+     * The state is defined as follows:
+     * UNKNOWN: state is unknown
+     * PLAYING: source is playing or has finished playing all the way through
+     * PAUSED:  source is paused at a specific point, and playback will resume from here
+     * STOPPED: source is stopped and playback will resume from the beginning
+     * DELETED: source is in the process of being deleted
+     */
+    enum SourceState
+    {
+        ST_UNKNOWN = 0,
+        ST_PLAYING,
+        ST_PAUSED,
+        ST_STOPPED,
+        ST_DELETED
+    };
+
+    /**
      * @brief Get the handle for this source
      */
     ALuint getHandle() const;
@@ -122,55 +139,85 @@ public:
      */
     bool isValid() const;
 
-    /**
-     * @brief Return if the source is directional or not
-     */
-    bool isDirectional() const;
 
     /**
      * @brief Play the source all the way through
      */
-    void play();
+    bool play();
 
     /**
-     * @brief Stop playing the source
+     * @brief Stop playing the source. Playback will resume from the beginning
      */
-    void stop();
+    bool stop();
 
     /**
      * @brief Set the position of the source. Units are arbitrary and relative only to each other
      */
-    void setPosition(ALfloat x, ALfloat y, ALfloat z);
+    bool setPosition(ALfloat x, ALfloat y, ALfloat z);
 
     /**
      * @brief Set the gain for this audio source.
      * @param gain A gain of 0.0 will mute the source. A gain of 1.0 is the default.
      */
-    void setGain(ALfloat gain);
+    bool setGain(ALfloat gain);
 
     /**
      * @brief Set the source to play in a continuous loop, until it is stopped
      */
-    void setLoop(ALint isLoop);
+    bool setLoop(ALint isLoop);
 
     /**
      * @brief Set the velocity of the source.
      */
-    void setVelocity(ALfloat x, ALfloat y, ALfloat z);
+    bool setVelocity(ALfloat x, ALfloat y, ALfloat z);
 
     /**
      * @brief Set the direction of the source
      */
-    void setDirection(ALfloat x, ALfloat y, ALfloat z);
+    bool setDirection(ALfloat x, ALfloat y, ALfloat z);
 
+    /**
+     * @brief Deletes the audio resources allocated for this sound source
+     */
+    bool deleteSource();
+
+    /**
+     * @brief Get the current state of the source
+     */
+    SourceState getState() const;
+
+    /**
+     * @brief Get the current position of the source
+     */
+    float getPositionX() const;
+    float getPositionY() const;
+    float getPositionZ() const;
 
     /**
      * @brief Get the x, y, z direction
      */
-    ALfloat getDirectionX();
-    ALfloat getDirectionY();
-    ALfloat getDirectionZ();
+    float getDirectionX() const;
+    float getDirectionY() const;
+    float getDirectionZ() const;
 
+    /**
+     * @brief Get the current direction of the source
+     */
+    float getVelocityX() const;
+    float getVelocityY() const;
+    float getVelocityZ() const;
+
+    /**
+     * @brief Determine if the source is looping or not
+     */
+    bool isLooping() const;
+
+    /**
+     * @brief Determine if the source is directional or not
+     */
+    bool isDirectional() const;
+
+    
     /**
      * @brief Resets the handle counter, and any other state applicable to all sources
      */
@@ -183,6 +230,8 @@ public:
 private:
     void _init();
     ALuint _generateNextHandle();
+    void _clearError();
+    bool _wasOperationSuccessful();
 
     /*
      * 'id' is used to interact with the OpenAL library, and the values are arbitrary.
@@ -197,10 +246,13 @@ private:
     ALuint _handle;
 
     ALuint _buffer;
+    SourceState _state;
+
     ALfloat _positionX, _positionY, _positionZ;
     ALfloat _velocityX, _velocityY, _velocityZ;
     ALfloat _directionX, _directionY, _directionZ;
     ALfloat _gain;
+    
     ALint _isLooping;
     bool _isValid;
     bool _isDirectional;

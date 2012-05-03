@@ -8,26 +8,22 @@
 using namespace oas;
 
 // Statics
-Fl_Double_Window*   ServerWindow::_window = NULL;
-Fl_Tabs*            ServerWindow::_tabs = NULL;
-Fl_Group*           ServerWindow::_tabGroup1 = NULL;
-Fl_Browser*         ServerWindow::_browser = NULL;
-Fl_Group*           ServerWindow::_tabGroup2 = NULL;
-Fl_Group*           ServerWindow::_tabGroup3 = NULL;
-Fl_Group*           ServerWindow::_tabGroup4 = NULL;
+Fl_Double_Window*   		ServerWindow::_window = NULL;
+Fl_Tabs*            		ServerWindow::_tabs = NULL;
+Fl_Group*           		ServerWindow::_tabGroup1 = NULL;
+ServerWindowLogBrowser* 	ServerWindow::_browser = NULL;
+Fl_Group*           		ServerWindow::_tabGroup2 = NULL;
+ServerWindowTable*          ServerWindow::_table = NULL;
+Fl_Group*           		ServerWindow::_tabGroup3 = NULL;
+Fl_Group*           		ServerWindow::_tabGroup4 = NULL;
 
-pthread_t           ServerWindow::_windowThread;
-bool                ServerWindow::_isInitialized = false;
-unsigned int        ServerWindow::_browserSize = 1;
+pthread_t                   ServerWindow::_windowThread;
+bool                        ServerWindow::_isInitialized = false;
 
-void               (*ServerWindow::_atExitCallback)(void) = NULL;
-const unsigned int  ServerWindow::_kWindowWidth = 800;
-const unsigned int  ServerWindow::_kWindowHeight = 600;
-const unsigned int  ServerWindow::_kTabHeight = 25;
-const char* const   ServerWindow::_boldBrowserFormatter     = "@b";
-const char* const   ServerWindow::_italicsBrowserFormatter  = "@i";
-const char* const   ServerWindow::_nullBrowserFormatter     = "@.";
-const int     ServerWindow::_browserFormatterLength   = 2;
+void                      (*ServerWindow::_atExitCallback)(void) = NULL;
+const unsigned int          ServerWindow::_kWindowWidth = 800;
+const unsigned int          ServerWindow::_kWindowHeight = 600;
+const unsigned int          ServerWindow::_kTabHeight = 25;
 
 // public, static
 bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (void) = NULL)
@@ -58,7 +54,7 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
     ServerWindow::_tabGroup1->tooltip("This tab displays the log window.");
 
     // Create the browser
-	ServerWindow::_browser = new Fl_Browser(10, 
+	ServerWindow::_browser = new ServerWindowLogBrowser(10,
 											ServerWindow::_kTabHeight + 10, 
 											ServerWindow::_kWindowWidth, 
 											ServerWindow::_kWindowHeight - ServerWindow::_kTabHeight);
@@ -73,6 +69,13 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
                                             ServerWindow::_kWindowHeight - ServerWindow::_kTabHeight,
                                             "Table");
     ServerWindow::_tabGroup2->tooltip("This tab displays information about the server.");
+
+    // Create the table
+    ServerWindow::_table = new ServerWindowTable(10,
+                                                 ServerWindow::_kTabHeight + 10,
+                                                 ServerWindow::_kWindowWidth,
+                                                 ServerWindow::_kWindowHeight - ServerWindow::_kTabHeight);
+
     ServerWindow::_tabGroup2->hide();
     ServerWindow::_tabGroup2->end();
 
@@ -95,9 +98,7 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
     ServerWindow::_window->end();
 	ServerWindow::_window->show(argc, argv);
 	
-    ServerWindow::_browserSize = 1;
-	ServerWindow::_browser->add("Starting up the OpenAL Audio Server...");
-    ServerWindow::_incrementBrowserSize();
+	ServerWindow::addToBrowser("Starting up the OpenAL Audio Server...");
 
     // This lock() should be the first Fl::lock() called during initialization.
     // It lets fltk know to enable multi-threading support for the GUI,
@@ -136,67 +137,12 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
 }
 
 // public, static
-void ServerWindow::addToBrowser(char *line)
-{
-    // If the window wasn't initialized, do nothing
-    if (!ServerWindow::isInitialized())
-        return;
-
-    // Wait for a lock on the GUI environment in case other threads are using it
-    Fl::lock();
-
-    // FlBrowser does not like newline characters in the string.
-    // So, we split the string into multiple lines for each linefeed character that is found.
-    char *pNewline, *pStr = line;
-    int numNewLines = 0;
-
-    // Keep looping until we don't find any newline characters in the string
-    while (NULL != (pNewline = strchr(pStr, '\n')))
-    {
-        // Set the newline character to the null character
-        *pNewline = '\0';
-        // Add pStr to the browser window
-        ServerWindow::_browser->add(pStr);
-        ServerWindow::_incrementBrowserSize();
-        // Move pStr
-        pStr = pNewline + 1;
-        numNewLines++;
-    }
-    
-    // If there were no newline characters found, just add the entire line
-    if (0 == numNewLines)
-    {
-        ServerWindow::_browser->add(line);
-        ServerWindow::_incrementBrowserSize();
-    }
-
-    // Scroll the browser to the bottom, as necessary
-    ServerWindow::_browser->bottomline(ServerWindow::getBrowserSize());
-
-    // Release the lock
-    Fl::unlock();
-    // Let the main thread know that the window should be redrawn
-    Fl::awake();
-}
-
-// public, static
-void ServerWindow::replaceBottomLine(const char *line)
-{
-    // Wait for a lock on the GUI
-    Fl::lock();
-
-    // Replaces the text on the bottommost line
-    ServerWindow::_browser->text(ServerWindow::getBrowserSize(), line);
-    
-    // Release lock, let main thread know
-    Fl::unlock();
-    Fl::awake();
-}
-
-// public, static
 void* ServerWindow::_windowLoop(void *parameter)
 {
-
+    while (1)
+    {
+        ServerWindow::_table->update();
+    }
     return NULL;
 }
 
@@ -204,42 +150,6 @@ void* ServerWindow::_windowLoop(void *parameter)
 bool ServerWindow::isInitialized()
 {
     return _isInitialized;
-}
-
-// public, static
-const char* const ServerWindow::getBoldBrowserFormatter()
-{
-    return ServerWindow::_boldBrowserFormatter;
-}
-
-// public, static
-const char* const ServerWindow::getItalicsBrowserFormatter()
-{
-    return ServerWindow::_italicsBrowserFormatter;
-}
-
-// public, static
-const char* const ServerWindow::getNullBrowserFormatter()
-{
-    return ServerWindow::_nullBrowserFormatter;
-}
-
-// public, static
-const int ServerWindow::getBrowserFormatterLength()
-{
-    return ServerWindow::_browserFormatterLength;
-}
-
-// private, static
-void ServerWindow::_incrementBrowserSize()
-{
-    ServerWindow::_browserSize++;
-}
-
-// private, static
-int ServerWindow::getBrowserSize()
-{
-    return ServerWindow::_browserSize;
 }
 
 // private, static

@@ -9,8 +9,10 @@
 #include <map>
 #include <iostream>
 #include <cmath>
+#include <queue>
 #include <AL/alut.h>
-#include "OASAudio.h"
+#include "OASAudioSource.h"
+#include "OASAudioBuffer.h"
 #include "OASLogger.h"
 
 namespace oas
@@ -21,7 +23,6 @@ namespace oas
  * units.
  */
 
-/** @TODO Change BufferMap to use C++ strings instead of C strings */
 //class StringComparison
 //{
 //    public:
@@ -29,16 +30,16 @@ namespace oas
 //};
 
 // Buffer Map types
-typedef std::map<std::string, Buffer*>      BufferMap;
-typedef BufferMap::iterator                 BufferMapIterator;
-typedef BufferMap::const_iterator           BufferMapConstIterator;
-typedef std::pair<std::string, Buffer*>     BufferPair;
+typedef std::map<std::string, AudioBuffer*>     BufferMap;
+typedef BufferMap::iterator                     BufferMapIterator;
+typedef BufferMap::const_iterator               BufferMapConstIterator;
+typedef std::pair<std::string, AudioBuffer*>    BufferPair;
 
 // Source Map types
-typedef std::map<ALuint, Source*>           SourceMap;
-typedef SourceMap::iterator                 SourceMapIterator;
-typedef SourceMap::const_iterator           SourceMapConstIterator;
-typedef std::pair<ALuint, Source*>          SourcePair;
+typedef std::map<ALuint, AudioSource*>          SourceMap;
+typedef SourceMap::iterator                     SourceMapIterator;
+typedef SourceMap::const_iterator               SourceMapConstIterator;
+typedef std::pair<ALuint, AudioSource*>         SourcePair;
 
 class AudioHandler
 {
@@ -62,12 +63,19 @@ public:
      */
     static ALuint createSource(const std::string& filename);
 
+    /**
+     * @brief Retrieve a copy of the most recently modified source.
+     * @retval NULL if none exists
+     */
+    static const AudioSource* getRecentlyModifiedSource();
 
     /**
      * @note:
      * The following functions operate on existing sources. If the given source handle is invalid,
      * there is no change made to the OpenAL state, and the function does nothing.
      *
+     * If the operation is successful, the particular source is marked as the most recently modified source.
+     * The most recently modified source can then be retrieved with the appropriate function.
      */
 
     /**
@@ -123,13 +131,18 @@ public:
      */
     static void setSourceDirection(const ALuint source, const ALfloat angleInDegrees);
 
+
 private:
+    static AudioSource* _getSource(const ALuint source);
+    static void _clearRecentlyModifiedSource();
+    static void _setRecentlyModifiedSource(const AudioSource*);
+
     static BufferMap _bufferMap;
     static SourceMap _sourceMap;
 
-    static Source* _recentSource;
+    static AudioSource* _recentSource;
 
-    static Source* _getSource(const ALuint source);
+    static const AudioSource *_recentlyModifiedSource;
 
     static std::string _deviceString;
     static ALCdevice* _device;

@@ -477,8 +477,6 @@ void SocketHandler::_addToIncomingMessages(Message *message)
 // static, public
 void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &destination)
 {
-    struct timeval start, end;
-
     // lock mutex
     pthread_mutex_lock(&SocketHandler::_inMutex);
 
@@ -501,7 +499,6 @@ void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &dest
     }
     // unlock mutex
     pthread_mutex_unlock(&SocketHandler::_inMutex);
-
 }
 
 // static, public

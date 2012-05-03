@@ -104,8 +104,6 @@ public:
     Message(const Message& other);
     ~Message();
 
-    void _print();
-
     struct timeval start;
     struct timeval added;
     struct timeval retrieved;

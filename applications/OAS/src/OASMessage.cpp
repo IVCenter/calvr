@@ -58,37 +58,6 @@ void Message::_init()
 }
 
 // private
-void Message::_print()
-{
-    char buf[2048], *bufPtr;
-    int writtenAmount;
-
-    writtenAmount = sprintf(buf,"\n--Printing Message Contents--\n"
-                                "Type: %d  Handle: %d  Filename: %s\n"
-                                "Parameters:\n"
-                                "int = %ld\n",
-                                _mtype, _handle, (_filename.empty() ? "(null)" : _filename.c_str()),
-                                _iParam);
-   
-    if (writtenAmount < 0)
-    {
-        std::cerr << "--ERROR: Unable to print message contents--\n";
-        return;
-    }
-
-    bufPtr = buf + writtenAmount;
-   
-    for (int i = 0; i < MAX_NUMBER_FLOAT_PARAM; i++)
-    {
-        writtenAmount = sprintf(bufPtr, "ALfloat #%d = % .3lf\n", i, _fParams[i]);
-        bufPtr += (writtenAmount > 0 ? writtenAmount : 0);
-    }
-
-    sprintf(bufPtr, "--Done Printing Message Contents--\n");
-    std::cerr << buf << std::endl; 
-}
-
-// private
 bool Message::_parseStringGetString(char* string, char*& pEnd, char*& result)
 {
     char *pChar;
@@ -97,7 +66,6 @@ bool Message::_parseStringGetString(char* string, char*& pEnd, char*& result)
     if (!pChar)
     {
         _errorType = MERROR_INCOMPLETE_MESSAGE;
-        _print();
         return false;
     }
     _errorType = MERROR_NONE;
@@ -117,7 +85,6 @@ bool Message::_parseStringGetLong(char *string, char*& pEnd, long& result)
     if (!pChar)
     {
         _errorType = MERROR_INCOMPLETE_MESSAGE;
-        _print();
         return false;
     }
    
@@ -127,7 +94,6 @@ bool Message::_parseStringGetLong(char *string, char*& pEnd, long& result)
     if (*endp)
     {
         _errorType = MERROR_BAD_FORMAT;
-        _print();
         return false;
     }
     
@@ -147,7 +113,6 @@ bool Message::_parseStringGetFloat(char *string, char*& pEnd, ALfloat& result)
     if (!pChar)
     {
         _errorType = MERROR_INCOMPLETE_MESSAGE;
-        _print();
         return false;
     }
 
@@ -158,7 +123,6 @@ bool Message::_parseStringGetFloat(char *string, char*& pEnd, ALfloat& result)
     if (*endp)
     {
         _errorType = MERROR_BAD_FORMAT;
-        _print();
         return false;
     }
 

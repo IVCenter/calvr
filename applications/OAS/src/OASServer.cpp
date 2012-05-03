@@ -11,7 +11,7 @@ oas::Server& oas::Server::getInstance()
 // private
 void oas::Server::_readConfigFile(int argc, char **argv)
 {
-    const std::string defaultConfigFileLocation = "/home/schowkwa/oas_config.xml";
+    const std::string defaultConfigFileLocation = "oas_config.xml";
     std::string configFile;
     bool fileExists = false;
 
@@ -221,7 +221,7 @@ void oas::Server::_processMessage(const Message &message)
         case Message::MT_QUIT:
             // Will need to release all audio resources and then re-initialize them
             oas::AudioHandler::release();
-
+            oas::ServerWindow::reset();
             // If for some reason initialization fails, try again
             while (!oas::AudioHandler::initialize(this->_serverInfo->getAudioDeviceString()))
             {
@@ -290,6 +290,8 @@ void oas::Server::initialize(int argc, char **argv)
 void* oas::Server::_serverLoop(void *parameter)
 {
     std::queue<Message*> messages;
+    const AudioSource *source;
+
     while (1)
     {
         // If there are no messages, populateQueueWithIncomingMessages() will block
@@ -302,6 +304,13 @@ void* oas::Server::_serverLoop(void *parameter)
             oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
             delete nextMessage;
             messages.pop();
+
+            source = oas::AudioHandler::getRecentlyModifiedSource();
+            if (NULL != source)
+            {
+                // Call ServerWindow method that will queue up the source
+                oas::ServerWindow::audioUnitWasModified(source);
+            }
         }
     }
 

@@ -5,11 +5,12 @@ using namespace oas;
 // Statics
 BufferMap       AudioHandler::_bufferMap;
 SourceMap       AudioHandler::_sourceMap;
-Source*         AudioHandler::_recentSource;
+AudioSource*         AudioHandler::_recentSource;
 
 std::string     AudioHandler::_deviceString;
 ALCdevice*      AudioHandler::_device;
 ALCcontext*     AudioHandler::_context;
+const AudioSource*   AudioHandler::_recentlyModifiedSource;
 
 // public, static
 bool AudioHandler::initialize(std::string const& deviceString)
@@ -56,11 +57,14 @@ bool AudioHandler::initialize(std::string const& deviceString)
         }
     }
     // Else, let ALUT automatically set up our OpenAL context and devices, using defaults
-    else if (!alutInit(NULL, NULL))
+    else
     {
-        ALenum error = alutGetError();
-        oas::Logger::errorf("AudioHandler - %s", alutGetErrorString(error));
-        return false;
+        if (!alutInit(NULL, NULL))
+        {
+            ALenum error = alutGetError();
+            oas::Logger::errorf("AudioHandler - %s", alutGetErrorString(error));
+            return false;
+        }
     }
 
     if (0 < deviceString.length())
@@ -86,7 +90,7 @@ void AudioHandler::release()
     }
     
     _sourceMap.clear();
-    oas::Source::resetSources();
+    oas::AudioSource::resetSources();
 
     // Release the buffers
     BufferMapIterator bIter;
@@ -143,7 +147,7 @@ ALuint AudioHandler::getBuffer(const std::string& filename)
     }
 
     // Make a new buffer
-    Buffer *newBuffer = new Buffer(filename);
+    AudioBuffer *newBuffer = new AudioBuffer(filename);
     if (!newBuffer->isValid())
     {
         delete newBuffer;
@@ -156,6 +160,60 @@ ALuint AudioHandler::getBuffer(const std::string& filename)
     return newBuffer->getHandle();
 }
 
+// private, static
+AudioSource* AudioHandler::_getSource(const ALuint sourceHandle)
+{
+    // Short circuit the map lookup. See if handle matches the most recently looked up source
+    if (_recentSource && (sourceHandle == _recentSource->getHandle()))
+    {
+        return _recentSource;
+    }
+
+    // Else, we have to look through the map
+    SourceMapConstIterator iterator = _sourceMap.find(sourceHandle);
+
+    if (_sourceMap.end() != iterator && iterator->second)
+    {
+        _recentSource = iterator->second;
+        return iterator->second;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+// private, static
+void AudioHandler::_clearRecentlyModifiedSource()
+{
+    _recentlyModifiedSource = NULL;
+}
+
+// private, static
+void AudioHandler::_setRecentlyModifiedSource(const AudioSource *source)
+{
+    _recentlyModifiedSource = source;
+}
+
+// public, static
+const AudioSource* AudioHandler::getRecentlyModifiedSource()
+{
+    AudioSource *retval = NULL;
+
+    if (_recentlyModifiedSource)
+    {
+    	// We create a duplicate copy of the recently modified source
+        retval = new AudioSource(*_recentlyModifiedSource);
+        // The duplicate is invalidated, so that it cannot be used to modify the sound state.
+        // This is in addition to the inherent constness of the returned pointer.
+        retval->invalidate();
+        // Set the recently modified source to NULL
+        _recentlyModifiedSource = NULL;
+    }
+    
+    return retval;
+}
+
 // public, static
 ALuint AudioHandler::createSource(ALuint buffer)
 {
@@ -164,12 +222,13 @@ ALuint AudioHandler::createSource(ALuint buffer)
         return AL_NONE;
     }
 
-    Source *newSource = new Source(buffer);
+    AudioSource *newSource = new AudioSource(buffer);
 
     if (newSource->isValid())
     {
         _sourceMap.insert(SourcePair(newSource->getHandle(), newSource));
         _recentSource = newSource;
+        _setRecentlyModifiedSource(newSource);
         return newSource->getHandle();
     }
     else
@@ -189,131 +248,168 @@ ALuint AudioHandler::createSource(const std::string& filename)
 // public, static
 void AudioHandler::deleteSource(const ALuint sourceHandle)
 {
-    // Find the source in the map, and if found, delete it
+	/*
+	 * Strategy:
+	 * The memory allocated for an audio source is not deleted immediately. This is to give time
+	 * for other threads to be notified that this particular audio source has been deleted, and
+	 * prevent access to invalid memory.
+	 */
+    static std::queue<AudioSource*> lazyDeletionQueue;
+
+    // Find the source in the map, and if found, queue it up for deletion
     SourceMapIterator iterator = AudioHandler::_sourceMap.find(sourceHandle);
+
+    _clearRecentlyModifiedSource();
 
     if (AudioHandler::_sourceMap.end() != iterator)
     {
         if (iterator->second)
         {
-            delete iterator->second;
+            // Let the source know that it is to be deleted
+            // Note that the AudioSource is not explicitly deleted yet - only the internal state
+        	// is notified that it is to be deleted
+            if (!iterator->second->deleteSource())
+            {
+                oas::Logger::warnf("AudioHandler: Deletion of sound source failed!");
+            }
+
+            // Push the pointer to the source onto the lazy deletion queue
+            lazyDeletionQueue.push(iterator->second);
+            // Update the recently modified source
+            _setRecentlyModifiedSource(iterator->second);
         }
         _sourceMap.erase(iterator);
     }
-}
 
-// private, static
-Source* AudioHandler::_getSource(const ALuint sourceHandle)
-{
-    // Short circuit the map lookup. See if handle matches the most recently looked up source
-    if (_recentSource && sourceHandle == _recentSource->getHandle())
+    // If the lazy deletion queue hits a size greater than 5, remove an entry
+    if (lazyDeletionQueue.size() > 5)
     {
-        return _recentSource;
-    }
-
-    // Else, we have to look through the map
-    SourceMapConstIterator iterator = _sourceMap.find(sourceHandle);
-
-    if (_sourceMap.end() != iterator && iterator->second)
-    {
-        _recentSource = iterator->second;
-        return iterator->second;
-    }
-    else
-    {
-        return NULL;
+        // Delete the Source at the head of the queue
+        delete lazyDeletionQueue.front();
+        // Pop the pointer to freed memory off of the queue
+        lazyDeletionQueue.pop();
     }
 }
 
 // public, static
 void AudioHandler::playSource(const ALuint sourceHandle)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->play();
+        if (source->play())
+            _setRecentlyModifiedSource(source);
     }
-
 }
 
 // public, static
 void AudioHandler::stopSource(const ALuint sourceHandle)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->stop();
+        if (source->stop())
+            _setRecentlyModifiedSource(source);
     }
 }
 
 // public, static
 void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setPosition(x, y, z);
+        if (source->setPosition(x, y, z))
+            _setRecentlyModifiedSource(source);
     }
+
 }
 
 // public, static
 void AudioHandler::setSourceGain(const ALuint sourceHandle, const ALfloat gain)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setGain(gain);
+        if (source->setGain(gain))
+            _setRecentlyModifiedSource(source);
     }
+
 }
 
 // public, static
 void AudioHandler::setSourceLoop(const ALuint sourceHandle, const ALint isLoop)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setLoop(isLoop);
+        if (source->setLoop(isLoop))
+            _setRecentlyModifiedSource(source);
     }
+
 }
 
 // public, static
 void AudioHandler::setSourceVelocity(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setVelocity(x, y, z);
+        if (source->setVelocity(x, y, z))
+            _setRecentlyModifiedSource(source);
     }
 }
 
 // public, static
 void AudioHandler::setSourceSpeed(const ALuint sourceHandle, ALfloat speed)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setVelocity( speed * source->getDirectionX(),
-                             speed * source->getDirectionY(),
-                             speed * source->getDirectionZ());
+        if (source->setVelocity( speed * source->getDirectionX(),
+                                 speed * source->getDirectionY(),
+                                 speed * source->getDirectionZ()))
+        {
+            _setRecentlyModifiedSource(source);
+        }
     }
+
 }
 
 // public, static
 void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat x, ALfloat y, ALfloat z)
 {
-    Source *source = AudioHandler::_getSource(sourceHandle);
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
+    _clearRecentlyModifiedSource();
+    
     if (source)
     {
-        source->setDirection(x, y, z);
+        if (source->setDirection(x, y, z))
+            _setRecentlyModifiedSource(source);
     }
+
 }
 
 // public, static
@@ -326,21 +422,4 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat angleIn
                                       0.0,
                                       cos(angleInRadians));
 }
-
-
-//bool StringComparison::operator() (const char *lhs, const char *rhs) const
-//{
-//    if ((!lhs && !rhs) || (lhs && !rhs))
-//    {
-//        return false;
-//    }
-//    else if ((!lhs && rhs) || strcmp(lhs, rhs) < 0)
-//    {
-//        return true;
-//    }
-//    else
-//    {
-//        return false;
-//    }
-//}
 

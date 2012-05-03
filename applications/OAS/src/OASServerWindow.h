@@ -7,7 +7,6 @@
 #define _OAS_SERVER_WINDOW_H_
 
 #include <FL/Fl.H>
-#include <FL/Fl_Browser.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
@@ -15,6 +14,8 @@
 #include <pthread.h>
 #include <iostream>
 #include "OASLogger.h"
+#include "OASServerWindowLogBrowser.h"
+#include "OASServerWindowTable.h"
 
 namespace oas
 {
@@ -27,14 +28,48 @@ public:
     // Create new thread, make double window, set up browser
     static bool initialize(int argc, char **argv, void (*atExitCallback) (void));
 
-    static void addToBrowser(char *line);
-    static void replaceBottomLine(const char *line);
-    static const char* const getBoldBrowserFormatter();
-    static const char* const getItalicsBrowserFormatter();
-    static const char* const getNullBrowserFormatter();
-    static const int getBrowserFormatterLength();
-    static int getBrowserSize();
     static bool isInitialized();
+
+    static inline void reset()
+    {
+        ServerWindow::_table->reset();
+    }
+
+    static inline void audioUnitWasModified(const AudioUnit* audioUnit)
+    {
+        ServerWindow::_table->audioUnitWasModified(audioUnit);
+    }
+
+    static void addToBrowser(char *line)
+    {
+        ServerWindow::_browser->add(line);
+    }
+
+    static inline void replaceBottomLine(const char *line)
+    {
+        ServerWindow::_browser->replaceBottomLine(line);
+    }
+
+    static inline const char* const getBoldBrowserFormatter()
+    {
+        return ServerWindowLogBrowser::getBoldBrowserFormatter();
+    }
+
+    static inline const char* const getItalicsBrowserFormatter()
+    {
+        return ServerWindowLogBrowser::getItalicsBrowserFormatter();
+    }
+
+    static const char* const getNullBrowserFormatter()
+    {
+        return ServerWindowLogBrowser::getNullBrowserFormatter();
+    }
+
+    static const int getBrowserFormatterLength()
+    {
+        return ServerWindowLogBrowser::getBrowserFormatterLength();
+    }
+
 
 protected:
     // The double window class gives us a double buffered window. This will contain
@@ -46,10 +81,11 @@ protected:
     // Tab group 1 contains the browser and any other buttons associated with the
     // browser window (i.e. clear, copy, etc.)
     static Fl_Group *_tabGroup1;
-    static Fl_Browser *_browser;
+    static ServerWindowLogBrowser *_browser;
 
     // Tab group 2 contains a tabular representation of the sound source data
     static Fl_Group *_tabGroup2;
+    static ServerWindowTable *_table;
 
     // Tab group 3 contains a visual representation of the sound source data
     static Fl_Group *_tabGroup3;
@@ -62,23 +98,16 @@ protected:
 
     static bool _isInitialized;
 
-    // Keeps track of the browser size
-    static unsigned int _browserSize;
-
     // Function pointer that will be called when window is closed, before program exits
     static void (*_atExitCallback) (void);
 
     static const unsigned int _kWindowWidth;
     static const unsigned int _kWindowHeight;
     static const unsigned int _kTabHeight;
-    static const char* const _boldBrowserFormatter;
-    static const char* const _italicsBrowserFormatter;
-    static const char* const _nullBrowserFormatter;
-    static const int _browserFormatterLength;
     
 private:
+
 	static void* _windowLoop(void *parameter);
-    static void _incrementBrowserSize();
     static void _confirmExitCallback(Fl_Widget*, void*);
 };
 
