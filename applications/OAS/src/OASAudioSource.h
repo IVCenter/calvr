@@ -32,6 +32,7 @@ public:
     enum SourceState
     {
         ST_UNKNOWN = 0,
+        ST_INITIAL,
         ST_PLAYING,
         ST_PAUSED,
         ST_STOPPED,
@@ -57,6 +58,12 @@ public:
      * @brief Invalidate this sound source
      */
     void invalidate();
+
+    /**
+     * @brief Update the state of the sound source
+     * @return True if something changed, false if nothing changed
+     */
+    bool update();
 
     /**
      * @brief Play the source all the way through

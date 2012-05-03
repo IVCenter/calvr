@@ -74,6 +74,31 @@ void ServerWindowTable::audioUnitWasModified(const AudioUnit* audioUnit)
     pthread_mutex_unlock(&this->_queueMutex);
 }
 
+void ServerWindowTable::audioUnitsWereModified(std::queue<const AudioUnit*> &audioUnits)
+{
+    // If the queue is empty, there's nothing to do
+    if (audioUnits.empty())
+    {
+        return;
+    }
+
+    // Lock mutex
+    pthread_mutex_lock(&this->_queueMutex);
+
+    // Transfer the queue contents
+    while (!audioUnits.empty())
+    {
+        this->_audioUnitProcessingQueue.push(audioUnits.front());
+        audioUnits.pop();
+    }
+
+    // Signal the condition
+    pthread_cond_signal(&this->_queueCondition);
+    // Unlock mutex
+    pthread_mutex_unlock(&this->_queueMutex);
+
+}
+
 void ServerWindowTable::update()
 {
     /*
@@ -205,7 +230,6 @@ void ServerWindowTable::draw_cell(TableContext context, int ROW = 0, int COL = 0
     // Clear the buffer
     memset(buffer, 0, BUFFER_SIZE);
 
-    std::cerr << "Drawing <" << ROW << ", " << COL << ">\n";
     Fl::lock();
 
     // First, check if the map has been updated between now and the previous call to draw_cell()
@@ -280,7 +304,9 @@ void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUni
     {
         // Status
         case 0:
-            if (AudioSource::ST_PLAYING == source->getState())
+            if (AudioSource::ST_INITIAL == source->getState())
+                sprintf(buffer, "Ready");
+            else if (AudioSource::ST_PLAYING == source->getState())
                 sprintf(buffer, "Playing");
             else if (AudioSource::ST_STOPPED == source->getState())
                 sprintf(buffer, "Stopped");

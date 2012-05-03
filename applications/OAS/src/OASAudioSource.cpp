@@ -113,6 +113,45 @@ void AudioSource::invalidate()
 	_isValid = false;
 }
 
+bool AudioSource::update()
+{
+    ALint alState;
+    SourceState newState;
+
+    // Retrieve state information from OpenAL
+    alGetSourcei(this->_id, AL_SOURCE_STATE, &alState);
+
+    switch (alState)
+    {
+        case AL_PLAYING:
+            newState = ST_PLAYING;
+            break;
+        case AL_STOPPED:
+            newState = ST_STOPPED;
+            break;
+        case AL_INITIAL:
+            newState = ST_INITIAL;
+            break;
+        case AL_PAUSED:
+            newState = ST_PAUSED;
+            break;
+        default:
+            newState = ST_UNKNOWN;
+            break;
+    }
+
+    // If the new state is the same as the old state, return false
+    if (newState == this->_state)
+    {
+        return false;
+    }
+    else
+    {
+        this->_state = newState;
+        return true;
+    }
+}
+
 bool AudioSource::isDirectional() const
 {
     return _isDirectional;

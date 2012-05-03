@@ -42,7 +42,7 @@ class SocketHandler
         static void terminate();
         static bool isSocketOpen();
         static unsigned int numberOfIncomingMessages();
-        static void populateQueueWithIncomingMessages(std::queue<Message*> &destination);
+        static void populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout);
         static void addOutgoingResponse(const char *response);
         static void addOutgoingResponse(const long response);
         static pthread_t getSocketThread();

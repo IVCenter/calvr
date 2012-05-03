@@ -70,6 +70,12 @@ public:
     static const AudioSource* getRecentlyModifiedSource();
 
     /**
+     * @brief Retrieve copies of all updated sources inside the given queue
+     * @param sources
+     */
+    static void populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources);
+
+    /**
      * @note:
      * The following functions operate on existing sources. If the given source handle is invalid,
      * there is no change made to the OpenAL state, and the function does nothing.

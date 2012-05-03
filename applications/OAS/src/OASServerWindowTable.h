@@ -45,6 +45,12 @@ public:
     void audioUnitWasModified(const AudioUnit* audioUnit);
 
     /**
+     * Notifies the ServerWindowTable that these audio units have been modified.
+     * They will be then queued up for processing by a different thread.
+     */
+    void audioUnitsWereModified(std::queue<const AudioUnit*> &audioUnits);
+
+    /**
      * Clears the audio units that are in the processing queue, by making the appropriate
      * adjustments to the internal map of audio units.
      */

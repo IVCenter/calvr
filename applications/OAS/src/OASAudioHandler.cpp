@@ -214,6 +214,25 @@ const AudioSource* AudioHandler::getRecentlyModifiedSource()
     return retval;
 }
 
+void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*> &sources)
+{
+    SourceMapIterator iterator;
+
+    for (iterator = AudioHandler::_sourceMap.begin(); iterator != AudioHandler::_sourceMap.end(); iterator++)
+    {
+        if (!iterator->second)
+            continue;
+
+        if (iterator->second->update())
+        {
+            AudioSource *copy = new AudioSource(*iterator->second);
+            copy->invalidate();
+            sources.push(copy);
+        }
+    }
+}
+
+
 // public, static
 ALuint AudioHandler::createSource(ALuint buffer)
 {

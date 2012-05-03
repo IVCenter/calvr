@@ -322,7 +322,6 @@ void* SocketHandler::_socketLoop(void* parameter)
             // Keep parsing the current input data until the amount parsed is equal to the amount read 
             while (amountParsed < amountRead)
             {
-                oas::Logger::logf("amtParsed = %d, amtRead = %d", amountParsed, amountRead);
                 // Message needs to be parsed, starting from bufPtr
                 Message *newMessage = new Message();
                 Message::MessageError parseError;
@@ -471,11 +470,10 @@ void SocketHandler::_addToIncomingMessages(Message *message)
     pthread_cond_signal(&SocketHandler::_inCondition);
     // unlock mutex
     pthread_mutex_unlock(&SocketHandler::_inMutex);
-    gettimeofday(&message->added, NULL);
 }
 
 // static, public
-void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &destination)
+void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout)
 {
     // lock mutex
     pthread_mutex_lock(&SocketHandler::_inMutex);
@@ -483,8 +481,16 @@ void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &dest
     // while the incoming messages queue is empty
     while (SocketHandler::_incomingMessages.empty())
     {
-        // wait (block) on condition variable for queue to have content
-        pthread_cond_wait(&SocketHandler::_inCondition, &SocketHandler::_inMutex);
+        // wait (block) on condition variable for queue to have content, or until timeout occurs
+        int error = pthread_cond_timedwait(&SocketHandler::_inCondition, &SocketHandler::_inMutex, &timeout);
+
+        // If some error occured (or the wait timed out)
+        if (0 != error)
+        {
+            // Unlock and return
+            pthread_mutex_unlock(&SocketHandler::_inMutex);
+            return;
+        }
     }
 
     // At this point, we know that the incoming messages queue is not empty.
@@ -493,10 +499,10 @@ void SocketHandler::populateQueueWithIncomingMessages(std::queue<Message*> &dest
     {
         // retrieve data after we're done waiting
         Message* nextMessage = SocketHandler::_incomingMessages.front();
-        gettimeofday(&nextMessage->retrieved, NULL);
         SocketHandler::_incomingMessages.pop();
         destination.push(nextMessage);
     }
+
     // unlock mutex
     pthread_mutex_unlock(&SocketHandler::_inMutex);
 }

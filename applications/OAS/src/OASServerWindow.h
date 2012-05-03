@@ -40,6 +40,11 @@ public:
         ServerWindow::_table->audioUnitWasModified(audioUnit);
     }
 
+    static inline void audioUnitsWereModified(std::queue<const AudioUnit*> &audioUnits)
+    {
+        ServerWindow::_table->audioUnitsWereModified(audioUnits);
+    }
+
     static void addToBrowser(char *line)
     {
         ServerWindow::_browser->add(line);
