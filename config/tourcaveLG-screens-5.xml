@@ -35,10 +35,10 @@
    </ChannelConfig>
 
    <ScreenConfig>
-    <Screen height="805" h="62.0" width="1432" p="0.0"   originX="-1423"  comment="S_A" originY="752"  r="-90.0" name="0" originZ="0"    screen="0" />
-    <Screen height="805" h="32.0" width="1432" p="0.0"   originX="-815"  comment="S_A" originY="1323"  r="-90.0" name="1" originZ="0"    screen="1" />
+    <Screen height="805" h="63.0" width="1432" p="0.0"   originX="-1415"  comment="S_A" originY="721"  r="-90.0" name="0" originZ="0"    screen="0" />
+    <Screen height="805" h="32.0" width="1432" p="0.0"   originX="-816"  comment="S_A" originY="1308"  r="-90.0" name="1" originZ="0"    screen="1" />
     <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1500"      r="-90.0" name="2" originZ="0"    screen="2" />
-    <Screen height="805" h="-33.0" width="1432" p="0.0"   originX="781"  comment="S_A" originY="1219"  r="-90.0" name="3" originZ="0"    screen="3" />
-    <Screen height="805" h="-67.0" width="1432" p="0.0"   originX="1263"  comment="S_A" originY="546"  r="-90.0" name="4" originZ="0"    screen="4" />
+    <Screen height="805" h="-32.0" width="1432" p="0.0"   originX="774"  comment="S_A" originY="1235"  r="-90.0" name="3" originZ="0"    screen="3" />
+    <Screen height="805" h="-65.0" width="1432" p="0.0"   originX="1283"  comment="S_A" originY="598"  r="-90.0" name="4" originZ="0"    screen="4" />
    </ScreenConfig>
  </GLOBAL>

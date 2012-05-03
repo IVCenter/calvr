@@ -1,7 +1,7 @@
 #ifndef CALVR_COLLABORATIVE_SERVER_H
 #define CALVR_COLLABORATIVE_SERVER_H
 
-#include <collaborative/CollaborativeManager.h>
+#include <cvrCollaborative/CollaborativeManager.h>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>

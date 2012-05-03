@@ -1,4 +1,4 @@
-#include <kernel/CalVR.h>
+#include <cvrKernel/CalVR.h>
 #include <iostream>
 #include <cstdlib>
 
