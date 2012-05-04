@@ -46,7 +46,7 @@ bool Navigation::init()
         _buttonMap[i] = NONE;
     }
     _buttonMap[0] = DRIVE;
-    _buttonMap[1] = FLY;
+    _buttonMap[1] = NONE;
     _buttonMap[2] = DRIVE;
     //_buttonMap[3] = SCALE;
 
