@@ -46,8 +46,8 @@ BoardMenu::BoardMenu()
     }
     else
     {
-        std::cerr << "Unknown menu trigger " << s << std::endl;
-        return;
+        std::cerr << "Unknown menu trigger " << s << ", using DOUBLECLICK" << std::endl;
+        _trigger = DOUBLECLICK;
     }
 
     _primaryButton = ConfigManager::getInt("select",
