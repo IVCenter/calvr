@@ -9,9 +9,10 @@
 
    <Stencil value="true" />
    <MultiThreaded value="CullDrawThreadPerContext" />
+   <!--MultiThreaded value="SingleThreaded" /-->
    <SyncToVBlank value="ON" />
    <Near value="100"/>
-   <Far value="1000000" />
+   <Far value="100000000" />
    <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
    <MultiSample value="4" />
 
@@ -28,7 +29,7 @@
 
        <NumBodies value="1" />
        <NumButtons value="3" />
-       <NumValuators value="0" />
+       <NumValuators value="1" />
 
        <Body0>
          <Offset x="0" y="0" z="0" />
@@ -50,7 +51,9 @@
      <NumHands value="1" />
      <Hand0>
        <Address system="0" body="0" />
+       <!--NavType value="MOUSEKEYBOARD" /-->
        <ButtonMask system0="0x00" system1="0xFF" />
+       <Valuator0 system="0" number="0" type="NON_ZERO" />
      </Hand0>
      <Hand1>
        <Address system="0" body="1" />
@@ -112,6 +115,7 @@
    <Plugin>
     <OssimPlanet value="off" />
     <Sketch value="on" />
+    <GreenLight value="on" />
     <CullingMultiGPURender value="off" >
      <Width value="1024" />
      <Height value="768" />
@@ -137,17 +141,64 @@
      <DrawLines value="false" />
     </MultiGPURender>
 
+    <Points value="on" >
+      <ShaderPath value="/home/aprudhom/CVRPlugins/calit2/Points/shaders" />
+    </Points>
+
+    <PointsWithPans value="on">
+      <Sets>
+        <GalleryTest file="/home/aprudhom/trishPans/gal12NdrfFilterFilt-r8.xyb" scale="1000" x="0" y="0" z="0">
+	  <KGallery1 x="0" y="0" z="0" name="KGallery1" />
+	  <KGallery2 x="0" y="1" z="0" name="KGallery2"/>
+	</GalleryTest>
+      </Sets>
+    </PointsWithPans>
+
     <PanoViewLOD value="on">
      <FloorOffset value="1500" />
-     <ShaderDir value="/home/aprudhom/data/PansLOD/glsl/" />
-     <ImageSearchPath value="/home/aprudhom/data/PansLOD" />
-     <DefaultConfigDir value="/home/aprudhom/data/PansLOD/config/" />
+     <ShaderDir value="/home/aprudhom/data/Pans/PansLOD/glsl/" />
+     <ImageSearchPath value="/home/aprudhom/data/Pans/PansLOD" />
+     <DefaultConfigDir value="/home/aprudhom/data/Pans/PansLOD/config/" />
      <Pans>
-       <LuxorTempleNight2 />
+                <Gallery>
+		    <KGallery1 />
+		    <KGallery2 />
+		</Gallery>
+                <Luxor>
+                    <LuxorKarnakObelisks />
+                    <LuxorMedinetColumnsBlueCeiling />
+                    <LuxorMedinetHabuCourt />
+                    <LuxorMedinetHabuRoyalTreasure1 />
+                    <LuxorMedinetHabuRoyalTreasure2 />
+                    <LuxorMHoutback />
+                    <LuxorMHwall />
+                    <LuxorRamasseum />
+                    <LuxorSet />
+                    <LuxorTempleChapel />
+                    <LuxorTempleEntryNight />
+                    <LuxorTempleNight2 />
+                    <LuxorTempleOutsideColumn />
+                </Luxor>
+                <KAUST>
+                    <KAUSTmuseum1 />
+                    <KAUSTmuseum2 />
+                    <SaudiMar11 />
+                </KAUST>
+                <Wisconsin>
+                    <Taliesin-Path />
+                    <UPset />
+                    <UW-Madison-2 />
+                    <wiscoSet />
+                </Wisconsin>
+                <BluebonnetSet />
+                <CineGrid />
+                <KACST-Indoor2 />
+                <KACST-Outdoor1 />
+                <Dr-Seuss />
      </Pans>
     </PanoViewLOD>
 
-    <ArtifactVis value="off" />
+    <ArtifactVis value="on" />
 
     <AndroidNavigator value="off" >
      <TransMult value="1.0" />
@@ -155,8 +206,8 @@
     </AndroidNavigator>
 
     <SpaceNavigator value="on" >
-     <TransMult value="1.0" />
-     <RotMult value="1.0" />
+     <TransMult value="7.0" />
+     <RotMult value="0.8" />
     </SpaceNavigator>
     <PluginUtil value="off" />
 
@@ -168,6 +219,34 @@
     <PathRecorder value="on" >
       <DataDir value="/home/aprudhom/data/PathRecorder/" />
     </PathRecorder>
+
+    <GreenLight>
+      <Components textureDir="/home/aprudhom/data/GreenLight/maps/">
+          <!-- Texture files should contain both the front and back faces, front on top-->
+          <C1 startname="convey" height="2" minWattage="620" maxWattage="690" texture="unwrap_ConveyHC1.png" />
+          <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
+          <C3 startname="compute" height="1" minWattage="195" maxWattage="453"     texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+          <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+          <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
+          <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
+          <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
+          <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+          <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+          <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+          <Dc startname="DC" height ="12" minWattage="1" maxWattage="2" texture="unwrap_dcmeter.png" />
+        </Components>
+        <Demo value="on" />
+        <Hardware
+          local="/home/aprudhom/data/GreenLight/GreenLightAssets.fakejson"
+          download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+        <ModelsDir value="/home/aprudhom/data/GreenLight/Models/" />
+        <Power
+          local="/home/aprudhom/data/GreenLight/GLpower.xml"
+          download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power" />
+        <Shaders
+          fragment="/home/aprudhom/data/GreenLight/shaders/component.frag"
+          vertex="/home/aprudhom/data/GreenLight/shaders/component.vert" />
+    </GreenLight>
 
     <StructView value="on">
       <Layer0File value="/home/aprudhom/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
@@ -188,8 +267,8 @@
           <Database value="/home/aprudhom/data/ArtifactVis/artifactslist.txt" />
 	  <TopoFile value="/home/aprudhom/data/kyle/3d-model/Ken3dv3.wrl" />
 	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-	  <DCInfoFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
-	  <LociFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <DCInfoFile value="/home/aprudhom/CVRPlugins/calit2/ArtifactVis/DCCategories.txt" />
+	  <LociFile value="/home/aprudhom/CVRPlugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
 	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
 	  <ArchInterfaceFolder value="/home/aprudhom/data/ArchInterface/" />
           <MaxVisibleRange value="1000000000.0" />
@@ -230,6 +309,22 @@
 	<QaserAlBint path="/home/aprudhom/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
       </Files>
     </ModelLoader>
+
+    <ImageViewer value="on" >
+      <DefaultPaths value="/home/aprudhom/data/TomsStereo4Kimages1" />
+      <Files>
+        <BeijingCraftShop fileLeft="BeijingCraftShopLeft_4096_4096.jpg" fileRight="BeijingCraftShopRight_4096_4096.jpg" />
+	<Test>
+	  <YuHuan fileLeft="YuHuanLeft_4096_4096.jpg" fileRight="YuHuanRight_4096_4096.jpg" />
+	  <Test2>
+	    <TerraCottaPit fileLeft="TerraCottaPitLeft_4096_4096.jpg" fileRight="TerraCottaPitRight_4096_4096.jpg" />
+	  </Test2>
+	</Test>
+	<Test3>
+	  <TianjinVases fileLeft="TianjinVasesLeft_4096_4096.jpg" fileRight="TianjinVasesRight_4096_4096.jpg" />
+	</Test3>
+      </Files>
+    </ImageViewer>
 
     <ThreadedLoader value="off" >
      <Affinity value="1" />
@@ -318,7 +413,7 @@
    </ChannelConfig>
    
    <WindowConfig>
-    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" />
+    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" />
     <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="00" bottom="0" name="1" decoration="true" />
    </WindowConfig>
 
