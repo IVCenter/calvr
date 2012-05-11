@@ -12,43 +12,28 @@
    <Near value="100"/>
    <Far value="100000" />
 
-   <!--<Input>
-    <MouseNav value="ON" />
-    <TrackingSystem value="MOUSE" />
-   </Input>-->
+   <Input>
+     <Threaded FPS="60.0" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
 
-   <Input>  
-      <DebugButtons value="false" />
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+     </TrackingSystem0>
 
-      <TrackingDebug value="true" />
+     <NumHeads value="0" />
+     <Head0Address system="0" body="0" />
 
-      <ButtonSystem value="NONE" />
+     <NumHands value="1" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0xFF"/>
+       <Valuator0 system="0" number="0" type="NON_ZERO" />
+     </Hand0>
 
-      <MouseNav value="ON" />
-
-      <HeadAddress value="1" />
-      <HandAddress value="0" />
-      <Joystick value="true" />
-      <NumSensors value="2" />
-
-      <TrackingSystem value="NONE" >
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="90" r="0" />
-      </TrackingSystem>
-
-      <HeadDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="-90" r="0" />
-      </HeadDevice>
-
-      <HandDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="-90" r="0" />
-      </HandDevice>
-
-      <DebugTracking value="RAW" />
-      <DebugStation value="4" />
-    </Input>
+   </Input>
 
    <Plugin>
     <CudaTest value="off" />
@@ -56,13 +41,14 @@
      <Width value="1024" />
      <Height value="768" />
      <NumberOfGPUs value="4" />
+     <CudaGPUMap gpu0="1" gpu1="0" />
      <GeometryShader value="on" />
      <DepthBuffer value="24" />
      <TextureCopy value="CUDA_COPY" />
      <CudaCopy value="true" />
-     <FileName value="/fastdata/honda/veryLargeFinal" />
+     <FileName value="/home/calvr/data/fastdata/honda/veryLargeFinal" />
      <!--<FileName value="/fastdata/honda/mediumPlot" /> -->
-     <ShaderDir value="/home/covise/CalVR/plugins/calit2/CullingMultiGPURender/shaders" />
+     <ShaderDir value="/home/calvr/CVRPlugins/calit2/CullingMultiGPURender/shaders" />
     </CullingMultiGPURender>
 
     <MultiGPURender value="off">
@@ -240,13 +226,13 @@
 
    </Plugin>
 
-   <MenuSystem type="BOARDMENU" useHints="false">
-    <BoardMenu>
-     <Position type="STATIC" alignment="FLAT" rotation="0" x="0" y="0" z="0" />
-     <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
-     <Scale value="1.0" />
-     <Trigger value="BUTTON" buttonID="1" />
-    </BoardMenu>
+   <MenuSystem type="BOARDMENU">
+     <BoardMenu>
+       <Position distance="3000" />
+       <Scale value="1.0" />
+       <Buttons select="0" open="1" />
+       <Trigger value="DOUBLECLICK" />
+     </BoardMenu>
    </MenuSystem>
    <ViewerPosition x="0" y="-2957" z="0" />
    <SceneSize value="1000" />

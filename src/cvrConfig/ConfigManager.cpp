@@ -192,7 +192,6 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
                 {
                     if(!loadFile(tempnode->value.text.string))
                     {
-                        mxmlDelete(tree);
                         return false;
                     }
                     break;
@@ -204,7 +203,6 @@ bool ConfigManager::loadFile(std::string file, bool givePriority)
         else
         {
             std::cerr << "INCLUDE block with no parent." << std::endl;
-            mxmlDelete(tree);
             return false;
         }
     }
@@ -315,8 +313,8 @@ bool ConfigManager::init()
             for(int i = 0; i < _configRootList.size(); i++)
             {
                 mxmlDelete(_configRootList[i]);
-                _configRootList.clear();
             }
+	    _configRootList.clear();
             return false;
         }
     }

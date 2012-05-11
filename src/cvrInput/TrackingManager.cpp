@@ -340,7 +340,14 @@ bool TrackingManager::init()
 		ni = Navigation::NONE_NAV;
 	    }
 
-	    ni = _systemInfo[_handAddress[i].first]->navImp;
+            if(_handAddress[i].first >= 0 && _handAddress[i].first < _systemInfo.size() && _systemInfo[_handAddress[i].first])
+            {
+	        ni = _systemInfo[_handAddress[i].first]->navImp;
+            }
+            else
+            {
+                ni = Navigation::NONE_NAV;
+            }
 	}
 	_handNavImplementation.push_back(ni);
 

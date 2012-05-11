@@ -46,8 +46,8 @@ BoardMenu::BoardMenu()
     }
     else
     {
-        std::cerr << "Unknown menu trigger " << s << std::endl;
-        return;
+        std::cerr << "Unknown menu trigger " << s << ", using DOUBLECLICK" << std::endl;
+        _trigger = DOUBLECLICK;
     }
 
     _primaryButton = ConfigManager::getInt("select",
@@ -273,12 +273,13 @@ bool BoardMenu::processEvent(InteractionEvent * event)
         if(tie->getButton() == _secondaryButton
                 && tie->getInteraction() == BUTTON_DOWN)
         {
-            if(_activeItem)
+            /*if(_activeItem)
             {
                 selectItem(NULL);
             }
             SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
-            _menuActive = false;
+            _menuActive = false;*/
+            close();
             return true;
         }
     }
