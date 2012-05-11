@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <cctype>
 #include <AL/alut.h>
 #include <sys/time.h>
 #include "OASLogger.h"

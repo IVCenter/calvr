@@ -54,14 +54,16 @@ public:
     static ALuint getBuffer(const std::string& filename);
 
     /**
-     * @brief Create a new source based on that buffer.
+     * @brief Create a new source based on the input buffer
+     * @retval Unique handle for the created source, or -1 on error
      */
-    static ALuint createSource(const ALuint buffer);
+    static int createSource(const ALuint buffer);
 
     /**
      * @brief Create a new source with the audio file that is pointed to by filename
+     * @retval Unique handle for the created source, or -1 on error
      */
-    static ALuint createSource(const std::string& filename);
+    static int createSource(const std::string& filename);
 
     /**
      * @brief Retrieve a copy of the most recently modified source.

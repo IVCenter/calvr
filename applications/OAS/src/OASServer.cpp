@@ -121,7 +121,7 @@ void oas::Server::_processMessage(const Message &message)
         return;
     }
     
-    ALuint newSource;
+    int newSource;
     unsigned int delay = 5;
 
     switch(message.getMessageType())
@@ -134,7 +134,7 @@ void oas::Server::_processMessage(const Message &message)
             //      2b) Else file does not exist, send  "-1" response
 //            oas::Logger::logf("GHDL %s", message.getFilename());
             newSource = oas::AudioHandler::createSource(message.getFilename());
-            if (AL_NONE == newSource)
+            if (-1 == newSource)
             {
                 oas::Logger::logf("Server was unable to generate new audio source for file \"%s\".",
                                   message.getFilename().c_str());

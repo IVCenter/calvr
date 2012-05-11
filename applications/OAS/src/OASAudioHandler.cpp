@@ -234,11 +234,11 @@ void AudioHandler::populateQueueWithUpdatedSources(std::queue <const AudioUnit*>
 
 
 // public, static
-ALuint AudioHandler::createSource(ALuint buffer)
+int AudioHandler::createSource(ALuint buffer)
 {
     if (AL_NONE == buffer)
     {
-        return AL_NONE;
+        return -1;
     }
 
     AudioSource *newSource = new AudioSource(buffer);
@@ -253,12 +253,12 @@ ALuint AudioHandler::createSource(ALuint buffer)
     else
     {
         delete newSource;
-        return AL_NONE;
+        return -1;
     }
 }
 
 // public, static
-ALuint AudioHandler::createSource(const std::string& filename)
+int AudioHandler::createSource(const std::string& filename)
 {
     ALuint buffer = AudioHandler::getBuffer(filename);
     return AudioHandler::createSource(buffer);

@@ -172,6 +172,13 @@ bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, int maxParseA
     if (_parseStringGetString(NULL, pEnd, pChar)
         && _validateParseAmounts(startBuf, pEnd, maxParseAmount, totalParsed))
     {
+        if (pChar)
+        {
+            // Skip over any leading non-alphanumeric characters in the filename
+            // i.e. converts "./directory/file" to "directory/file"
+            while (*pChar && !isalnum(*pChar))
+                pChar++;
+        }
         _filename = pChar;
         return true;
     }

@@ -4,7 +4,7 @@
 using namespace oas;
 
 // Statics
-ALuint AudioSource::_nextHandle;
+ALuint AudioSource::_nextHandle = 0;
 const ALfloat AudioSource::_kConeInnerAngle;
 const ALfloat AudioSource::_kConeOuterAngle;
 
@@ -62,7 +62,7 @@ ALuint AudioSource::_generateNextHandle()
 {
     _nextHandle++;
 
-    return _nextHandle;
+    return _nextHandle - 1;
 }
 
 // private
