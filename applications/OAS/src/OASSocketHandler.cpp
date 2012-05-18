@@ -276,8 +276,8 @@ void* SocketHandler::_socketLoop(void* parameter)
             continue;
         }
 
-        int amountRead;
-        unsigned int amountParsed = 0;
+        int amountRead, amountWritten;
+        int amountParsed = 0;
         bool validConnection = true;
 
         // Use a circular buffer to read data
@@ -293,7 +293,7 @@ void* SocketHandler::_socketLoop(void* parameter)
             }
 
             // Zero out the section of the buffer we're reading into
-            memset(bufPtr, 0, MAX_TRANSMIT_BUFFER_SIZE);
+            bzero(bufPtr, MAX_TRANSMIT_BUFFER_SIZE);
 
             // Read from the socket
             amountRead = read(connection, bufPtr, MAX_TRANSMIT_BUFFER_SIZE);
@@ -326,7 +326,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                 Message *newMessage = new Message();
                 Message::MessageError parseError;
 
-                parseError = newMessage->parseString(bufPtr, (unsigned int) amountRead, amountParsed);
+                parseError = newMessage->parseString(bufPtr, amountRead, amountParsed);
 
                 // check parseError to keep track as necessary
                 if (Message::MERROR_NONE != parseError)
@@ -373,8 +373,13 @@ void* SocketHandler::_socketLoop(void* parameter)
                     {
                         // The socket thread will block until the server has generated the response
                         char *response = SocketHandler::_getNextOutgoingResponse();
+
                         // write the response to the socket connection
-                        write(connection, response, strlen(response) + 1);
+                        amountWritten = write(connection, response, strlen(response) + 1);
+                        if (-1 == amountWritten)
+                        {
+                            oas::Logger::errorf("SocketHandler - Error occurred writing a response to the client.");
+                        }
                         // delete the response that was allocated
                         delete[] response;
                     }

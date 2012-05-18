@@ -2,6 +2,9 @@
 
 using namespace oas;
 
+const unsigned int ServerWindowLogBrowser::_kMaxLogLineLength = 1000;
+
+
 ServerWindowLogBrowser::ServerWindowLogBrowser(int X, int Y, int W, int H, const char *L)
 : Fl_Browser(X, Y, W, H, L)
 {
@@ -9,10 +12,18 @@ ServerWindowLogBrowser::ServerWindowLogBrowser(int X, int Y, int W, int H, const
 	this->_browserSize = 1;
 }
 
-void ServerWindowLogBrowser::add(char *line)
+void ServerWindowLogBrowser::add(const char *line)
 {
 	if (!line)
 		return;
+
+	static char buffer[_kMaxLogLineLength];
+
+	// Set buffer contents to 0
+	bzero(buffer, _kMaxLogLineLength);
+
+	// Copy line contents into buffer
+	strncpy(buffer, line, _kMaxLogLineLength - 1);
 
     // Wait for a lock on the GUI environment in case other threads are using it
     Fl::lock();
@@ -20,7 +31,7 @@ void ServerWindowLogBrowser::add(char *line)
     // FlBrowser does not like newline characters in the string.
     // So, we split the string into multiple lines for each linefeed character
     // that is found.
-    char *pNewline, *pStr = line;
+    char *pNewline, *pStr = buffer;
     int numNewLines = 0;
 
     // Keep looping until we don't find any newline characters in the string
@@ -36,10 +47,10 @@ void ServerWindowLogBrowser::add(char *line)
         numNewLines++;
     }
 
-    // If there were no newline characters found, just add the entire line
-    if (0 == numNewLines)
+    // Add whatever is left, after skipping newline characters
+    if ('\0' != *pStr)
     {
-        Fl_Browser::add(line);
+        Fl_Browser::add(pStr);
         this->_incrementBrowserSize();
     }
 
@@ -57,11 +68,10 @@ void ServerWindowLogBrowser::replaceBottomLine(const char *line)
 	// Wait for a lock on the GUI
 	Fl::lock();
 
-	// Replaces the text on the bottommost line
+	// Replaces the text on the bottom line
 	Fl_Browser::text(this->getBrowserSize(), line);
 
 	// Release lock, let main thread know
 	Fl::unlock();
 	Fl::awake();
-
 }

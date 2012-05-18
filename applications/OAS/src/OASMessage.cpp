@@ -133,11 +133,11 @@ bool Message::_parseStringGetFloat(char *string, char*& pEnd, ALfloat& result)
 }
 
 // private
-bool Message::_validateParseAmounts(char *startBuf, char *pEnd, int maxParseAmount, unsigned int& totalParsed)
+bool Message::_validateParseAmounts(char *startBuf, char *pEnd, const int maxParseAmount, int& totalParsed)
 {
-    unsigned int amountParsed = pEnd - startBuf;
+    int amountParsed = pEnd - startBuf;
 
-    if ( ((unsigned int) maxParseAmount) < amountParsed)
+    if ( maxParseAmount < amountParsed)
     {
         _errorType = MERROR_INCOMPLETE_MESSAGE;
         return false;
@@ -150,7 +150,7 @@ bool Message::_validateParseAmounts(char *startBuf, char *pEnd, int maxParseAmou
 }
 
 // private
-bool Message::_parseHandleParameter(char *startBuf, char*& pEnd, int maxParseAmount, unsigned int& totalParsed)
+bool Message::_parseHandleParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
 	long longVal;
 	
@@ -165,7 +165,7 @@ bool Message::_parseHandleParameter(char *startBuf, char*& pEnd, int maxParseAmo
 }
 
 // private
-bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, int maxParseAmount, unsigned int& totalParsed)
+bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
 	char *pChar;
 	
@@ -187,7 +187,7 @@ bool Message::_parseFilenameParameter(char *startBuf, char*& pEnd, int maxParseA
 }
 
 // private
-bool Message::_parseIntegerParameter(char *startBuf, char*& pEnd, int maxParseAmount, unsigned int& totalParsed)
+bool Message::_parseIntegerParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed)
 {
 	long longVal;
 	
@@ -202,7 +202,7 @@ bool Message::_parseIntegerParameter(char *startBuf, char*& pEnd, int maxParseAm
 }
 
 // private
-bool Message::_parseFloatParameter(char *startBuf, char*& pEnd, int maxParseAmount, unsigned int& totalParsed, unsigned int index)
+bool Message::_parseFloatParameter(char *startBuf, char*& pEnd, const int maxParseAmount, int& totalParsed, unsigned int index)
 {
     if (index < 0 || index > MAX_NUMBER_FLOAT_PARAM)
     {
@@ -222,7 +222,7 @@ bool Message::_parseFloatParameter(char *startBuf, char*& pEnd, int maxParseAmou
     return false;
 }
 
-Message::MessageError Message::parseString(char*& messageString, unsigned int maxParseAmount, unsigned int& totalParsed)
+Message::MessageError Message::parseString(char*& messageString, const int maxParseAmount, int& totalParsed)
 {
     //    
     // All cases:
@@ -459,6 +459,29 @@ Message::MessageError Message::parseString(char*& messageString, unsigned int ma
             _mtype = Message::MT_SSRV_HL_3F_1F;
         }
         // Else, parsing failed or SSRV was directional and we're done
+    }
+    // SPIT
+    else if (0 == strcmp(pType, M_SET_SOUND_PITCH))
+    {
+        // Set message type to SPIT
+        _mtype = Message::MT_SPIT_HL_1F;
+
+        // Parse tokens: The handle and the pitch factor
+        isSuccess =     _parseHandleParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
+    }
+    // WAVE
+    else if (0 == strcmp(pType, M_GENERATE_SOUND_FROM_WAVEFORM))
+    {
+        // Set message type to WAVE
+        _mtype = Message::MT_WAVE_1I_3F;
+
+        // Parse tokens: Wave type, frequency, phase, and duration
+        isSuccess =     _parseIntegerParameter(tokenBuf, pEnd, maxParseAmount, totalParsed)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2);
+        _needsResponse = true;
     }
     // SYNC
     else if (0 == strcmp(pType, M_SYNC))

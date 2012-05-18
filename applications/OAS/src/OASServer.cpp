@@ -135,18 +135,30 @@ void oas::Server::_processMessage(const Message &message)
 //            oas::Logger::logf("GHDL %s", message.getFilename());
             newSource = oas::AudioHandler::createSource(message.getFilename());
             if (-1 == newSource)
-            {
                 oas::Logger::logf("Server was unable to generate new audio source for file \"%s\".",
                                   message.getFilename().c_str());
-                oas::SocketHandler::addOutgoingResponse(-1);
-            }
             else
-            {
                 oas::Logger::logf("New sound source created for \"%s\". (Sound ID = %d)",
                                   message.getFilename().c_str(),
                                   newSource);
-                oas::SocketHandler::addOutgoingResponse(newSource);
-            }
+            oas::SocketHandler::addOutgoingResponse(newSource);
+            break;
+        case oas::Message::MT_WAVE_1I_3F:
+            newSource = oas::AudioHandler::createSource(message.getIntegerParam(),
+                                                        message.getFloatParam(0),
+                                                        message.getFloatParam(1),
+                                                        message.getFloatParam(2));
+            if (-1 == newSource)
+                oas::Logger::logf("Server was unable to generate a new audio source based on the waveform:\n"
+                                  "    waveshape = %d, freq = %.2f, phase = %.2f, duration = %.2f",
+                                  message.getIntegerParam(), message.getFloatParam(0), message.getFloatParam(1),
+                                  message.getFloatParam(2));
+            else
+                oas::Logger::logf("New sound source created based on the waveform:\n"
+                                    "    waveshape = %d, freq = %.2f, phase = %.2f, duration = %.2f",
+                                    message.getIntegerParam(), message.getFloatParam(0), message.getFloatParam(1),
+                                    message.getFloatParam(2));
+            oas::SocketHandler::addOutgoingResponse(newSource);
             break;
         case oas::Message::MT_RHDL_HL:
             // Look through sources to see if handle exists. If exists, delete source. Else, do nothing
@@ -203,6 +215,9 @@ void oas::Server::_processMessage(const Message &message)
             oas::AudioHandler::setSourceGain( message.getHandle(),
                                               message.getFloatParam(1));
             break;
+        case oas::Message::MT_SPIT_HL_1F:
+            oas::AudioHandler::setSourcePitch(message.getHandle(), message.getFloatParam(0));
+            break;
         case oas::Message::MT_SSDR_HL_1F:
             oas::Logger::warnf("SSDR is deprecated! Ignoring instruction.");
             break;
@@ -233,7 +248,6 @@ void oas::Server::_processMessage(const Message &message)
         default:
             return;
     }
-    gettimeofday(&((Message *) (&message))->processed, NULL);
 }
 
 // public

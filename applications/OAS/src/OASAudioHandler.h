@@ -66,6 +66,20 @@ public:
     static int createSource(const std::string& filename);
 
     /**
+     * @brief Create a new source based on the specified waveform.
+     * @param waveShape Sine        -> waveShape = 1
+     *                  Square      -> waveShape = 2
+     *                  Sawtooth    -> waveShape = 3
+     *                  Whitenoise  -> waveShape = 4
+     *                  Impulse     -> waveShape = 5
+     * @param frequency Frequency of the waveform, in hertz
+     * @param phase Phase of the waveform, in degrees from -180 to +180
+     * @param duration Duration of waveform in seconds
+     * @retval Unique handle for the created source, or -1 on error
+     */
+    static int createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
+
+    /**
      * @brief Retrieve a copy of the most recently modified source.
      * @retval NULL if none exists
      */
@@ -129,7 +143,7 @@ public:
     static void setSourceVelocity(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
-     * @brief Set the direction the source is pointing at, using cartesian coordinates.
+     * @brief Set the direction the source is pointing at, using Cartesian coordinates.
      */
     static void setSourceDirection(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
@@ -138,6 +152,13 @@ public:
      * @param angleInDegrees The angle must be given in degrees, not radians.
      */
     static void setSourceDirection(const ALuint source, const ALfloat angleInDegrees);
+
+    /**
+     * @brief Change the pitch of the source.
+     * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
+     *                    Default = 1.
+     */
+    static void setSourcePitch(const ALuint source, const ALfloat pitchFactor);
 
 
 private:

@@ -14,8 +14,6 @@ Fl_Group*           		ServerWindow::_tabGroup1 = NULL;
 ServerWindowLogBrowser* 	ServerWindow::_browser = NULL;
 Fl_Group*           		ServerWindow::_tabGroup2 = NULL;
 ServerWindowTable*          ServerWindow::_table = NULL;
-Fl_Group*           		ServerWindow::_tabGroup3 = NULL;
-Fl_Group*           		ServerWindow::_tabGroup4 = NULL;
 
 pthread_t                   ServerWindow::_windowThread;
 bool                        ServerWindow::_isInitialized = false;
@@ -79,16 +77,6 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
     ServerWindow::_tabGroup2->hide();
     ServerWindow::_tabGroup2->end();
 
-    // Create the third tab group
-    ServerWindow::_tabGroup3 = new Fl_Group(10,
-                                            ServerWindow::_kTabHeight + 10,
-                                            ServerWindow::_kWindowWidth,
-                                            ServerWindow::_kWindowHeight - ServerWindow::_kTabHeight,
-                                            "Visual");
-    ServerWindow::_tabGroup3->tooltip("This tab visualizes the sources and plots them.");
-    ServerWindow::_tabGroup3->hide();
-    ServerWindow::_tabGroup3->end();
-
     // Finalize the tabs
     ServerWindow::_tabs->end();
 
@@ -98,7 +86,7 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
     ServerWindow::_window->end();
 	ServerWindow::_window->show(argc, argv);
 	
-	ServerWindow::addToBrowser("Starting up the OpenAL Audio Server...");
+	ServerWindow::addToLogWindow("Starting up the OpenAL Audio Server...");
 
     // This lock() should be the first Fl::lock() called during initialization.
     // It lets fltk know to enable multi-threading support for the GUI,

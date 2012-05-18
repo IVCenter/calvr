@@ -45,7 +45,7 @@ public:
         ServerWindow::_table->audioUnitsWereModified(audioUnits);
     }
 
-    static void addToBrowser(char *line)
+    static inline void addToLogWindow(const char *line)
     {
         ServerWindow::_browser->add(line);
     }

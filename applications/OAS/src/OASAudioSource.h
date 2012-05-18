@@ -101,6 +101,13 @@ public:
     bool setLoop(ALint isLoop);
 
     /**
+     * @brief Change the pitch of the source.
+     * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
+     *                    Default = 1.
+     */
+    bool setPitch(ALfloat pitchFactor);
+
+    /**
      * @brief Deletes the audio resources allocated for this sound source
      */
     bool deleteSource();
@@ -137,17 +144,26 @@ public:
      */
     static void resetSources();
 
+    /**
+     * @brief Creates a new audio source using the specified buffer
+     * @param buffer Handle to a buffer that contains sound data
+     */
     AudioSource(ALuint buffer);
+
     AudioSource();
+
     ~AudioSource();
 
 protected:
 
-/*
-    ALfloat _gain;
-    ALfloat _positionX, _positionY, _positionZ;
-    ALfloat _velocityX, _velocityY, _velocityZ;
-*/
+    /**
+     * Inherited members from superclass AudioUnit are
+     *
+     *
+     * ALfloat _gain;
+     * ALfloat _positionX, _positionY, _positionZ;
+     * ALfloat _velocityX, _velocityY, _velocityZ;
+     */
 
 private:
     void _init();
@@ -171,6 +187,8 @@ private:
     SourceState _state;
 
     ALfloat _directionX, _directionY, _directionZ;
+
+    ALfloat _pitch;
 
     ALint _isLooping;
     bool _isValid;

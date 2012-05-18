@@ -265,6 +265,41 @@ int AudioHandler::createSource(const std::string& filename)
 }
 
 // public, static
+int AudioHandler::createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration)
+{
+    // First, a new buffer must be created with the specified waveform.
+    AudioBuffer *newBuffer = new AudioBuffer(waveShape, frequency, phase, duration);
+
+    // Check if buffer created successfully
+    if (!newBuffer->isValid())
+    {
+        delete newBuffer;
+        return -1;
+    }
+
+    // Create a new source with the new buffer
+    AudioSource *newSource = new AudioSource(newBuffer->getHandle());
+
+    // If new source created successfully
+    if (newSource->isValid())
+    {
+        // Add buffer to the buffer map
+        _bufferMap.insert(BufferPair(newBuffer->getFilename().c_str(), newBuffer));
+        // Add source to the sourcemap
+        _sourceMap.insert(SourcePair(newSource->getHandle(), newSource));
+        _recentSource = newSource;
+        _setRecentlyModifiedSource(newSource);
+        return newSource->getHandle();
+    }
+    else
+    {
+        delete newBuffer;
+        delete newSource;
+        return -1;
+    }
+}
+
+// public, static
 void AudioHandler::deleteSource(const ALuint sourceHandle)
 {
 	/*
@@ -398,7 +433,7 @@ void AudioHandler::setSourceVelocity(const ALuint sourceHandle, const ALfloat x,
 }
 
 // public, static
-void AudioHandler::setSourceSpeed(const ALuint sourceHandle, ALfloat speed)
+void AudioHandler::setSourceSpeed(const ALuint sourceHandle, const ALfloat speed)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
@@ -417,7 +452,7 @@ void AudioHandler::setSourceSpeed(const ALuint sourceHandle, ALfloat speed)
 }
 
 // public, static
-void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat x, ALfloat y, ALfloat z)
+void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat x, const ALfloat y, const ALfloat z)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
@@ -432,7 +467,7 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat x, ALfl
 }
 
 // public, static
-void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat angleInDegrees)
+void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat angleInDegrees)
 {
     ALfloat angleInRadians = angleInDegrees * (acos(-1.0) / 180.0); // PI = acos(-1)
 
@@ -440,5 +475,19 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, ALfloat angleIn
                                       sin(angleInRadians),
                                       0.0,
                                       cos(angleInRadians));
+}
+
+// public, static
+void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitchFactor)
+{
+    AudioSource *source = AudioHandler::_getSource(sourceHandle);
+
+    _clearRecentlyModifiedSource();
+
+    if (source)
+    {
+        if (source->setPitch(pitchFactor))
+            _setRecentlyModifiedSource(source);
+    }
 }
 

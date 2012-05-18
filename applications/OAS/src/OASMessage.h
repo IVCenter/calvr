@@ -18,23 +18,24 @@ namespace oas
 {
 
 // Message Type Strings
-#define M_TEST									"TEST"
-#define M_GET_HANDLE            				"GHDL"
-#define M_RELEASE_HANDLE        				"RHDL"
-#define M_PREPARE_FILE_TRANSFER 				"PTFI"
-#define M_PLAY									"PLAY"
-#define M_STOP									"STOP"
-#define M_SET_SOUND_POSITION					"SSPO"
-#define M_SET_SOUND_GAIN						"SSVO"
-#define M_SET_SOUND_LOOP						"SSLP"
-#define M_SET_SOUND_VELOCITY					"SSVE"
-#define M_SET_SOUND_DIRECTION					"SSDI"
-#define M_SET_SOUND_DIRECTION_AND_GAIN 			"SSDV"
-#define M_SET_SOUND_DIRECTION_RELATIVE 			"SSDR"
-#define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE "SSRV"
-#define M_SYNC									"SYNC"
-#define M_QUIT									"QUIT"
-
+#define M_TEST									    "TEST"
+#define M_GET_HANDLE            				    "GHDL"
+#define M_RELEASE_HANDLE        				    "RHDL"
+#define M_PREPARE_FILE_TRANSFER 				    "PTFI"
+#define M_PLAY									    "PLAY"
+#define M_STOP									    "STOP"
+#define M_SET_SOUND_POSITION					    "SSPO"
+#define M_SET_SOUND_GAIN						    "SSVO"
+#define M_SET_SOUND_LOOP						    "SSLP"
+#define M_SET_SOUND_VELOCITY					    "SSVE"
+#define M_SET_SOUND_DIRECTION					    "SSDI"
+#define M_SET_SOUND_DIRECTION_AND_GAIN 			    "SSDV"
+#define M_SET_SOUND_DIRECTION_RELATIVE 			    "SSDR"
+#define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE    "SSRV"
+#define M_SET_SOUND_PITCH                          "SPIT"
+#define M_GENERATE_SOUND_FROM_WAVEFORM             "WAVE"
+#define M_SYNC									    "SYNC"
+#define M_QUIT									    "QUIT"
 
 // Maximum number of float parameters
 #define MAX_NUMBER_FLOAT_PARAM    4
@@ -53,24 +54,26 @@ public:
      */
     enum MessageType
     {
-        MT_DATA = 0,       // Should never need this message type
-        MT_TEST,           // Test sound
-        MT_GHDL_FN,        // Get handle for given filename
-        MT_RHDL_HL,        // Release handle
-        MT_PTFI_FN_1I,     // Prepare for file transmission, filename & size
-        MT_PLAY_HL,        // Play handle
-        MT_STOP_HL,        // Stop handle
-        MT_SSPO_HL_3F,
-        MT_SSVO_HL_1F,
-        MT_SSLP_HL_1I,
-        MT_SSVE_HL_1F,
-        MT_SSVE_HL_3F,
-        MT_SSDI_HL_1F,
-        MT_SSDI_HL_3F,
-        MT_SSDV_HL_1F_1F,
-        MT_SSDR_HL_1F,
-        MT_SSRV_HL_1F_1F,
-        MT_SSRV_HL_3F_1F,
+        MT_DATA = 0,        // Should never need this message type
+        MT_TEST,            // Test sound
+        MT_GHDL_FN,         // Get handle for a given filename
+        MT_RHDL_HL,         // Release handle
+        MT_PTFI_FN_1I,      // Prepare for file transmission, with the given filename & file size
+        MT_PLAY_HL,         // Play handle
+        MT_STOP_HL,         // Stop handle
+        MT_SSPO_HL_3F,      // Set sound position
+        MT_SSVO_HL_1F,      // Set sound gain
+        MT_SSLP_HL_1I,      // Set sound loop
+        MT_SSVE_HL_1F,      // Set sound velocity (with magnitude only, conforms to old server spec)
+        MT_SSVE_HL_3F,      // Set sound velocity
+        MT_SSDI_HL_1F,      // Set sound direction (in degrees, acting in x-y plane only)
+        MT_SSDI_HL_3F,      // Set sound direction
+        MT_SSDV_HL_1F_1F,   // Set sound direction and gain
+        MT_SSDR_HL_1F,      // Set sound direction relative to listener
+        MT_SSRV_HL_1F_1F,   // Set sound direction relative to listener and gain in one command
+        MT_SSRV_HL_3F_1F,   // Set sound direction relative to listener and gain in one command
+        MT_SPIT_HL_1F,      // Set pitch
+        MT_WAVE_1I_3F,      // Generate a sound based on waveform
         MT_SYNC,
         MT_QUIT,
         MT_UNKNOWN
@@ -84,11 +87,12 @@ public:
         MERROR_INCOMPLETE_MESSAGE,     // Message incomplete
         MERROR_BAD_FORMAT,             // Message misformatted
         MERROR_EMPTY_MESSAGE,
-        MERROR_UNKNOWN_MESSAGE_TYPE    // Unknown message type
+        MERROR_UNKNOWN_MESSAGE_TYPE
+    // Unknown message type
     };
 
     ALuint getHandle() const;
-    MessageError parseString(char*& messageString, unsigned int maxParseAmount, unsigned int& totalParsed);
+    MessageError parseString(char*& messageString, const int maxParseAmount, int& totalParsed);
     MessageType getMessageType() const;
     void setFilename(const std::string& filename);
     const std::string& getFilename() const;
@@ -122,21 +126,21 @@ private:
 
     void _init();
 
-    bool _parseStringGetString  (char *string, char*& pEnd, char*& result);
-    bool _parseStringGetLong    (char *string, char*& pEnd, long& result);
-    bool _parseStringGetFloat  (char *string, char*& pEnd, ALfloat& result);
+    bool _parseStringGetString(char *string, char*& pEnd, char*& result);
+    bool _parseStringGetLong(char *string, char*& pEnd, long& result);
+    bool _parseStringGetFloat(char *string, char*& pEnd, ALfloat& result);
 
-    bool _validateParseAmounts  (char *startBuf, char *pEnd, int maxParseAmount,
-                                  unsigned int& totalParsed);
+    bool _validateParseAmounts(char *startBuf, char *pEnd, const int maxParseAmount,
+                               int& totalParsed);
 
-    bool _parseHandleParameter  (char *startBuf, char*& pEnd, int maxParseAmount,
-                                  unsigned int& totalParsed);
-    bool _parseFilenameParameter(char *startBuf, char*& pEnd, int maxParseAmount,
-                                  unsigned int& totalParsed);
-    bool _parseIntegerParameter (char *startBuf, char*& pEnd, int maxParseAmount,
-                                  unsigned int& totalParsed);
-    bool _parseFloatParameter  (char *startBuf, char*& pEnd, int maxParseAmount,
-                                  unsigned int& totalParsed, unsigned int index);
+    bool _parseHandleParameter(char *startBuf, char*& pEnd, const int maxParseAmount,
+                               int& totalParsed);
+    bool _parseFilenameParameter(char *startBuf, char*& pEnd, const int maxParseAmount,
+                                 int& totalParsed);
+    bool _parseIntegerParameter(char *startBuf, char*& pEnd, const int maxParseAmount,
+                                int& totalParsed);
+    bool _parseFloatParameter(char *startBuf, char*& pEnd, const int maxParseAmount,
+                              int& totalParsed, unsigned int index);
 };
 
 }

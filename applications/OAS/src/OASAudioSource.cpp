@@ -329,6 +329,25 @@ bool AudioSource::setDirection(ALfloat x, ALfloat y, ALfloat z)
     return false;
 }
 
+bool AudioSource::setPitch(ALfloat pitchFactor)
+{
+    if (isValid())
+    {
+        // Clear OpenAL error state
+        _clearError();
+
+        alSourcef(_id, AL_PITCH, pitchFactor);
+
+        if (_wasOperationSuccessful())
+        {
+            _pitch = pitchFactor;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool AudioSource::deleteSource()
 {
     if (isValid())
