@@ -10,6 +10,7 @@
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Tabs.H>
+#include <FL/Fl_Button.H>
 #include <FL/fl_ask.H>
 #include <pthread.h>
 #include <iostream>
@@ -87,6 +88,8 @@ protected:
     // browser window (i.e. clear, copy, etc.)
     static Fl_Group *_tabGroup1;
     static ServerWindowLogBrowser *_browser;
+    static Fl_Button *_copyToClipboardButton;
+    static Fl_Button *_clearButton;
 
     // Tab group 2 contains a tabular representation of the sound source data
     static Fl_Group *_tabGroup2;
@@ -109,11 +112,21 @@ protected:
     static const unsigned int _kWindowWidth;
     static const unsigned int _kWindowHeight;
     static const unsigned int _kTabHeight;
+    static const unsigned int _kTabGroupHeight;
+    static const unsigned int _kTabGroupWidth;
+    static const unsigned int _kBrowserHeight;
+    static const unsigned int _kBrowserWidth;
+    static const unsigned int _kTableHeight;
+    static const unsigned int _kTableWidth;
+    static const unsigned int _kButtonHeight;
+    static const unsigned int _kButtonWidth;
     
 private:
 
 	static void* _windowLoop(void *parameter);
     static void _confirmExitCallback(Fl_Widget*, void*);
+    static void _copyToClipboardButtonCallback(Fl_Widget*, void*);
+    static void _clearButtonCallback(Fl_Widget*, void*);
 };
 
 }

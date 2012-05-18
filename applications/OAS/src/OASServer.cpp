@@ -307,13 +307,13 @@ void* oas::Server::_serverLoop(void *parameter)
     std::queue<const AudioUnit*> sources;
     const AudioSource *source;
 
-    const long int k_timeoutMicroseconds = 100000; // Timeout in 0.1 seconds
-
+    const unsigned long k_timeoutSeconds = 0;
+    const unsigned long k_timeoutMicroseconds = 100;
     struct timespec timeOut;
 
     while (1)
     {
-        _computeTimeout(timeOut, k_timeoutMicroseconds);
+        _computeTimeout(timeOut, k_timeoutSeconds, k_timeoutMicroseconds);
 
         // If there are no messages, populateQueueWithIncomingMessages() will block until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
@@ -350,14 +350,19 @@ void* oas::Server::_serverLoop(void *parameter)
 }
 
 // private, static
-void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long int k_timeoutInMicroseconds)
+void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long k_timeoutSeconds, unsigned long k_timeoutMicroseconds)
 {
-    struct timeval currTime;
+    static struct timeval currTime;
+    static unsigned long microSeconds, seconds;
 
     gettimeofday(&currTime, NULL);
 
-    timeout.tv_sec = currTime.tv_sec + (k_timeoutInMicroseconds / 1000000);
-    timeout.tv_nsec = (currTime.tv_usec + ((k_timeoutInMicroseconds - (k_timeoutInMicroseconds / 1000000)))) * 1000;
+    microSeconds = currTime.tv_usec + k_timeoutMicroseconds;
+    seconds = currTime.tv_sec + k_timeoutSeconds + (microSeconds / 1000000);
+    microSeconds = microSeconds % 1000000;
+
+    timeout.tv_sec = seconds;
+    timeout.tv_nsec = microSeconds * 1000;
 
 }
 

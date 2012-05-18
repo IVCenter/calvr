@@ -43,7 +43,8 @@ private:
     void _fatalError(const char *errorMessage);
     static void _atExit();
 
-    static void _computeTimeout(struct timespec &timeout, unsigned long int k_timeoutInMicroseconds);
+    static void _computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds,
+                                unsigned long timeoutInMicroseconds);
     double _computeElapsedTime(struct timeval start, struct timeval end);
 
 };

@@ -22,6 +22,8 @@ public:
 	void add(const char *line);
     void replaceBottomLine(const char *line);
 
+    void copyToClipboard();
+
     inline int getBrowserSize() const
     {
     	return _browserSize;

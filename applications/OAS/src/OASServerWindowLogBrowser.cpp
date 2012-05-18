@@ -75,3 +75,8 @@ void ServerWindowLogBrowser::replaceBottomLine(const char *line)
 	Fl::unlock();
 	Fl::awake();
 }
+
+void ServerWindowLogBrowser::copyToClipboard()
+{
+
+}

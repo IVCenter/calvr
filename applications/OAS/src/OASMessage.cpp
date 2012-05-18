@@ -87,7 +87,7 @@ bool Message::_parseStringGetLong(char *string, char*& pEnd, long& result)
         _errorType = MERROR_INCOMPLETE_MESSAGE;
         return false;
     }
-   
+
     pEnd = pChar + strlen(pChar);
 
     res = strtol(pChar, &endp, 10);
