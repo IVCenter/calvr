@@ -78,5 +78,46 @@ void ServerWindowLogBrowser::replaceBottomLine(const char *line)
 
 void ServerWindowLogBrowser::copyToClipboard()
 {
+    unsigned long bufferLength = 1;
+    char *pLine, *pBuffer, *pMover;
 
+    // Wait for a lock on the GUI
+    Fl::lock();
+
+    // This loop calculates the size of the buffer that will need to be allocated
+    for (void *i = item_first(); i; i = item_next(i))
+    {
+        pLine = (char *) strstr(item_text(i), ServerWindowLogBrowser::getNullBrowserFormatter());
+        if (pLine)
+        {
+            pLine += ServerWindowLogBrowser::getBrowserFormatterLength();
+            bufferLength += strlen(pLine) + 1;  // Plus one, for the new line character at the end
+        }
+    }
+
+    // Allocate buffer
+    pBuffer = new char[bufferLength];
+    pMover = pBuffer;
+
+    // Copy contents of browser into the buffer
+    for (void *i = item_first(); i; i = item_next(i))
+    {
+        pLine = (char *) strstr(item_text(i), ServerWindowLogBrowser::getNullBrowserFormatter());
+        if (pLine)
+        {
+            pLine += ServerWindowLogBrowser::getBrowserFormatterLength();
+            sprintf(pMover, "%s\n", pLine);
+            pMover += strlen(pLine) + 1;
+        }
+    }
+
+    // Make sure it is null terminated
+    pBuffer[bufferLength - 1] = '\0';
+
+    Fl::copy(pBuffer, bufferLength, 1);
+
+    delete[] pBuffer;
+
+    // Release GUI lock
+    Fl::unlock();
 }

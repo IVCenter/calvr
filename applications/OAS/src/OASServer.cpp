@@ -295,9 +295,6 @@ void oas::Server::initialize(int argc, char **argv)
     {
         _fatalError("Could not create server thread!");
     }
-
-    // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
-    Fl::run();
 }
 
 // private, static
@@ -350,15 +347,15 @@ void* oas::Server::_serverLoop(void *parameter)
 }
 
 // private, static
-void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long k_timeoutSeconds, unsigned long k_timeoutMicroseconds)
+void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutMicroseconds)
 {
-    static struct timeval currTime;
-    static unsigned long microSeconds, seconds;
+    struct timeval currTime;
+    unsigned long microSeconds, seconds;
 
     gettimeofday(&currTime, NULL);
 
-    microSeconds = currTime.tv_usec + k_timeoutMicroseconds;
-    seconds = currTime.tv_sec + k_timeoutSeconds + (microSeconds / 1000000);
+    microSeconds = currTime.tv_usec + timeoutMicroseconds;
+    seconds = currTime.tv_sec + timeoutSeconds + (microSeconds / 1000000);
     microSeconds = microSeconds % 1000000;
 
     timeout.tv_sec = seconds;
@@ -390,9 +387,13 @@ void oas::Server::_atExit()
 // Main
 int main(int argc, char **argv)
 {
+    oas::Logger::logf("Starting up the OpenAL Audio Server...");
+
     // Initialize all of the components of the server
     oas::Server::getInstance().initialize(argc, argv);
 
-    return 0;
+    // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
+    // It will only return when program execution is meant to terminate
+    return Fl::run();
 }
 

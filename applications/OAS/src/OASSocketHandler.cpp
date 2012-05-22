@@ -451,7 +451,7 @@ void SocketHandler::_receiveBinaryFile(int connection, const Message& ptfi)
 	    oas::Logger::logf("> %s is %d bytes", ptfi.getFilename().c_str(), fileSize);
 	}
 
-    delete data;
+    delete[] data;
 }
 
 // static, public

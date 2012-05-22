@@ -44,7 +44,7 @@ private:
     static void _atExit();
 
     static void _computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds,
-                                unsigned long timeoutInMicroseconds);
+                                unsigned long timeoutMicroseconds);
     double _computeElapsedTime(struct timeval start, struct timeval end);
 
 };

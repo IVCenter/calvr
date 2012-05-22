@@ -29,31 +29,39 @@ public:
     // Create new thread, make double window, set up browser
     static bool initialize(int argc, char **argv, void (*atExitCallback) (void));
 
-    static bool isInitialized();
+    static inline bool isInitialized()
+    {
+        return _isInitialized;
+    }
 
     static inline void reset()
     {
-        ServerWindow::_table->reset();
+        if (isInitialized())
+            ServerWindow::_table->reset();
     }
 
     static inline void audioUnitWasModified(const AudioUnit* audioUnit)
     {
-        ServerWindow::_table->audioUnitWasModified(audioUnit);
+        if (isInitialized())
+            ServerWindow::_table->audioUnitWasModified(audioUnit);
     }
 
     static inline void audioUnitsWereModified(std::queue<const AudioUnit*> &audioUnits)
     {
-        ServerWindow::_table->audioUnitsWereModified(audioUnits);
+        if (isInitialized())
+            ServerWindow::_table->audioUnitsWereModified(audioUnits);
     }
 
     static inline void addToLogWindow(const char *line)
     {
-        ServerWindow::_browser->add(line);
+        if (isInitialized())
+            ServerWindow::_browser->add(line);
     }
 
     static inline void replaceBottomLine(const char *line)
     {
-        ServerWindow::_browser->replaceBottomLine(line);
+        if (isInitialized())
+            ServerWindow::_browser->replaceBottomLine(line);
     }
 
     static inline const char* const getBoldBrowserFormatter()

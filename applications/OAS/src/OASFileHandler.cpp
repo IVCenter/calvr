@@ -102,7 +102,7 @@ void* FileHandler::readFile(const std::string& filename, int& fileSize)
     {
         oas::Logger::errorf("FileHandler - Failed to read \"%s\" from disk.",
                             filePath.c_str());
-        delete data;
+        delete[] data;
         return NULL;
     }
 
