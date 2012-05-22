@@ -20,6 +20,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/OsgMath.h
     ${HEADER_PATH}/LocalToWorldVisitor.h
     ${HEADER_PATH}/TextureVisitors.h
+    ${HEADER_PATH}/PointsNode.h
     ${HEADER_PATH}/Export.h
 )
 
@@ -46,6 +47,7 @@ SET(LIB_SRC_FILES
     OsgMath.cpp
     LocalToWorldVisitor.cpp
     TextureVisitors.cpp
+    PointsNode.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES
