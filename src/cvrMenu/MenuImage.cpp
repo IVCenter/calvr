@@ -18,6 +18,7 @@ MenuImage::MenuImage(osg::Texture2D * texture, float width, float height) :
     _width = width;
     _height = height;
     _image = texture;
+    _image->setResizeNonPowerOfTwoHint(false);
 }
 
 MenuImage::~MenuImage()
@@ -36,6 +37,7 @@ void MenuImage::setImage(osg::Texture2D * texture, float width, float height)
     _width = width;
     _height = height;
     _image = texture;
+    _image->setResizeNonPowerOfTwoHint(false);
 }
 
 osg::Texture2D * MenuImage::getImage()
@@ -82,6 +84,7 @@ void MenuImage::loadImageFromFile(std::string & file)
     {
         _image = new osg::Texture2D;
         _image->setImage(image);
+        _image->setResizeNonPowerOfTwoHint(false);
 
         if(_width == 0)
         {
