@@ -53,6 +53,7 @@ void AudioSource::_init()
     _velocityX = _velocityY = _velocityZ = 0.0;
     _directionX = _directionY = _directionZ = 0.0;
     _gain = 1.0;
+    _pitch = 1.0;
     _isValid = false;
     _state = ST_UNKNOWN;
 }
@@ -377,6 +378,11 @@ bool AudioSource::deleteSource()
 AudioSource::SourceState AudioSource::getState() const
 {
     return _state;
+}
+
+float AudioSource::getPitch() const
+{
+    return _pitch;
 }
 
 float AudioSource::getDirectionX() const

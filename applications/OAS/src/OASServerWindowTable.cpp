@@ -274,7 +274,7 @@ void ServerWindowTable::draw_cell(TableContext context, int ROW = 0, int COL = 0
 const char* ServerWindowTable::_getColumnHeaderForAudioUnit(int column)
 {
     static const char* columnHeaders[] =
-        { "Status", "Gain", "Loop", "PosX", "PosY", "PosZ", "VelX", "VelY", "VelZ", "DirX", "DirY", "DirZ" };
+        { "Status", "Gain", "Loop", "Pitch", "PosX", "PosY", "PosZ", "VelX", "VelY", "VelZ", "DirX", "DirY", "DirZ" };
     static const int numColumnHeaders = sizeof(columnHeaders) << 2;
 
     if (column >= 0 && column < numColumnHeaders)
@@ -305,7 +305,7 @@ void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUni
         // Status
         case 0:
             if (AudioSource::ST_INITIAL == source->getState())
-                sprintf(buffer, "Ready");
+                sprintf(buffer, "Stopped");
             else if (AudioSource::ST_PLAYING == source->getState())
                 sprintf(buffer, "Playing");
             else if (AudioSource::ST_STOPPED == source->getState())
@@ -328,40 +328,44 @@ void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUni
             else
                 sprintf(buffer, "Off");
             break;
-        // Position X
+        // Pitch
         case 3:
+            sprintf(buffer, "%.3f", source->getPitch());
+            break;
+        // Position X
+        case 4:
             sprintf(buffer, "%.3f", source->getPositionX());
             break;
         // Position Y
-        case 4:
+        case 5:
             sprintf(buffer, "%.3f", source->getPositionY());
             break;
         // Position Z
-        case 5:
+        case 6:
             sprintf(buffer, "%.3f", source->getPositionZ());
             break;
         // Velocity X
-        case 6:
+        case 7:
             sprintf(buffer, "%.3f", source->getVelocityX());
             break;
         // Velocity Y
-        case 7:
+        case 8:
             sprintf(buffer, "%.3f", source->getVelocityY());
             break;
         // Velocity Z
-        case 8:
+        case 9:
             sprintf(buffer, "%.3f", source->getVelocityZ());
             break;
         // Direction X
-        case 9:
+        case 10:
             sprintf(buffer, "%.3f", source->getDirectionX());
             break;
         // Direction Y
-        case 10:
+        case 11:
             sprintf(buffer, "%.3f", source->getDirectionY());
             break;
         // Direction Z
-        case 11:
+        case 12:
             sprintf(buffer, "%.3f", source->getDirectionZ());
             break;
         default:

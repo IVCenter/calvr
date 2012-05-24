@@ -118,6 +118,11 @@ public:
     SourceState getState() const;
 
     /**
+     * @brief Get the pitch
+     */
+    float getPitch() const;
+
+    /**
      * @brief Get the x, y, z direction
      */
     float getDirectionX() const;
