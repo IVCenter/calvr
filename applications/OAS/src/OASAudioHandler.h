@@ -12,6 +12,7 @@
 #include <queue>
 #include <AL/alut.h>
 #include "OASAudioSource.h"
+#include "OASAudioListener.h"
 #include "OASAudioBuffer.h"
 #include "OASLogger.h"
 
@@ -160,6 +161,26 @@ public:
      */
     static void setSourcePitch(const ALuint source, const ALfloat pitchFactor);
 
+    /**
+     * @brief Change the overall gain via the listener object
+     */
+    static void setListenerGain(const ALfloat gain);
+
+    /**
+     * @brief Set the position of the listener
+     */
+    static void setListenerPosition(const ALfloat x, const ALfloat y, const ALfloat z);
+
+    /**
+     * @brief Set the velocity of the listener
+     */
+    static void setListenerVelocity(const ALfloat x, const ALfloat y, const ALfloat z);
+
+    /**
+     * @brief Set the listener orientation
+     */
+    static void setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
+                                       const ALfloat upX, const ALfloat upY, const ALfloat upZ);
 
 private:
     static AudioSource* _getSource(const ALuint source);

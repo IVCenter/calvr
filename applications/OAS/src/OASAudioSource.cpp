@@ -23,9 +23,6 @@ AudioSource::AudioSource(ALuint buffer)
     alSourcei(_id, AL_BUFFER, buffer);
     _buffer = buffer;
 
-    // Set the source to be relative to the listener
-    alSourcei(_id, AL_SOURCE_RELATIVE, AL_TRUE);
-
     _isValid = _wasOperationSuccessful();
 }
 
@@ -91,7 +88,8 @@ bool AudioSource::_wasOperationSuccessful()
         ALenum alutError = alutGetError();
         if (ALUT_ERROR_NO_ERROR != alutError)
         {
-        	oas::Logger::errorf("More information provided by ALUT: \"%s\"", alutGetErrorString(alutError));
+        	oas::Logger::errorf("More information provided by ALUT: \"%s\"",
+        	                    alutGetErrorString(alutError));
         }
 
         return false;

@@ -30,15 +30,19 @@ namespace oas
 #define M_SET_SOUND_VELOCITY					    "SSVE"
 #define M_SET_SOUND_DIRECTION					    "SSDI"
 #define M_SET_SOUND_DIRECTION_AND_GAIN 			    "SSDV"
-#define M_SET_SOUND_DIRECTION_RELATIVE 			    "SSDR"
-#define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE    "SSRV"
-#define M_SET_SOUND_PITCH                          "SPIT"
-#define M_GENERATE_SOUND_FROM_WAVEFORM             "WAVE"
+#define M_SET_SOUND_DIRECTION_RELATIVE 	    	    "SSDR"
+#define M_SET_SOUND_DIRECTION_AND_GAIN_RELATIVE     "SSRV"
+#define M_SET_SOUND_PITCH                           "SPIT"
+#define M_GENERATE_SOUND_FROM_WAVEFORM              "WAVE"
+#define M_SET_LISTENER_POSITION                     "SLPO"
+#define M_SET_LISTENER_VELOCITY                     "SLVE"
+#define M_SET_LISTENER_GAIN                         "GAIN"
+#define M_SET_LISTENER_ORIENTATION                  "SLOR"
 #define M_SYNC									    "SYNC"
 #define M_QUIT									    "QUIT"
 
 // Maximum number of float parameters
-#define MAX_NUMBER_FLOAT_PARAM    4
+#define MAX_NUMBER_FLOAT_PARAM    6
 
 class Message
 {
@@ -74,6 +78,10 @@ public:
         MT_SSRV_HL_3F_1F,   // Set sound direction relative to listener and gain in one command
         MT_SPIT_HL_1F,      // Set pitch
         MT_WAVE_1I_3F,      // Generate a sound based on waveform
+        MT_SLPO_3F,         // Set listener position
+        MT_SLVE_3F,         // Set listener velocity
+        MT_GAIN_1F,         // Set global (listener) gain
+        MT_SLOR_3F_3F,      // Set listener orientation
         MT_SYNC,
         MT_QUIT,
         MT_UNKNOWN

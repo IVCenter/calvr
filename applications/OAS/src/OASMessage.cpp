@@ -483,6 +483,51 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
                     &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2);
         _needsResponse = true;
     }
+    // SLPO
+    else if (0 == strcmp(pType, M_SET_LISTENER_POSITION))
+    {
+        // Set message type to SLPO
+        _mtype = Message::MT_SLPO_3F;
+
+        // Parse tokens: x, y, z of the listener's position
+        isSuccess =     _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2);
+    }
+    // SLVE
+    else if (0 == strcmp(pType, M_SET_LISTENER_VELOCITY))
+    {
+        // Set message type to SLVE
+        _mtype = Message::MT_SLVE_3F;
+
+        // Parse tokens: x, y, z of the listener's velocity
+        isSuccess =     _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2);
+    }
+    // GAIN
+    else if (0 == strcmp(pType, M_SET_LISTENER_GAIN))
+    {
+        // Set message type to GAIN
+        _mtype = Message::MT_GAIN_1F;
+
+        // Parse tokens: gain
+        isSuccess =     _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0);
+    }
+    // SLOR
+    else if (0 == strcmp(pType, M_SET_LISTENER_ORIENTATION))
+    {
+        // Set message type to SLOR
+        _mtype = Message::MT_SLOR_3F_3F;
+
+        // Parse tokens: x, y, z of "At" vector, and x, y, z of "Up" vector
+        isSuccess =     _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 0)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 1)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 2)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 3)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 4)
+                    &&  _parseFloatParameter(tokenBuf, pEnd, maxParseAmount, totalParsed, 5);
+    }
     // SYNC
     else if (0 == strcmp(pType, M_SYNC))
     {

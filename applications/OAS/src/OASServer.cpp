@@ -218,6 +218,27 @@ void oas::Server::_processMessage(const Message &message)
         case oas::Message::MT_SPIT_HL_1F:
             oas::AudioHandler::setSourcePitch(message.getHandle(), message.getFloatParam(0));
             break;
+        case oas::Message::MT_SLPO_3F:
+            oas::AudioHandler::setListenerPosition(message.getFloatParam(0),
+                                                   message.getFloatParam(1),
+                                                   message.getFloatParam(2));
+            break;
+        case oas::Message::MT_SLVE_3F:
+            oas::AudioHandler::setListenerVelocity(message.getFloatParam(0),
+                                                   message.getFloatParam(1),
+                                                   message.getFloatParam(2));
+            break;
+        case oas::Message::MT_GAIN_1F:
+            oas::AudioHandler::setListenerGain(message.getFloatParam(0));
+            break;
+        case oas::Message::MT_SLOR_3F_3F:
+            oas::AudioHandler::setListenerOrientation( message.getFloatParam(0),
+                                                       message.getFloatParam(1),
+                                                       message.getFloatParam(2),
+                                                       message.getFloatParam(3),
+                                                       message.getFloatParam(4),
+                                                       message.getFloatParam(5));
+            break;
         case oas::Message::MT_SSDR_HL_1F:
             oas::Logger::warnf("SSDR is deprecated! Ignoring instruction.");
             break;
@@ -227,13 +248,13 @@ void oas::Server::_processMessage(const Message &message)
         case Message::MT_SSRV_HL_3F_1F:
             oas::Logger::warnf("SSRV is deprecated! Ignoring instruction.");
             break;
-        case Message::MT_TEST:
+        case oas::Message::MT_TEST:
             break;
-        case Message::MT_SYNC:
+        case oas::Message::MT_SYNC:
             // Send a simple "SYNC" response
             oas::SocketHandler::addOutgoingResponse("SYNC");
             break;
-        case Message::MT_QUIT:
+        case oas::Message::MT_QUIT:
             // Will need to release all audio resources and then re-initialize them
             oas::AudioHandler::release();
             oas::ServerWindow::reset();
@@ -304,13 +325,17 @@ void* oas::Server::_serverLoop(void *parameter)
     std::queue<const AudioUnit*> sources;
     const AudioSource *source;
 
-    const unsigned long k_timeoutSeconds = 0;
-    const unsigned long k_timeoutMicroseconds = 100;
     struct timespec timeOut;
 
     while (1)
     {
-        _computeTimeout(timeOut, k_timeoutSeconds, k_timeoutMicroseconds);
+        // If a client is connected, use a very short timeout to give fast updates
+        if (SocketHandler::isConnectedToClient())
+            _computeTimeout(timeOut, 0, 100);
+        // Else use a longer timeout to save CPU cycles
+        else
+            _computeTimeout(timeOut, 5, 0);
+
 
         // If there are no messages, populateQueueWithIncomingMessages() will block until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);

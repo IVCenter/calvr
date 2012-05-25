@@ -20,6 +20,7 @@ std::queue<char *>      SocketHandler::_outgoingResponses;
 pthread_mutex_t         SocketHandler::_outMutex;
 pthread_cond_t          SocketHandler::_outCondition;
 bool                    SocketHandler::_isSocketOpen;
+bool                    SocketHandler::_isConnectedToClient = false;
 
 
 // static, public
@@ -78,6 +79,12 @@ void SocketHandler::terminate()
     pthread_cancel(SocketHandler::_socketThread);
     // Close the socket and clean up the associated data
     SocketHandler::_closeSocket();
+}
+
+// static, public
+bool SocketHandler::isConnectedToClient()
+{
+    return _isConnectedToClient;
 }
 
 // static, private
@@ -281,8 +288,10 @@ void* SocketHandler::_socketLoop(void* parameter)
         bool validConnection = true;
 
         // Use a circular buffer to read data
-        static char circularBuf[MAX_CIRCULAR_BUFFER_SIZE] = {0};
+        static char circularBuf[MAX_CIRCULAR_BUFFER_SIZE];
         char *bufPtr = circularBuf;
+
+        _isConnectedToClient = true;
 
         while (validConnection)
         {
@@ -385,6 +394,8 @@ void* SocketHandler::_socketLoop(void* parameter)
                     }
                 }
             } // End message parsing loop
+
+            _isConnectedToClient = false;
         } // End connection loop. Client has disconnected, or an error occured.
     }
 

@@ -38,7 +38,7 @@ public:
 
     /**
      * @brief Get the handle for this audio unit
-     * @return AudioUnit returns 0
+     *
      */
     virtual unsigned int getHandle() const = 0;
 

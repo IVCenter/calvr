@@ -491,3 +491,23 @@ void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitch
     }
 }
 
+void AudioHandler::setListenerGain(const ALfloat gain)
+{
+    AudioListener::getInstance().setGain(gain);
+}
+
+void AudioHandler::setListenerPosition(const ALfloat x, const ALfloat y, const ALfloat z)
+{
+    AudioListener::getInstance().setPosition(x, y, z);
+}
+
+void AudioHandler::setListenerVelocity(const ALfloat x, const ALfloat y, const ALfloat z)
+{
+    AudioListener::getInstance().setVelocity(x, y, z);
+}
+
+void AudioHandler::setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
+                                   const ALfloat upX, const ALfloat upY, const ALfloat upZ)
+{
+    AudioListener::getInstance().setOrientation(atX, atY, atZ, upX, upY, upZ);
+}

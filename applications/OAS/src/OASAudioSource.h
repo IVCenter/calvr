@@ -202,7 +202,7 @@ private:
 
     static ALuint _nextHandle;
     static const ALfloat _kConeInnerAngle = 45.0;
-    static const ALfloat _kConeOuterAngle = 360.0;
+    static const ALfloat _kConeOuterAngle = 180.0;
 
 };
 }

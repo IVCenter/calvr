@@ -41,6 +41,7 @@ class SocketHandler
         static bool initialize(unsigned short listeningPort);
         static void terminate();
         static bool isSocketOpen();
+        static bool isConnectedToClient();
         static unsigned int numberOfIncomingMessages();
         static void populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout);
         static void addOutgoingResponse(const char *response);
@@ -61,6 +62,7 @@ class SocketHandler
         static pthread_cond_t _outCondition;
 
         static bool _isSocketOpen;
+        static bool _isConnectedToClient;
 
     private:
         static bool _openSocket();
