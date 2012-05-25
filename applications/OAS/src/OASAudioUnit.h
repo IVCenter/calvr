@@ -7,6 +7,7 @@
 #ifndef _OAS_AUDIOUNIT_H_
 #define _OAS_AUDIOUNIT_H_
 
+#include <string>
 #include "AL/alut.h"
 
 namespace oas
@@ -81,6 +82,16 @@ public:
     {
     	return _velocityZ;
     }
+
+    /**
+     * @brief Get the label for the data entry for the given index
+     */
+    virtual const char* getLabelForIndex(int index) const = 0;
+
+    /**
+     * @brief Get the string for the value of the data entry for the given index
+     */
+    virtual std::string getStringForIndex(int index) const = 0;
 
     /**
      * @brief Is this particular audio unit a sound source?

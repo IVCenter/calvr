@@ -23,6 +23,8 @@ AudioBuffer::AudioBuffer(const std::string& filename)
             {
                 _filename = std::string(filename);
             }
+
+            delete[] (char *) data;
         }
     }
 }

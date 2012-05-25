@@ -395,8 +395,8 @@ void* SocketHandler::_socketLoop(void* parameter)
                 }
             } // End message parsing loop
 
-            _isConnectedToClient = false;
         } // End connection loop. Client has disconnected, or an error occured.
+        _isConnectedToClient = false;
     }
 
     close(SocketHandler::_socketHandle);

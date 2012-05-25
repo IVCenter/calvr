@@ -232,7 +232,15 @@ void ServerWindowTable::draw_cell(TableContext context, int ROW = 0, int COL = 0
 
     Fl::lock();
 
-    // First, check if the map has been updated between now and the previous call to draw_cell()
+    // First, check if the map has contents
+    if (this->_audioUnitMap.empty())
+    {
+        // If the map is empty, draw nothing
+        Fl::unlock();
+        return;
+    }
+
+    // Second, check if the map has been updated between now and the previous call to draw_cell()
     if (this->_audioUnitMapModified)
     {
         // Turn off the modified indicator
@@ -273,18 +281,7 @@ void ServerWindowTable::draw_cell(TableContext context, int ROW = 0, int COL = 0
 
 const char* ServerWindowTable::_getColumnHeaderForAudioUnit(int column)
 {
-    static const char* columnHeaders[] =
-        { "Status", "Gain", "Loop", "Pitch", "PosX", "PosY", "PosZ", "VelX", "VelY", "VelZ", "DirX", "DirY", "DirZ" };
-    static const int numColumnHeaders = sizeof(columnHeaders) << 2;
-
-    if (column >= 0 && column < numColumnHeaders)
-    {
-        return columnHeaders[column];
-    }
-    else
-    {
-        return "";
-    }
+    return this->_audioUnitMap.begin()->second ? this->_audioUnitMap.begin()->second->getLabelForIndex(column) : "";
 }
 
 void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUnit, int column, char *buffer)
@@ -292,84 +289,5 @@ void ServerWindowTable::_writeCellContentsForAudioUnit(const AudioUnit *audioUni
     if (!audioUnit || !buffer)
         return;
 
-    if (!audioUnit->isSoundSource())
-    {
-        sprintf(buffer, "Error");
-        return;
-    }
-
-    const AudioSource *source = static_cast<const AudioSource*>(audioUnit);
-
-    switch (column)
-    {
-        // Status
-        case 0:
-            if (AudioSource::ST_INITIAL == source->getState())
-                sprintf(buffer, "Stopped");
-            else if (AudioSource::ST_PLAYING == source->getState())
-                sprintf(buffer, "Playing");
-            else if (AudioSource::ST_STOPPED == source->getState())
-                sprintf(buffer, "Stopped");
-            else if (AudioSource::ST_PAUSED == source->getState())
-                sprintf(buffer, "Paused");
-            else if (AudioSource::ST_DELETED == source->getState())
-                sprintf(buffer, "Deleting");
-            else
-                sprintf(buffer, "Unknown");
-            break;
-        // Gain
-        case 1:
-            sprintf(buffer, "%.2f", source->getGain());
-            break;
-        // Looping
-        case 2:
-            if (source->isLooping())
-                sprintf(buffer, "On");
-            else
-                sprintf(buffer, "Off");
-            break;
-        // Pitch
-        case 3:
-            sprintf(buffer, "%.3f", source->getPitch());
-            break;
-        // Position X
-        case 4:
-            sprintf(buffer, "%.3f", source->getPositionX());
-            break;
-        // Position Y
-        case 5:
-            sprintf(buffer, "%.3f", source->getPositionY());
-            break;
-        // Position Z
-        case 6:
-            sprintf(buffer, "%.3f", source->getPositionZ());
-            break;
-        // Velocity X
-        case 7:
-            sprintf(buffer, "%.3f", source->getVelocityX());
-            break;
-        // Velocity Y
-        case 8:
-            sprintf(buffer, "%.3f", source->getVelocityY());
-            break;
-        // Velocity Z
-        case 9:
-            sprintf(buffer, "%.3f", source->getVelocityZ());
-            break;
-        // Direction X
-        case 10:
-            sprintf(buffer, "%.3f", source->getDirectionX());
-            break;
-        // Direction Y
-        case 11:
-            sprintf(buffer, "%.3f", source->getDirectionY());
-            break;
-        // Direction Z
-        case 12:
-            sprintf(buffer, "%.3f", source->getDirectionZ());
-            break;
-        default:
-            break;
-    }
-
+    sprintf(buffer, "%s", audioUnit->getStringForIndex(column).c_str());
 }

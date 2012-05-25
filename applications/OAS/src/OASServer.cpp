@@ -326,6 +326,7 @@ void* oas::Server::_serverLoop(void *parameter)
     const AudioSource *source;
 
     struct timespec timeOut;
+    int i = 0;
 
     while (1)
     {

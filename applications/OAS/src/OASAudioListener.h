@@ -66,12 +66,22 @@ public:
     /**
      * @brief Get the look at and up vectors
      */
-    float getOrientationLookAtX();
-    float getOrientationLookAtY();
-    float getOrientationLookAtZ();
-    float getOrientationUpX();
-    float getOrientationUpY();
-    float getOrientationUpZ();
+    float getOrientationLookAtX() const;
+    float getOrientationLookAtY() const;
+    float getOrientationLookAtZ() const;
+    float getOrientationUpX() const;
+    float getOrientationUpY() const;
+    float getOrientationUpZ() const;
+
+    /**
+     * @brief Get the label for the data entry for the given index
+     */
+    const char* getLabelForIndex(int index) const;
+
+    /**
+     * @brief Get the string for the value of the data entry for the given index
+     */
+    std::string getStringForIndex(int index) const;
 
 protected:
 

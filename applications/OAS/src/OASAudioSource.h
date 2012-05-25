@@ -7,6 +7,7 @@
 #ifndef _OAS_AUDIOSOURCE_H_
 #define _OAS_AUDIOSOURCE_H_
 
+#include <string>
 #include <AL/alut.h>
 #include "OASAudioUnit.h"
 
@@ -42,7 +43,7 @@ public:
     /**
      * @brief Get the handle for this source
      */
-    unsigned int getHandle() const;
+    virtual unsigned int getHandle() const;
 
     /**
      * @brief Get the name of the underlying buffer that is attached to this source
@@ -148,6 +149,16 @@ public:
      * @brief Resets the handle counter, and any other state applicable to all sources
      */
     static void resetSources();
+
+    /**
+     * @brief Get the label for the data entry for the given index
+     */
+    virtual const char* getLabelForIndex(int index) const;
+
+    /**
+     * @brief Get the string for the value of the data entry for the given index
+     */
+    virtual std::string getStringForIndex(int index) const;
 
     /**
      * @brief Creates a new audio source using the specified buffer
