@@ -439,6 +439,18 @@ void SceneManager::closeOpenObjectMenu()
     }
 }
 
+SceneManager::CameraCallbacks * SceneManager::getCameraCallbacks(osg::Camera * cam)
+{
+    if(_callbackMap.find(cam) != _callbackMap.end())
+    {
+	return &_callbackMap[cam];
+    }
+    else
+    {
+	return NULL;
+    }
+}
+
 void SceneManager::initPointers()
 {
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
@@ -920,4 +932,42 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
 void SceneManager::removePluginObjects(CVRPlugin * plugin)
 {
     //TODO create find plugin name function in PluginManager
+}
+
+void SceneManager::preDraw()
+{
+    if(getDepthPartitionActive())
+    {
+	osgViewer::Viewer::Cameras camList;
+	CVRViewer::instance()->getCameras(camList);
+	for(int i = 0; i < camList.size(); i++)
+	{
+	    _callbackMap[camList[i]].initialDraw = camList[i]->getInitialDrawCallback();
+	    _callbackMap[camList[i]].preDraw = camList[i]->getPreDrawCallback();
+	    _callbackMap[camList[i]].postDraw = camList[i]->getPostDrawCallback();
+	    _callbackMap[camList[i]].finalDraw = camList[i]->getFinalDrawCallback();
+
+	    camList[i]->setInitialDrawCallback(NULL);
+	    camList[i]->setPreDrawCallback(NULL);
+	    camList[i]->setPostDrawCallback(NULL);
+	    camList[i]->setFinalDrawCallback(NULL);
+	}
+    }
+}
+
+void SceneManager::postDraw()
+{
+    if(getDepthPartitionActive())
+    {
+	for(std::map<osg::Camera*,CameraCallbacks>::iterator it = _callbackMap.begin(); it != _callbackMap.end(); it++)
+	{
+	    it->first->setInitialDrawCallback(it->second.initialDraw);
+	    it->first->setPreDrawCallback(it->second.preDraw);
+	    it->first->setPostDrawCallback(it->second.postDraw);
+	    it->first->setFinalDrawCallback(it->second.finalDraw);
+	}
+	_callbackMap.clear();
+        _depthPartitionLeft->removeNodesFromCameras();
+        _depthPartitionRight->removeNodesFromCameras();
+    }
 }

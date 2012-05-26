@@ -947,6 +947,8 @@ void CVRViewer::renderingTraversals()
         SceneManager::instance()->getScene()->accept(precv);
     }
 
+    SceneManager::instance()->preDraw();
+
     // dispatch the rendering threads
     if(_startRenderingBarrier.valid())
         _startRenderingBarrier->block();
@@ -1020,6 +1022,8 @@ void CVRViewer::renderingTraversals()
     {
         _endDynamicDrawBlock->block();
     }
+
+    SceneManager::instance()->postDraw();
 
     if(_cullMode == CALVR)
     {
