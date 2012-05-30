@@ -19,7 +19,6 @@ public:
     std::string const& getCacheDirectory() const;
     unsigned short getPort() const;
 
-
     std::string const& getAudioDeviceString() const;
     void setAudioDeviceString(std::string const& audioDevice);
 

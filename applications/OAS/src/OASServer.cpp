@@ -121,7 +121,7 @@ void oas::Server::_processMessage(const Message &message)
         return;
     }
     
-    ALuint newSource;
+    int newSource;
     unsigned int delay = 5;
 
     switch(message.getMessageType())
@@ -134,19 +134,31 @@ void oas::Server::_processMessage(const Message &message)
             //      2b) Else file does not exist, send  "-1" response
 //            oas::Logger::logf("GHDL %s", message.getFilename());
             newSource = oas::AudioHandler::createSource(message.getFilename());
-            if (AL_NONE == newSource)
-            {
+            if (-1 == newSource)
                 oas::Logger::logf("Server was unable to generate new audio source for file \"%s\".",
                                   message.getFilename().c_str());
-                oas::SocketHandler::addOutgoingResponse(-1);
-            }
             else
-            {
                 oas::Logger::logf("New sound source created for \"%s\". (Sound ID = %d)",
                                   message.getFilename().c_str(),
                                   newSource);
-                oas::SocketHandler::addOutgoingResponse(newSource);
-            }
+            oas::SocketHandler::addOutgoingResponse(newSource);
+            break;
+        case oas::Message::MT_WAVE_1I_3F:
+            newSource = oas::AudioHandler::createSource(message.getIntegerParam(),
+                                                        message.getFloatParam(0),
+                                                        message.getFloatParam(1),
+                                                        message.getFloatParam(2));
+            if (-1 == newSource)
+                oas::Logger::logf("Server was unable to generate a new audio source based on the waveform:\n"
+                                  "    waveshape = %d, freq = %.2f, phase = %.2f, duration = %.2f",
+                                  message.getIntegerParam(), message.getFloatParam(0), message.getFloatParam(1),
+                                  message.getFloatParam(2));
+            else
+                oas::Logger::logf("New sound source created based on the waveform:\n"
+                                    "    waveshape = %d, freq = %.2f, phase = %.2f, duration = %.2f",
+                                    message.getIntegerParam(), message.getFloatParam(0), message.getFloatParam(1),
+                                    message.getFloatParam(2));
+            oas::SocketHandler::addOutgoingResponse(newSource);
             break;
         case oas::Message::MT_RHDL_HL:
             // Look through sources to see if handle exists. If exists, delete source. Else, do nothing
@@ -203,6 +215,9 @@ void oas::Server::_processMessage(const Message &message)
             oas::AudioHandler::setSourceGain( message.getHandle(),
                                               message.getFloatParam(1));
             break;
+        case oas::Message::MT_SPIT_HL_1F:
+            oas::AudioHandler::setSourcePitch(message.getHandle(), message.getFloatParam(0));
+            break;
         case oas::Message::MT_SSDR_HL_1F:
             oas::Logger::warnf("SSDR is deprecated! Ignoring instruction.");
             break;
@@ -233,7 +248,6 @@ void oas::Server::_processMessage(const Message &message)
         default:
             return;
     }
-    gettimeofday(&((Message *) (&message))->processed, NULL);
 }
 
 // public
@@ -281,9 +295,6 @@ void oas::Server::initialize(int argc, char **argv)
     {
         _fatalError("Could not create server thread!");
     }
-
-    // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
-    Fl::run();
 }
 
 // private, static
@@ -293,13 +304,13 @@ void* oas::Server::_serverLoop(void *parameter)
     std::queue<const AudioUnit*> sources;
     const AudioSource *source;
 
-    const long int k_timeoutMicroseconds = 100000; // Timeout in 0.1 seconds
-
+    const unsigned long k_timeoutSeconds = 0;
+    const unsigned long k_timeoutMicroseconds = 100;
     struct timespec timeOut;
 
     while (1)
     {
-        _computeTimeout(timeOut, k_timeoutMicroseconds);
+        _computeTimeout(timeOut, k_timeoutSeconds, k_timeoutMicroseconds);
 
         // If there are no messages, populateQueueWithIncomingMessages() will block until timeout
         oas::SocketHandler::populateQueueWithIncomingMessages(messages, timeOut);
@@ -336,14 +347,19 @@ void* oas::Server::_serverLoop(void *parameter)
 }
 
 // private, static
-void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long int k_timeoutInMicroseconds)
+void oas::Server::_computeTimeout(struct timespec &timeout, unsigned long timeoutSeconds, unsigned long timeoutMicroseconds)
 {
     struct timeval currTime;
+    unsigned long microSeconds, seconds;
 
     gettimeofday(&currTime, NULL);
 
-    timeout.tv_sec = currTime.tv_sec + (k_timeoutInMicroseconds / 1000000);
-    timeout.tv_nsec = (currTime.tv_usec + ((k_timeoutInMicroseconds - (k_timeoutInMicroseconds / 1000000)))) * 1000;
+    microSeconds = currTime.tv_usec + timeoutMicroseconds;
+    seconds = currTime.tv_sec + timeoutSeconds + (microSeconds / 1000000);
+    microSeconds = microSeconds % 1000000;
+
+    timeout.tv_sec = seconds;
+    timeout.tv_nsec = microSeconds * 1000;
 
 }
 
@@ -371,9 +387,13 @@ void oas::Server::_atExit()
 // Main
 int main(int argc, char **argv)
 {
+    oas::Logger::logf("Starting up the OpenAL Audio Server...");
+
     // Initialize all of the components of the server
     oas::Server::getInstance().initialize(argc, argv);
 
-    return 0;
+    // Fl::run() puts all of the FLTK window rendering on this current thread (main thread)
+    // It will only return when program execution is meant to terminate
+    return Fl::run();
 }
 

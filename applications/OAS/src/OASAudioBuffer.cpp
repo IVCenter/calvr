@@ -27,6 +27,42 @@ AudioBuffer::AudioBuffer(const std::string& filename)
     }
 }
 
+AudioBuffer::AudioBuffer(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration)
+{
+    _init();
+
+    // Create the buffer, according to the waveshape
+    switch (waveShape)
+    {
+        case 1:
+           _handle = alutCreateBufferWaveform(ALUT_WAVEFORM_SINE, frequency, phase, duration);
+           break;
+        case 2:
+           _handle = alutCreateBufferWaveform(ALUT_WAVEFORM_SQUARE, frequency, phase, duration);
+           break;
+        case 3:
+           _handle = alutCreateBufferWaveform(ALUT_WAVEFORM_SAWTOOTH, frequency, phase, duration);
+           break;
+        case 4:
+           _handle = alutCreateBufferWaveform(ALUT_WAVEFORM_WHITENOISE, frequency, phase, duration);
+           break;
+        case 5:
+           _handle = alutCreateBufferWaveform(ALUT_WAVEFORM_IMPULSE, frequency, phase, duration);
+           break;
+        default:
+            _handle = AL_NONE;
+            break;
+    }
+
+    // If buffer generated successfully, generate a unique filename for this buffer
+    if (AL_NONE != _handle)
+    {
+        char buffer[250];
+        sprintf(buffer, "wave: %i, %f, %f, %f", waveShape, frequency, phase, duration);
+        _filename = std::string(buffer);
+    }
+}
+
 AudioBuffer::AudioBuffer()
 {
     _init();

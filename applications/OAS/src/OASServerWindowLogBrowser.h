@@ -19,8 +19,10 @@ class ServerWindowLogBrowser : public Fl_Browser
 public:
 	ServerWindowLogBrowser(int X, int Y, int W, int H, const char *L = 0);
 
-	void add(char *line);
+	void add(const char *line);
     void replaceBottomLine(const char *line);
+
+    void copyToClipboard();
 
     inline int getBrowserSize() const
     {
@@ -51,6 +53,8 @@ public:
 protected:
     // Keeps track of the browser size
     unsigned int _browserSize;
+
+    static const unsigned int _kMaxLogLineLength;
 
 private:
     inline void _incrementBrowserSize()

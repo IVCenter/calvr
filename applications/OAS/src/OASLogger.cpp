@@ -85,7 +85,7 @@ void Logger::_sendFormattedOutput(const char *format, va_list args)
     // If the server window is initialized, output to it
     if (ServerWindow::isInitialized())
     {
-        ServerWindow::addToBrowser(buf);
+        ServerWindow::addToLogWindow(buf);
     }
     else
     {
