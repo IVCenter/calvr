@@ -10,7 +10,7 @@ AudioSource*         AudioHandler::_recentSource;
 std::string     AudioHandler::_deviceString;
 ALCdevice*      AudioHandler::_device;
 ALCcontext*     AudioHandler::_context;
-const AudioSource*   AudioHandler::_recentlyModifiedSource;
+const AudioUnit*   AudioHandler::_recentlyModifiedAudioUnit;
 
 // public, static
 bool AudioHandler::initialize(std::string const& deviceString)
@@ -74,6 +74,7 @@ bool AudioHandler::initialize(std::string const& deviceString)
 
     AudioHandler::_deviceString = deviceString;
     AudioHandler::_recentSource = NULL;
+    _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 
     return true;
 }
@@ -101,6 +102,12 @@ void AudioHandler::release()
     }
 
     _bufferMap.clear();
+
+    AudioListener::getInstance().setGain(1);
+    AudioListener::getInstance().setPosition(0, 0, 0);
+    AudioListener::getInstance().setOrientation(0, 0, -1, 0, 1, 0);
+    AudioListener::getInstance().setVelocity(0, 0, 0);
+    _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 
     if (0 < AudioHandler::_deviceString.length())
     {
@@ -184,31 +191,40 @@ AudioSource* AudioHandler::_getSource(const ALuint sourceHandle)
 }
 
 // private, static
-void AudioHandler::_clearRecentlyModifiedSource()
+void AudioHandler::_clearRecentlyModifiedAudioUnit()
 {
-    _recentlyModifiedSource = NULL;
+    _recentlyModifiedAudioUnit = NULL;
 }
 
 // private, static
-void AudioHandler::_setRecentlyModifiedSource(const AudioSource *source)
+void AudioHandler::_setRecentlyModifiedAudioUnit(const AudioUnit *unit)
 {
-    _recentlyModifiedSource = source;
+    _recentlyModifiedAudioUnit = unit;
 }
 
 // public, static
-const AudioSource* AudioHandler::getRecentlyModifiedSource()
+const AudioUnit* AudioHandler::getRecentlyModifiedAudioUnit()
 {
-    AudioSource *retval = NULL;
+    AudioUnit *retval = NULL;
 
-    if (_recentlyModifiedSource)
+    if (_recentlyModifiedAudioUnit)
     {
-    	// We create a duplicate copy of the recently modified source
-        retval = new AudioSource(*_recentlyModifiedSource);
+        if (_recentlyModifiedAudioUnit->isSoundSource())
+        {
+            // We create a duplicate copy of the recently modified source
+            retval = new AudioSource(*((AudioSource *) _recentlyModifiedAudioUnit));
+        }
+        else
+        {
+            // We create a duplicate copy of the listener
+            retval = new AudioListener(AudioListener::getInstance());
+        }
+
         // The duplicate is invalidated, so that it cannot be used to modify the sound state.
         // This is in addition to the inherent constness of the returned pointer.
         retval->invalidate();
         // Set the recently modified source to NULL
-        _recentlyModifiedSource = NULL;
+        _recentlyModifiedAudioUnit = NULL;
     }
     
     return retval;
@@ -247,7 +263,7 @@ int AudioHandler::createSource(ALuint buffer)
     {
         _sourceMap.insert(SourcePair(newSource->getHandle(), newSource));
         _recentSource = newSource;
-        _setRecentlyModifiedSource(newSource);
+        _setRecentlyModifiedAudioUnit(newSource);
         return newSource->getHandle();
     }
     else
@@ -288,7 +304,7 @@ int AudioHandler::createSource(ALint waveShape, ALfloat frequency, ALfloat phase
         // Add source to the sourcemap
         _sourceMap.insert(SourcePair(newSource->getHandle(), newSource));
         _recentSource = newSource;
-        _setRecentlyModifiedSource(newSource);
+        _setRecentlyModifiedAudioUnit(newSource);
         return newSource->getHandle();
     }
     else
@@ -313,7 +329,7 @@ void AudioHandler::deleteSource(const ALuint sourceHandle)
     // Find the source in the map, and if found, queue it up for deletion
     SourceMapIterator iterator = AudioHandler::_sourceMap.find(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
 
     if (AudioHandler::_sourceMap.end() != iterator)
     {
@@ -330,7 +346,7 @@ void AudioHandler::deleteSource(const ALuint sourceHandle)
             // Push the pointer to the source onto the lazy deletion queue
             lazyDeletionQueue.push(iterator->second);
             // Update the recently modified source
-            _setRecentlyModifiedSource(iterator->second);
+            _setRecentlyModifiedAudioUnit(iterator->second);
         }
         _sourceMap.erase(iterator);
     }
@@ -350,12 +366,12 @@ void AudioHandler::playSource(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->play())
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 }
 
@@ -364,12 +380,12 @@ void AudioHandler::stopSource(const ALuint sourceHandle)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->stop())
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 }
 
@@ -378,12 +394,12 @@ void AudioHandler::setSourcePosition(const ALuint sourceHandle, const ALfloat x,
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->setPosition(x, y, z))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 
 }
@@ -393,12 +409,12 @@ void AudioHandler::setSourceGain(const ALuint sourceHandle, const ALfloat gain)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->setGain(gain))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 
 }
@@ -408,12 +424,12 @@ void AudioHandler::setSourceLoop(const ALuint sourceHandle, const ALint isLoop)
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->setLoop(isLoop))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 
 }
@@ -423,12 +439,12 @@ void AudioHandler::setSourceVelocity(const ALuint sourceHandle, const ALfloat x,
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->setVelocity(x, y, z))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 }
 
@@ -437,7 +453,7 @@ void AudioHandler::setSourceSpeed(const ALuint sourceHandle, const ALfloat speed
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
@@ -445,7 +461,7 @@ void AudioHandler::setSourceSpeed(const ALuint sourceHandle, const ALfloat speed
                                  speed * source->getDirectionY(),
                                  speed * source->getDirectionZ()))
         {
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
         }
     }
 
@@ -456,12 +472,12 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat x
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
     
     if (source)
     {
         if (source->setDirection(x, y, z))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 
 }
@@ -482,32 +498,44 @@ void AudioHandler::setSourcePitch(const ALuint sourceHandle, const ALfloat pitch
 {
     AudioSource *source = AudioHandler::_getSource(sourceHandle);
 
-    _clearRecentlyModifiedSource();
+    _clearRecentlyModifiedAudioUnit();
 
     if (source)
     {
         if (source->setPitch(pitchFactor))
-            _setRecentlyModifiedSource(source);
+            _setRecentlyModifiedAudioUnit(source);
     }
 }
 
 void AudioHandler::setListenerGain(const ALfloat gain)
 {
-    AudioListener::getInstance().setGain(gain);
+    _clearRecentlyModifiedAudioUnit();
+
+    if (AudioListener::getInstance().setGain(gain))
+        _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 }
 
 void AudioHandler::setListenerPosition(const ALfloat x, const ALfloat y, const ALfloat z)
 {
-    AudioListener::getInstance().setPosition(x, y, z);
+    _clearRecentlyModifiedAudioUnit();
+
+    if (AudioListener::getInstance().setPosition(x, y, z))
+        _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 }
 
 void AudioHandler::setListenerVelocity(const ALfloat x, const ALfloat y, const ALfloat z)
 {
-    AudioListener::getInstance().setVelocity(x, y, z);
+    _clearRecentlyModifiedAudioUnit();
+
+    if (AudioListener::getInstance().setVelocity(x, y, z))
+        _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 }
 
 void AudioHandler::setListenerOrientation(const ALfloat atX, const ALfloat atY, const ALfloat atZ,
                                    const ALfloat upX, const ALfloat upY, const ALfloat upZ)
 {
-    AudioListener::getInstance().setOrientation(atX, atY, atZ, upX, upY, upZ);
+    _clearRecentlyModifiedAudioUnit();
+
+    if (AudioListener::getInstance().setOrientation(atX, atY, atZ, upX, upY, upZ))
+        _setRecentlyModifiedAudioUnit(&AudioListener::getInstance());
 }

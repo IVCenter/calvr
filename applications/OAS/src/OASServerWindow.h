@@ -37,21 +37,31 @@ public:
     static inline void reset()
     {
         if (isInitialized())
-            ServerWindow::_table->reset();
+            ServerWindow::_sourcesTable->reset();
     }
 
     static inline void audioUnitWasModified(const AudioUnit* audioUnit)
     {
-        if (isInitialized())
-            ServerWindow::_table->audioUnitWasModified(audioUnit);
+        if (isInitialized() && audioUnit)
+        {
+            if (audioUnit->isSoundSource())
+                ServerWindow::_sourcesTable->audioUnitWasModified(audioUnit);
+            else
+                ServerWindow::_listenerTable->audioUnitWasModified(audioUnit);
+        }
     }
 
-    static inline void audioUnitsWereModified(std::queue<const AudioUnit*> &audioUnits)
+    static inline void audioSourcesWereModified(std::queue<const AudioUnit*> &audioUnits)
     {
         if (isInitialized())
-            ServerWindow::_table->audioUnitsWereModified(audioUnits);
+            ServerWindow::_sourcesTable->audioUnitsWereModified(audioUnits);
     }
 
+    static inline void audioListenerWasModified(const AudioUnit* listener)
+    {
+        if (isInitialized() && listener && !listener->isSoundSource())
+            ServerWindow::_listenerTable->audioUnitWasModified(listener);
+    }
     static inline void addToLogWindow(const char *line)
     {
         if (isInitialized())
@@ -101,13 +111,11 @@ protected:
 
     // Tab group 2 contains a tabular representation of the sound source data
     static Fl_Group *_tabGroup2;
-    static ServerWindowTable *_table;
+    static ServerWindowTable *_sourcesTable;
 
     // Tab group 3 contains a visual representation of the sound source data
     static Fl_Group *_tabGroup3;
-
-    // Tab group 4 can have statistical information about the server
-    static Fl_Group *_tabGroup4;
+    static ServerWindowTable *_listenerTable;
 
     // The thread that will do all of the window processing
     static pthread_t _windowThread;

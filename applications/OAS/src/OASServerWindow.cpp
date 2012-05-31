@@ -4,6 +4,8 @@
  */
 
 #include "OASServerWindow.h"
+#include "OASAudioSource.h"
+#include "OASAudioListener.h"
 
 using namespace oas;
 
@@ -17,7 +19,10 @@ Fl_Button*                  ServerWindow::_copyToClipboardButton = NULL;
 Fl_Button*                  ServerWindow::_clearButton = NULL;
 
 Fl_Group*           		ServerWindow::_tabGroup2 = NULL;
-ServerWindowTable*          ServerWindow::_table = NULL;
+ServerWindowTable*          ServerWindow::_sourcesTable = NULL;
+
+Fl_Group*                   ServerWindow::_tabGroup3 = NULL;
+ServerWindowTable*          ServerWindow::_listenerTable = NULL;
 
 pthread_t                   ServerWindow::_windowThread;
 bool                        ServerWindow::_isInitialized = false;
@@ -107,17 +112,38 @@ bool ServerWindow::initialize(int argc, char **argv, void (*atExitCallback) (voi
                                             ServerWindow::_kTabHeight + 10,
                                             ServerWindow::_kTabGroupWidth,
                                             ServerWindow::_kTabGroupHeight,
-                                            "Table");
-    ServerWindow::_tabGroup2->tooltip("This tab displays information about the server.");
+                                            "Sources");
+    ServerWindow::_tabGroup2->tooltip("This tab displays information about sound sources.");
 
-    // Create the table
-    ServerWindow::_table = new ServerWindowTable(10,
+    // Create the sources table
+    ServerWindow::_sourcesTable = new ServerWindowTable(10,
                                                  ServerWindow::_kTabHeight + 10,
                                                  ServerWindow::_kTableWidth,
-                                                 ServerWindow::_kTableHeight);
+                                                 ServerWindow::_kTableHeight,
+                                                 NULL,
+                                                 AudioSource::getIndexCount());
 
     ServerWindow::_tabGroup2->hide();
     ServerWindow::_tabGroup2->end();
+
+    // Create the third tab group
+    ServerWindow::_tabGroup3 = new Fl_Group(10,
+                                            ServerWindow::_kTabHeight + 10,
+                                            ServerWindow::_kTabGroupWidth,
+                                            ServerWindow::_kTabGroupHeight,
+                                            "Listener");
+    ServerWindow::_tabGroup3->tooltip("This tab displays information about the listener, and other stats.");
+
+    // Create the listener table
+    ServerWindow::_listenerTable = new ServerWindowTable(10,
+                                                         ServerWindow::_kTabHeight + 10,
+                                                         ServerWindow::_kTableWidth,
+                                                         ServerWindow::_kTableHeight,
+                                                         NULL,
+                                                         AudioListener::getIndexCount());
+
+    ServerWindow::_tabGroup3->hide();
+    ServerWindow::_tabGroup3->end();
 
     // Finalize the tabs
     ServerWindow::_tabs->end();
@@ -172,7 +198,8 @@ void* ServerWindow::_windowLoop(void *parameter)
 {
     while (1)
     {
-        ServerWindow::_table->update();
+        ServerWindow::_sourcesTable->update();
+        ServerWindow::_listenerTable->update();
     }
     return NULL;
 }

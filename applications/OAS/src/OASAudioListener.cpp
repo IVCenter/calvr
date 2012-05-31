@@ -27,14 +27,17 @@ unsigned int AudioListener::getHandle() const
 
 bool AudioListener::setGain(ALfloat gain)
 {
-    _clearError();
-
-    alListenerf(AL_GAIN, gain);
-
-    if (_wasOperationSuccessful())
+    if (isValid())
     {
-        _gain = gain;
-        return true;
+        _clearError();
+
+        alListenerf(AL_GAIN, gain);
+
+        if (_wasOperationSuccessful())
+        {
+            _gain = gain;
+            return true;
+        }
     }
 
     return false;
@@ -42,56 +45,63 @@ bool AudioListener::setGain(ALfloat gain)
 
 bool AudioListener::setPosition(ALfloat x, ALfloat y, ALfloat z)
 {
-    _clearError();
-
-    alListener3f(AL_POSITION, x, y, z);
-
-    if (_wasOperationSuccessful())
+    if (isValid())
     {
-        _positionX = x;
-        _positionY = y;
-        _positionZ = z;
-        return true;
-    }
+        _clearError();
 
+        alListener3f(AL_POSITION, x, y, z);
+
+        if (_wasOperationSuccessful())
+        {
+            _positionX = x;
+            _positionY = y;
+            _positionZ = z;
+            return true;
+        }
+    }
     return false;
 }
 
 bool AudioListener::setVelocity(ALfloat x, ALfloat y, ALfloat z)
 {
-    _clearError();
-
-    alListener3f(AL_VELOCITY, x, y, z);
-
-    if (_wasOperationSuccessful())
+    if (isValid())
     {
-        _velocityX = x;
-        _velocityY = y;
-        _velocityZ = z;
-        return true;
-    }
+        _clearError();
 
+        alListener3f(AL_VELOCITY, x, y, z);
+
+        if (_wasOperationSuccessful())
+        {
+            _velocityX = x;
+            _velocityY = y;
+            _velocityZ = z;
+            return true;
+        }
+    }
     return false;
 }
 
 bool AudioListener::setOrientation(ALfloat atX, ALfloat atY, ALfloat atZ,
                                    ALfloat upX, ALfloat upY, ALfloat upZ)
 {
-    _clearError();
-
-    ALfloat orientation[6] = {atX, atY, atZ, upX, upY, upZ};
-
-    alListenerfv(AL_ORIENTATION, orientation);
-
-    if (_wasOperationSuccessful())
+    if (isValid())
     {
-        _orientation[0] = atX;
-        _orientation[1] = atY;
-        _orientation[2] = atZ;
-        _orientation[3] = upX;
-        _orientation[4] = upY;
-        _orientation[5] = upZ;
-        return true;
+        _clearError();
+
+        ALfloat orientation[6] = {atX, atY, atZ, upX, upY, upZ};
+
+        alListenerfv(AL_ORIENTATION, orientation);
+
+        if (_wasOperationSuccessful())
+        {
+            _orientation[0] = atX;
+            _orientation[1] = atY;
+            _orientation[2] = atZ;
+            _orientation[3] = upX;
+            _orientation[4] = upY;
+            _orientation[5] = upZ;
+            return true;
+        }
     }
 
     return false;
@@ -236,6 +246,8 @@ void AudioListener::_init()
     _orientation[3] = 0.0;
     _orientation[4] = 1.0;
     _orientation[5] = 0.0;
+
+    _isValid = true;
 }
 
 // private
@@ -270,4 +282,9 @@ bool AudioListener::_wasOperationSuccessful()
         return false;
     }
 
+}
+
+int AudioListener::getIndexCount()
+{
+    return 13;
 }

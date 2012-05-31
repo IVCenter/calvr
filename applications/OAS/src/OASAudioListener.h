@@ -83,6 +83,11 @@ public:
      */
     std::string getStringForIndex(int index) const;
 
+    /**
+     * @brief Get the number of data entries
+     */
+    static int getIndexCount();
+
 protected:
 
     /**

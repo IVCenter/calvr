@@ -51,16 +51,6 @@ public:
     unsigned int getBuffer() const;
 
     /**
-     * @brief Return if the source is valid or not
-     */
-    bool isValid() const;
-
-    /**
-     * @brief Invalidate this sound source
-     */
-    void invalidate();
-
-    /**
      * @brief Update the state of the sound source
      * @return True if something changed, false if nothing changed
      */
@@ -160,6 +150,12 @@ public:
      */
     virtual std::string getStringForIndex(int index) const;
 
+
+    /**
+     * @brief Get the number of data entries monitored by AudioSource objects
+     */
+    static int getIndexCount();
+
     /**
      * @brief Creates a new audio source using the specified buffer
      * @param buffer Handle to a buffer that contains sound data
@@ -207,7 +203,6 @@ private:
     ALfloat _pitch;
 
     ALint _isLooping;
-    bool _isValid;
     bool _isDirectional;
 
 

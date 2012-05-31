@@ -81,10 +81,10 @@ public:
     static int createSource(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
 
     /**
-     * @brief Retrieve a copy of the most recently modified source.
+     * @brief Retrieve a copy of the most recently modified unit
      * @retval NULL if none exists
      */
-    static const AudioSource* getRecentlyModifiedSource();
+    static const AudioUnit* getRecentlyModifiedAudioUnit();
 
     /**
      * @brief Retrieve copies of all updated sources inside the given queue
@@ -184,15 +184,15 @@ public:
 
 private:
     static AudioSource* _getSource(const ALuint source);
-    static void _clearRecentlyModifiedSource();
-    static void _setRecentlyModifiedSource(const AudioSource*);
+    static void _clearRecentlyModifiedAudioUnit();
+    static void _setRecentlyModifiedAudioUnit(const AudioUnit*);
 
     static BufferMap _bufferMap;
     static SourceMap _sourceMap;
 
     static AudioSource* _recentSource;
 
-    static const AudioSource *_recentlyModifiedSource;
+    static const AudioUnit *_recentlyModifiedAudioUnit;
 
     static std::string _deviceString;
     static ALCdevice* _device;

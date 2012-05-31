@@ -10,10 +10,12 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Table.H>
 #include <FL/fl_draw.H>
+#include <sys/time.h>
 #include <pthread.h>
 #include <map>
 #include <queue>
 #include "OASAudioUnit.h"
+
 
 namespace oas
 {
@@ -36,7 +38,7 @@ public:
      * @param H The height of the table
      * @param L A string for the label
      */
-    ServerWindowTable(int X, int Y, int W, int H, const char *L = NULL, bool tableIsForSoundSources = true);
+    ServerWindowTable(int X, int Y, int W, int H, const char *L = NULL, int numColumns = 12);
 
     /**
      * Notifies the ServerWindowTable that this particular audio unit has been modified.
@@ -96,6 +98,7 @@ private:
      *   removed from this queue via "processModifiedAudioUnits()", on thread B
      */
     std::queue<const AudioUnit*> _audioUnitProcessingQueue;
+    std::vector<const AudioUnit*> _audioUnitVector;
     pthread_mutex_t _queueMutex;
     pthread_cond_t _queueCondition;
 

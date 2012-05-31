@@ -323,10 +323,13 @@ void* oas::Server::_serverLoop(void *parameter)
 {
     std::queue<Message*> messages;
     std::queue<const AudioUnit*> sources;
-    const AudioSource *source;
+    const AudioUnit *audioUnit;
 
     struct timespec timeOut;
     int i = 0;
+
+    // Add the listener to the GUI
+    oas::ServerWindow::audioListenerWasModified(oas::AudioHandler::getRecentlyModifiedAudioUnit());
 
     while (1)
     {
@@ -347,7 +350,7 @@ void* oas::Server::_serverLoop(void *parameter)
             oas::AudioHandler::populateQueueWithUpdatedSources(sources);
 
             if (!sources.empty())
-                 oas::ServerWindow::audioUnitsWereModified(sources);
+                 oas::ServerWindow::audioSourcesWereModified(sources);
 
             continue;
         }
@@ -360,11 +363,11 @@ void* oas::Server::_serverLoop(void *parameter)
             delete nextMessage;
             messages.pop();
 
-            source = oas::AudioHandler::getRecentlyModifiedSource();
-            if (NULL != source)
+            audioUnit = oas::AudioHandler::getRecentlyModifiedAudioUnit();
+            if (NULL != audioUnit)
             {
                 // Call ServerWindow method that will queue up the source
-                oas::ServerWindow::audioUnitWasModified(source);
+                oas::ServerWindow::audioUnitWasModified(audioUnit);
             }
         }
     }

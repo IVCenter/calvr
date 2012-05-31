@@ -83,6 +83,16 @@ public:
     	return _velocityZ;
     }
 
+    inline virtual bool isValid() const
+    {
+        return _isValid;
+    }
+
+    inline virtual void invalidate()
+    {
+        _isValid = false;
+    }
+
     /**
      * @brief Get the label for the data entry for the given index
      */
@@ -102,6 +112,7 @@ public:
 
 protected:
 
+    bool _isValid;
     ALfloat _gain;
     ALfloat _positionX, _positionY, _positionZ;
     ALfloat _velocityX, _velocityY, _velocityZ;

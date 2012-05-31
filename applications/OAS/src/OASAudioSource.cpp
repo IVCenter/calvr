@@ -102,16 +102,6 @@ void AudioSource::resetSources()
     _nextHandle = 0;
 }
 
-bool AudioSource::isValid() const
-{
-    return _isValid;
-}
-
-void AudioSource::invalidate()
-{
-	_isValid = false;
-}
-
 bool AudioSource::update()
 {
     ALint alState;
@@ -498,4 +488,9 @@ std::string AudioSource::getStringForIndex(int index) const
     }
 
     return buffer;
+}
+
+int AudioSource::getIndexCount()
+{
+    return 13;
 }
