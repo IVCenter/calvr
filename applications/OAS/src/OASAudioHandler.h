@@ -149,10 +149,10 @@ public:
     static void setSourceDirection(const ALuint source, const ALfloat x, const ALfloat y, const ALfloat z);
 
     /**
-     * @brief Set the direction the source is pointing at with just an angle
-     * @param angleInDegrees The angle must be given in degrees, not radians.
+     * @brief Set the direction the source is pointing at with just an angle.
+     * @param angleInRadians The angle must be given in radians
      */
-    static void setSourceDirection(const ALuint source, const ALfloat angleInDegrees);
+    static void setSourceDirection(const ALuint source, const ALfloat angleInRadians);
 
     /**
      * @brief Change the pitch of the source.

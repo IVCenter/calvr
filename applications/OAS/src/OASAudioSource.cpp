@@ -24,6 +24,10 @@ AudioSource::AudioSource(ALuint buffer)
     _buffer = buffer;
 
     _isValid = _wasOperationSuccessful();
+
+    // Update the state of the audio source
+    if (isValid())
+        update(true);
 }
 
 AudioSource::AudioSource()
@@ -52,6 +56,8 @@ void AudioSource::_init()
     _gain = 1.0;
     _pitch = 1.0;
     _isValid = false;
+    _isLooping = false;
+    _isDirectional = false;
     _state = ST_UNKNOWN;
 }
 
@@ -102,13 +108,13 @@ void AudioSource::resetSources()
     _nextHandle = 0;
 }
 
-bool AudioSource::update()
+bool AudioSource::update(bool forceUpdate)
 {
     ALint alState;
     SourceState newState;
 
     // The state does not need to be checked if the source isn't being played
-    if (this->_state != ST_PLAYING)
+    if (!forceUpdate && this->_state != ST_PLAYING)
         return false;
 
     // Retrieve state information from OpenAL

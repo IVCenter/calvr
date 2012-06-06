@@ -359,7 +359,7 @@ void* oas::Server::_serverLoop(void *parameter)
         {
             Message *nextMessage = messages.front();
             oas::Server::getInstance()._processMessage(*nextMessage);
-            oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
+            //oas::Logger::logf("Server processed message \"%s\"", nextMessage->getOriginalString().c_str());
             delete nextMessage;
             messages.pop();
 

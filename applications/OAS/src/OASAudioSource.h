@@ -52,9 +52,11 @@ public:
 
     /**
      * @brief Update the state of the sound source
+     * @param forceUpdate If true, it will force the state to be checked and updated via OpenAL,
+     *                    else it will only update the state if the sound source was playing.
      * @return True if something changed, false if nothing changed
      */
-    bool update();
+    bool update(bool forceUpdate = false);
 
     /**
      * @brief Play the source all the way through

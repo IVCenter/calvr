@@ -278,7 +278,7 @@ Message::MessageError Message::parseString(char*& messageString, const int maxPa
         }
     }
 
-    oas::Logger::logf("Parsing string \"%s\"", messageString);
+    //oas::Logger::logf("Parsing string \"%s\"", messageString);
 
     this->_originalString = std::string(messageString);
 

@@ -351,6 +351,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                     {
                         oas::Logger::warnf("SocketHandler - Parsing failed for incoming message: \"%s\" "
                                             "This message will be ignored.",  bufPtr);
+                        delete newMessage;
                         break;
                     }
                 }
@@ -384,7 +385,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                         char *response = SocketHandler::_getNextOutgoingResponse();
 
                         // write the response to the socket connection
-                        amountWritten = write(connection, response, strlen(response) + 1);
+                        amountWritten = write(connection, response, strlen(response));
                         if (-1 == amountWritten)
                         {
                             oas::Logger::errorf("SocketHandler - Error occurred writing a response to the client.");

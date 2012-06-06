@@ -483,10 +483,8 @@ void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat x
 }
 
 // public, static
-void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat angleInDegrees)
+void AudioHandler::setSourceDirection(const ALuint sourceHandle, const ALfloat angleInRadians)
 {
-    ALfloat angleInRadians = angleInDegrees * (acos(-1.0) / 180.0); // PI = acos(-1)
-
     AudioHandler::setSourceDirection( sourceHandle, 
                                       sin(angleInRadians),
                                       0.0,
