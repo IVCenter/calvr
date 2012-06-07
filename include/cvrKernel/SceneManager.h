@@ -23,6 +23,11 @@ class CVRPlugin;
 struct InteractionEvent;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Creates and manages the main scenegraph
  */
 class CVRKERNEL_EXPORT SceneManager
@@ -250,6 +255,10 @@ class CVRKERNEL_EXPORT SceneManager
         float _menuMaxDistance;
         int _menuDefaultOpenButton;
 };
+
+/**
+ * @}
+ */
 
 }
 

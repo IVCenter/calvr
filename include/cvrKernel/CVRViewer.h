@@ -19,6 +19,11 @@ struct InteractionEvent;
 struct DefaultUpdate;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Main viewer for the system, does rendering traversal, distributes window events
  */
 class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
@@ -231,6 +236,10 @@ struct CVRKERNEL_EXPORT DefaultUpdate : public CVRViewer::UpdateTraversal
     public:
         void update();
 };
+
+/**
+ * @}
+ */
 
 }
 

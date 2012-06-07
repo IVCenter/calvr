@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuRangeValueGeometry.h
+ */
 #ifndef BOARD_MENU_RANGE_VALUE_GEOMETRY_H
 #define BOARD_MENU_RANGE_VALUE_GEOMETRY_H
 
@@ -6,6 +9,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu range value
+ */
 class BoardMenuRangeValueGeometry : public BoardMenuGeometry
 {
     public:
@@ -45,6 +56,10 @@ class BoardMenuRangeValueGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Texture2D> _backIcon;
         osg::ref_ptr<osg::Texture2D> _rvIcon;
 };
+
+/**
+ * @}
+ */
 
 }
 

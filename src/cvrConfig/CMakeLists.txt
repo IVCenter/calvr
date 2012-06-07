@@ -9,12 +9,15 @@ ENDIF(WIN32)
 SET(LIB_NAME cvrConfig)
 SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/ConfigFileReader.h
     ${HEADER_PATH}/ConfigManager.h
-	${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/XMLReader.h
 )
 
 SET(LIB_SRC_FILES
     ConfigManager.cpp
+    XMLReader.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES

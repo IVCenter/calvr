@@ -28,6 +28,11 @@ namespace cvr
 struct InteractionEvent;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Loads and manager CalVR plugins
  */
 class CVRKERNEL_EXPORT PluginManager
@@ -119,6 +124,10 @@ class CVRKERNEL_EXPORT PluginManager
         std::map<std::string,bool> _pluginMap; ///< map containing all plugin names in the config file and if they are on
 
 };
+
+/**
+ * @}
+ */
 
 }
 

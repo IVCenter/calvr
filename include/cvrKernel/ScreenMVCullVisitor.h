@@ -14,6 +14,11 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup screens
+ * @{
+ */
+
 class ScreenMVCullVisitor : public osgUtil::CullVisitor
 {
     public:
@@ -164,6 +169,10 @@ class ScreenMVCullVisitor : public osgUtil::CullVisitor
         virtual void apply(osg::OccluderNode& node);
         virtual void apply(osg::OcclusionQueryNode& node);
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

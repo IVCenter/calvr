@@ -20,6 +20,11 @@ namespace cvr
 class CVRSocket;
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Sets up a TCP socket to listen for multiple incomming connections
  */
 class CVRUTIL_EXPORT MultiListenSocket
@@ -52,6 +57,10 @@ class CVRUTIL_EXPORT MultiListenSocket
         int _socket; ///< socket descriptor
         bool _valid; ///< is the descriptor valid
 };
+
+/**
+ * @}
+ */
 
 }
 

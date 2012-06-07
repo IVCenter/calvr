@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief A PopupMenu with an updateable text field
  */
 class CVRMENU_EXPORT DialogPanel : public PopupMenu
@@ -44,6 +49,10 @@ class CVRMENU_EXPORT DialogPanel : public PopupMenu
         MenuText * _menuText; ///< menu item for text
         float _menuWidth; ///< maximum width of text
 };
+
+/**
+ * @}
+ */
 
 }
 

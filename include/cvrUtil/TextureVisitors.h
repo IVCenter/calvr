@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Node visitor that sets the texture resize hint for all textures
  * in a subgraph
  */
@@ -31,6 +36,10 @@ class TextureResizeNonPowerOfTwoHintVisitor : public osg::NodeVisitor
         void setHint(osg::StateSet * stateset);
         bool _hint;
 };
+
+/**
+ * @}
+ */
 
 }
 

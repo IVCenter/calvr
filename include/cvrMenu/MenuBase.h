@@ -12,6 +12,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Pure virtual base class for a menu implementation
  */
 class MenuBase
@@ -79,6 +84,10 @@ class MenuBase
          */
         virtual float getScale() = 0;
 };
+
+/**
+ * @}
+ */
 
 }
 

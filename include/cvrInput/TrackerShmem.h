@@ -20,6 +20,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup input
+ * @{
+ */
+
+/**
  * @brief Tracker implementation for reading out of a trackd shared memory block
  */
 class TrackerShmem : public TrackerBase
@@ -83,6 +88,10 @@ class TrackerShmem : public TrackerBase
         control_header * _controller; ///< header for trackd controller
         tracker_header * _tracker; ///< header for trackd tracker
 };
+
+/**
+ * @}
+ */
 
 }
 

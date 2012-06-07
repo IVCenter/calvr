@@ -1,3 +1,6 @@
+/**
+ * @file CollaborativeThread.h
+ */
 #ifndef CVR_COLLABORATIVE_THREAD_H
 #define CVR_COLLABORATIVE_THREAD_H
 
@@ -14,6 +17,14 @@ namespace cvr
 
 class CVRSocket;
 
+/**
+ * @addtogroup collab
+ * @{
+ */
+
+/**
+ * @brief Thread class used to communicate with the collaborative server
+ */
 class CollaborativeThread : public OpenThreads::Thread
 {
     public:
@@ -75,6 +86,10 @@ class CollaborativeThread : public OpenThreads::Thread
         OpenThreads::Mutex _quitLock;
         OpenThreads::Mutex _statusLock;
 };
+
+/**
+ * @}
+ */
 
 }
 

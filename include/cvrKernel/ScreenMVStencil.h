@@ -26,6 +26,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a stereo screen using osg stereo modes
  */
 class ScreenMVStencil : public ScreenBase
@@ -646,6 +651,11 @@ class ScreenMVStencil : public ScreenBase
         static cvr::SubMenu *_mvs_menu;
         static cvr::MenuRangeValue *_fov_dial;
 };
+
+/**
+ * @}
+ */
+
 }
 
 #endif

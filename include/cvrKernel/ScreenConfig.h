@@ -21,6 +21,11 @@ namespace cvr
 class ScreenBase;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Parameters to describe a graphics pipe
  */
 struct PipeInfo
@@ -205,6 +210,10 @@ class CVRKERNEL_EXPORT ScreenConfig
         std::vector<ChannelInfo *> _masterChannelInfoList; ///< list of channel params for master node
         std::vector<ScreenInfo *> _masterScreenInfoList; ///< list of screen params for master node
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

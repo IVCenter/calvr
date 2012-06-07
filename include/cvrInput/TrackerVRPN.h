@@ -17,6 +17,11 @@ namespace cvr
 struct DeviceInfo;
 
 /**
+ * @addtogroup input
+ * @{
+ */
+
+/**
  * @brief Tracker implementation that reads from a VRPN server
  */
 class TrackerVRPN : public TrackerBase
@@ -51,6 +56,10 @@ class TrackerVRPN : public TrackerBase
         DeviceInfo * _device;
 
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a head mounted display screen
  */
 class ScreenHMD : public ScreenBase
@@ -76,6 +81,10 @@ class ScreenHMD : public ScreenBase
 
         osg::ref_ptr<osg::Camera> _camera; ///< osg::Camera for this screen
 };
+
+/**
+ * @}
+ */
 
 }
 

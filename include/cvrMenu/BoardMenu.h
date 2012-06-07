@@ -21,6 +21,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu cvrMenu
+ * @{
+ */
+
+/**
  * @brief Menu implementation that builds board type geometry and manages interaction for 
  * a structure of MenuItems
  */
@@ -145,6 +150,10 @@ class BoardMenu : public MenuBase
 
         std::stack<SubMenu*> _openMenus; ///< stack of all currently opened SubMenus
 };
+
+/**
+ * @}
+ */
 
 }
 

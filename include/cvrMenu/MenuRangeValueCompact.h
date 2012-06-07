@@ -16,6 +16,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item to select a value within a range, more compact than the regular
  * MenuRangeValue
  */
@@ -83,6 +88,10 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
         bool _log; ///< is scale logarithmic
         float _logBase; ///< log scale base
 };
+
+/**
+ * @}
+ */
 
 }
 

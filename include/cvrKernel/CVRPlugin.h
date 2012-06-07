@@ -13,6 +13,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Interface class for all CalVR plugins
  */
 class CVRPlugin
@@ -94,6 +99,10 @@ class CVRPlugin
         }
 };
 
+/**
+ * @}
+ */
+
 }
 
 #ifdef WIN32
@@ -101,6 +110,11 @@ class CVRPlugin
 #else
 #define CVRPLUGIN_EXPORT
 #endif
+
+/**
+ * @addtogroup kernel
+ * @{
+ */
 
 /**
  * @brief Defines the interface function for the plugin's library
@@ -117,5 +131,9 @@ extern "C" \
   return new plugin(); \
  } \
 }
+
+/**
+ * @}
+ */
 
 #endif

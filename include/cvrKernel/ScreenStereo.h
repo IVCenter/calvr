@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a stereo screen using osg stereo modes
  */
 class ScreenStereo : public ScreenBase
@@ -88,6 +93,10 @@ class ScreenStereo : public ScreenBase
 
         osg::ref_ptr<osg::Camera> _camera; ///< osg::Camera for this screen
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item for a labeled checkbox
  */
 class CVRMENU_EXPORT MenuCheckbox : public MenuItem
@@ -60,6 +65,10 @@ class CVRMENU_EXPORT MenuCheckbox : public MenuItem
         std::string _text; ///< checkbox label
         bool _value; ///< current checkbox state
 };
+
+/**
+ * @}
+ */
 
 }
 

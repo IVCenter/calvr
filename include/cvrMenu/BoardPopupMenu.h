@@ -17,6 +17,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief A mobile PopupMenu implementation based on BoardMenu
  */
 class BoardPopupMenu : public PopupMenuBase, public BoardMenu
@@ -57,6 +62,10 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         std::map<int,osg::Vec3> _currentPoint;
         osg::Vec3 _menuPoint;
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

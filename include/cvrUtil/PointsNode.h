@@ -21,6 +21,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief OpenSceneGraph Node that acts as a wrapper for display and manipulation
  *        of a collection of points
  *
@@ -387,6 +392,10 @@ class PointsNode : public osg::Group
         osg::ref_ptr<osg::Texture2D> _spriteTexture; ///< texture for point sprites
         //static osg::ref_ptr<osg::Texture2D> _sphereTexture;
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

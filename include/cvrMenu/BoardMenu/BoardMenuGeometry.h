@@ -22,6 +22,15 @@ namespace cvr
 class BoardMenu;
 
 /**
+ * @addtogroup menu cvrMenu
+ * @{
+ */
+/**
+ * @addtogroup boardmenu BoardMenu
+ * @{
+ */
+
+/**
  * @brief Base class of geometry implementation for BoardMenu system
  */
 class BoardMenuGeometry
@@ -114,6 +123,13 @@ class BoardMenuGeometry
 };
 
 BoardMenuGeometry * createGeometry(MenuItem * item, bool head = false);
+
+/**
+ * @}
+ */
+/**
+ * @}
+ */
 
 }
 

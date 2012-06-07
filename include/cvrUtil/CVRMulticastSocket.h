@@ -18,6 +18,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Creates and manages a multicast socket
  */
 class CVRMulticastSocket
@@ -96,6 +101,10 @@ class CVRMulticastSocket
         struct sockaddr_in _address;
         socklen_t _addrlen;
 };
+
+/**
+ * @}
+ */
 
 }
 

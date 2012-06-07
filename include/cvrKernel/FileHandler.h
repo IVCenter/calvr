@@ -19,6 +19,11 @@ class CVRKERNEL_EXPORT FileLoadCallback;
 // TODO: add unload function call
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Handles the loading of data file types
  */
 class CVRKERNEL_EXPORT FileHandler
@@ -91,6 +96,10 @@ class CVRKERNEL_EXPORT FileLoadCallback
     private:
         std::vector<std::string> _exts; ///< list of extensions registed to this callback
 };
+
+/**
+ * @}
+ */
 
 }
 

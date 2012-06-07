@@ -195,7 +195,7 @@ void BoardMenuSubMenuGeometry::processEvent(InteractionEvent * event)
     {
         if(_item->getCallback())
         {
-            _item->getCallback()->menuCallback(_item);
+            _item->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
         }
     }
 }

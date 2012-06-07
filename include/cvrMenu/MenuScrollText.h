@@ -16,6 +16,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item that provides a scrolled text box
  */
 class CVRMENU_EXPORT MenuScrollText : public MenuItem
@@ -129,6 +134,10 @@ class CVRMENU_EXPORT MenuScrollText : public MenuItem
         int _rows; ///< number of text rows
         float _sizeScale; ///< text size scale
 };
+
+/**
+ * @}
+ */
 
 }
 

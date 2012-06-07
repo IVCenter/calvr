@@ -18,6 +18,11 @@ class MenuBase;
 class MenuManager;
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief MenuSystem implementation for the main CalVR menu
  */
 class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
@@ -90,6 +95,10 @@ class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
         MenuType _type; ///< type value for the menu implementation
         MenuBase * _menu; ///< class that implements menu geometry
 };
+
+/**
+ * @}
+ */
 
 }
 
