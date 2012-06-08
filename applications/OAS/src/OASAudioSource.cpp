@@ -4,7 +4,7 @@
 using namespace oas;
 
 // Statics
-ALuint AudioSource::_nextHandle;
+ALuint AudioSource::_nextHandle = 0;
 const ALfloat AudioSource::_kConeInnerAngle;
 const ALfloat AudioSource::_kConeOuterAngle;
 
@@ -23,10 +23,11 @@ AudioSource::AudioSource(ALuint buffer)
     alSourcei(_id, AL_BUFFER, buffer);
     _buffer = buffer;
 
-    // Set the source to be relative to the listener
-    alSourcei(_id, AL_SOURCE_RELATIVE, AL_TRUE);
-
     _isValid = _wasOperationSuccessful();
+
+    // Update the state of the audio source
+    if (isValid())
+        update(true);
 }
 
 AudioSource::AudioSource()
@@ -53,7 +54,10 @@ void AudioSource::_init()
     _velocityX = _velocityY = _velocityZ = 0.0;
     _directionX = _directionY = _directionZ = 0.0;
     _gain = 1.0;
+    _pitch = 1.0;
     _isValid = false;
+    _isLooping = false;
+    _isDirectional = false;
     _state = ST_UNKNOWN;
 }
 
@@ -62,7 +66,7 @@ ALuint AudioSource::_generateNextHandle()
 {
     _nextHandle++;
 
-    return _nextHandle;
+    return _nextHandle - 1;
 }
 
 // private
@@ -90,7 +94,8 @@ bool AudioSource::_wasOperationSuccessful()
         ALenum alutError = alutGetError();
         if (ALUT_ERROR_NO_ERROR != alutError)
         {
-        	oas::Logger::errorf("More information provided by ALUT: \"%s\"", alutGetErrorString(alutError));
+        	oas::Logger::errorf("More information provided by ALUT: \"%s\"",
+        	                    alutGetErrorString(alutError));
         }
 
         return false;
@@ -103,20 +108,14 @@ void AudioSource::resetSources()
     _nextHandle = 0;
 }
 
-bool AudioSource::isValid() const
-{
-    return _isValid;
-}
-
-void AudioSource::invalidate()
-{
-	_isValid = false;
-}
-
-bool AudioSource::update()
+bool AudioSource::update(bool forceUpdate)
 {
     ALint alState;
     SourceState newState;
+
+    // The state does not need to be checked if the source isn't being played
+    if (!forceUpdate && this->_state != ST_PLAYING)
+        return false;
 
     // Retrieve state information from OpenAL
     alGetSourcei(this->_id, AL_SOURCE_STATE, &alState);
@@ -329,6 +328,25 @@ bool AudioSource::setDirection(ALfloat x, ALfloat y, ALfloat z)
     return false;
 }
 
+bool AudioSource::setPitch(ALfloat pitchFactor)
+{
+    if (isValid())
+    {
+        // Clear OpenAL error state
+        _clearError();
+
+        alSourcef(_id, AL_PITCH, pitchFactor);
+
+        if (_wasOperationSuccessful())
+        {
+            _pitch = pitchFactor;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool AudioSource::deleteSource()
 {
     if (isValid())
@@ -360,6 +378,11 @@ AudioSource::SourceState AudioSource::getState() const
     return _state;
 }
 
+float AudioSource::getPitch() const
+{
+    return _pitch;
+}
+
 float AudioSource::getDirectionX() const
 {
     return _directionX;
@@ -380,3 +403,100 @@ bool AudioSource::isSoundSource() const
     return true;
 }
 
+const char* AudioSource::getLabelForIndex(int index) const
+{
+    static const int k_numLabels = 13;
+    static const char* labels[k_numLabels] =
+    { "Status", "Gain", "Loop", "Pitch", "PosX", "PosY", "PosZ", "VelX", "VelY", "VelZ", "DirX",
+      "DirY", "DirZ"
+    };
+
+    if (index >= 0 && index < k_numLabels)
+        return labels[index];
+    else
+        return "";
+}
+
+std::string AudioSource::getStringForIndex(int index) const
+{
+    char buffer[50] = {0};
+
+    switch (index)
+    {
+        // Status
+        case 0:
+            if (ST_INITIAL == getState())
+                sprintf(buffer, "Stopped");
+            else if (ST_PLAYING == getState())
+                sprintf(buffer, "Playing");
+            else if (ST_STOPPED == getState())
+                sprintf(buffer, "Stopped");
+            else if (ST_PAUSED == getState())
+                sprintf(buffer, "Paused");
+            else if (ST_DELETED == getState())
+                sprintf(buffer, "Deleting");
+            else
+                sprintf(buffer, "Unknown");
+            break;
+        // Gain
+        case 1:
+            sprintf(buffer, "%.2f", getGain());
+            break;
+        // Looping
+        case 2:
+            if (isLooping())
+                sprintf(buffer, "On");
+            else
+                sprintf(buffer, "Off");
+            break;
+        // Pitch
+        case 3:
+            sprintf(buffer, "%.3f", getPitch());
+            break;
+        // Position X
+        case 4:
+            sprintf(buffer, "%.3f", getPositionX());
+            break;
+        // Position Y
+        case 5:
+            sprintf(buffer, "%.3f", getPositionY());
+            break;
+        // Position Z
+        case 6:
+            sprintf(buffer, "%.3f", getPositionZ());
+            break;
+        // Velocity X
+        case 7:
+            sprintf(buffer, "%.3f", getVelocityX());
+            break;
+        // Velocity Y
+        case 8:
+            sprintf(buffer, "%.3f", getVelocityY());
+            break;
+        // Velocity Z
+        case 9:
+            sprintf(buffer, "%.3f", getVelocityZ());
+            break;
+        // Direction X
+        case 10:
+            sprintf(buffer, "%.3f", getDirectionX());
+            break;
+        // Direction Y
+        case 11:
+            sprintf(buffer, "%.3f", getDirectionY());
+            break;
+        // Direction Z
+        case 12:
+            sprintf(buffer, "%.3f", getDirectionZ());
+            break;
+        default:
+            break;
+    }
+
+    return buffer;
+}
+
+int AudioSource::getIndexCount()
+{
+    return 13;
+}

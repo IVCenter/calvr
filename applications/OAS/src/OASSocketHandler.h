@@ -23,11 +23,9 @@
 #include "OASMessage.h"
 #include "OASLogger.h"
 
-#define MAX_MESSAGE_SIZE 256
-
-#define MAX_CIRCULAR_BUFFER_SIZE 2048
-#define MAX_TRANSMIT_BUFFER_SIZE 256
-#define MAX_BINARY_READ_SIZE 512
+#define MAX_TRANSMIT_BUFFER_SIZE 1024
+#define MAX_CIRCULAR_BUFFER_SIZE (MAX_TRANSMIT_BUFFER_SIZE * 4)
+#define MAX_BINARY_READ_SIZE 1024
 
 namespace oas
 {
@@ -41,6 +39,7 @@ class SocketHandler
         static bool initialize(unsigned short listeningPort);
         static void terminate();
         static bool isSocketOpen();
+        static bool isConnectedToClient();
         static unsigned int numberOfIncomingMessages();
         static void populateQueueWithIncomingMessages(std::queue<Message*> &destination, struct timespec timeout);
         static void addOutgoingResponse(const char *response);
@@ -61,6 +60,7 @@ class SocketHandler
         static pthread_cond_t _outCondition;
 
         static bool _isSocketOpen;
+        static bool _isConnectedToClient;
 
     private:
         static bool _openSocket();

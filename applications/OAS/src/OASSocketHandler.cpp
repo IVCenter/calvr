@@ -20,6 +20,7 @@ std::queue<char *>      SocketHandler::_outgoingResponses;
 pthread_mutex_t         SocketHandler::_outMutex;
 pthread_cond_t          SocketHandler::_outCondition;
 bool                    SocketHandler::_isSocketOpen;
+bool                    SocketHandler::_isConnectedToClient = false;
 
 
 // static, public
@@ -78,6 +79,12 @@ void SocketHandler::terminate()
     pthread_cancel(SocketHandler::_socketThread);
     // Close the socket and clean up the associated data
     SocketHandler::_closeSocket();
+}
+
+// static, public
+bool SocketHandler::isConnectedToClient()
+{
+    return _isConnectedToClient;
 }
 
 // static, private
@@ -276,13 +283,15 @@ void* SocketHandler::_socketLoop(void* parameter)
             continue;
         }
 
-        int amountRead;
-        unsigned int amountParsed = 0;
+        int amountRead, amountWritten;
+        int amountParsed = 0;
         bool validConnection = true;
 
         // Use a circular buffer to read data
-        static char circularBuf[MAX_CIRCULAR_BUFFER_SIZE] = {0};
+        static char circularBuf[MAX_CIRCULAR_BUFFER_SIZE];
         char *bufPtr = circularBuf;
+
+        _isConnectedToClient = true;
 
         while (validConnection)
         {
@@ -293,7 +302,7 @@ void* SocketHandler::_socketLoop(void* parameter)
             }
 
             // Zero out the section of the buffer we're reading into
-            memset(bufPtr, 0, MAX_TRANSMIT_BUFFER_SIZE);
+            bzero(bufPtr, MAX_TRANSMIT_BUFFER_SIZE);
 
             // Read from the socket
             amountRead = read(connection, bufPtr, MAX_TRANSMIT_BUFFER_SIZE);
@@ -326,7 +335,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                 Message *newMessage = new Message();
                 Message::MessageError parseError;
 
-                parseError = newMessage->parseString(bufPtr, (unsigned int) amountRead, amountParsed);
+                parseError = newMessage->parseString(bufPtr, amountRead, amountParsed);
 
                 // check parseError to keep track as necessary
                 if (Message::MERROR_NONE != parseError)
@@ -342,6 +351,7 @@ void* SocketHandler::_socketLoop(void* parameter)
                     {
                         oas::Logger::warnf("SocketHandler - Parsing failed for incoming message: \"%s\" "
                                             "This message will be ignored.",  bufPtr);
+                        delete newMessage;
                         break;
                     }
                 }
@@ -373,14 +383,21 @@ void* SocketHandler::_socketLoop(void* parameter)
                     {
                         // The socket thread will block until the server has generated the response
                         char *response = SocketHandler::_getNextOutgoingResponse();
+
                         // write the response to the socket connection
-                        write(connection, response, strlen(response) + 1);
+                        amountWritten = write(connection, response, strlen(response));
+                        if (-1 == amountWritten)
+                        {
+                            oas::Logger::errorf("SocketHandler - Error occurred writing a response to the client.");
+                        }
                         // delete the response that was allocated
                         delete[] response;
                     }
                 }
             } // End message parsing loop
+
         } // End connection loop. Client has disconnected, or an error occured.
+        _isConnectedToClient = false;
     }
 
     close(SocketHandler::_socketHandle);
@@ -446,7 +463,7 @@ void SocketHandler::_receiveBinaryFile(int connection, const Message& ptfi)
 	    oas::Logger::logf("> %s is %d bytes", ptfi.getFilename().c_str(), fileSize);
 	}
 
-    delete data;
+    delete[] data;
 }
 
 // static, public

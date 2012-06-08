@@ -36,7 +36,25 @@ public:
      */
     bool isValid() const;
 
+    /**
+     * @brief Creates a new audio buffer based on the given file
+     * @param filename
+     */
     AudioBuffer(const std::string& filename);
+
+    /**
+     * @brief Create a new buffer based on the specified waveform.
+     * @param waveShape Sine        -> waveShape = 1
+     *                  Square      -> waveShape = 2
+     *                  Sawtooth    -> waveShape = 3
+     *                  Whitenoise  -> waveShape = 4
+     *                  Impulse     -> waveShape = 5
+     * @param frequency Frequency of the waveform, in hertz
+     * @param phase Phase of the waveform, in degrees from -180 to +180
+     * @param duration Duration of waveform in seconds
+     */
+    AudioBuffer(ALint waveShape, ALfloat frequency, ALfloat phase, ALfloat duration);
+
     AudioBuffer();
     ~AudioBuffer();
 

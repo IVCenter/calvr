@@ -7,6 +7,7 @@
 #ifndef _OAS_AUDIOSOURCE_H_
 #define _OAS_AUDIOSOURCE_H_
 
+#include <string>
 #include <AL/alut.h>
 #include "OASAudioUnit.h"
 
@@ -42,7 +43,7 @@ public:
     /**
      * @brief Get the handle for this source
      */
-    unsigned int getHandle() const;
+    virtual unsigned int getHandle() const;
 
     /**
      * @brief Get the name of the underlying buffer that is attached to this source
@@ -50,20 +51,12 @@ public:
     unsigned int getBuffer() const;
 
     /**
-     * @brief Return if the source is valid or not
-     */
-    bool isValid() const;
-
-    /**
-     * @brief Invalidate this sound source
-     */
-    void invalidate();
-
-    /**
      * @brief Update the state of the sound source
+     * @param forceUpdate If true, it will force the state to be checked and updated via OpenAL,
+     *                    else it will only update the state if the sound source was playing.
      * @return True if something changed, false if nothing changed
      */
-    bool update();
+    bool update(bool forceUpdate = false);
 
     /**
      * @brief Play the source all the way through
@@ -101,6 +94,13 @@ public:
     bool setLoop(ALint isLoop);
 
     /**
+     * @brief Change the pitch of the source.
+     * @param pitchFactor Doubling the factor will increase by one octave, and halving will decrease by one octave.
+     *                    Default = 1.
+     */
+    bool setPitch(ALfloat pitchFactor);
+
+    /**
      * @brief Deletes the audio resources allocated for this sound source
      */
     bool deleteSource();
@@ -109,6 +109,11 @@ public:
      * @brief Get the current state of the source
      */
     SourceState getState() const;
+
+    /**
+     * @brief Get the pitch
+     */
+    float getPitch() const;
 
     /**
      * @brief Get the x, y, z direction
@@ -137,17 +142,42 @@ public:
      */
     static void resetSources();
 
+    /**
+     * @brief Get the label for the data entry for the given index
+     */
+    virtual const char* getLabelForIndex(int index) const;
+
+    /**
+     * @brief Get the string for the value of the data entry for the given index
+     */
+    virtual std::string getStringForIndex(int index) const;
+
+
+    /**
+     * @brief Get the number of data entries monitored by AudioSource objects
+     */
+    static int getIndexCount();
+
+    /**
+     * @brief Creates a new audio source using the specified buffer
+     * @param buffer Handle to a buffer that contains sound data
+     */
     AudioSource(ALuint buffer);
+
     AudioSource();
+
     ~AudioSource();
 
 protected:
 
-/*
-    ALfloat _gain;
-    ALfloat _positionX, _positionY, _positionZ;
-    ALfloat _velocityX, _velocityY, _velocityZ;
-*/
+    /**
+     * Inherited members from superclass AudioUnit are
+     *
+     *
+     * ALfloat _gain;
+     * ALfloat _positionX, _positionY, _positionZ;
+     * ALfloat _velocityX, _velocityY, _velocityZ;
+     */
 
 private:
     void _init();
@@ -172,14 +202,15 @@ private:
 
     ALfloat _directionX, _directionY, _directionZ;
 
+    ALfloat _pitch;
+
     ALint _isLooping;
-    bool _isValid;
     bool _isDirectional;
 
 
     static ALuint _nextHandle;
     static const ALfloat _kConeInnerAngle = 45.0;
-    static const ALfloat _kConeOuterAngle = 360.0;
+    static const ALfloat _kConeOuterAngle = 180.0;
 
 };
 }

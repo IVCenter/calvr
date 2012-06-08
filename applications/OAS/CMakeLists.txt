@@ -1,8 +1,8 @@
 ADD_EXECUTABLE(OAS src/OASServer.cpp src/OASSocketHandler.cpp
 src/OASAudioHandler.cpp src/OASAudioBuffer.cpp src/OASAudioSource.cpp 
-src/OASLogger.cpp src/OASServerWindow.cpp src/OASFileHandler.cpp 
-src/OASMessage.cpp src/OASServerInfo.cpp src/OASServerWindowLogBrowser.cpp
-src/OASServerWindowTable.cpp)
+src/OASAudioListener.cpp src/OASLogger.cpp src/OASServerWindow.cpp 
+src/OASFileHandler.cpp src/OASMessage.cpp src/OASServerInfo.cpp 
+src/OASServerWindowLogBrowser.cpp src/OASServerWindowTable.cpp)
 
 FIND_PACKAGE(OPENAL REQUIRED)
 FIND_PACKAGE(ALUT REQUIRED)
