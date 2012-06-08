@@ -19,6 +19,11 @@ class MenuItem;
 class MenuSystemBase;
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Manages all active MenuSystemBase menus
  */
 class CVRMENU_EXPORT MenuManager
@@ -72,6 +77,10 @@ class CVRMENU_EXPORT MenuManager
         int _primaryHand;
         bool _inDestructor;
 };
+
+/**
+ * @}
+ */
 
 }
 

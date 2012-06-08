@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item for a gridded layout of state buttons with text labels
  */
 class CVRMENU_EXPORT MenuTextButtonSet : public MenuItem
@@ -156,6 +161,10 @@ class CVRMENU_EXPORT MenuTextButtonSet : public MenuItem
         std::vector<std::string> _buttons; ///< buttons currently in the set
         std::vector<bool> _buttonStates; ///< states of buttons in the set
 };
+
+/**
+ * @}
+ */
 
 }
 

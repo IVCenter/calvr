@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuCheckboxGeometry.h
+ */
 #ifndef BOARD_MENU_CHECKBOX_GEOMETRY_H
 #define BOARD_MENU_CHECKBOX_GEOMETRY_H
 
@@ -6,6 +9,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu checkbox
+ */
 class BoardMenuCheckboxGeometry : public BoardMenuGeometry
 {
     public:
@@ -24,6 +35,10 @@ class BoardMenuCheckboxGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Texture2D> _checkedIcon;
         osg::ref_ptr<osg::Texture2D> _uncheckedIcon;
 };
+
+/**
+ * @}
+ */
 
 }
 

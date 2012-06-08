@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuScrollTextGeometry.h
+ */
 #ifndef BOARD_MENU_SCROLL_TEXT_GEOMETRY_H
 #define BOARD_MENU_SCROLL_TEXT_GEOMETRY_H
 
@@ -15,6 +18,14 @@ namespace cvr
 
 class MenuTextButtonSet;
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu scrolling text field
+ */
 class BoardMenuScrollTextGeometry : public BoardMenuGeometry
 {
     public:
@@ -84,6 +95,10 @@ class BoardMenuScrollTextGeometry : public BoardMenuGeometry
         osg::Vec3 _scrollPoint;
         float _scrollRows;
 };
+
+/**
+ * @}
+ */
 
 }
 

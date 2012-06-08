@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a screen for non stereo rendering
  */
 class ScreenMVMaster : public ScreenMVSimulator
@@ -69,6 +74,10 @@ class ScreenMVMaster : public ScreenMVSimulator
          */
         void setupDiagramCam();
 };
+
+/**
+ * @}
+ */
 
 }
 

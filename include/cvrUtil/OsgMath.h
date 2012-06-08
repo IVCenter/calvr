@@ -10,6 +10,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Find the distance from a point to a line
  * @param linePoint1 first point on line
  * @param linePoint2 second point on line
@@ -164,6 +169,10 @@ void planePointClosestPoint(osg::Vec3 planePoint, osg::Vec3 planeNormal,
 void planePointClosestPointRef(const osg::Vec3 & planePoint,
         const osg::Vec3 & planeNormal, const osg::Vec3 & point,
         osg::Vec3 & closestPoint);
+
+/**
+ * @}
+ */
 
 }
 #endif

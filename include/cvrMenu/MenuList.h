@@ -15,6 +15,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item to select a value within a range
  */
 class CVRMENU_EXPORT MenuList : public MenuItem
@@ -112,6 +117,10 @@ class CVRMENU_EXPORT MenuList : public MenuItem
         unsigned int _focusMargin; ///<  how many values above/below the current index to return from getValues()
         float _sensitivity; ///< how sensitive the menu is to scrolling through options
 };
+
+/**
+ * @}
+ */
 
 }
 

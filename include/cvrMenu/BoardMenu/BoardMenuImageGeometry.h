@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuImageGeometry.h
+ */
 #ifndef BOARD_MENU_IMAGE_GEOMETRY_H
 #define BOARD_MENU_IMAGE_GEOMETRY_H
 
@@ -11,6 +14,14 @@ namespace cvr
 
 class MenuImage;
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu image
+ */
 class BoardMenuImageGeometry : public BoardMenuGeometry
 {
     public:
@@ -30,6 +41,10 @@ class BoardMenuImageGeometry : public BoardMenuGeometry
 
         MenuImage * _mi;
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuSubMenuGeometry.h
+ */
 #ifndef BOARD_MENU_SUB_MENU_GEOMETRY_H
 #define BOARD_MENU_SUB_MENU_GEOMETRY_H
 
@@ -5,7 +8,15 @@
 
 namespace cvr
 {
-    
+
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu sub menu
+ */
 class BoardMenuSubMenuGeometry : public BoardMenuGeometry
 {
     public:
@@ -34,6 +45,10 @@ class BoardMenuSubMenuGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Texture2D> _openIcon;
         osg::ref_ptr<osg::Texture2D> _closedIcon;
 };
+
+/**
+ * @}
+ */
 
 }
 

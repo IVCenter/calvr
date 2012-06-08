@@ -18,6 +18,11 @@ namespace cvr
 struct InteractionEvent;
 
 /**
+ * @addtogroup input cvrInput
+ * @{
+ */
+
+/**
  * @brief Virtual base class for a tracker.
  *
  * Handles tracking of 6dof bodies and button updates.
@@ -146,6 +151,10 @@ class TrackerBase
             return true;
         }
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -16,6 +16,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item that provides a clickable button with a text label
  */
 class CVRMENU_EXPORT MenuButton : public MenuItem
@@ -45,6 +50,10 @@ class CVRMENU_EXPORT MenuButton : public MenuItem
     protected:
         std::string _text; ///< button's text label
 };
+
+/**
+ * @}
+ */
 
 }
 

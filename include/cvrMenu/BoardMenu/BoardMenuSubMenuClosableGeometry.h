@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuSubMenuClosableGeometry.h
+ */
 #ifndef BOARD_MENU_SUB_MENU_CLOSABLE_GEOMETRY_H
 #define BOARD_MENU_SUB_MENU_CLOSABLE_GEOMETRY_H
 
@@ -6,6 +9,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu closable sub menu
+ */
 class BoardMenuSubMenuClosableGeometry : public BoardMenuSubMenuGeometry
 {
     public:
@@ -27,6 +38,10 @@ class BoardMenuSubMenuClosableGeometry : public BoardMenuSubMenuGeometry
         osg::ref_ptr<osg::Texture2D> _xIcon;
         osg::ref_ptr<osg::Texture2D> _xSelectedIcon;
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -8,6 +8,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Custom scenegraph node mask bits used by CalVR
  */
 enum CVRNodeMask
@@ -26,6 +31,10 @@ enum CVRNodeMask
     FIRST_CULL_STATUS = 0x2000000,
     CULL_ENABLE = 0x4000000
 };
+
+/**
+ * @}
+ */
 
 }
 

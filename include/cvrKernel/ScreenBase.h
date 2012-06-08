@@ -15,6 +15,15 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+/**
+ * @addtogroup screens Screens
+ * @{
+ */
+
+/**
  * @brief Virtual base class for all screen implementations
  */
 class ScreenBase
@@ -144,6 +153,13 @@ class ScreenBase
         std::map<int,osg::Matrix> _currentHeadMatList;
         bool _headMatListInit;
 };
+
+/**
+ * @}
+ */
+/**
+ * @}
+ */
 
 }
 

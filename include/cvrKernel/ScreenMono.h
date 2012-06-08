@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a screen for non stereo rendering
  */
 class ScreenMono : public ScreenBase
@@ -60,6 +65,10 @@ class ScreenMono : public ScreenBase
         osg::Matrix _view;                  ///< view matrix
         osg::Matrix _proj;                  ///< projection matrix
 };
+
+/**
+ * @}
+ */
 
 }
 

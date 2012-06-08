@@ -15,6 +15,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Allows you to add a texture image to a menu
  */
 class CVRMENU_EXPORT MenuImage : public MenuItem
@@ -102,6 +107,10 @@ class CVRMENU_EXPORT MenuImage : public MenuItem
         osg::ref_ptr<osg::Texture2D> _image; ///< image texture
 
 };
+
+/**
+ * @}
+ */
 
 }
 

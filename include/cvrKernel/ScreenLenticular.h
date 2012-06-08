@@ -20,6 +20,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief creates a screen to render lenticular stereo
  */
 class ScreenLenticular : public ScreenBase
@@ -82,6 +87,10 @@ class ScreenLenticular : public ScreenBase
         std::vector<PreDrawCallback*> _preCallbackList;
         PostDrawCallback* _postCallback;
 };
+
+/**
+ * @}
+ */
 
 }
 

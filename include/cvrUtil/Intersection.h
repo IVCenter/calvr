@@ -8,6 +8,11 @@
 #include <osgUtil/IntersectVisitor>
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Contains intersection information
  *
  * Result of the getObjectIntersection() function
@@ -31,5 +36,9 @@ class IsectInfo
  */
 CVRUTIL_EXPORT std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
         osg::Vec3& wPointerStart, osg::Vec3& wPointerEnd);
+
+/**
+ * @}
+ */
 
 #endif

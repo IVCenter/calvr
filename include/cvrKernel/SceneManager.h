@@ -23,6 +23,11 @@ class CVRPlugin;
 struct InteractionEvent;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Creates and manages the main scenegraph
  */
 class CVRKERNEL_EXPORT SceneManager
@@ -190,6 +195,16 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void closeOpenObjectMenu();
 
+        struct CameraCallbacks
+        {
+            osg::ref_ptr<osg::Camera::DrawCallback> initialDraw;
+            osg::ref_ptr<osg::Camera::DrawCallback> preDraw;
+            osg::ref_ptr<osg::Camera::DrawCallback> postDraw;
+            osg::ref_ptr<osg::Camera::DrawCallback> finalDraw;
+        };
+
+        CameraCallbacks * getCameraCallbacks(osg::Camera * cam);
+        
     protected:
         SceneManager();
 
@@ -203,10 +218,15 @@ class CVRKERNEL_EXPORT SceneManager
                 osg::Vec3 & start, osg::Vec3 & end);
         void removePluginObjects(CVRPlugin * plugin);
 
+        void preDraw();
+        void postDraw();
+
         static SceneManager * _myPtr;   ///< static self pointer
 
         bool _showAxis;     ///< should debug axis be shown
         bool _hidePointer;
+
+        std::map<osg::Camera*,CameraCallbacks> _callbackMap;
 
         osg::ref_ptr<osg::MatrixTransform> _sceneRoot; ///< root node of the scene
         osg::ref_ptr<osg::Group> _actualRoot; ///< node assigned as viewer root
@@ -235,6 +255,10 @@ class CVRKERNEL_EXPORT SceneManager
         float _menuMaxDistance;
         int _menuDefaultOpenButton;
 };
+
+/**
+ * @}
+ */
 
 }
 

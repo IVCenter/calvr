@@ -17,11 +17,33 @@
  */
 
 #include <cvrUtil/DepthPartitionNode.h>
+#include <cvrKernel/SceneManager.h>
 #include <osgUtil/CullVisitor>
 
 #include <iostream>
 
 using namespace osg;
+
+struct PrintDebug : public osg::Camera::DrawCallback
+{
+    public:
+	PrintDebug()
+	{
+	    _camNum = -1;
+	}
+	
+	void setCameraNumber(int i)
+	{
+	    _camNum = i;
+	}
+
+	virtual void operator() (osg::RenderInfo & ri) const
+	{
+	    std::cerr << "Camera Number: " << _camNum << std::endl;
+	}
+    protected:
+	int _camNum;
+};
 
 #define CURRENT_CLASS DepthPartitionNode
 
@@ -49,7 +71,7 @@ void CURRENT_CLASS::init()
     _active = true;
     _numCameras = 0;
     setCullingActive(false);
-    _renderOrder = osg::Camera::NESTED_RENDER;
+    _renderOrder = osg::Camera::POST_RENDER;
     _clearColorBuffer = true;
 }
 
@@ -141,6 +163,7 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
     }
 
     int contextId = cv->getRenderInfo().getContextID();
+
     if(!_daMap[contextId])
     {
         _daMap[contextId] = new DistanceAccumulator();
@@ -176,18 +199,25 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
 
     osg::Camera * rootCam = cv->getCurrentCamera();
 
+    //std::cerr << "Num Cameras: " << numCameras << std::endl;
+
+    osg::Camera *currCam;
+
     // Create the Cameras, and add them as children.
     if(numCameras > 0)
     {
-        osg::Camera *currCam;
         DistanceAccumulator::DistancePair currPair;
+
+	//std::cerr << "Frame." << std::endl;
 
         for(i = 0; i < numCameras; i++)
         {
             // Create the camera, and clamp it's projection matrix
             currPair = camPairs[i];  // (near,far) pair for current camera
             currCam = createOrReuseCamera(projection,currPair.first,
-                    currPair.second,i,contextId,rootCam);
+                    currPair.second,i,contextId,rootCam,numCameras);
+
+	    //std::cerr << "Distance pair first: " << currPair.first << " second: " << currPair.second << std::endl;
 
             // Set the modelview matrix and viewport of the camera
             currCam->setViewMatrix(modelview);
@@ -199,6 +229,19 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
 
         // Set the clear color for the first camera
         _cameraList[contextId][0]->setClearColor(
+                cv->getRenderStage()->getClearColor());
+    }
+    else
+    {
+	currCam = createOrReuseCamera(projection,20.0,
+                    10000,0,contextId,rootCam,1);
+	currCam->setViewMatrix(modelview);
+            currCam->setViewport(viewport);
+
+            // Redirect the CullVisitor to the current camera
+            currCam->accept(nv);
+
+	_cameraList[contextId][0]->setClearColor(
                 cv->getRenderStage()->getClearColor());
     }
 }
@@ -278,17 +321,31 @@ bool DepthPartitionNode::getForwardOtherTraversals()
     return _forwardOtherTraversals;
 }
 
-osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
-        double znear, double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam)
+void DepthPartitionNode::removeNodesFromCameras()
 {
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
+    {
+        for(int i = 0; i < it->second.size(); i++)
+        {
+            it->second[i]->removeChildren(0,it->second[i]->getNumChildren());
+        }
+    }
+}
+
+osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
+        double znear, double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam, const int numCameras)
+{
+    _lock.lock();
     if(_cameraList[context].size() <= camNum)
 	_cameraList[context].resize(camNum + 1);
     osg::Camera *camera = _cameraList[context][camNum].get();
+    _lock.unlock();
 
     if(!camera)
     {
 	camera = new osg::Camera;
 	camera->setCullingMode(osg::CullSettings::ENABLE_ALL_CULLING);
+	//camera->setPreDrawCallback(new PrintDebug());
     }
     if(rootCam)
     {
@@ -306,7 +363,34 @@ osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
 	{
 	    camera->getBufferAttachmentMap()[it->first] = it->second;
 	}
+
+	cvr::SceneManager::CameraCallbacks * cc = cvr::SceneManager::instance()->getCameraCallbacks(rootCam);
+
+        camera->setInitialDrawCallback(NULL);
+        camera->setPreDrawCallback(NULL);
+        camera->setPostDrawCallback(NULL);
+        camera->setFinalDrawCallback(NULL);
+
+	if(cc && camNum == 0)
+	{
+	    camera->setInitialDrawCallback(cc->initialDraw.get());
+	    camera->setPreDrawCallback(cc->preDraw.get());
+	}
+	if(cc && camNum == (numCameras-1))
+	{
+	    camera->setPostDrawCallback(cc->postDraw.get());
+	    camera->setFinalDrawCallback(cc->finalDraw.get());
+	}
     }
+
+    /*if(camera->getPreDrawCallback())
+    {
+	PrintDebug * pd = dynamic_cast<PrintDebug*>(camera->getPreDrawCallback());
+	if(pd)
+	{
+	    pd->setCameraNumber(camNum);
+	}
+    }*/
 
     camera->removeChildren(0,camera->getNumChildren());
     camera->setCullingActive(false);

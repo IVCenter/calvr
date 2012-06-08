@@ -10,6 +10,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Utility function to print a vector
  * @param v vector to print
  * @param label label to use in the print output
@@ -38,5 +43,9 @@ CVRUTIL_EXPORT void print(osg::Vec4 & v, std::string label = "Vec4");
  */
 CVRUTIL_EXPORT void print(osg::Matrix & m, std::string label = "Matrix",
         bool transpose = false);
+
+/**
+ * @}
+ */
 
 }

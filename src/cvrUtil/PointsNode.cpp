@@ -2,6 +2,7 @@
 #include <cvrUtil/LocalToWorldVisitor.h>
 
 #include <iostream>
+#include <algorithm>
 #include <cmath>
 
 using namespace cvr;
@@ -135,95 +136,19 @@ void main (void)                                                               \
     gl_FragColor = gl_Color * diffuse_value;                                   \n\
 }                                                                              \n";
 
-PointsNode::PointsNode(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4ub defaultColor, PointsBinding sizeBinding, PointsBinding radiusBinding, PointsBinding colorBinding)
+PointsNode::PointsNode(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4ub defaultColor, PointsBinding sizeBinding, PointsBinding radiusBinding, PointsBinding colorBinding) : osg::Group()
 {
-    _size = startingNumPoints;
-    _colorBinding = colorBinding;
-    _sizeBinding = sizeBinding;
-    _radiusBinding = radiusBinding;
-    _mode = mode;
+    init(mode,startingNumPoints,defaultPointSize,defaultRadius,defaultColor,sizeBinding,radiusBinding,colorBinding);
+}
 
-    _pointSize = defaultPointSize;
-    _pointColor = defaultColor;
-    _pointRadius = defaultRadius;
-
-    _geometry = new osg::Geometry();
-    _geode = new osg::Geode();
-
-    _geode->addDrawable(_geometry);
-    addChild(_geode);
-
-    _geometry->setUseDisplayList(false);
-    _geometry->setUseVertexBufferObjects(true);
-
-    _vertArray = new osg::Vec3Array(_size);
-    _geometry->setVertexArray(_vertArray);
-
-    if(_colorBinding == POINTS_OVERALL)
-    {
-	_colorArray = new osg::Vec4ubArray(1);
-	_colorArray->at(0) = _pointColor;
-	_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-    }
-    else
-    {
-	_colorArray = new osg::Vec4ubArray(_size);
-	for(int i = 0; i < _size; i++)
-	{
-	    _colorArray->at(i) = _pointColor;
-	}
-	_geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-    }
-    _geometry->setColorArray(_colorArray);
-
-    if(_sizeBinding == POINTS_OVERALL)
-    {
-	_sizeArray = new osg::FloatArray(1);
-	_sizeArray->at(0) = _pointSize;
-    }
-    else
-    {
-	_sizeArray = new osg::FloatArray(_size);
-	for(int i = 0; i < _size; i++)
-	{
-	    _sizeArray->at(i) = _pointSize;
-	}
-    }
-
-    if(_radiusBinding == POINTS_OVERALL)
-    {
-	_radiusArray = new osg::FloatArray(1);
-	_radiusArray->at(0) = _pointRadius;
-    }
-    else
-    {
-	_radiusArray = new osg::FloatArray(_size);
-	for(int i = 0; i < _size; i++)
-	{
-	    _radiusArray->at(i) = _pointRadius;
-	}
-    }
-
-    _primitive = new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,_size);
-    _geometry->addPrimitiveSet(_primitive);
-
-    _scaleUni = new osg::Uniform(osg::Uniform::FLOAT,"objectScale");
-    _scaleUni->set(1.0f);
-    getOrCreateStateSet()->addUniform(_scaleUni);
-
-    _updateCallback = new PointsUpdateCallback(this);
-    setUpdateCallback(_updateCallback);
-
-    _point = new osg::Point();
-    _point->setSize(_pointSize);
-
-    _pointSprite = new osg::PointSprite();
-    _blendFunc = new osg::BlendFunc();
-
-    //makeTexture();
-    //getOrCreateStateSet()->setTextureAttributeAndModes(0, _sphereTexture, osg::StateAttribute::ON);
-
-    setPointsMode(_mode);
+PointsNode::PointsNode(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4 defaultColor, PointsBinding sizeBinding, PointsBinding radiusBinding, PointsBinding colorBinding) : osg::Group()
+{
+    osg::Vec4ub newColor;
+    newColor.r() = (unsigned char)(defaultColor.x() * 255.0);
+    newColor.g() = (unsigned char)(defaultColor.y() * 255.0);
+    newColor.b() = (unsigned char)(defaultColor.z() * 255.0);
+    newColor.a() = (unsigned char)(defaultColor.w() * 255.0);
+    init(mode,startingNumPoints,defaultPointSize,defaultRadius,newColor,sizeBinding,radiusBinding,colorBinding);
 }
 
 PointsNode::PointsNode(const PointsNode & pn, const osg::CopyOp & copyop)
@@ -270,6 +195,7 @@ void PointsNode::setColor(osg::Vec4ub color)
 	    _colorArray->at(i) = color;
 	}
     }
+    _colorArray->dirty();
     _pointColor = color;
 }
 
@@ -310,6 +236,7 @@ void PointsNode::setPointSize(float size)
 	}
     }
     _point->setSize(size);
+    _sizeArray->dirty();
     _pointSize = size;
 }
 
@@ -339,6 +266,7 @@ void PointsNode::setRadius(float radius)
 	    _radiusArray->at(i) = radius;
 	}
     }
+    _radiusArray->dirty();
     _pointRadius = radius;
 }
 
@@ -347,16 +275,19 @@ void PointsNode::setPoint(int pointIndex, osg::Vec3 position, osg::Vec4ub color,
     if(pointIndex >= 0 && pointIndex < _vertArray->size())
     {
 	_vertArray->at(pointIndex) = position;
+	_vertArray->dirty();
     }
 
     if(pointIndex >= 0 && pointIndex < _colorArray->size())
     {
 	_colorArray->at(pointIndex) = color;
+	_colorArray->dirty();
     }
 
     if(pointIndex >= 0 && pointIndex < _radiusArray->size())
     {
 	_radiusArray->at(pointIndex) = radius;
+	_radiusArray->dirty();
     }
 
     if(pointIndex >= 0 && pointIndex < _sizeArray->size())
@@ -366,6 +297,7 @@ void PointsNode::setPoint(int pointIndex, osg::Vec3 position, osg::Vec4ub color,
 	{
 	    _point->setSize(size);
 	}
+	_sizeArray->dirty();
     }
 }
 
@@ -384,6 +316,7 @@ void PointsNode::setPointPosition(int pointIndex, osg::Vec3 position)
     if(pointIndex >= 0 && pointIndex < _vertArray->size())
     {
 	_vertArray->at(pointIndex) = position;
+	_vertArray->dirty();
     }
 }
 
@@ -392,6 +325,7 @@ void PointsNode::setPointColor(int pointIndex, osg::Vec4ub color)
     if(pointIndex >= 0 && pointIndex < _colorArray->size())
     {
 	_colorArray->at(pointIndex) = color;
+	_colorArray->dirty();
     }
 }
 
@@ -410,6 +344,7 @@ void PointsNode::setPointRadius(int pointIndex, float radius)
     if(pointIndex >= 0 && pointIndex < _radiusArray->size())
     {
 	_radiusArray->at(pointIndex) = radius;
+	_radiusArray->dirty();
     }
 }
 
@@ -422,6 +357,7 @@ void PointsNode::setPointSize(int pointIndex, float size)
 	{
 	    _point->setSize(size);
 	}
+	_sizeArray->dirty();
     }
 }
 
@@ -525,12 +461,14 @@ void PointsNode::addPoint(osg::Vec3 position)
     {
 	_vertArray->at(index) = position;
     }
+    _vertArray->dirty();
 
     if(_colorBinding == POINTS_OVERALL)
     {
 	if(!_colorArray->size())
 	{
 	    _colorArray->push_back(_pointColor);
+	    _colorArray->dirty();
 	}
     }
     else
@@ -543,6 +481,7 @@ void PointsNode::addPoint(osg::Vec3 position)
 	{
 	    _colorArray->at(index) = _pointColor;
 	}
+	_colorArray->dirty();
     }
 
     if(_radiusBinding == POINTS_OVERALL)
@@ -550,6 +489,7 @@ void PointsNode::addPoint(osg::Vec3 position)
 	if(!_radiusArray->size())
 	{
 	    _radiusArray->push_back(_pointRadius);
+	    _radiusArray->dirty();
 	}
     }
     else
@@ -562,6 +502,7 @@ void PointsNode::addPoint(osg::Vec3 position)
 	{
 	    _radiusArray->at(index) = _pointRadius;
 	}
+	_radiusArray->dirty();
     }
     
     if(_sizeBinding == POINTS_OVERALL)
@@ -569,6 +510,7 @@ void PointsNode::addPoint(osg::Vec3 position)
 	if(!_sizeArray->size())
 	{
 	    _sizeArray->push_back(_pointSize);
+	    _sizeArray->dirty();
 	}
     }
     else
@@ -581,6 +523,7 @@ void PointsNode::addPoint(osg::Vec3 position)
 	{
 	    _sizeArray->at(index) = _pointSize;
 	}
+	_sizeArray->dirty();
     }
 
     calcSize();
@@ -598,12 +541,14 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
     {
 	_vertArray->at(index) = position;
     }
+    _vertArray->dirty();
 
     if(_colorBinding == POINTS_OVERALL)
     {
 	if(!_colorArray->size())
 	{
 	    _colorArray->push_back(color);
+	    _colorArray->dirty();
 	}
     }
     else
@@ -616,6 +561,7 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
 	{
 	    _colorArray->at(index) = color;
 	}
+	_colorArray->dirty();
     }
 
     if(_radiusBinding == POINTS_OVERALL)
@@ -630,12 +576,14 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
 	    {
 		_radiusArray->push_back(_pointRadius);
 	    }
+	    _radiusArray->dirty();
 	}
 	else if(!index)
 	{
 	    if(radius > 0.0)
 	    {
 		_radiusArray->at(0) = radius;
+		_radiusArray->dirty();
 	    }
 	}
     }
@@ -663,6 +611,7 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
 		_radiusArray->at(index) = _pointRadius;
 	    }
 	}
+	_radiusArray->dirty();
     }
     
     if(_sizeBinding == POINTS_OVERALL)
@@ -677,12 +626,14 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
 	    {
 		_sizeArray->push_back(_pointSize);
 	    }
+	    _sizeArray->dirty();
 	}
 	else if(!index)
 	{
 	    if(size > 0.0)
 	    {
 		_sizeArray->at(0) = size;
+		_sizeArray->dirty();
 	    }
 	}
     }
@@ -710,6 +661,7 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4ub color, float radius, f
 		_sizeArray->at(index) = _pointSize;
 	    }
 	}
+	_sizeArray->dirty();
     }
 
     calcSize();
@@ -724,6 +676,156 @@ void PointsNode::addPoint(osg::Vec3 position, osg::Vec4 color, float radius, flo
     newColor.a() = (unsigned char)(color.w() * 255.0);
 
     addPoint(position,newColor,radius,size); 
+}
+
+void PointsNode::removePoint(int pointIndex)
+{
+    if(pointIndex >= 0 && pointIndex < _vertArray->size())
+    {
+	osg::Vec3Array::iterator it = _vertArray->begin();
+	it = it + pointIndex;
+	_vertArray->erase(it);
+	_vertArray->dirty();
+    }
+
+    if(_colorBinding != POINTS_OVERALL)
+    {
+	if(pointIndex >= 0 && pointIndex < _colorArray->size())
+	{
+	    osg::Vec4ubArray::iterator it = _colorArray->begin();
+	    it = it + pointIndex;
+	    _colorArray->erase(it);
+	    _colorArray->dirty();
+	}
+    }
+
+    if(_radiusBinding != POINTS_OVERALL)
+    {
+	if(pointIndex >= 0 && pointIndex < _radiusArray->size())
+	{
+	    osg::FloatArray::iterator it = _radiusArray->begin();
+	    it = it + pointIndex;
+	    _radiusArray->erase(it);
+	    _radiusArray->dirty();
+	}
+    }
+
+    if(_sizeBinding != POINTS_OVERALL)
+    {
+	if(pointIndex >= 0 && pointIndex < _sizeArray->size())
+	{
+	    osg::FloatArray::iterator it = _sizeArray->begin();
+	    it = it + pointIndex;
+	    _sizeArray->erase(it);
+	    _sizeArray->dirty();
+	}
+    }
+
+    calcSize();
+}
+
+void PointsNode::removePoints(int startPoint, int numPoints)
+{
+    int endPoint = std::min(startPoint+numPoints,_size);
+    if(startPoint >= endPoint)
+    {
+	return;
+    }
+
+    if(startPoint >= 0 && startPoint < _vertArray->size())
+    {
+	osg::Vec3Array::iterator its = _vertArray->begin();
+	its = its + startPoint;
+	osg::Vec3Array::iterator ite = _vertArray->begin();
+	ite = ite + (endPoint);
+	_vertArray->erase(its,ite);
+	_vertArray->dirty();
+    }
+
+    if(_colorBinding != POINTS_OVERALL)
+    {
+	if(startPoint >= 0 && startPoint < _colorArray->size())
+	{
+	    osg::Vec4ubArray::iterator its = _colorArray->begin();
+	    its = its + startPoint;
+	    osg::Vec4ubArray::iterator ite = _colorArray->begin();
+	    ite = ite + (endPoint);
+	    _colorArray->erase(its,ite);
+	    _colorArray->dirty();
+	}
+    }
+
+    if(_radiusBinding != POINTS_OVERALL)
+    {
+	if(startPoint >= 0 && startPoint < _radiusArray->size())
+	{
+	    osg::FloatArray::iterator its = _radiusArray->begin();
+	    its = its + startPoint;
+	    osg::FloatArray::iterator ite = _radiusArray->begin();
+	    ite = ite + (endPoint);
+	    _radiusArray->erase(its,ite);
+	    _radiusArray->dirty();
+	}
+    }
+
+    if(_sizeBinding != POINTS_OVERALL)
+    {
+	if(startPoint >= 0 && startPoint < _sizeArray->size())
+	{
+	    osg::FloatArray::iterator its = _sizeArray->begin();
+	    its = its + startPoint;
+	    osg::FloatArray::iterator ite = _sizeArray->begin();
+	    ite = ite + (endPoint);
+	    _sizeArray->erase(its,ite);
+	    _sizeArray->dirty();
+	}
+    }
+
+    calcSize();
+}
+
+void PointsNode::clear()
+{
+    _vertArray->erase(_vertArray->begin(),_vertArray->end());
+    _colorArray->erase(_colorArray->begin(),_colorArray->end());
+    _radiusArray->erase(_radiusArray->begin(),_radiusArray->end());
+    _sizeArray->erase(_sizeArray->begin(),_sizeArray->end());
+
+    if(_colorBinding == POINTS_OVERALL)
+    {
+	_colorArray->push_back(_pointColor);
+    }
+    if(_radiusBinding == POINTS_OVERALL)
+    {
+	_radiusArray->push_back(_pointRadius);
+    }
+    if(_sizeBinding == POINTS_OVERALL)
+    {
+	_sizeArray->push_back(_pointSize);
+    }
+
+    _vertArray->dirty();
+    _colorArray->dirty();
+    _radiusArray->dirty();
+    _sizeArray->dirty();
+
+    calcSize();
+}
+
+void PointsNode::setSpriteTexture(osg::Texture2D * texture)
+{
+    if(_spriteTexture)
+    {
+	getOrCreateStateSet()->removeAssociatedTextureModes(0,_spriteTexture);
+	getOrCreateStateSet()->removeTextureAttribute(0,osg::StateAttribute::TEXTURE);
+    }
+
+    _spriteTexture = texture;
+
+    if(_mode == POINTS_POINT_SPRITES)
+    {
+	setPointsMode(_mode);
+    }
 }
 
 void PointsNode::setPointsMode(PointsMode mode)
@@ -812,6 +914,97 @@ void PointsNode::setPointsMode(PointsMode mode)
     calcSize();
 }
 
+void PointsNode::init(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4ub & defaultColor, PointsBinding sizeBinding, PointsBinding radiusBinding, PointsBinding colorBinding)
+{
+    _size = startingNumPoints;
+    _colorBinding = colorBinding;
+    _sizeBinding = sizeBinding;
+    _radiusBinding = radiusBinding;
+    _mode = mode;
+
+    _pointSize = defaultPointSize;
+    _pointColor = defaultColor;
+    _pointRadius = defaultRadius;
+
+    _geometry = new osg::Geometry();
+    _geode = new osg::Geode();
+
+    _geode->addDrawable(_geometry);
+    addChild(_geode);
+
+    _geometry->setUseDisplayList(false);
+    _geometry->setUseVertexBufferObjects(true);
+
+    _vertArray = new osg::Vec3Array(_size);
+    _geometry->setVertexArray(_vertArray);
+
+    if(_colorBinding == POINTS_OVERALL)
+    {
+	_colorArray = new osg::Vec4ubArray(1);
+	_colorArray->at(0) = _pointColor;
+	_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    }
+    else
+    {
+	_colorArray = new osg::Vec4ubArray(_size);
+	for(int i = 0; i < _size; i++)
+	{
+	    _colorArray->at(i) = _pointColor;
+	}
+	_geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
+    _geometry->setColorArray(_colorArray);
+
+    if(_sizeBinding == POINTS_OVERALL)
+    {
+	_sizeArray = new osg::FloatArray(1);
+	_sizeArray->at(0) = _pointSize;
+    }
+    else
+    {
+	_sizeArray = new osg::FloatArray(_size);
+	for(int i = 0; i < _size; i++)
+	{
+	    _sizeArray->at(i) = _pointSize;
+	}
+    }
+
+    if(_radiusBinding == POINTS_OVERALL)
+    {
+	_radiusArray = new osg::FloatArray(1);
+	_radiusArray->at(0) = _pointRadius;
+    }
+    else
+    {
+	_radiusArray = new osg::FloatArray(_size);
+	for(int i = 0; i < _size; i++)
+	{
+	    _radiusArray->at(i) = _pointRadius;
+	}
+    }
+
+    _primitive = new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,_size);
+    _geometry->addPrimitiveSet(_primitive);
+
+    _scaleUni = new osg::Uniform(osg::Uniform::FLOAT,"objectScale");
+    _scaleUni->set(1.0f);
+    getOrCreateStateSet()->addUniform(_scaleUni);
+
+    _updateCallback = new PointsUpdateCallback(this);
+    setUpdateCallback(_updateCallback);
+
+    _point = new osg::Point();
+    _point->setSize(_pointSize);
+
+    _pointSprite = new osg::PointSprite();
+    _blendFunc = new osg::BlendFunc();
+
+    //makeTexture();
+    //getOrCreateStateSet()->setTextureAttributeAndModes(0, _sphereTexture, osg::StateAttribute::ON);
+
+    setPointsMode(_mode);
+}
+
 void PointsNode::update()
 {
     osg::Matrix m = getLocalToWorldMatrix(this);
@@ -867,6 +1060,19 @@ void PointsNode::refreshGeometry()
 	};
 	default:
 	    break;
+    }
+
+    if(_colorBinding == POINTS_OVERALL && !_colorArray->size())
+    {
+	_colorArray->push_back(_pointColor);
+    }
+    if(_radiusBinding == POINTS_OVERALL && !_radiusArray->size())
+    {
+	_radiusArray->push_back(_pointRadius);
+    }
+    if(_sizeBinding == POINTS_OVERALL && !_sizeArray->size())
+    {
+	_sizeArray->push_back(_pointSize);
     }
 }
 

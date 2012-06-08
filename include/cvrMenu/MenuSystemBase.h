@@ -10,6 +10,11 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup menu
+ * @{
+ */
+
 enum MenuType
 {
     BOARDMENU
@@ -68,6 +73,10 @@ class MenuSystemBase
          */
         virtual void itemDelete(MenuItem * item) = 0;
 };
+
+/**
+ * @}
+ */
 
 }
 

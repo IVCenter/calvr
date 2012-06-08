@@ -16,6 +16,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item that provides a text label
  */
 class CVRMENU_EXPORT MenuText : public MenuItem
@@ -91,6 +96,10 @@ class CVRMENU_EXPORT MenuText : public MenuItem
         float _maxWidth; ///< max width of text block
         float _sizeScale; ///< text size scale
 };
+
+/**
+ * @}
+ */
 
 }
 

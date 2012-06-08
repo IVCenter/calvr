@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuTextGeometry.h
+ */
 #ifndef BOARD_MENU_TEXT_GEOMETRY_H
 #define BOARD_MENU_TEXT_GEOMETRY_H
 
@@ -8,6 +11,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu text
+ */
 class BoardMenuTextGeometry : public BoardMenuGeometry
 {
     public:
@@ -25,6 +36,10 @@ class BoardMenuTextGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Geode> _geode;
         osg::ref_ptr<osgText::Text> _text;
 };
+
+/**
+ * @}
+ */
 
 }
 

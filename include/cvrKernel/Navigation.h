@@ -20,6 +20,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief List of navigation/interaction modes
  */
 enum NavMode
@@ -268,6 +273,10 @@ class NavMouseKeyboard : public NavImplementationBase
         osg::Vec3d _lastDir; ///< last mouse direction
         int _lastScreenNum; ///< master screen id for last mouse movement event
 };
+
+/**
+ * @}
+ */
 
 }
 

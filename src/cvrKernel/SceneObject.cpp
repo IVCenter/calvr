@@ -83,6 +83,30 @@ SceneObject::~SceneObject()
     {
         _parent->removeChild(this);
     }
+
+    if(_moveMenuItem)
+    {
+	delete _moveMenuItem;
+	_moveMenuItem = NULL;
+    }
+
+    if(_navMenuItem)
+    {
+	delete _navMenuItem;
+	_navMenuItem = NULL;
+    }
+
+    if(_scaleMenuItem)
+    {
+	delete _scaleMenuItem;
+	_scaleMenuItem = NULL;
+    }
+
+    if(_myMenu)
+    {
+	delete _myMenu;
+	_myMenu = NULL;
+    }
 }
 
 bool SceneObject::getNavigationOn()

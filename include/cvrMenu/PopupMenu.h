@@ -21,6 +21,11 @@ class MenuManager;
 class PopupMenuBase;
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Creates a popup menu that can hold all standard MenuItem members
  */
 class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
@@ -113,6 +118,10 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
         std::string _title; ///< menu title
         std::string _configName; ///< config tag with init values
 };
+
+/**
+ * @}
+ */
 
 }
 

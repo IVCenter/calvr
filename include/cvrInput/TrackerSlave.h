@@ -12,6 +12,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup input
+ * @{
+ */
+
+/**
  * @brief Tracker that runs on the slave nodes
  */
 class TrackerSlave : public TrackerBase
@@ -43,6 +48,10 @@ class TrackerSlave : public TrackerBase
         unsigned int _buttonMask; ///< current button mask
         float * _valArray; ///< array of valuator values
 };
+
+/**
+ * @}
+ */
 
 }
 

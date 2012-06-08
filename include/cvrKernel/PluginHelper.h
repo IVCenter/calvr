@@ -23,6 +23,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Provides centralized access to various framework functions
  *
  * This class is designed to simplify plugin programing by grouping key
@@ -277,6 +282,10 @@ class CVRKERNEL_EXPORT PluginHelper
     protected:
 
 };
+
+/**
+ * @}
+ */
 
 }
 

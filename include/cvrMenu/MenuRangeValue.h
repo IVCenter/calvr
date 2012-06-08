@@ -16,6 +16,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item to select a value within a range
  */
 class CVRMENU_EXPORT MenuRangeValue : public MenuItem
@@ -70,6 +75,10 @@ class CVRMENU_EXPORT MenuRangeValue : public MenuItem
         float _value; ///< current value
         float _stepSize;
 };
+
+/**
+ * @}
+ */
 
 }
 

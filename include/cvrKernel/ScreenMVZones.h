@@ -19,6 +19,11 @@ typedef void (*setContributionFunc)(osg::Vec3 toZone0, osg::Vec3 orientation0,
         float &contribution1);
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
  */
 class CVRKERNEL_EXPORT ScreenMVZones : public ScreenMVSimulator
@@ -251,6 +256,11 @@ class CVRKERNEL_EXPORT ScreenMVZones : public ScreenMVSimulator
         static float _contributionVar; ///< Variable that can be used in specific setContributionFuncs. (0 implies automatic)
         static bool _autoContributionVar; ///< determines whether or not to auto-set the _contributionVar
 };
+
+/**
+ * @}
+ */
+
 }
 
 #endif

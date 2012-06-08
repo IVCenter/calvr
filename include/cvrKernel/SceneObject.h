@@ -25,6 +25,11 @@ class MenuCheckbox;
 class MenuRangeValue;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Manages a set of nodes to attach to the scene.
  *
  * Handles movement, navigation and interaction.  These objects can be nested.
@@ -468,6 +473,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 
         int _interactionCount;
 };
+
+/**
+ * @}
+ */
 
 }
 

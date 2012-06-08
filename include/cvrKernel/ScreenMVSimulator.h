@@ -15,6 +15,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a stereo screen for multiple viewers using osg stereo modes and position/orientation weighting
  */
 class ScreenMVSimulator : public ScreenBase
@@ -69,6 +74,11 @@ class ScreenMVSimulator : public ScreenBase
     protected:
         static std::map<int,osg::Matrix *> headMat; ///< Stores simulated head matrices (used instead of TrackingManager values).
 };
+
+/**
+ * @}
+ */
+
 }
 
 #endif

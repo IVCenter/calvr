@@ -13,6 +13,11 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup util
+ * @{
+ */
+
 // Takes local coordinates and computes world coordinates.
 class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
 {
@@ -55,6 +60,10 @@ class getWorldCoordOfNodeVisitor : public osg::NodeVisitor
  * matrix
  */
 osg::Matrixd CVRUTIL_EXPORT getLocalToWorldMatrix(osg::Node* node);
+
+/**
+ * @}
+ */
 
 }
 

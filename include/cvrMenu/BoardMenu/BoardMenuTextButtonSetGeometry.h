@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuTextButtonSetGeometry.h
+ */
 #ifndef BOARD_MENU_TEXT_BUTTON_SET_GEOMETRY_H
 #define BOARD_MENU_TEXT_BUTTON_SET_GEOMETRY_H
 
@@ -15,6 +18,14 @@ namespace cvr
 
 class MenuTextButtonSet;
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu text button set
+ */
 class BoardMenuTextButtonSetGeometry : public BoardMenuGeometry
 {
     public:
@@ -52,6 +63,10 @@ class BoardMenuTextButtonSetGeometry : public BoardMenuGeometry
         float _buttonWidth;
         float _spacing;
 };
+
+/**
+ * @}
+ */
 
 }
 

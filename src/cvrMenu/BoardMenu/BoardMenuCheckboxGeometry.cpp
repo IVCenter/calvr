@@ -154,7 +154,7 @@ void BoardMenuCheckboxGeometry::processEvent(InteractionEvent * event)
                     !((MenuCheckbox*)_item)->getValue());
             if(_item->getCallback())
             {
-                _item->getCallback()->menuCallback(_item);
+                _item->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
             }
             break;
         default:

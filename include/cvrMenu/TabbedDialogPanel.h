@@ -22,6 +22,11 @@ class MenuItem;
 class MenuTextButtonSet;
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief PopupMenu you can add text and image tabs to
  */
 class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu
@@ -167,6 +172,10 @@ class CVRMENU_EXPORT TabbedDialogPanel : public PopupMenu
 
         float _menuWidth; ///< width of dialog panel
 };
+
+/**
+ * @}
+ */
 
 }
 
