@@ -267,7 +267,7 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
             {
                 if(mrv->getCallback())
                 {
-                    mrv->getCallback()->menuCallback(_item);
+                    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
                 }
             }
 
@@ -330,7 +330,7 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
             {
                 if(mrv->getCallback())
                 {
-                    mrv->getCallback()->menuCallback(_item);
+                    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
                 }
             }
 

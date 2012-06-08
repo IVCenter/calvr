@@ -19,6 +19,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Screen for rendering with two tracked users using shaders
  * to blend perspective
  */
@@ -197,6 +202,10 @@ class ScreenMVShader : public ScreenMVSimulator
         osg::Vec3 _farPointLocal[2];
         osg::Vec3 _nfNormalLocal[2];
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -21,6 +21,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a screen that renders top/bottom stereo to textures, then uses a 
  *  shader to interlace it
  */
@@ -109,6 +114,10 @@ class ScreenInterlacedTopBottom : public ScreenBase
 
         //osg::Image * image;
 };
+
+/**
+ * @}
+ */
 
 }
 

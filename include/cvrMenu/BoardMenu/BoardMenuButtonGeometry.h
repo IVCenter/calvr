@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuButtonGeometry.h
+ */
 #ifndef BOARD_MENU_BUTTON_GEOMETRY_H
 #define BOARD_MENU_BUTTON_GEOMETRY_H
 
@@ -6,6 +9,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu button
+ */
 class BoardMenuButtonGeometry : public BoardMenuGeometry
 {
     public:
@@ -22,6 +33,10 @@ class BoardMenuButtonGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Geode> _geode;
         osg::ref_ptr<osg::Geode> _geodeSelected;
 };
+
+/**
+ * @}
+ */
 
 }
 

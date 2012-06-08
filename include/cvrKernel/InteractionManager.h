@@ -23,6 +23,11 @@ namespace cvr
 class TrackerMouse;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Directs events through interaction pipeline, manages event queue
  */
 class CVRKERNEL_EXPORT InteractionManager
@@ -163,6 +168,10 @@ class CVRKERNEL_EXPORT InteractionManager
 
         double _dragEventTime; ///< time since last drag event
 };
+
+/**
+ * @}
+ */
 
 }
 

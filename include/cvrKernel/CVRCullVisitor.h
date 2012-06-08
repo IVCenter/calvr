@@ -17,6 +17,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Modified osg cull visitor
  *
  * Uses CalVR defined node masks to force each object to draw the first
@@ -123,6 +128,10 @@ class CVRCullVisitor : public osgUtil::CullVisitor
         virtual void apply(osg::OccluderNode& node);
         virtual void apply(osg::OcclusionQueryNode& node);
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

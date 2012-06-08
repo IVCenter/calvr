@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief A PopupMenu with an scrolling text field
  */
 class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
@@ -54,6 +59,10 @@ class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
         int _textRows; ///< rows of text
         float _textScale; ///< scale factor for text size
 };
+
+/**
+ * @}
+ */
 
 }
 

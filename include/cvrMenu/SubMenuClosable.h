@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item for a submenu with a close button on it
  */
 class CVRMENU_EXPORT SubMenuClosable : public SubMenu
@@ -37,6 +42,10 @@ class CVRMENU_EXPORT SubMenuClosable : public SubMenu
             return SUBMENU_CLOSABLE;
         }
 };
+
+/**
+ * @}
+ */
 
 }
 

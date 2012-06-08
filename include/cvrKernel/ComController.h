@@ -22,6 +22,11 @@ class CVRMulticastSocket;
 class MultiListenSocket;
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Handles cluster communication
  *
  * Allows for multinode communication and synchronization
@@ -159,6 +164,10 @@ class CVRKERNEL_EXPORT ComController
 
         bool _CCError; ///< error state of ComController
 };
+
+/**
+ * @}
+ */
 
 }
 

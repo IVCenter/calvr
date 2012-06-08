@@ -19,6 +19,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Class that allows loading of files using a background thread and allows job status to be queried.  
  * Progress is synced across the graphics cluster
  */
@@ -202,6 +207,10 @@ class CVRKERNEL_EXPORT ThreadedLoader
         std::map<int,LoaderThread*> _threads;
         std::map<int,char> _jobStatus;
 };
+
+/**
+ * @}
+ */
 
 }
 

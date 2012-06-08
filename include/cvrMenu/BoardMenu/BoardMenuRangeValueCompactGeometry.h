@@ -1,3 +1,6 @@
+/**
+ * @file BoardMenuRangeValueCompactGeometry.h
+ */
 #ifndef BOARD_MENU_RANGE_VALUE_COMPACT_GEOMETRY_H
 #define BOARD_MENU_RANGE_VALUE_COMPACT_GEOMETRY_H
 
@@ -6,6 +9,14 @@
 namespace cvr
 {
 
+/**
+ * @addtogroup boardmenu
+ * @{
+ */
+
+/**
+ * @brief Geometry class for a BoardMenu compact range value
+ */
 class BoardMenuRangeValueCompactGeometry : public BoardMenuGeometry
 {
     public:
@@ -40,6 +51,10 @@ class BoardMenuRangeValueCompactGeometry : public BoardMenuGeometry
         osg::ref_ptr<osg::Geometry> _rvGeometry;
         osg::ref_ptr<osg::Texture2D> _rvIcon;
 };
+
+/**
+ * @}
+ */
 
 }
 

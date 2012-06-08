@@ -35,6 +35,11 @@ class TrackedButtonInteractionEvent;
 class GenComplexTrackingEvents;
 
 /**
+ * @addtogroup input
+ * @{
+ */
+
+/**
  *  @brief Manages the body and button tracker objects and values.  
  *
  *  Provides access to head, hand and button information.
@@ -336,6 +341,10 @@ class CVRINPUT_EXPORT GenComplexTrackingEvents
         std::vector<std::map<int,timeval *> > _lastClick; ///< time of last click
         std::vector<std::map<int,bool> > _doubleClicked; ///< double click state
 };
+
+/**
+ * @}
+ */
 
 }
 

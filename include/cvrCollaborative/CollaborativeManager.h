@@ -28,6 +28,11 @@ namespace cvr
  };*/
 
 /**
+ * @addtogroup collab cvrCollaborative
+ * @{
+ */
+
+/**
  * @brief Information passed for a client update
  */
 struct ClientUpdate
@@ -314,6 +319,10 @@ class CVRCOLLAB_EXPORT CollaborativeManager
 
         std::queue<std::pair<CollaborativeMessageHeader,char*> > _messageQueue; ///< queue of collaborative messages to send
 };
+
+/**
+ * @}
+ */
 
 }
 

@@ -25,6 +25,7 @@
 #include <cvrUtil/DistanceAccumulator.h>
 
 #include <osg/Camera>
+#include <OpenThreads/Mutex>
 
 #include <cstdio>
 
@@ -95,6 +96,8 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
         void setForwardOtherTraversals(bool b);
         bool getForwardOtherTraversals();
 
+        void removeNodesFromCameras();
+
     protected:
         typedef std::vector<osg::ref_ptr<osg::Camera> > CameraList;
 
@@ -104,7 +107,7 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
 
         // Creates a new Camera object with default settings
         osg::Camera* createOrReuseCamera(const osg::Matrix& proj, double znear,
-                double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam);
+                double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam,const int numCameras);
 
         bool _active; // Whether partitioning is active on the scene
 
@@ -122,6 +125,7 @@ class CVRUTIL_EXPORT CURRENT_CLASS : public osg::Group
         std::map<int,osg::ref_ptr<DistanceAccumulator> > _daMap;
 
         bool _forwardOtherTraversals;
+        OpenThreads::Mutex _lock;
 };
 #undef CURRENT_CLASS
 

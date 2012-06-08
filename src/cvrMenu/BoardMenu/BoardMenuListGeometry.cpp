@@ -233,7 +233,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             {
                 if(_listItem->getCallback())
                 {
-                    _listItem->getCallback()->menuCallback(_item);
+                    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
                 }
 
                 _lastMouseY = y;
@@ -291,7 +291,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             {
                 if(_listItem->getCallback())
                 {
-                    _listItem->getCallback()->menuCallback(_item);
+                    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
                 }
 
                 _lastDistance = newDistance;

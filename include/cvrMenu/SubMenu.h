@@ -17,6 +17,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Menu item that represents a submenu
  */
 class CVRMENU_EXPORT SubMenu : public MenuItem
@@ -107,6 +112,10 @@ class CVRMENU_EXPORT SubMenu : public MenuItem
         std::string _name; ///< menu name
         std::string _title; ///< menu title
 };
+
+/**
+ * @}
+ */
 
 }
 

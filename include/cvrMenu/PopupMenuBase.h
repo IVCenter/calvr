@@ -14,6 +14,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief interface that defines pure virtual functions that must be defined for
  * a PopupMenu Implementation
  */
@@ -64,6 +69,10 @@ class PopupMenuBase : public MenuBase
          */
         virtual bool isVisible() = 0;
 };
+
+/**
+ * @}
+ */
 
 }
 #endif

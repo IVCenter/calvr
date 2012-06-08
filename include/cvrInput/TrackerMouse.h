@@ -12,6 +12,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup input
+ * @{
+ */
+
+/**
  * @brief Tracker implementation for a mouse connected to the head node
  */
 class TrackerMouse : public cvr::TrackerBase
@@ -60,6 +65,10 @@ class TrackerMouse : public cvr::TrackerBase
         unsigned int _mouseButtonMask; ///< button mask for the mouse
         float _mouseValuator; ///< current value of mouse wheel valuator
 };
+
+/**
+ * @}
+ */
 
 }
 

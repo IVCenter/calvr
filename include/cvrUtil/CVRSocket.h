@@ -21,6 +21,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util
+ * @{
+ */
+
+/**
  * @brief Will this socket connect to another, or listen for a connection
  */
 enum SocketType
@@ -153,6 +158,10 @@ class CVRUTIL_EXPORT CVRSocket
         bool _blockingState; ///< socket current blocking state
         bool _printErrors; ///< should socket errors be printed
 };
+
+/**
+ * @}
+ */
 
 }
 

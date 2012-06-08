@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup screens
+ * @{
+ */
+
+/**
  * @brief Creates a screen with the viewer positon set from
  * the config file 
  */
@@ -51,6 +56,10 @@ class ScreenFixedViewer : public ScreenBase
         osg::Matrix _proj;                  ///< projection matrix
         osg::Matrix _viewerMat; ///< matrix to use for viewer position/orientation
 };
+
+/**
+ * @}
+ */
 
 }
 

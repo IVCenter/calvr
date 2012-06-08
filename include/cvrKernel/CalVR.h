@@ -29,6 +29,11 @@ class PluginManager;
 class ThreadedLoader;
 
 /**
+ * @addtogroup kernel cvrKernel
+ * @{
+ */
+
+/**
  * @brief Main class for the CalVR framework.  Sets up all other core classes 
  * and contains the main run loop.
  */
@@ -89,6 +94,10 @@ class CVRKERNEL_EXPORT CalVR
         PluginManager * _plugins;
         ThreadedLoader * _threadedLoader;
 };
+
+/**
+ * @}
+ */
 
 }
 

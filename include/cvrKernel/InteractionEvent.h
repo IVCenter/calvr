@@ -13,6 +13,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
  * @brief Possible calvr interactions
  */
 enum Interaction
@@ -46,6 +51,10 @@ enum InteractionEventType
 // must be last item
 };
 
+/**
+ * @}
+ */
+
 class TrackedButtonInteractionEvent;
 class MouseInteractionEvent;
 class ValuatorInteractionEvent;
@@ -54,6 +63,11 @@ class PositionInteractionEvent;
 class HandInteractionEvent;
 
 //TODO: add timestamps
+
+/**
+ * @addtogroup kernel
+ * @{
+ */
 
 /**
  * @brief CalVR base class representing an interaction
@@ -520,6 +534,10 @@ void storeEvent(InteractionEvent * event, void * des);
  * @brief Get the size of and InteractionEvent given its type
  */
 int getEventSize(InteractionEventType type);
+
+/**
+ * @}
+ */
 
 }
 

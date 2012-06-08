@@ -13,6 +13,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup menu
+ * @{
+ */
+
+/**
  * @brief Used to identify the type of a menu item
  */
 enum MenuItemType
@@ -136,9 +141,26 @@ class MenuCallback
 
         /**
          * @brief Called by the menu system when a registered item has an event
+         * @param item MenuItem for this event
+         * @param handID Hand performing the interaction
          */
-        virtual void menuCallback(MenuItem *) = 0;
+        virtual void menuCallback(MenuItem * item, int handID)
+        {
+            menuCallback(item);
+        }
+
+        /**
+         * @brief Deprecated - menuCallback(item,handID) calls this function if
+         *        not redefined
+         */
+        virtual void menuCallback(MenuItem * item)
+        {
+        }
 };
+
+/**
+ * @}
+ */
 
 }
 

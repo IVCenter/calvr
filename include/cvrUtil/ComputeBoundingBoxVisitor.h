@@ -11,6 +11,11 @@ namespace cvr
 {
 
 /**
+ * @addtogroup util cvrUtil
+ * @{
+ */
+
+/**
  * @brief Vistor that computes the bounding box for a subgraph
  */
 class ComputeBoundingBoxVisitor : public osg::NodeVisitor
@@ -40,6 +45,10 @@ class ComputeBoundingBoxVisitor : public osg::NodeVisitor
         osg::BoundingBox m_bb; ///< visitor's bounding box
         osg::Matrix m_curMatrix; ///< current matrix transform
 };
+
+/**
+ * @}
+ */
 
 }
 #endif
