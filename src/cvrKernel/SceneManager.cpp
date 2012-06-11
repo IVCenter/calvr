@@ -122,6 +122,20 @@ void SceneManager::update()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
         _handTransforms[i]->setMatrix(
@@ -138,6 +152,14 @@ void SceneManager::update()
     }
 
     updateActiveObject();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene time taken", endTime-startTime);
+    }
 }
 
 void SceneManager::postEventUpdate()

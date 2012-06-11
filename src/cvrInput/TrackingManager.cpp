@@ -548,6 +548,20 @@ void TrackingManager::update()
     {
         return;
     }
+    
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStats"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
 
     _updateLock.lock();
 
@@ -767,6 +781,14 @@ void TrackingManager::update()
     }
 
     _updateLock.unlock();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking time taken", endTime-startTime);
+    }
 }
 
 void TrackingManager::run()

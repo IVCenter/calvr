@@ -18,6 +18,8 @@ namespace cvr
 struct InteractionEvent;
 struct DefaultUpdate;
 
+class CVRStatsHandler;
+
 /**
  * @addtogroup kernel
  * @{
@@ -154,6 +156,14 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         {
             return _invertMouseY;
         }
+
+        /**
+         * @brief Get a pointer to the CalVR custom stats handler
+         */
+        CVRStatsHandler * getStatsHandler()
+        {
+            return _statsHandler;
+        }
     protected:
         virtual ~CVRViewer();
 
@@ -204,6 +214,8 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         };
 
         static CVRViewer * _myPtr; ///< static self pointer
+
+        osg::ref_ptr<CVRStatsHandler> _statsHandler; ///< custom CalVR stats handler
 
         std::list<UpdateTraversal*> _updateList; ///< list of all update operations for viewer
 

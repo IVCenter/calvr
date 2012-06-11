@@ -71,7 +71,29 @@ void InteractionManager::update()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStats"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     handleEvents();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction time taken", endTime-startTime);
+    }
 }
 
 void InteractionManager::handleEvents()

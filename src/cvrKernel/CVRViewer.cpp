@@ -6,6 +6,7 @@
 #include <cvrKernel/NodeMask.h>
 #include <cvrKernel/ScreenBase.h>
 #include <cvrKernel/CVRCullVisitor.h>
+#include <cvrKernel/CVRStatsHandler.h>
 #include <cvrConfig/ConfigManager.h>
 
 #include <osg/Version>
@@ -168,6 +169,11 @@ CVRViewer::CVRViewer() :
 
     _myPtr = this;
     _activeMasterScreen = -1;
+
+    _statsHandler = new CVRStatsHandler(this);
+    _statsHandler->setKeyEventTogglesOnScreenStats((int)'S');
+    _statsHandler->setKeyEventPrintsOutStats((int)'P');
+    addEventHandler(_statsHandler);
 }
 
 CVRViewer::CVRViewer(osg::ArgumentParser& arguments) :
@@ -175,6 +181,11 @@ CVRViewer::CVRViewer(osg::ArgumentParser& arguments) :
 {
     _myPtr = this;
     _activeMasterScreen = -1;
+
+    _statsHandler = new CVRStatsHandler(this);
+    _statsHandler->setKeyEventTogglesOnScreenStats((int)'S');
+    _statsHandler->setKeyEventPrintsOutStats((int)'P');
+    addEventHandler(_statsHandler);
 }
 
 CVRViewer::CVRViewer(const CVRViewer& viewer, const osg::CopyOp& copyop) :
@@ -182,6 +193,9 @@ CVRViewer::CVRViewer(const CVRViewer& viewer, const osg::CopyOp& copyop) :
 {
     _myPtr = this;
     _activeMasterScreen = -1;
+
+    _statsHandler = viewer._statsHandler;
+    addEventHandler(_statsHandler);
 }
 
 CVRViewer * CVRViewer::instance()
@@ -200,11 +214,30 @@ void CVRViewer::updateTraversal()
         return;
     }
 
+    double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
+            osg::Timer::instance()->tick());
+
     for(std::list<UpdateTraversal*>::iterator it = _updateList.begin();
             it != _updateList.end(); it++)
     {
         (*it)->update();
     }
+
+    if(getViewerStats() && getViewerStats()->collectStats("CalVRStats"))
+    {
+        double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
+                osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+                "Update traversal begin time",beginUpdateTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+                "Update traversal end time",endUpdateTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+                "Update traversal time taken",
+                endUpdateTraversal - beginUpdateTraversal);
+    }
+
 }
 
 void DefaultUpdate::update()
@@ -218,8 +251,8 @@ void CVRViewer::defaultUpdateTraversal()
     if(_done)
         return;
 
-    double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
-            osg::Timer::instance()->tick());
+    //double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
+    //        osg::Timer::instance()->tick());
 
     _updateVisitor->reset();
     _updateVisitor->setFrameStamp(getFrameStamp());
@@ -326,7 +359,7 @@ void CVRViewer::defaultUpdateTraversal()
 
      updateSlaves();*/
 
-    if(getViewerStats() && getViewerStats()->collectStats("update"))
+    /*if(getViewerStats() && getViewerStats()->collectStats("update"))
     {
         double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
                 osg::Timer::instance()->tick());
@@ -339,7 +372,7 @@ void CVRViewer::defaultUpdateTraversal()
         getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
                 "Update traversal time taken",
                 endUpdateTraversal - beginUpdateTraversal);
-    }
+    }*/
 }
 
 void CVRViewer::eventTraversal()
@@ -990,7 +1023,29 @@ void CVRViewer::renderingTraversals()
     if(_endRenderingDispatchBarrier.valid())
         _endRenderingDispatchBarrier->block();
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = getViewerStats();
+    if(stats && !stats->collectStats("CalVRStats"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(getStartTick(), osg::Timer::instance()->tick());
+    }
+
     ComController::instance()->sync();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync begin time", startTime);
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync end time", endTime);
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync time taken", endTime-startTime);
+    }
 
     if(_swapReadyBarrier.valid())
     {

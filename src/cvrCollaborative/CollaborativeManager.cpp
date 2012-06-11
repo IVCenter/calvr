@@ -450,8 +450,29 @@ void CollaborativeManager::startUpdate()
 
 void CollaborativeManager::update()
 {
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     if(!_connected || ComController::instance()->getIsSyncError())
     {
+	if(stats)
+	{
+	    endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative begin time", startTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative end time", endTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative time taken", endTime-startTime);
+	}
         return;
     }
 
@@ -469,13 +490,28 @@ void CollaborativeManager::update()
 
     if(!toUpdate[1])
     {
-        disconnect();
-        return;
+	disconnect();
+
+	if(stats)
+	{
+	    endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative begin time", startTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative end time", endTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative time taken", endTime-startTime);
+	}
+	return;
     }
 
     if(!toUpdate[0])
     {
-        return;
+	if(stats)
+	{
+	    endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative begin time", startTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative end time", endTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative time taken", endTime-startTime);
+	}
+	return;
     }
 
     struct ServerUpdate su;
@@ -691,6 +727,14 @@ void CollaborativeManager::update()
     updateCollabNodes();
 
     startUpdate();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Collaborative time taken", endTime-startTime);
+    }
 }
 
 void CollaborativeManager::setMode(CollabMode mode)

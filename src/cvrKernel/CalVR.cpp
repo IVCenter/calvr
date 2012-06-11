@@ -13,6 +13,7 @@
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/Navigation.h>
 #include <cvrKernel/ThreadedLoader.h>
+#include <cvrKernel/CVRStatsHandler.h>
 
 #include <osgViewer/ViewerEventHandlers>
 
@@ -214,11 +215,6 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     _collaborative->init();
 
     _threadedLoader = cvr::ThreadedLoader::instance();
-
-    osgViewer::StatsHandler * stats = new osgViewer::StatsHandler;
-    stats->setKeyEventTogglesOnScreenStats((int)'S');
-    stats->setKeyEventPrintsOutStats((int)'P');
-    _viewer->addEventHandler(stats);
 
     _menu = cvr::MenuManager::instance();
     if(!_menu->init())

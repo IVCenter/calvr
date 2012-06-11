@@ -106,9 +106,52 @@ void PluginManager::preFrame()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStats"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
+    osg::Stats * statsPlugins;
+    statsPlugins = CVRViewer::instance()->getViewerStats();
+    if(statsPlugins && !statsPlugins->collectStats("CalVRStatsPlugins"))
+    {
+	statsPlugins = NULL;
+    }
+
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-        _loadedPluginList[i]->ptr->preFrame();
+	double pluginsStartTime, pluginsEndTime;
+	if(statsPlugins)
+	{
+	    pluginsStartTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	}
+
+	_loadedPluginList[i]->ptr->preFrame();
+
+	if(statsPlugins)
+	{
+	    pluginsEndTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame begin time", pluginsStartTime);
+	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame end time", pluginsEndTime);
+	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame time taken", pluginsEndTime-pluginsStartTime);
+	}
+    }
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PreFrame begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PreFrame end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PreFrame time taken", endTime-startTime);
     }
 }
 
@@ -119,9 +162,31 @@ void PluginManager::postFrame()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
         _loadedPluginList[i]->ptr->postFrame();
+    }
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PostFrame begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PostFrame end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "PostFrame time taken", endTime-startTime);
     }
 }
 
@@ -157,6 +222,18 @@ bool PluginManager::getPluginLoaded(std::string plugin)
     }
 
     return _pluginMap[plugin];
+}
+
+std::vector<std::string> PluginManager::getLoadedPluginList()
+{
+    std::vector<std::string> pluginList;
+
+    for(int i = 0; i < _loadedPluginList.size(); i++)
+    {
+	pluginList.push_back(_loadedPluginList[i]->name);
+    }
+
+    return pluginList;
 }
 
 CVRPlugin * PluginManager::getPlugin(std::string plugin)

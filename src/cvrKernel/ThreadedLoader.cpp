@@ -1,5 +1,6 @@
 #include <cvrKernel/ThreadedLoader.h>
 #include <cvrKernel/ComController.h>
+#include <cvrKernel/CVRViewer.h>
 
 #include <iostream>
 
@@ -348,9 +349,30 @@ void ThreadedLoader::getImageFiles(int job,
 
 void ThreadedLoader::update()
 {
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     if(!_jobs.size())
     {
-        return;
+	if(stats)
+	{
+	    endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader begin time", startTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader end time", endTime);
+	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader time taken", endTime-startTime);
+	}
+	return;
     }
 
     char * status = new char[_jobs.size()];
@@ -443,6 +465,14 @@ void ThreadedLoader::update()
                 break;
             }
         }
+    }
+
+    if(stats)
+    {
+	endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader begin time", startTime);
+	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader end time", endTime);
+	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader time taken", endTime-startTime);
     }
 }
 

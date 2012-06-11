@@ -86,6 +86,11 @@ class CVRKERNEL_EXPORT PluginManager
          */
         bool getPluginLoaded(std::string plugin);
 
+        /**
+         * @brief Get a list of the names of all loaded plugins
+         */
+        std::vector<std::string> getLoadedPluginList();
+
     protected:
         PluginManager();
 

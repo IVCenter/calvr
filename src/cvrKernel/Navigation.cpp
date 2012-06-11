@@ -163,6 +163,20 @@ void Navigation::update()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     if(_eventActive)
     {
         _navImpMap[_activeHand]->update();
@@ -171,6 +185,14 @@ void Navigation::update()
     for(int i = 0; i < _navDeviceList.size(); i++)
     {
 	_navDeviceList[i]->update();
+    }
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation time taken", endTime-startTime);
     }
 }
 

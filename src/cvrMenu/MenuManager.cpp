@@ -64,6 +64,20 @@ void MenuManager::update()
         return;
     }
 
+    double startTime, endTime;
+
+    osg::Stats * stats;
+    stats = CVRViewer::instance()->getViewerStats();
+    if(stats && !stats->collectStats("CalVRStatsAdvanced"))
+    {
+	stats = NULL;
+    }
+
+    if(stats)
+    {
+	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     // call update on all menus
     for(std::list<MenuSystemBase*>::iterator it = _menuSystemList.begin();
             it != _menuSystemList.end(); it++)
@@ -130,6 +144,14 @@ void MenuManager::update()
     }
 
     updateEnd();
+
+    if(stats)
+    {
+        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu begin time", startTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu end time", endTime);
+        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu time taken", endTime-startTime);
+    }
 }
 
 bool MenuManager::processEvent(InteractionEvent * event)
