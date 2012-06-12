@@ -193,6 +193,7 @@ class CVRKERNEL_EXPORT CVRStatsHandler : public osgGA::GUIEventHandler
 
         bool                                _initialized;
         bool                                _advanced;
+        bool                                _textCalibrated;
         osg::ref_ptr<osg::Camera>           _camera;
 
         osg::ref_ptr<osg::Switch>           _switch;
@@ -209,6 +210,7 @@ class CVRKERNEL_EXPORT CVRStatsHandler : public osgGA::GUIEventHandler
 
         float                               _statsWidth;
         float                               _statsHeight;
+        float                               _spaceSize;
 
         osgViewer::ViewerBase *             _viewer;
 };

@@ -36,6 +36,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _keyEventPrintsOutStats('P'),
     _keyEventToggleAdvanced('t'),
     _advanced(false),
+    _textCalibrated(false),
     _statsType(NO_STATS),
     _statsSubType(ALL_SUB_STATS),
     _initialized(false),
@@ -59,7 +60,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     colorAdvancedAlpha.a() = 0.5;
 
     StatValueInfo * svi = new StatValueInfo;
-    svi->label = "Frame Rate: ";
+    svi->label = "Frame Rate:";
     svi->color = osg::Vec4(1.0,1.0,1.0,1.0);
     svi->colorAlpha = osg::Vec4(1.0,1.0,1.0,0.5);
     svi->name = "Frame rate";
@@ -70,7 +71,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
 
 
     StatTimeBarInfo * barInfo = new StatTimeBarInfo;
-    barInfo->label = "Event: ";
+    barInfo->label = "Event:";
     barInfo->color = osg::Vec4(0.0,1.0,0.5,1.0);
     barInfo->colorAlpha = osg::Vec4(0.0,1.0,0.5,0.5);
     barInfo->nameDuration = "Event traversal time taken";
@@ -81,7 +82,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Tracking: ";
+    barInfo->label = "Tracking:";
     barInfo->color = osg::Vec4(0.0,0.5,1.0,1.0);
     barInfo->colorAlpha = osg::Vec4(0.0,0.5,1.0,0.5);
     barInfo->nameDuration = "Tracking time taken";
@@ -92,7 +93,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Scene: ";
+    barInfo->label = "Scene:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "Scene time taken";
@@ -103,7 +104,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Menu: ";
+    barInfo->label = "Menu:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "Menu time taken";
@@ -114,7 +115,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Interaction: ";
+    barInfo->label = "Interaction:";
     barInfo->color = osg::Vec4(1.0,0.13,0.67,1.0);
     barInfo->colorAlpha = osg::Vec4(1.0,0.13,0.67,0.5);
     barInfo->nameDuration = "Interaction time taken";
@@ -125,7 +126,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Navigation: ";
+    barInfo->label = "Navigation:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "Navigation time taken";
@@ -136,7 +137,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Collaborative: ";
+    barInfo->label = "Collaborative:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "Collaborative time taken";
@@ -147,7 +148,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Threaded Loader: ";
+    barInfo->label = "Threaded Loader:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "TLoader time taken";
@@ -158,7 +159,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "PreFrame: ";
+    barInfo->label = "PreFrame:";
     barInfo->color = osg::Vec4(1.0,0.0,1.0,1.0);
     barInfo->colorAlpha = osg::Vec4(1.0,0.0,1.0,0.5);
     barInfo->nameDuration = "PreFrame time taken";
@@ -169,7 +170,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Update: ";
+    barInfo->label = "Update:";
     barInfo->color = osg::Vec4(0.0,1.0,0.0,1.0);
     barInfo->colorAlpha = osg::Vec4(0.0,1.0,0.0,0.5);
     barInfo->nameDuration = "Update traversal time taken";
@@ -180,7 +181,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Cluster Sync: ";
+    barInfo->label = "Cluster Sync:";
     barInfo->color = osg::Vec4(1.0,0.0,0.0,1.0);
     barInfo->colorAlpha = osg::Vec4(1.0,0.0,0.0,0.5);
     barInfo->nameDuration = "Cluster Sync time taken";
@@ -191,7 +192,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "PostFrame: ";
+    barInfo->label = "PostFrame:";
     barInfo->color = colorAdvanced;
     barInfo->colorAlpha = colorAdvancedAlpha;
     barInfo->nameDuration = "PostFrame time taken";
@@ -202,7 +203,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Cull: ";
+    barInfo->label = "Cull:";
     barInfo->color = osg::Vec4(0.0,1.0,1.0,1.0);
     barInfo->colorAlpha = osg::Vec4(0.0,1.0,1.0,0.5);
     barInfo->nameDuration = "Cull traversal time taken";
@@ -213,7 +214,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultCameraTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "Draw: ";
+    barInfo->label = "Draw:";
     barInfo->color = osg::Vec4(1.0,1.0,0.0,1.0);
     barInfo->colorAlpha = osg::Vec4(1.0,1.0,0.0,0.5);
     barInfo->nameDuration = "Draw traversal time taken";
@@ -224,7 +225,7 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultCameraTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
-    barInfo->label = "GPU: ";
+    barInfo->label = "GPU:";
     barInfo->color = osg::Vec4(1.0,0.5,0.0,1.0);
     barInfo->colorAlpha = osg::Vec4(1.0,0.5,0.0,0.5);
     barInfo->nameDuration = "GPU draw time taken";
@@ -1318,6 +1319,21 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     float startBlocks = 150.0f;
     float characterSize = 20.0f;
 
+    if(!_textCalibrated)
+    {
+	osg::ref_ptr<osgText::Text> ctext = new osgText::Text();
+	ctext->setFont(font);
+	ctext->setCharacterSize(characterSize);
+	ctext->setText("AA");
+
+	float ctwidth = ctext->getBound().xMax() - ctext->getBound().xMin();
+
+	ctext->setText("A A");
+	_spaceSize = (ctext->getBound().xMax() - ctext->getBound().xMin()) - ctwidth;
+
+	_textCalibrated = true;
+    }
+
     calculateStartBlocks(startBlocks, leftPos, characterSize, font);
 
     osg::Vec3 pos(leftPos, _statsHeight-24.0f,0.0f);
@@ -1342,7 +1358,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         label->setPosition(pos);
         label->setText(_defaultViewerValues[i]->label);
 
-        pos.x() = label->getBound().xMax();
+        pos.x() = label->getBound().xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
         geode->addDrawable( value.get() );
@@ -1372,7 +1388,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         label->setPosition(pos);
         label->setText(_customViewerValues[i]->label);
 
-        pos.x() = label->getBound().xMax();
+        pos.x() = label->getBound().xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
         geode->addDrawable( value.get() );
@@ -1406,7 +1422,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 	    label->setPosition(pos);
 	    label->setText(_defaultCameraValues[i]->label);
 
-	    pos.x() = label->getBound().xMax();
+	    pos.x() = label->getBound().xMax() + _spaceSize;
 
 	    osg::ref_ptr<osgText::Text> value = new osgText::Text;
 	    geode->addDrawable( value.get() );
@@ -1436,7 +1452,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 	    label->setPosition(pos);
 	    label->setText(_customCameraValues[i]->label);
 
-	    pos.x() = label->getBound().xMax();
+	    pos.x() = label->getBound().xMax() + _spaceSize;
 
 	    osg::ref_ptr<osgText::Text> value = new osgText::Text;
 	    geode->addDrawable( value.get() );
@@ -2165,7 +2181,7 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
 	for(int i = 0; i < pluginList.size(); i++)
 	{
 	    //extra space added to pad side
-	    label->setText(pluginList[i] + ":  0.00");
+	    label->setText(pluginList[i] + ":  000.00");
 	    if(label->getBound().xMax() > startBlocks)
 	    {
 		startBlocks = label->getBound().xMax();
@@ -2181,7 +2197,7 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
 	    {
 		continue;
 	    }
-	    label->setText(_defaultViewerTimeBars[i]->label + " 0.00");
+	    label->setText(_defaultViewerTimeBars[i]->label + "  000.00");
 	    if(label->getBound().xMax() > startBlocks)
 	    {
 		startBlocks = label->getBound().xMax();
@@ -2197,7 +2213,7 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
 	    {
 		continue;
 	    }
-	    label->setText(_customViewerTimeBars[i]->label + " 0.00");
+	    label->setText(_customViewerTimeBars[i]->label + "  000.00");
 	    if(label->getBound().xMax() > startBlocks)
 	    {
 		startBlocks = label->getBound().xMax();
@@ -2213,7 +2229,7 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
 	    {
 		continue;
 	    }
-	    label->setText(_defaultCameraTimeBars[i]->label + " 0.00");
+	    label->setText(_defaultCameraTimeBars[i]->label + "  000.00");
 	    if(label->getBound().xMax() > startBlocks)
 	    {
 		startBlocks = label->getBound().xMax();
@@ -2229,7 +2245,7 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
 	    {
 		continue;
 	    }
-	    label->setText(_customCameraTimeBars[i]->label + " 0.00");
+	    label->setText(_customCameraTimeBars[i]->label + "  000.00");
 	    if(label->getBound().xMax() > startBlocks)
 	    {
 		startBlocks = label->getBound().xMax();
@@ -2251,7 +2267,7 @@ void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats,
     label->setPosition(pos);
     label->setText(stb->label);
 
-    pos.x() = label->getBound().xMax();
+    pos.x() = label->getBound().xMax() + _spaceSize;
 
     osg::ref_ptr<osgText::Text> value = new osgText::Text;
     geode->addDrawable( value.get() );
