@@ -890,20 +890,6 @@ void CVRViewer::renderingTraversals()
         return;
     }
 
-    double rtstartTime, rtendTime;
-
-    osg::Stats * rtstats;
-    rtstats = CVRViewer::instance()->getViewerStats();
-    if(rtstats && !rtstats->collectStats("CalVRStatsAdvanced"))
-    {
-	rtstats = NULL;
-    }
-
-    if(rtstats)
-    {
-	rtstartTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-    }
-
     //std::cerr << "render start." << std::endl;
     bool _outputMasterCameraLocation = false;
     if(_outputMasterCameraLocation)
@@ -1180,14 +1166,6 @@ void CVRViewer::renderingTraversals()
         releaseContext();
     }
 
-    if(rtstats)
-    {
-        rtendTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal begin time", rtstartTime);
-        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal end time", rtendTime);
-        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal time taken", rtendTime-rtstartTime);
-    }
-
 #if !((OPENSCENEGRAPH_MAJOR_VERSION == 2) && (OPENSCENEGRAPH_MINOR_VERSION == 8)) 
     _requestRedraw = false;
 #endif
@@ -1433,19 +1411,11 @@ void CVRViewer::startThreading()
 	    gc->getGraphicsThread()->add(new StatsEndOperation("End Barrier begin time","End Barrier end time","End Barrier time taken"));
         }
 
-	gc->getGraphicsThread()->add(new StatsBeginOperation("Swap Barrier begin time"));
-
         if(_swapReadyBarrier.valid())
             gc->getGraphicsThread()->add(_swapReadyBarrier.get());
 
-	gc->getGraphicsThread()->add(new StatsEndOperation("Swap Barrier begin time","Swap Barrier end time","Swap Barrier time taken"));
-
-	gc->getGraphicsThread()->add(new StatsBeginOperation("Swap Op begin time"));
-
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
-
-	gc->getGraphicsThread()->add(new StatsEndOperation("Swap Op begin time","Swap Op end time","Swap Op time taken"));
     }
 
     if(_threadingModel == CullThreadPerCameraDrawThreadPerContext
