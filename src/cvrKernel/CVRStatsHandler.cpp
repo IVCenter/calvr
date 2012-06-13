@@ -1390,11 +1390,11 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 	osg::ref_ptr<osgText::Text> ctext = new osgText::Text();
 	ctext->setFont(font);
 	ctext->setCharacterSize(characterSize);
-	ctext->setText("AA");
+	ctext->setText("::");
 
 	float ctwidth = ctext->getBound().xMax() - ctext->getBound().xMin();
 
-	ctext->setText("A A");
+	ctext->setText(": :");
 	_spaceSize = (ctext->getBound().xMax() - ctext->getBound().xMin()) - ctwidth;
 
 	_textCalibrated = true;
