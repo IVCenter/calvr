@@ -203,6 +203,17 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultViewerTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;
+    barInfo->label = "Rendering Trv:";
+    barInfo->color = colorAdvanced;
+    barInfo->colorAlpha = colorAdvancedAlpha;
+    barInfo->nameDuration = "Rendering Traversal time taken";
+    barInfo->nameTimeStart = "Rendering Traversal begin time";
+    barInfo->nameTimeEnd = "Rendering Traversal end time";
+    barInfo->collectName = "CalVRStatsAdvanced";
+    barInfo->advanced = true;
+    _defaultViewerTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
     barInfo->label = "Cull:";
     barInfo->color = osg::Vec4(0.0,1.0,1.0,1.0);
     barInfo->colorAlpha = osg::Vec4(0.0,1.0,1.0,0.5);
@@ -222,6 +233,61 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     barInfo->nameTimeEnd = "Draw traversal end time";
     barInfo->collectName = "rendering";
     barInfo->advanced = false;
+    _defaultCameraTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
+    barInfo->label = "Operations:";
+    barInfo->color = osg::Vec4(0.7,0.7,0.7,1.0);
+    barInfo->colorAlpha = osg::Vec4(0.7,0.7,0.7,0.5);
+    barInfo->nameDuration = "Operations time taken";
+    barInfo->nameTimeStart = "Operations begin time";
+    barInfo->nameTimeEnd = "Operations end time";
+    barInfo->collectName = "CalVRRenderingAdvanced";
+    barInfo->advanced = true;
+    _defaultCameraTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
+    barInfo->label = "Finish:";
+    barInfo->color = osg::Vec4(0.7,0.7,0.7,1.0);
+    barInfo->colorAlpha = osg::Vec4(0.7,0.7,0.7,0.5);
+    barInfo->nameDuration = "Finish time taken";
+    barInfo->nameTimeStart = "Finish begin time";
+    barInfo->nameTimeEnd = "Finish end time";
+    barInfo->collectName = "CalVRRenderingAdvanced";
+    barInfo->advanced = true;
+    _defaultCameraTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
+    barInfo->label = "End Barrier:";
+    barInfo->color = osg::Vec4(0.7,0.7,0.7,1.0);
+    barInfo->colorAlpha = osg::Vec4(0.7,0.7,0.7,0.5);
+    barInfo->nameDuration = "End Barrier time taken";
+    barInfo->nameTimeStart = "End Barrier begin time";
+    barInfo->nameTimeEnd = "End Barrier end time";
+    barInfo->collectName = "CalVRRenderingAdvanced";
+    barInfo->advanced = true;
+    _defaultCameraTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
+    barInfo->label = "Swap Barrier:";
+    barInfo->color = osg::Vec4(0.7,0.7,0.7,1.0);
+    barInfo->colorAlpha = osg::Vec4(0.7,0.7,0.7,0.5);
+    barInfo->nameDuration = "Swap Barrier time taken";
+    barInfo->nameTimeStart = "Swap Barrier begin time";
+    barInfo->nameTimeEnd = "Swap Barrier end time";
+    barInfo->collectName = "CalVRRenderingAdvanced";
+    barInfo->advanced = true;
+    _defaultCameraTimeBars.push_back(barInfo);
+
+    barInfo = new StatTimeBarInfo;
+    barInfo->label = "Swap Op:";
+    barInfo->color = osg::Vec4(0.7,0.7,0.7,1.0);
+    barInfo->colorAlpha = osg::Vec4(0.7,0.7,0.7,0.5);
+    barInfo->nameDuration = "Swap Op time taken";
+    barInfo->nameTimeStart = "Swap Op begin time";
+    barInfo->nameTimeEnd = "Swap Op end time";
+    barInfo->collectName = "CalVRRenderingAdvanced";
+    barInfo->advanced = true;
     _defaultCameraTimeBars.push_back(barInfo);
 
     barInfo = new StatTimeBarInfo;

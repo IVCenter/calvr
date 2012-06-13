@@ -35,6 +35,81 @@ struct finishOperation : public osg::Operation
         }
 };
 
+struct StatsBeginOperation : public osg::Operation
+{
+	StatsBeginOperation(std::string begin) : osg::Operation("StatsBeginOperation",true)
+	{
+	    _beginName = begin;
+	}
+
+	virtual void operator ()(osg::Object* object)
+        {
+	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
+	    if(gc)
+	    {
+		osg::GraphicsContext::Cameras cams = gc->getCameras();
+		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
+		{
+		    osg::Stats * stats = (*it)->getStats();
+		    if(stats)
+		    {
+			if(!stats->collectStats("CalVRRenderingAdvanced"))
+			{
+			    return;
+			}
+			double now = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _beginName, now);
+		    }
+		}
+	    }
+	}
+
+    protected:
+	std::string _beginName;
+};
+
+struct StatsEndOperation : public osg::Operation
+{
+	StatsEndOperation(std::string begin, std::string end, std::string duration) : osg::Operation("StatsEndOperation",true)
+	{
+	    _beginName = begin;
+	    _endName = end;
+	    _durationName = duration;
+	}
+
+	virtual void operator ()(osg::Object* object)
+        {
+	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
+	    if(gc)
+	    {
+		osg::GraphicsContext::Cameras cams = gc->getCameras();
+		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
+		{
+		    osg::Stats * stats = (*it)->getStats();
+		    if(stats)
+		    {
+			if(!stats->collectStats("CalVRRenderingAdvanced"))
+			{
+			    return;
+			}
+
+			double now = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _endName, now);
+
+			double begin;
+			stats->getAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _beginName, begin);
+			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _durationName, now-begin);
+		    }
+		}
+	    }
+	}
+
+    protected:
+	std::string _beginName;
+	std::string _endName;
+	std::string _durationName;
+};
+
 struct syncOperation : public osg::Operation
 {
         syncOperation() :
@@ -815,6 +890,20 @@ void CVRViewer::renderingTraversals()
         return;
     }
 
+    double rtstartTime, rtendTime;
+
+    osg::Stats * rtstats;
+    rtstats = CVRViewer::instance()->getViewerStats();
+    if(rtstats && !rtstats->collectStats("CalVRStatsAdvanced"))
+    {
+	rtstats = NULL;
+    }
+
+    if(rtstats)
+    {
+	rtstartTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+    }
+
     //std::cerr << "render start." << std::endl;
     bool _outputMasterCameraLocation = false;
     if(_outputMasterCameraLocation)
@@ -1091,18 +1180,12 @@ void CVRViewer::renderingTraversals()
         releaseContext();
     }
 
-    if(getViewerStats() && getViewerStats()->collectStats("update"))
+    if(rtstats)
     {
-        double endRenderingTraversals = elapsedTime();
-
-        // update current frames stats
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(),
-                "Rendering traversals begin time ",beginRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(),
-                "Rendering traversals end time ",endRenderingTraversals);
-        getViewerStats()->setAttribute(frameStamp->getFrameNumber(),
-                "Rendering traversals time taken",
-                endRenderingTraversals - beginRenderingTraversals);
+        rtendTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal begin time", rtstartTime);
+        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal end time", rtendTime);
+        rtstats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Rendering Traversal time taken", rtendTime-rtstartTime);
     }
 
 #if !((OPENSCENEGRAPH_MAJOR_VERSION == 2) && (OPENSCENEGRAPH_MINOR_VERSION == 8)) 
@@ -1322,29 +1405,47 @@ void CVRViewer::startThreading()
             }
         }
 
+	gc->getGraphicsThread()->add(new StatsBeginOperation("Operations begin time"));
+
         // add the rendering operation itself.
         if(!ComController::instance()->isMaster() || _renderOnMaster)
         {
             gc->getGraphicsThread()->add(new osg::RunOperations());
         }
 
+	gc->getGraphicsThread()->add(new StatsEndOperation("Operations begin time","Operations end time","Operations time taken"));
+
+	gc->getGraphicsThread()->add(new StatsBeginOperation("Finish begin time"));
+
         // IVL
         gc->getGraphicsThread()->add(new finishOperation());
+
+	gc->getGraphicsThread()->add(new StatsEndOperation("Finish begin time","Finish end time","Finish time taken"));
 
         if((_threadingModel == CullDrawThreadPerContext
                 || _threadingModel == CullThreadPerCameraDrawThreadPerContext
                 || _threadingModel == DrawThreadPerContext)
                 && _endRenderingDispatchBarrier.valid())
         {
+	    gc->getGraphicsThread()->add(new StatsBeginOperation("End Barrier begin time"));
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
+	    gc->getGraphicsThread()->add(new StatsEndOperation("End Barrier begin time","End Barrier end time","End Barrier time taken"));
         }
+
+	gc->getGraphicsThread()->add(new StatsBeginOperation("Swap Barrier begin time"));
 
         if(_swapReadyBarrier.valid())
             gc->getGraphicsThread()->add(_swapReadyBarrier.get());
 
+	gc->getGraphicsThread()->add(new StatsEndOperation("Swap Barrier begin time","Swap Barrier end time","Swap Barrier time taken"));
+
+	gc->getGraphicsThread()->add(new StatsBeginOperation("Swap Op begin time"));
+
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
+
+	gc->getGraphicsThread()->add(new StatsEndOperation("Swap Op begin time","Swap Op end time","Swap Op time taken"));
     }
 
     if(_threadingModel == CullThreadPerCameraDrawThreadPerContext
