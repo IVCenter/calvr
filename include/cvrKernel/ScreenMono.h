@@ -59,6 +59,8 @@ class ScreenMono : public ScreenBase
          * @brief See if this screen created the given osg::Camera
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c);
+
+        virtual void viewportResized(int left, int bottom, int width, int height);
     protected:
         monoType _type;                     ///< defines eye location
         osg::ref_ptr<osg::Camera> _camera;  ///< camera created for screen

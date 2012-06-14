@@ -717,6 +717,48 @@ void ScreenConfig::syncMasterScreens()
 {
     if(ComController::instance()->isMaster())
     {
+	//first sync values with created screens
+	for(int i = 0; i < _windowInfoList.size(); i++)
+	{
+	    if(_windowInfoList[i]->gc)
+	    {
+		const osg::GraphicsContext::Traits * traits = _windowInfoList[i]->gc->getTraits();
+		//std::cerr << "Window width: " << traits->width << " height: " << traits->height << std::endl;
+		_windowInfoList[i]->width = traits->width;
+		_windowInfoList[i]->height = traits->height;
+	    }
+	}
+
+	for(int i = 0; i < _screenInfoList.size(); i++)
+	{
+	    bool resized = false;
+	    float cwidth = 1024, cheight = 1024;
+	    if(_screenInfoList[i]->myChannel->myWindow->gc)
+	    {
+		const osg::GraphicsContext::Traits * traits = _screenInfoList[i]->myChannel->myWindow->gc->getTraits();
+		if(traits)
+		{
+		    cwidth = traits->width;
+		    cheight = traits->height;
+		}
+	    }
+
+	    if(_screenInfoList[i]->myChannel->bottom + _screenInfoList[i]->myChannel->height > cheight)
+	    {
+		cheight = cheight - _screenInfoList[i]->myChannel->bottom;
+		resized = true;
+	    }
+
+	    if(_screenInfoList[i]->myChannel->left + _screenInfoList[i]->myChannel->width > cwidth)
+	    {
+		cwidth = cwidth - _screenInfoList[i]->myChannel->left;
+		resized = true;
+	    }
+
+	    _screenList[i]->viewportResized((int)_screenInfoList[i]->myChannel->left,(int)_screenInfoList[i]->myChannel->bottom,(int)cwidth,(int)cheight);
+	    //std::cerr << "Screen width: " << _screenInfoList[i]->myChannel->width << " height: " << _screenInfoList[i]->myChannel->height << std::endl;
+	}
+
         int num = _pipeInfoList.size();
         ComController::instance()->sendSlaves(&num,sizeof(int));
 

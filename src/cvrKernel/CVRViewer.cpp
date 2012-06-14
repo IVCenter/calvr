@@ -591,17 +591,26 @@ void CVRViewer::eventTraversal()
                             {
                                 break;
                             }
+			    /*if(event->getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
+			    {
+				std::cerr << "Y increase up" << std::endl;
+			    }
+			    else
+			    {
+				std::cerr << "Y increase down" << std::endl;
+			    }*/
                             evnt.param1 = (int)(event->getX()
                                     - si->myChannel->left);
-                            evnt.param2 = (int)(event->getY()
-                                    - si->myChannel->bottom);
+                            evnt.param2 = (int)(event->getY());
 
-                            //std::cerr << "yparam: " << evnt.param2 << " windowHeight: " << event->getWindowHeight() << std::endl;
                             if(!_invertMouseY)
                             {
                                 evnt.param2 = -evnt.param2
-                                        + (int)si->myChannel->height;
+                                        + (int)si->myChannel->myWindow->height;
                             }
+
+			    evnt.param2 = evnt.param2 - ((int)si->myChannel->bottom);
+
                             if(ScreenConfig::instance()->getScreen(
                                     _activeMasterScreen))
                             {
@@ -668,20 +677,43 @@ void CVRViewer::eventTraversal()
                                                         camera);
                                         if(screenNum != -1)
                                         {
-                                            struct event vpevent;
-                                            vpevent.eventType = UPDATE_VIEWPORT;
-                                            vpevent.param1 = screenNum;
-                                            eventList.push_back(vpevent);
+					    if(ScreenConfig::instance()->getScreen(screenNum))
+					    {
+						ScreenConfig::instance()->getScreen(screenNum)->viewportResized((int)viewport->x(),(int)viewport->y(),(int)viewport->width(),(int)viewport->height());
+						//std::cerr << "Viewport x: " << viewport->x() << " y: " << viewport->y() << " width: " << viewport->width() << " height: " << viewport->height() << std::endl;
+						ScreenInfo * si = ScreenConfig::instance()->getScreenInfo(screenNum);
+						if(si)
+						{
+						    struct event vpevent;
+						    vpevent.eventType = UPDATE_VIEWPORT;
+						    vpevent.param1 = screenNum;
+						    eventList.push_back(vpevent);
 
-                                            vpevent.param1 = (int)viewport->x();
-                                            vpevent.param2 = (int)viewport->y();
-                                            eventList.push_back(vpevent);
+						    if(si->myChannel->myWindow->gc)
+						    {
+							const osg::GraphicsContext::Traits * traits = si->myChannel->myWindow->gc->getTraits();
+							if(traits)
+							{
+							    si->myChannel->myWindow->width = traits->width;
+							    si->myChannel->myWindow->height = traits->height;
+							}
+						    }
 
-                                            vpevent.param1 =
-                                                    (int)viewport->width();
-                                            vpevent.param2 =
-                                                    (int)viewport->height();
-                                            eventList.push_back(vpevent);
+						    vpevent.param1 = (int)si->myChannel->myWindow->width;
+						    vpevent.param2 = (int)si->myChannel->myWindow->height;
+						    eventList.push_back(vpevent);
+
+						    vpevent.param1 = (int)si->myChannel->left;
+						    vpevent.param2 = (int)si->myChannel->bottom;
+						    eventList.push_back(vpevent);
+
+						    vpevent.param1 =
+							(int)si->myChannel->width;
+						    vpevent.param2 =
+							(int)si->myChannel->height;
+						    eventList.push_back(vpevent);
+						}
+					    }
                                         }
                                     }
                                 }
@@ -827,13 +859,25 @@ void CVRViewer::eventTraversal()
                 struct ScreenInfo * si =
                         ScreenConfig::instance()->getMasterScreenInfo(
                                 events[i].param1);
+		i++;
+                if(i >= ei.numEvents)
+                {
+                    break;
+                }
+
+                if(!ComController::instance()->isMaster() && si)
+                {
+                    si->myChannel->myWindow->width = events[i].param1;
+                    si->myChannel->myWindow->height = events[i].param2;
+                }
+
                 i++;
                 if(i >= ei.numEvents)
                 {
                     break;
                 }
 
-                if(si)
+                if(!ComController::instance()->isMaster() && si)
                 {
                     si->myChannel->left = events[i].param1;
                     si->myChannel->bottom = events[i].param2;
@@ -845,7 +889,7 @@ void CVRViewer::eventTraversal()
                     break;
                 }
 
-                if(si)
+                if(!ComController::instance()->isMaster() && si)
                 {
                     si->myChannel->width = events[i].param1;
                     si->myChannel->height = events[i].param2;

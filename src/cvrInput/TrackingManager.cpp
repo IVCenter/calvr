@@ -268,6 +268,7 @@ bool TrackingManager::init()
         _handMatList.push_back(osg::Matrix());
         _handButtonMask.push_back(0);
         _lastHandButtonMask.push_back(0);
+	_handToHeadMap.push_back(ConfigManager::getInt("value",handss.str() + ".Head",0));
 
         _genHandDefaultButtonEvents.push_back(std::vector<bool>());
         _handStationFilterMask.push_back(std::vector<unsigned int>());
@@ -434,12 +435,28 @@ bool TrackingManager::init()
         //_threadHeadMatList.push_back(osg::Matrix());
         _headMatList.push_back(osg::Matrix());
         _lastUpdatedHeadMatList.push_back(osg::Matrix());
+	_headToHandsMap.push_back(std::vector<int>());
+	for(int j = 0; j < _handToHeadMap.size(); j++)
+	{
+	    if(i == _handToHeadMap[j])
+	    {
+		_headToHandsMap[i].push_back(j);
+	    }
+	}
     }
 
     if(!_numHeads)
     {
         _headMatList.push_back(osg::Matrix());
         _lastUpdatedHeadMatList.push_back(osg::Matrix());
+	_headToHandsMap.push_back(std::vector<int>());
+	for(int j = 0; j < _handToHeadMap.size(); j++)
+	{
+	    if(!_handToHeadMap[j])
+	    {
+		_headToHandsMap[0].push_back(j);
+	    }
+	}
     }
 
     _totalBodies = 0;
@@ -931,6 +948,28 @@ osg::Matrix & TrackingManager::getUnfrozenHeadMat(int head)
         return m;
     }
     return _headMatList[head];
+}
+
+int TrackingManager::getHeadForHand(int hand)
+{
+    if(hand >= 0 && hand < _handToHeadMap.size())
+    {
+	return _handToHeadMap[hand];
+    }
+
+    return 0;
+}
+
+const std::vector<int> & TrackingManager::getHandsForHead(int head)
+{
+    static std::vector<int> dummyReturn;
+
+    if(head >= 0 && head < _headToHandsMap.size())
+    {
+	return _headToHandsMap[head];
+    }
+
+    return dummyReturn;
 }
 
 int TrackingManager::getNumTrackingSystems()

@@ -70,3 +70,19 @@ ScreenInfo * ScreenMono::findScreenInfo(osg::Camera * c)
     }
     return NULL;
 }
+
+void ScreenMono::viewportResized(int left, int bottom, int width, int height)
+{
+    if(_camera)
+    {
+	osg::Viewport * viewport = _camera->getViewport();
+	if(viewport)
+	{
+	    viewport->x() = left;
+	    viewport->y() = bottom;
+	    viewport->width() = width;
+	    viewport->height() = height;
+	}
+    }
+    ScreenBase::viewportResized(left,bottom,width,height);
+}

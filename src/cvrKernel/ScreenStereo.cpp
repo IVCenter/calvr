@@ -126,6 +126,22 @@ void ScreenStereo::adjustViewportCoords(int & x, int & y)
     return;
 }
 
+void ScreenStereo::viewportResized(int left, int bottom, int width, int height)
+{
+    if(_camera)
+    {
+	osg::Viewport * viewport = _camera->getViewport();
+	if(viewport)
+	{
+	    viewport->x() = left;
+	    viewport->y() = bottom;
+	    viewport->width() = width;
+	    viewport->height() = height;
+	}
+    }
+    ScreenBase::viewportResized(left,bottom,width,height);
+}
+
 void ScreenStereo::setStereoMode(osg::DisplaySettings::StereoMode sm)
 {
     _stereoMode = sm;

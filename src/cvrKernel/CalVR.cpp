@@ -197,8 +197,6 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         return false;
     }
 
-    _screens->syncMasterScreens();
-
     _scene = cvr::SceneManager::instance();
     if(!_scene->init())
     {
@@ -242,6 +240,8 @@ void CalVR::run()
     {
         _viewer->realize();
     }
+
+    _screens->syncMasterScreens();
 
     int frameNum = 0;
 

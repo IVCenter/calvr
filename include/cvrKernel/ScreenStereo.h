@@ -71,6 +71,8 @@ class ScreenStereo : public ScreenBase
 
         virtual void adjustViewportCoords(int & x, int & y);
 
+        virtual void viewportResized(int left, int bottom, int width, int height);
+
         /**
          * @brief Get the currently set osg stereo mode
          */

@@ -84,6 +84,23 @@ class ScreenBase
         }
 
         /**
+         * @brief Called on a master node screen if the viewport has been 
+         * resized
+         * @param left new viewport left value
+         * @param bottom new viewport bottom value
+         * @param width new viewport width value
+         * @param height new viewport height value
+         */
+        virtual void viewportResized(int left, int bottom, int width, int height)
+        {
+            _myInfo->myChannel->left = (float)left;
+            _myInfo->myChannel->bottom = (float)bottom;
+            _myInfo->myChannel->width = (float)width;
+            _myInfo->myChannel->height = (float)height;
+            return;
+        }
+
+        /**
          * @brief Set near plane value for all screens
          */
         static void setNear(float near)
