@@ -48,6 +48,7 @@ class CVRMENU_EXPORT MenuItem
         {
             _callback = NULL;
             _dirty = true;
+            _hoverText = "";
         }
 
         virtual ~MenuItem();
@@ -120,10 +121,21 @@ class CVRMENU_EXPORT MenuItem
             _dirty = b;
         }
 
+        void setHoverText(std::string text)
+        {
+            _hoverText = text;
+        }
+
+        std::string & getHoverText()
+        {
+            return _hoverText;
+        }
+
     protected:
         MenuCallback * _callback; ///< Pointer to class object to receive update callbacks from this item
         std::string _extraInfo; ///< Extra information provided for the menu system
         bool _dirty; ///< Has this item changed
+        std::string _hoverText;
 };
 
 /**

@@ -5,6 +5,7 @@
 #include <cvrKernel/InteractionManager.h>
 #include <cvrConfig/ConfigManager.h>
 #include <cvrUtil/Intersection.h>
+#include <cvrMenu/BubbleMenu.h>
 
 #include <iostream>
 
@@ -44,6 +45,12 @@ bool MenuSystem::init()
     {
         _type = BOARDMENU;
         _menu = new BoardMenu();
+    }
+    else if (menuType == "BUBBLEMENU")
+    {
+        _type = BUBBLEMENU;
+        _menu = new BubbleMenu();
+        std::cout << "Bubble menu loaded." << std::endl;
     }
     else
     {
@@ -107,3 +114,17 @@ void MenuSystem::itemDelete(MenuItem * item)
         _menu->itemDelete(item);
     }
 }
+
+MenuType MenuSystem::getMenuType()
+{
+    return _type;
+}
+
+bool MenuSystem::setFavorites(bool showFav)
+{
+    if (_type != BUBBLEMENU)
+        return false;
+       
+    ((BubbleMenu*)_menu)->setFavorites(showFav);
+}
+

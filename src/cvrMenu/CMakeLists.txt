@@ -44,6 +44,24 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuClosableGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
     ${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/BubbleMenu.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuCheckboxGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuListGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuRangeValueGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuRangeValueCompactGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuTextGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuTextButtonSetGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuSubMenuGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuSubMenuClosableGeometry.h
+    ${HEADER_PATH}/BubbleMenu/BubbleMenuImageGeometry.h
+    ${HEADER_PATH}/BubbleMenu/Lerp.h
+    
+    /home/cehughes/Sound/OASSound.h
+    /home/cehughes/Sound/OASClientInterface.h
+
+
 )
 
 SET(LIB_SRC_FILES
@@ -78,6 +96,23 @@ SET(LIB_SRC_FILES
     BoardMenu/BoardMenuImageGeometry.cpp
     BoardMenu/BoardMenuSubMenuGeometry.cpp
     BoardMenu/BoardMenuSubMenuClosableGeometry.cpp
+    BubbleMenu.cpp
+    BubbleMenu/BubbleMenuGeometry.cpp
+    BubbleMenu/BubbleMenuButtonGeometry.cpp
+    BubbleMenu/BubbleMenuCheckboxGeometry.cpp
+    BubbleMenu/BubbleMenuListGeometry.cpp
+    BubbleMenu/BubbleMenuRangeValueGeometry.cpp
+    BubbleMenu/BubbleMenuRangeValueCompactGeometry.cpp
+    BubbleMenu/BubbleMenuTextGeometry.cpp
+    BubbleMenu/BubbleMenuTextButtonSetGeometry.cpp
+    BubbleMenu/BubbleMenuImageGeometry.cpp
+    BubbleMenu/BubbleMenuSubMenuGeometry.cpp
+    BubbleMenu/BubbleMenuSubMenuClosableGeometry.cpp
+    BubbleMenu/Lerp.cpp
+
+    /home/cehughes/Sound/OASSound.cpp
+    /home/cehughes/Sound/OASClientInterface.cpp
+ 
 )
 
 SET(LIB_EXTERNAL_INCLUDES
