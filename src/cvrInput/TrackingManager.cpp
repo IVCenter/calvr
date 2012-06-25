@@ -83,7 +83,7 @@ TrackingManager * TrackingManager::instance()
 
 bool TrackingManager::init()
 {
-    _debugOutput = ConfigManager::getBool("Input.TrackingDebug",false);
+    _debugOutput = ComController::instance()->isMaster() ? ConfigManager::getBool("Input.TrackingDebug",false) : false;
     _updateHeadTracking = !ConfigManager::getBool("Freeze",false);
 
     int system = 0;
@@ -279,8 +279,7 @@ bool TrackingManager::init()
             std::stringstream maskss;
             maskss << "system" << j;
             std::string mask;
-            mask = ConfigManager::getEntry(maskss.str(),maskTag,
-                    i ? "0x0" : "0xFFFFFFFF");
+            mask = ConfigManager::getEntry(maskss.str(),maskTag,"0x0");
 
             char * eptr;
             unsigned long int imask = strtol(mask.c_str(),&eptr,0);
@@ -392,33 +391,6 @@ bool TrackingManager::init()
 	    }
 	}
 	while(valFound);
-
-        /*_numEventValuators.push_back(
-                ConfigManager::getInt("value",handss.str() + ".NumValuators",
-                        0));
-       
-        for(int j = 0; j < _numEventValuators[i]; j++)
-        {
-            std::stringstream valss;
-            valss << handss.str() << ".Valuator" << j;
-            int system, number;
-            system = ConfigManager::getInt("system",valss.str(),0);
-            number = ConfigManager::getInt("number",valss.str(),0);
-            _eventValuatorAddress[i].push_back(
-                    std::pair<int,int>(system,number));
-            std::string type = ConfigManager::getEntry("type",valss.str(),
-                    "NON_ZERO");
-            if(type == "CHANGE")
-            {
-                _eventValuatorType[i].push_back(CHANGE);
-            }
-            else
-            {
-                _eventValuatorType[i].push_back(NON_ZERO);
-            }
-
-            _eventValuators[i].push_back(0.0);
-        }*/
     }
 
     setGenHandDefaultButtonEvents();
@@ -518,42 +490,22 @@ bool TrackingManager::init()
         _lastUpdatedHeadMatList[i] = _headMatList[i];
     }
 
-    /*if(!_bodyTracker || !_bodyTracker->getNumBodies())
-     {
-     update();
-     }*/
-
-    /*_numEventValuators = ConfigManager::getInt("value","Input.NumValuators",0);
-     for(int i = 0; i < _numEventValuators; i++)
-     {
-     std::stringstream valss;
-     valss << "Input.Valuator" << i;
-     int system, number;
-     system = ConfigManager::getInt("system",valss.str(),0);
-     number = ConfigManager::getInt("number",valss.str(),0);
-     _eventValuatorAddress.push_back(std::pair<int,int>(system,number));
-     std::string type = ConfigManager::getEntry("type",valss.str(),"NON_ZERO");
-     if(type == "CHANGE")
-     {
-     _eventValuatorType.push_back(CHANGE);
-     }
-     else
-     {
-     _eventValuatorType.push_back(NON_ZERO);
-     }
-
-     _eventValuators.push_back(0.0);
-     }*/
-
     for(int i = 0; i < NUM_INTER_EVENT_TYPES; i++)
     {
         _eventMap[i] = std::list<InteractionEvent*>();
     }
 
+    setHandButtonMaps();
+
     if(_threaded && ComController::instance()->isMaster())
     {
         genComTrackEvents = new GenComplexTrackingEvents();
         this->start();
+    }
+
+    if(_debugOutput)
+    {
+	printInitDebug();
     }
 
     return true;
@@ -873,8 +825,7 @@ void TrackingManager::run()
         if(interval > 10.0)
         {
             printStart = printEnd;
-            std::cerr << "Tracking FPS: " << ((float)readings) / interval
-                    << std::endl;
+            //std::cerr << "Tracking FPS: " << ((float)readings) / interval << std::endl;
             readings = 0;
         }
     }
@@ -977,6 +928,42 @@ int TrackingManager::getNumTrackingSystems()
     return _systems.size();
 }
 
+TrackerBase * TrackingManager::getTrackingSystem(int system)
+{
+    if(system < 0 || system >= _systems.size())
+    {
+	return NULL;
+    }
+
+    return _systems[system];
+}
+
+void TrackingManager::getHandAddress(int hand, int & system, int & body)
+{
+    if(hand < 0 || hand >= getNumHands())
+    {
+	system = body = -1;
+    }
+    else
+    {
+	system = _handAddress[hand].first;
+	body = _handAddress[hand].second;
+    }
+}
+
+void TrackingManager::getHeadAddress(int head, int & system, int & body)
+{
+    if(head < 0 || head >= getNumHeads())
+    {
+	system = body = -1;
+    }
+    else
+    {
+	system = _headAddress[head].first;
+	body = _headAddress[head].second;
+    }
+}
+
 TrackerBase::TrackerType TrackingManager::getHandTrackerType(int hand)
 {
     if(hand < 0 || hand >= _numHands || _handAddress[hand].first < 0
@@ -999,6 +986,15 @@ Navigation::NavImplementation TrackingManager::getHandNavType(int hand)
     }
 
     return Navigation::NONE_NAV;
+}
+
+int TrackingManager::getNumBodies(int system)
+{
+    if(system >= 0 && system < _systems.size() && _systems[system])
+    {
+        return _systemInfo[system]->numBodies;
+    }
+    return 0;
 }
 
 int TrackingManager::getNumButtons(int system)
@@ -1024,6 +1020,15 @@ unsigned int TrackingManager::getHandButtonMask(int hand)
     if(hand >= 0 && hand < _handButtonMask.size())
     {
         return _handButtonMask[hand];
+    }
+    return 0;
+}
+
+unsigned int TrackingManager::getButtonFilter(int hand, int system)
+{
+    if(hand >= 0 && hand < _handStationFilterMask.size() && system >= 0 && system < _handStationFilterMask[hand].size())
+    {
+	return _handStationFilterMask[hand][system];
     }
     return 0;
 }
@@ -1055,6 +1060,64 @@ void TrackingManager::setUpdateHeadTracking(bool b)
 bool TrackingManager::getUpdateHeadTracking()
 {
     return _updateHeadTracking;
+}
+
+osg::Matrix TrackingManager::getHandTransformFromTrackedBody(int hand, TrackerBase::TrackedBody * body)
+{
+    if(hand < 0 || hand >= getNumHands() || !body)
+    {
+	return osg::Matrix();
+    }
+
+    osg::Vec3 pos(body->x,body->y,body->z);
+    osg::Matrix rot;
+    rot.makeRotate(osg::Quat(body->qx,body->qy,body->qz,body->qw));
+    osg::Matrix transform =
+	_systemInfo[_handAddress[hand].first]->bodyRotations[_handAddress[hand].second]
+	* rot * osg::Matrix::translate(pos)
+	* _systemInfo[_handAddress[hand].first]->systemTransform
+	* osg::Matrix::translate(
+		_systemInfo[_handAddress[hand].first]->bodyTranslations[_handAddress[hand].second]);
+
+    return transform;
+}
+
+osg::Matrix TrackingManager::getHeadTransformFromTrackedBody(int head, TrackerBase::TrackedBody * body)
+{
+    if(head < 0 || head >= getNumHeads() || !body)
+    {
+	return osg::Matrix();
+    }
+
+    osg::Vec3 pos(body->x,body->y,body->z);
+    osg::Matrix rot;
+    rot.makeRotate(osg::Quat(body->qx,body->qy,body->qz,body->qw));
+    osg::Matrix transform =
+	_systemInfo[_headAddress[head].first]->bodyRotations[_headAddress[head].second]
+	* rot * osg::Matrix::translate(pos)
+	* _systemInfo[_headAddress[head].first]->systemTransform
+	* osg::Matrix::translate(
+		_systemInfo[_headAddress[head].first]->bodyTranslations[_headAddress[head].second]);
+
+    return transform;
+}
+
+void TrackingManager::getHandButtonFromSystemButton(int system, int systemButton, int & hand, int & handButton)
+{
+    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it = _handButtonAddressMap.begin(); it != _handButtonAddressMap.end(); it++)
+    {
+	for(int i = 0; i < it->second.size(); i++)
+	{
+	    if(it->second[i].first == system && it->second[i].second == systemButton)
+	    {
+		hand = it->first;
+		handButton = _handButtonMapping[it->first][i];
+		return;
+	    }
+	}
+    }
+    hand = -1;
+    handButton = -1;
 }
 
 void TrackingManager::updateHandMask()
@@ -1174,7 +1237,7 @@ void TrackingManager::generateButtonEvents()
                     {
                         buttonEvent->setInteraction(BUTTON_DOWN);
                     }
-                    buttonEvent->setButton(i);
+                    buttonEvent->setButton(_handButtonMapping[j][i]);
                     // set current pointer info
                     buttonEvent->setTransform(_handMatList[j]);
                     buttonEvent->setHand(j);
@@ -1251,7 +1314,7 @@ void TrackingManager::generateThreadButtonEvents()
                 {
                     buttonEvent->setInteraction(BUTTON_DOWN);
                 }
-                buttonEvent->setButton(i);
+                buttonEvent->setButton(_handButtonMapping[j][i]);
                 // set current pointer info
                 if(getIsHandThreaded(j))
                 {
@@ -1269,7 +1332,7 @@ void TrackingManager::generateThreadButtonEvents()
             {
                 buttonEvent = new TrackedButtonInteractionEvent();
                 buttonEvent->setInteraction(BUTTON_DRAG);
-                buttonEvent->setButton(i);
+                buttonEvent->setButton(_handButtonMapping[j][i]);
                 // set current pointer info
                 if(getIsHandThreaded(j))
                 {
@@ -1455,6 +1518,7 @@ void TrackingManager::generateThreadValuatorEvents()
 
 void TrackingManager::generatePositionEvents()
 {
+    
 }
 
 void TrackingManager::generateThreadPositionEvents()
@@ -1655,6 +1719,77 @@ void TrackingManager::setGenHandDefaultButtonEvents()
     }
 }
 
+void TrackingManager::setHandButtonMaps()
+{
+    for(int i = 0; i < _systemInfo.size(); i++)
+    {
+	 unsigned int mask = 1;
+	 for(int j = 0; j < _systemInfo[i]->numButtons; j++)
+	 {
+	     for(int k = 0; k < _numHands; k++)
+	     {
+		 if(_handStationFilterMask[k][i] & mask)
+		 {
+		     _handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
+		     break;
+		 }
+	     }
+	 }
+	 mask = mask << 1;
+    }
+
+    for(int i = 0; i < _numHands; i++)
+    {
+	_handButtonMapping.push_back(std::map<int,int>());
+    }
+
+    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it = _handButtonAddressMap.begin(); it != _handButtonAddressMap.end(); it++)
+    {
+	for(int i = 0; i < it->second.size(); i++)
+	{
+	    _handButtonMapping[it->first][i] = i;
+	}
+    }
+
+    for(int i = 0; i < _numHands; i++)
+    {
+	bool orderFound = false;
+	std::stringstream ss;
+	ss << "Input.Hand" << i << ".ButtonOrder";
+	std::string order = ConfigManager::getEntry("value",ss.str(),"",&orderFound);
+
+	if(!orderFound)
+	{
+	    continue;
+	}
+
+	if(_handButtonMapping[i].size())
+	{
+	    std::vector<int> orderList;
+	    size_t pos = order.find_first_not_of(',');
+	    while(pos != std::string::npos)
+	    {
+		size_t cpos = order.find_first_of(',',pos);
+		if(cpos == std::string::npos)
+		{
+		    orderList.push_back(atoi(order.substr(pos,order.length()-pos).c_str()));
+		    pos = cpos;
+		}
+		else
+		{
+		    orderList.push_back(atoi(order.substr(pos,cpos-pos).c_str()));
+		    pos = order.find_first_not_of(',',cpos);
+		}
+	    }
+
+	    for(int j = 0; j < orderList.size() && j < _handButtonMapping[i].size(); j++)
+	    {
+		_handButtonMapping[i][j] = orderList[j];
+	    }
+	}
+    }
+}
+
 bool TrackingManager::getIsHandThreaded(int hand)
 {
     if(_handAddress[hand].first >= 0
@@ -1663,6 +1798,78 @@ bool TrackingManager::getIsHandThreaded(int hand)
         return _systemInfo[_handAddress[hand].first]->thread;
     }
     return false;
+}
+
+void TrackingManager::printInitDebug()
+{
+    std::cerr << "-----Tracking Init Info-----" << std::endl;
+
+    std::cerr << "Num Systems: " << _systems.size() << std::endl;
+    
+    for(int i = 0; i < _systems.size(); i++)
+    {
+	std::cerr << "System: " << i << std::endl;
+	if(_systems[i])
+	{
+	    std::cerr << "Num Bodies - config: " << _systemInfo[i]->numBodies << " system: " << _systems[i]->getNumBodies() << std::endl;
+	    std::cerr << "Num Buttons - config: " << _systemInfo[i]->numButtons << " system: " << _systems[i]->getNumButtons() << std::endl;
+	    std::cerr << "Num Valuators - config: " << _systemInfo[i]->numVal << " system: " << _systems[i]->getNumValuators() << std::endl;
+	}
+	else
+	{
+	    std::cerr << "System failed init." << std::endl;
+	}
+	std::cerr << std::endl;
+    }
+
+    std::cerr << "Num Heads: " << _numHeads << std::endl;
+
+    for(int i = 0; i < _numHeads; i++)
+    {
+	std::cerr << "Head " << i << " Address: system: " << _headAddress[i].first << " body: " << _headAddress[i].second << std::endl;
+    }
+
+    std::map<int,std::vector<std::pair<int,int> > > handButtonAddressMap;
+    for(int i = 0; i < _systemInfo.size(); i++)
+    {
+	 unsigned int mask = 1;
+	 for(int j = 0; j < _systemInfo[i]->numButtons; j++)
+	 {
+	     for(int k = 0; k < _numHands; k++)
+	     {
+		 if(_handStationFilterMask[k][i] & mask)
+		 {
+		     handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
+		     break;
+		 }
+	     }
+	 }
+	 mask = mask << 1;
+    }
+
+    std::cerr << std::endl << "Num Hands: " << _numHands << std::endl;
+
+    for(int i = 0; i < _numHands; i++)
+    {
+	std::cerr << "Hand " << i << std::endl;
+	std::cerr << "Address: system: " << _handAddress[i].first << " body: " << _handAddress[i].second << std::endl;
+	std::cerr << "Num Buttons:" << handButtonAddressMap[i].size() << std::endl;
+
+	for(int j = 0; j < handButtonAddressMap[i].size(); j++)
+	{
+	    std::cerr << "Button " << j << " - system: " << handButtonAddressMap[i][j].first << " button: " << handButtonAddressMap[i][j].second << std::endl;
+	}
+
+	std::cerr << "Num Valuators: " << _eventValuators[i].size() << std::endl;
+	for(int j = 0; j < _eventValuators[i].size(); j++)
+	{
+	    std::cerr << "Valuator " << i << " system: " << _eventValuatorAddress[i][j].first << " index: " << _eventValuatorAddress[i][j].second << std::endl;
+	}
+	std::cerr << std::endl;
+    }
+
+
+    std::cerr << "-----End Tracking Init Info-----" << std::endl;
 }
 
 GenComplexTrackingEvents::GenComplexTrackingEvents()
