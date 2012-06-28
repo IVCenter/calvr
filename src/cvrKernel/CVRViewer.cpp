@@ -35,6 +35,44 @@ struct finishOperation : public osg::Operation
         }
 };
 
+struct FrameStartCallbackOperation : public osg::Operation
+{
+	FrameStartCallbackOperation(int context) : osg::Operation("FrameStartCallbackOperation",true)
+	{
+	    _context = context;
+	}
+
+	virtual void operator ()(osg::Object* object)
+	{
+	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextFrameStartCallbacks(); i++)
+	    {
+		CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(_context);
+	    }
+	}
+
+    protected:
+	int _context;
+};
+
+struct PreDrawCallbackOperation : public osg::Operation
+{
+	PreDrawCallbackOperation(int context) : osg::Operation("PreDrawCallbackOperation",true)
+	{
+	    _context = context;
+	}
+
+	virtual void operator ()(osg::Object* object)
+	{
+	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPreDrawCallbacks(); i++)
+	    {
+		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context);
+	    }
+	}
+
+    protected:
+	int _context;
+};
+
 struct StatsBeginOperation : public osg::Operation
 {
 	StatsBeginOperation(std::string begin) : osg::Operation("StatsBeginOperation",true)
@@ -123,28 +161,6 @@ struct syncOperation : public osg::Operation
             ComController::instance()->sync();
         }
 };
-
-/*struct vSyncOperation : public osg::Operation
-{
-        vSyncOperation(bool value) :
-                osg::Operation("vSyncOperation",true)
-        {
-            _val = value;
-        }
-
-        virtual void operator ()(osg::Object* object)
-        {
-            if(_val)
-            {
-                putenv("__GL_SYNC_TO_VBLANK=1");
-            }
-            else
-            {
-                putenv("__GL_SYNC_TO_VBLANK=0");
-            }
-        }
-        bool _val;
-};*/
 
 /*struct sleepOperation : public osg::Operation
  {
@@ -1166,6 +1182,19 @@ void CVRViewer::renderingTraversals()
         stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync time taken", endTime-startTime);
     }
 
+    // put callbacks in the list here, since we know all threads are drawing right now
+    for(int i = 0; i < _addFrameStartCallbacks.size(); i++)
+    {
+	_frameStartCallbacks.push_back(_addFrameStartCallbacks[i]);
+    }
+    _addFrameStartCallbacks.clear();
+
+    for(int i = 0; i < _addPreDrawCallbacks.size(); i++)
+    {
+	_preDrawCallbacks.push_back(_addPreDrawCallbacks[i]);
+    }
+    _addPreDrawCallbacks.clear();
+
     if(_swapReadyBarrier.valid())
     {
         _swapReadyBarrier->block();
@@ -1413,6 +1442,8 @@ void CVRViewer::startThreading()
 
         //std::cerr << "Thread Affinity: " << processNum % numProcessors << std::endl;
 
+	gc->getGraphicsThread()->add(new FrameStartCallbackOperation(gc->getState()->getContextID()));
+
         // add the startRenderingBarrier
         if((_threadingModel == CullDrawThreadPerContext)
                 && _startRenderingBarrier.valid())
@@ -1426,6 +1457,8 @@ void CVRViewer::startThreading()
                 gc->getGraphicsThread()->add(_cullDrawBarrier.get());
             }
         }
+
+	gc->getGraphicsThread()->add(new PreDrawCallbackOperation(gc->getState()->getContextID()));
 
 	gc->getGraphicsThread()->add(new StatsBeginOperation("Operations begin time"));
 
@@ -1460,6 +1493,8 @@ void CVRViewer::startThreading()
 
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
+
+	
     }
 
     if(_threadingModel == CullThreadPerCameraDrawThreadPerContext
@@ -1662,4 +1697,47 @@ double CVRViewer::getProgramStartTime()
 {
     return (double)(_programStartTime
             * osg::Timer::instance()->getSecondsPerTick());
+}
+
+void CVRViewer::addPerContextFrameStartCallback(PerContextCallback * pcc)
+{
+    if(pcc)
+    {
+	_addFrameStartCallbacks.push_back(pcc);
+    }
+}
+
+int CVRViewer::getNumPerContextFrameStartCallbacks()
+{
+    return _frameStartCallbacks.size();
+}
+
+PerContextCallback * CVRViewer::getPerContextFrameStartCallback(int callback)
+{
+    if(callback >= 0 && callback < _frameStartCallbacks.size())
+    {
+	return _frameStartCallbacks[callback];
+    }
+}
+
+
+void CVRViewer::addPreContextPreDrawCallback(PerContextCallback * pcc)
+{
+    if(pcc)
+    {
+	_addPreDrawCallbacks.push_back(pcc);
+    }
+}
+
+int CVRViewer::getNumPerContextPreDrawCallbacks()
+{
+    return _preDrawCallbacks.size();
+}
+
+PerContextCallback * CVRViewer::getPerContextPreDrawCallback(int callback)
+{
+    if(callback >= 0 && callback < _preDrawCallbacks.size())
+    {
+	return _preDrawCallbacks[callback];
+    }
 }
