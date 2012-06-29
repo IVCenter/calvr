@@ -87,6 +87,8 @@ bool SceneManager::init()
     _depthPartitionRight->setNodeMask(
             _depthPartitionRight->getNodeMask() & ~(CULL_MASK));
 
+    _depthPartitionRight->setForwardOtherTraversals(false);
+
     _scale = 1.0;
     _showAxis = false;
     _hidePointer = false;
