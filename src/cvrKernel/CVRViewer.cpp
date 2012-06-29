@@ -21,17 +21,27 @@ using namespace cvr;
 
 CVRViewer * CVRViewer::_myPtr = NULL;
 
-struct finishOperation : public osg::Operation
+struct PreSwapOperation : public osg::Operation
 {
-        finishOperation() :
-                osg::Operation("finishOperation",true)
+        PreSwapOperation() :
+                osg::Operation("PreSwapOperation",true)
         {
         }
 
         virtual void operator ()(osg::Object* object)
         {
-            //std::cerr << "Calling finish." << std::endl;
-            glFinish();
+	    switch(CVRViewer::instance()->getPreSwapOperation())
+	    {
+		case CVRViewer::PSO_FINISH:
+		    glFinish();
+		    break;
+		case CVRViewer::PSO_FLUSH:
+		    glFlush();
+		    break;
+		case CVRViewer::PSO_NONE:
+		default:
+		    break;
+	    }
         }
 };
 
@@ -204,49 +214,49 @@ CVRViewer::CVRViewer() :
         osgViewer::Viewer()
 {
     std::string threadModel = ConfigManager::getEntry("value","MultiThreaded",
-            "SingleThreaded");
+	    "SingleThreaded");
     if(threadModel == "CullThreadPerCameraDrawThreadPerContext")
     {
-        osg::Referenced::setThreadSafeReferenceCounting(true);
-        setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
+	osg::Referenced::setThreadSafeReferenceCounting(true);
+	setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
     }
     else if(threadModel == "CullDrawThreadPerContext")
     {
-        osg::Referenced::setThreadSafeReferenceCounting(true);
-        setThreadingModel(CullDrawThreadPerContext);
+	osg::Referenced::setThreadSafeReferenceCounting(true);
+	setThreadingModel(CullDrawThreadPerContext);
     }
     else if(threadModel == "DrawThreadPerContext")
     {
-        osg::Referenced::setThreadSafeReferenceCounting(true);
-        setThreadingModel(DrawThreadPerContext);
+	osg::Referenced::setThreadSafeReferenceCounting(true);
+	setThreadingModel(DrawThreadPerContext);
     }
     else
     {
-        setThreadingModel(SingleThreaded);
+	setThreadingModel(SingleThreaded);
     }
 
     _renderOnMaster = ConfigManager::getBool("RenderOnMaster",true);
 
     if(ComController::instance()->isMaster())
     {
-        _programStartTime = osg::Timer::instance()->tick();
-        ComController::instance()->sendSlaves(&_programStartTime,
-                sizeof(osg::Timer_t));
+	_programStartTime = osg::Timer::instance()->tick();
+	ComController::instance()->sendSlaves(&_programStartTime,
+		sizeof(osg::Timer_t));
     }
     else
     {
-        ComController::instance()->readMaster(&_programStartTime,
-                sizeof(osg::Timer_t));
+	ComController::instance()->readMaster(&_programStartTime,
+		sizeof(osg::Timer_t));
     }
 
     std::string cmode = ConfigManager::getEntry("value","CullingMode","CALVR");
     if(cmode == "CALVR")
     {
-        _cullMode = CALVR;
+	_cullMode = CALVR;
     }
     else
     {
-        _cullMode = DEFAULT;
+	_cullMode = DEFAULT;
     }
 
     _frameStartTime = _lastFrameStartTime = _programStartTime;
@@ -265,6 +275,20 @@ CVRViewer::CVRViewer() :
     _statsHandler->setKeyEventTogglesOnScreenStats((int)'S');
     _statsHandler->setKeyEventPrintsOutStats((int)'P');
     addEventHandler(_statsHandler);
+
+    std::string op = ConfigManager::getEntry("value","PreSwapOperation","FINISH",NULL);
+    if(op == "FINISH")
+    {
+	_preSwapOp = PSO_FINISH;
+    }
+    else if(op == "FLUSH")
+    {
+	_preSwapOp = PSO_FLUSH;
+    }
+    else
+    {
+	_preSwapOp = PSO_NONE;
+    }
 }
 
 CVRViewer::CVRViewer(osg::ArgumentParser& arguments) :
@@ -1143,16 +1167,27 @@ void CVRViewer::renderingTraversals()
 
     for(itr = contexts.begin(); itr != contexts.end(); ++itr)
     {
-        if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
-        {
-            doneMakeCurrentInThisThread = true;
-            makeCurrent(*itr);
-            if(!ComController::instance()->isMaster() || _renderOnMaster)
-            {
-                (*itr)->runOperations();
-            }
-            glFinish();
-        }
+	if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+	{
+	    doneMakeCurrentInThisThread = true;
+	    makeCurrent(*itr);
+	    if(!ComController::instance()->isMaster() || _renderOnMaster)
+	    {
+		(*itr)->runOperations();
+	    }
+	    switch(_preSwapOp)
+	    {
+		case PSO_FINISH:
+		    glFinish();
+		    break;
+		case PSO_FLUSH:
+		    glFlush();
+		    break;
+		case PSO_NONE:
+		default:
+		    break;
+	    }
+	}
     }
 
     if(_endRenderingDispatchBarrier.valid())
@@ -1435,8 +1470,8 @@ void CVRViewer::startThreading()
              proc = (proc - numProcessors) + 1;
              }
              gc->getGraphicsThread()->setProcessorAffinity(proc);*/
-            gc->getGraphicsThread()->setProcessorAffinity(
-                    processNum % numProcessors);
+            //gc->getGraphicsThread()->setProcessorAffinity(
+              //      processNum % numProcessors);
         }
         threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 
@@ -1473,7 +1508,7 @@ void CVRViewer::startThreading()
 	gc->getGraphicsThread()->add(new StatsBeginOperation("Finish begin time"));
 
         // IVL
-        gc->getGraphicsThread()->add(new finishOperation());
+        gc->getGraphicsThread()->add(new PreSwapOperation());
 
 	gc->getGraphicsThread()->add(new StatsEndOperation("Finish begin time","Finish end time","Finish time taken"));
 

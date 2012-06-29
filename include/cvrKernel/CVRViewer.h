@@ -52,6 +52,13 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
                 virtual void update() = 0;
         };
 
+        enum PreSwapOp
+	{
+	    PSO_FINISH = 0,
+	    PSO_FLUSH,
+	    PSO_NONE
+	};
+
         /**
          * @brief Get pointer to static instance of class
          */
@@ -158,6 +165,16 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
             return _invertMouseY;
         }
 
+        PreSwapOp getPreSwapOperation()
+        {
+            return _preSwapOp;
+        }
+
+        void setPreSwapOperation(PreSwapOp pso)
+        {
+            _preSwapOp = pso;
+        }
+
         /**
          * @brief Get a pointer to the CalVR custom stats handler
          */
@@ -243,6 +260,8 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         CullMode _cullMode; ///< viewer culling mode
 
         int _activeMasterScreen; ///< screen the mouse is in on the master node
+
+        PreSwapOp _preSwapOp;
 
         bool _invertMouseY;
 
