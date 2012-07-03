@@ -187,9 +187,13 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         int getNumPerContextFrameStartCallbacks();
         PerContextCallback * getPerContextFrameStartCallback(int callback);
 
-        void addPreContextPreDrawCallback(PerContextCallback * pcc);
+        void addPerContextPreDrawCallback(PerContextCallback * pcc);
         int getNumPerContextPreDrawCallbacks();
         PerContextCallback * getPerContextPreDrawCallback(int callback);
+
+        void addPerContextPostFinishCallback(PerContextCallback * pcc);
+        int getNumPerContextPostFinishCallbacks();
+        PerContextCallback * getPerContextPostFinishCallback(int callback);
     protected:
         virtual ~CVRViewer();
 
@@ -269,6 +273,8 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         std::vector<PerContextCallback*> _addFrameStartCallbacks;
         std::vector<PerContextCallback*> _preDrawCallbacks;
         std::vector<PerContextCallback*> _addPreDrawCallbacks;
+
+        std::vector<PerContextCallback*> _postFinishCallbacks;
 };
 
 /**

@@ -13,6 +13,7 @@
 #include <osgDB/Registry>
 #include <osgUtil/Statistics>
 #include <osgViewer/Renderer>
+#include <OpenThreads/Mutex>
 
 #include <vector>
 #include <iostream>
@@ -45,6 +46,49 @@ struct PreSwapOperation : public osg::Operation
         }
 };
 
+struct OpenGLQueryInitOperation : public osg::Operation
+{
+	OpenGLQueryInitOperation(int context) : osg::Operation("OpenGLQueryInitOperation",false)
+	{
+	    _context = context;
+
+	    if(!_contextLockMap[_context])
+	    {
+		_contextLockMap[_context] = new OpenThreads::Mutex();
+	    }
+	}
+
+	virtual void operator ()(osg::Object* object)
+	{
+	    _contextLockMap[_context]->lock();
+
+	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
+	    if(gc)
+	    {
+		osg::GraphicsContext::Cameras cams = gc->getCameras();
+		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
+		{
+		    if((*it)->getRenderer())
+		    {
+			osgViewer::Renderer * rend = dynamic_cast<osgViewer::Renderer*>((*it)->getRenderer());
+			if(rend)
+			{
+			    rend->initialize(rend->getSceneView(0)->getState());
+			}
+		    }
+		}
+	    }
+
+	    _contextLockMap[_context]->unlock();
+	}
+    protected:
+	int _context;
+	static std::map<int,OpenThreads::Mutex*> _contextLockMap;
+	
+};
+
+std::map<int,OpenThreads::Mutex*> OpenGLQueryInitOperation::_contextLockMap;
+
 struct FrameStartCallbackOperation : public osg::Operation
 {
 	FrameStartCallbackOperation(int context) : osg::Operation("FrameStartCallbackOperation",true)
@@ -76,6 +120,25 @@ struct PreDrawCallbackOperation : public osg::Operation
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPreDrawCallbacks(); i++)
 	    {
 		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context);
+	    }
+	}
+
+    protected:
+	int _context;
+};
+
+struct PostFinishCallbackOperation : public osg::Operation
+{
+	PostFinishCallbackOperation(int context) : osg::Operation("PostFinishCallbackOperation",true)
+	{
+	    _context = context;
+	}
+
+	virtual void operator ()(osg::Object* object)
+	{
+	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPostFinishCallbacks(); i++)
+	    {
+		CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(_context);
 	    }
 	}
 
@@ -1477,6 +1540,8 @@ void CVRViewer::startThreading()
 
         //std::cerr << "Thread Affinity: " << processNum % numProcessors << std::endl;
 
+	gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
+
 	gc->getGraphicsThread()->add(new FrameStartCallbackOperation(gc->getState()->getContextID()));
 
         // add the startRenderingBarrier
@@ -1511,6 +1576,8 @@ void CVRViewer::startThreading()
         gc->getGraphicsThread()->add(new PreSwapOperation());
 
 	gc->getGraphicsThread()->add(new StatsEndOperation("Finish begin time","Finish end time","Finish time taken"));
+
+	gc->getGraphicsThread()->add(new PostFinishCallbackOperation(gc->getState()->getContextID()));
 
         if((_threadingModel == CullDrawThreadPerContext
                 || _threadingModel == CullThreadPerCameraDrawThreadPerContext
@@ -1756,7 +1823,7 @@ PerContextCallback * CVRViewer::getPerContextFrameStartCallback(int callback)
 }
 
 
-void CVRViewer::addPreContextPreDrawCallback(PerContextCallback * pcc)
+void CVRViewer::addPerContextPreDrawCallback(PerContextCallback * pcc)
 {
     if(pcc)
     {
@@ -1774,5 +1841,26 @@ PerContextCallback * CVRViewer::getPerContextPreDrawCallback(int callback)
     if(callback >= 0 && callback < _preDrawCallbacks.size())
     {
 	return _preDrawCallbacks[callback];
+    }
+}
+
+void CVRViewer::addPerContextPostFinishCallback(PerContextCallback * pcc)
+{
+    if(pcc)
+    {
+	_postFinishCallbacks.push_back(pcc);
+    }
+}
+
+int CVRViewer::getNumPerContextPostFinishCallbacks()
+{
+    return _postFinishCallbacks.size();
+}
+
+PerContextCallback * CVRViewer::getPerContextPostFinishCallback(int callback)
+{
+    if(callback >= 0 && callback < _postFinishCallbacks.size())
+    {
+	return _postFinishCallbacks[callback];
     }
 }
