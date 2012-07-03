@@ -46,7 +46,7 @@ struct PreSwapOperation : public osg::Operation
         }
 };
 
-struct OpenGLQueryInitOperation : public osg::Operation
+/*struct OpenGLQueryInitOperation : public osg::Operation
 {
 	OpenGLQueryInitOperation(int context) : osg::Operation("OpenGLQueryInitOperation",false)
 	{
@@ -85,9 +85,9 @@ struct OpenGLQueryInitOperation : public osg::Operation
 	int _context;
 	static std::map<int,OpenThreads::Mutex*> _contextLockMap;
 	
-};
+};*/
 
-std::map<int,OpenThreads::Mutex*> OpenGLQueryInitOperation::_contextLockMap;
+//std::map<int,OpenThreads::Mutex*> OpenGLQueryInitOperation::_contextLockMap;
 
 struct FrameStartCallbackOperation : public osg::Operation
 {
@@ -1540,7 +1540,7 @@ void CVRViewer::startThreading()
 
         //std::cerr << "Thread Affinity: " << processNum % numProcessors << std::endl;
 
-	gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
+	//gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
 
 	gc->getGraphicsThread()->add(new FrameStartCallbackOperation(gc->getState()->getContextID()));
 
