@@ -52,6 +52,7 @@ struct WindowInfo
         bool quadBuffer;            ///< true to enable quad buffered stereo
         osg::GraphicsContext * gc;  ///< osg graphics object for this window
         int contextGroup;
+        int cudaDevice;
 };
 
 /**
@@ -181,6 +182,8 @@ class CVRKERNEL_EXPORT ScreenConfig
          * @brief Get the current eye separation multiplier
          */
         float getEyeSeparationMultiplier();
+
+        int getCudaDevice(int context);
 
     protected:
         virtual ~ScreenConfig();

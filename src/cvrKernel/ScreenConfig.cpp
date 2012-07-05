@@ -207,6 +207,22 @@ float ScreenConfig::getEyeSeparationMultiplier()
     return ScreenBase::_eyeSepMult;
 }
 
+int ScreenConfig::getCudaDevice(int context)
+{
+    for(int i = 0; i < _windowInfoList.size(); i++)
+    {
+	if(_windowInfoList[i]->gc)
+	{
+	    if(_windowInfoList[i]->gc->getState()->getContextID() == context)
+	    {
+		return _windowInfoList[i]->cudaDevice;
+	    }
+	}
+    }
+
+    return 0;
+}
+
 bool ScreenConfig::readPipes()
 {
     // find out how many pipes are specifed
@@ -284,6 +300,7 @@ bool ScreenConfig::readWindows()
                 break;
             }
 	    windowPtr->contextGroup = ConfigManager::getInt("contextGroup",ss.str(),-1);
+	    windowPtr->cudaDevice = ConfigManager::getInt("cudaDevice",ss.str(),0);
             _windowInfoList.push_back(windowPtr);
         }
     }
@@ -457,6 +474,13 @@ bool ScreenConfig::makeWindows()
 
 	if(_windowInfoList[i]->contextGroup >= 0)
 	{
+	    /*if(!contextMap[_windowInfoList[i]->contextGroup])
+	    {
+		contextMap[_windowInfoList[i]->contextGroup] = osg::GraphicsContext::createGraphicsContext(traits);
+	    }
+	    traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
+		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
+		    traits);*/
 	    if(contextMap[_windowInfoList[i]->contextGroup])
 	    {
 		traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
