@@ -1533,8 +1533,8 @@ void CVRViewer::startThreading()
              proc = (proc - numProcessors) + 1;
              }
              gc->getGraphicsThread()->setProcessorAffinity(proc);*/
-            //gc->getGraphicsThread()->setProcessorAffinity(
-              //      processNum % numProcessors);
+            gc->getGraphicsThread()->setProcessorAffinity(
+                    processNum % numProcessors);
         }
         threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 
