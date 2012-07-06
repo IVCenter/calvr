@@ -10,7 +10,7 @@
       <Background r="0.0" g="0.0" b="0.0" /> 
       <MultiThreaded value="CullDrawThreadPerContext" />
       <!-- MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" / -->
-      <!-- MultiThreaded value="SingleThreaded" / -->
+      <!--MultiThreaded value="SingleThreaded" /-->
       <!-- CullingMode value="DEFAULT" / -->
       <MultiSample value="4" />
       <SyncToVBlank value="on" device="DFP-1" />
@@ -48,6 +48,7 @@
 	<ModelLoader value="on" />
 	<PanoView360 value="off" />
         <PanoViewLOD value="on" />
+        <ParticleDreams value="off" />
 
         <Maze value="off" />  <!-- turn off when not testing --> 
         <CaveCAD value="off" />  <!-- turn off when not testing -->
@@ -70,6 +71,9 @@
           <DataDir value="/home/calvr/data/OsgPathRecorder" />
         </OsgPathRecorder>
 
+    <ParticleDreams>
+     <HandID value="0" />
+    </ParticleDreams>
 
     <OsgEarth>
 	<!-- <Earth value="/home/calvr/data/osgearth/SimpleEarth.earth" /> -->
@@ -197,16 +201,16 @@
         </BlackBoxInfo>
 
 	<ModelLoader>
-          <ConfigDir value="/home/calvr/data/ModelLoader/" />
+          <ConfigDir value="/home/calvr/ModelLoader/" />
 	  <Files>
-	    <QaserAlBint path="/home/calvr/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
+	    <QaserAlBint path="/home/calvr/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="0" />
 	    <!--Calit2 path="/home/calvr/data/floorplan/calit2-study2.wrl" mask="1" /-->
 	  <!--  <hammerhead_edit path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_edit.obj" mask="1"/>
 	    <hammerhead_parts_transparent path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts_transparent.obj" mask="1"/> -->
 	    <!--hammerhead_full_color path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_color.obj" mask="1" lights="0" /-->
 	<!--    <hammerhead_parts path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
 	    <hammerhead_full path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
-	    <se_building path="/home/calvr/data/falko/se_building.obj" mask="1" />
+	    <se_building path="/home/calvr/data/falko/se_building.obj" mask="0" />
             <!--<Moebius path="/home/calvr/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
             <ShowCase path="/home/calvr/Showcase.wrl" mask="1" />
             <bearing_and_shearkeys path="/home/calvr/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
@@ -252,7 +256,7 @@
         <PanoViewLOD>
             <ShaderDir value="/home/calvr/data/Pans/PansLOD/glsl/" />
             <FloorOffset value="1193.0" />
-            <ImageSearchPath value="/fastdata/PansLOD:/home/calvr/data/Pans/PansLOD" />
+            <ImageSearchPath value="/home/calvr/localdata/Pans:/fastdata/PansLOD:/home/calvr/data/Pans/PansLOD" />
             <DefaultConfigDir value="/home/calvr/data/Pans/PansLOD/config/" />
             <CacheSize value="2048" />
             <SpinScale value="0.33" />
@@ -261,6 +265,23 @@
             <ReadThreads value="1" />
             <CopyThreads value="6" />
             <Pans>
+                <Al-Balad>
+                    <DA>
+                      <Al-Balad-Blue-Car-DA />
+                      <Al-Balad-Nasif-Day-DA />
+                      <Al-Balad-Nasif-Night-DA />
+                      <Al-Balad-Sami-Office-DA />
+                      <Al-Balad-Screen-Bottles-DA />
+                      <Al-Balad-Sun-Door-DA />
+                      <Al-Balad-Tree-Plaza-DA />
+                      <Al-Balad-DA-Set />
+                    </DA>
+                    <Al-Balad-Center />
+                    <Al-Balad-Nasif-House />
+                    <Al-Balad-Nasif-Tree-Plaza />
+                    <Al-Balad-Sami-Office />
+                    <Al-Balad-Set />
+                </Al-Balad>
                 <Luxor>
                     <LuxorKarnakObelisks />
                     <LuxorMedinetColumnsBlueCeiling />
@@ -287,6 +308,12 @@
                     <UW-Madison-2 />
                     <wiscoSet />
                 </Wisconsin>
+                <Nuzzi>
+                  <Nuzzi-1 />
+                  <Nuzzi-2 />
+                  <Nuzzi-3 />
+                  <NuzziSet />
+                </Nuzzi>
                 <BluebonnetSet />
                 <CineGrid />
                 <KACST-Indoor2 />
@@ -1114,7 +1141,7 @@
   <NumWindows value="1" />
 
   <WindowConfig>
-    <Window width="1024" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" />
+    <Window width="1024" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" cudaDevice="0" />
   </WindowConfig>
 
   <ChannelConfig>
