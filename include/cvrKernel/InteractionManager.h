@@ -160,7 +160,6 @@ class CVRKERNEL_EXPORT InteractionManager
         osg::Matrix _mouseMat; ///< mouse orientation
         int _mouseX; ///< current mouse x position
         int _mouseY; ///< current mouse y position
-        int _mouseHand; ///< hand id to use for mouse events
 
         double _mouseWheelTimeout; ///< time the mouse wheel will stay active without an event
         double _mouseWheelTime; ///< time since last mouse wheel event

@@ -51,16 +51,6 @@ InteractionManager * InteractionManager::instance()
 
 bool InteractionManager::init()
 {
-    _mouseHand = -1;
-    for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
-    {
-        if(TrackingManager::instance()->getHandTrackerType(i)
-                == TrackerBase::MOUSE)
-        {
-            _mouseHand = i;
-            break;
-        }
-    }
     return true;
 }
 
@@ -286,7 +276,7 @@ void InteractionManager::processMouse()
             buttonEvent->setX(_mouseX);
             buttonEvent->setY(_mouseY);
             buttonEvent->setTransform(_mouseMat);
-            buttonEvent->setHand(_mouseHand);
+            buttonEvent->setHand(-1);
             buttonEvent->setMasterScreenNum(
                     CVRViewer::instance()->getActiveMasterScreen());
             _mouseQueue.push(buttonEvent);
@@ -344,7 +334,7 @@ void InteractionManager::createMouseDragEvents(bool single)
 		dEvent->setX(_mouseX);
 		dEvent->setY(_mouseY);
 		dEvent->setTransform(_mouseMat);
-		dEvent->setHand(_mouseHand);
+		dEvent->setHand(-1);
 		dEvent->setMasterScreenNum(
 			CVRViewer::instance()->getActiveMasterScreen());
 		_mouseQueue.push(dEvent);
@@ -385,7 +375,7 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
             dcEvent->setX(_mouseX);
             dcEvent->setY(_mouseY);
             dcEvent->setTransform(_mouseMat);
-            dcEvent->setHand(_mouseHand);
+            dcEvent->setHand(-1);
             dcEvent->setMasterScreenNum(
                     CVRViewer::instance()->getActiveMasterScreen());
             _mouseQueue.push(dcEvent);

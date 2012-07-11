@@ -283,6 +283,7 @@ bool ScreenConfig::readWindows()
                 delete windowPtr;
                 break;
             }
+	    windowPtr->contextGroup = ConfigManager::getInt("contextGroup",ss.str(),-1);
             _windowInfoList.push_back(windowPtr);
         }
     }
@@ -422,6 +423,8 @@ bool ScreenConfig::makeWindows()
     osg::DisplaySettings * ds = osg::DisplaySettings::instance();
     ds->setNumMultiSamples(ConfigManager::getInt("MultiSample",0));
 
+    std::map<int,osg::GraphicsContext*> contextMap;
+
     for(int i = 0; i < _windowInfoList.size(); i++)
     {
         osg::GraphicsContext::Traits * traits = new osg::GraphicsContext::Traits;
@@ -452,8 +455,27 @@ bool ScreenConfig::makeWindows()
             traits->sampleBuffers = 1;
         }
 
-        _windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
-                traits);
+	if(_windowInfoList[i]->contextGroup >= 0)
+	{
+	    if(contextMap[_windowInfoList[i]->contextGroup])
+	    {
+		traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
+		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
+		    traits);
+	    }
+	    else
+	    {
+		traits->sharedContext = NULL;
+		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
+		    traits);
+		contextMap[_windowInfoList[i]->contextGroup] = _windowInfoList[i]->gc;
+	    }
+	}
+	else
+	{
+	    _windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
+		    traits);
+	}
 
         if(!_windowInfoList[i]->gc)
         {

@@ -144,6 +144,27 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         int getNumTrackingSystems();
 
         /**
+         * @brief Get the tracker implementation for a given tracking system number
+         * @return NULL is returned if value is out of range or the system failed
+         * during initialization
+         */
+        TrackerBase * getTrackingSystem(int system);
+
+        /**
+         * @brief Get the system and body for a given hand
+         *
+         * If the hand number is invalid, system and body are set to -1
+         */
+        void getHandAddress(int hand, int & system, int & body);
+
+        /**
+         * @brief Get the system and body for a given head
+         *
+         * If the head number is invalid, system and body are set to -1
+         */
+        void getHeadAddress(int head, int & system, int & body);
+
+        /**
          * @brief Get the tracker type used by the tracking system driving
          * the given hand
          */
@@ -153,6 +174,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          * @brief Get the navigation type to use for a given hand
          */
         Navigation::NavImplementation getHandNavType(int hand);
+
+        int getNumBodies(int system = 0);
 
         /**
          * @brief Returns number of buttons present in a given button station
@@ -168,6 +191,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          * @brief Returns the button mask for a given hand, which is processed from the raw mask(s)
          */
         unsigned int getHandButtonMask(int hand = 0);
+
+        unsigned int getButtonFilter(int hand, int system);
 
         /**
          * @brief Returns the number of valuators in a given valuator station
@@ -188,6 +213,10 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          * @brief Get if head matrix is being updated
          */
         bool getUpdateHeadTracking();
+
+        osg::Matrix getHandTransformFromTrackedBody(int hand, TrackerBase::TrackedBody * body);
+        osg::Matrix getHeadTransformFromTrackedBody(int head, TrackerBase::TrackedBody * body);
+        void getHandButtonFromSystemButton(int system, int systemButton, int & hand, int & handButton);
 
     protected:
         TrackingManager();
@@ -249,10 +278,14 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         void setGenHandDefaultButtonEvents();
 
+        void setHandButtonMaps();
+
         /**
          * @brief Get if a given hand is being updated by the tracking thread
          */
         bool getIsHandThreaded(int hand);
+
+        void printInitDebug();
 
         /**
          * @brief The information associated with a tracking system
@@ -299,6 +332,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         int _numHeads; ///< number of heads in system
         std::vector<std::pair<int,int> > _handAddress; ///< address of each hand - system, index pair
         std::vector<std::pair<int,int> > _headAddress; ///< address of each head - system, index pair
+        std::map<int,std::vector<std::pair<int,int> > > _handButtonAddressMap;
+        std::vector<std::map<int,int> > _handButtonMapping;
 
         int _totalBodies; ///< total number of all tracked bodies in all systems
         int _totalButtons; ///< total number of buttons in all systems

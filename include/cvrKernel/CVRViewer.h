@@ -17,6 +17,7 @@ namespace cvr
 
 struct InteractionEvent;
 struct DefaultUpdate;
+struct PerContextCallback;
 
 class CVRStatsHandler;
 
@@ -50,6 +51,13 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
                  */
                 virtual void update() = 0;
         };
+
+        enum PreSwapOp
+	{
+	    PSO_FINISH = 0,
+	    PSO_FLUSH,
+	    PSO_NONE
+	};
 
         /**
          * @brief Get pointer to static instance of class
@@ -157,6 +165,16 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
             return _invertMouseY;
         }
 
+        PreSwapOp getPreSwapOperation()
+        {
+            return _preSwapOp;
+        }
+
+        void setPreSwapOperation(PreSwapOp pso)
+        {
+            _preSwapOp = pso;
+        }
+
         /**
          * @brief Get a pointer to the CalVR custom stats handler
          */
@@ -164,6 +182,14 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         {
             return _statsHandler;
         }
+
+        void addPerContextFrameStartCallback(PerContextCallback * pcc);
+        int getNumPerContextFrameStartCallbacks();
+        PerContextCallback * getPerContextFrameStartCallback(int callback);
+
+        void addPreContextPreDrawCallback(PerContextCallback * pcc);
+        int getNumPerContextPreDrawCallbacks();
+        PerContextCallback * getPerContextPreDrawCallback(int callback);
     protected:
         virtual ~CVRViewer();
 
@@ -235,7 +261,14 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
 
         int _activeMasterScreen; ///< screen the mouse is in on the master node
 
+        PreSwapOp _preSwapOp;
+
         bool _invertMouseY;
+
+        std::vector<PerContextCallback*> _frameStartCallbacks;
+        std::vector<PerContextCallback*> _addFrameStartCallbacks;
+        std::vector<PerContextCallback*> _preDrawCallbacks;
+        std::vector<PerContextCallback*> _addPreDrawCallbacks;
 };
 
 /**
@@ -247,6 +280,14 @@ struct CVRKERNEL_EXPORT DefaultUpdate : public CVRViewer::UpdateTraversal
 {
     public:
         void update();
+};
+
+struct CVRKERNEL_EXPORT PerContextCallback
+{
+    public:
+        virtual void perContextCallback(int contextid) const
+        {
+        }
 };
 
 /**

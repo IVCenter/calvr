@@ -51,6 +51,7 @@ struct WindowInfo
         bool useCursor;             ///< show mouse cursor in the window
         bool quadBuffer;            ///< true to enable quad buffered stereo
         osg::GraphicsContext * gc;  ///< osg graphics object for this window
+        int contextGroup;
 };
 
 /**

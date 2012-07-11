@@ -6,6 +6,8 @@
 
 #include <cvrInput/TrackerBase.h>
 
+#include <vector>
+
 #define CVR_NUM_MOUSE_BUTTONS 3
 
 namespace cvr
@@ -64,6 +66,12 @@ class TrackerMouse : public cvr::TrackerBase
         TrackedBody _mouseBody; ///< information representing the mouse orientation
         unsigned int _mouseButtonMask; ///< button mask for the mouse
         float _mouseValuator; ///< current value of mouse wheel valuator
+
+        bool _handListInit;
+        std::vector<std::pair<int,int> > _handButtonList;
+        std::vector<bool> _handValidList;
+
+        bool _debug;
 };
 
 /**
