@@ -152,6 +152,8 @@ BubbleMenu::BubbleMenu()
     BubbleMenuGeometry::calibrateTextSize(65.0);
 
 
+
+/*
     std::string server = ConfigManager::getEntry("value", "MenuSystem.BubbleMenu.Sound.Server", "");
     int port = ConfigManager::getInt("value","MenuSystem.BubbleMenu.Sound.Port", 0);
             
@@ -187,6 +189,8 @@ BubbleMenu::BubbleMenu()
         std::cerr << "Could not create whoosh sound!\n";
         _soundEnabled = false;
     }
+
+    */
 }
 
 BubbleMenu::~BubbleMenu()
@@ -488,7 +492,7 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 
                 if (_soundEnabled)
                 {
-                    click->play();
+//                    click->play();
                 }
 
                 return true;
@@ -1305,7 +1309,7 @@ void BubbleMenu::openMenu(BubbleMenuSubMenuGeometry * smg)
 
     if (_soundEnabled)
     {
-        whoosh->play();
+//        whoosh->play();
     }
 
     osg::Vec3 centerPos = osg::Vec3(0, 0, -_subradius*1.5);
@@ -1388,7 +1392,7 @@ void BubbleMenu::closeMenu(SubMenu * menu)
     
     if (_soundEnabled)
     {
-        whoosh->play();
+//        whoosh->play();
     }
 
     // find the geometry corresponding to menu

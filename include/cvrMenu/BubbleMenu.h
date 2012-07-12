@@ -9,8 +9,8 @@
 #include <cvrMenu/BubbleMenu/BubbleMenuSubMenuGeometry.h>
 #include <cvrMenu/BubbleMenu/Lerp.h>
 
-#include "/home/cehughes/Sound/OASClientInterface.h"
-#include "/home/cehughes/Sound/OASSound.h"
+// Sound
+
 
 #include <osg/Vec3>
 #include <osg/MatrixTransform>
@@ -189,7 +189,7 @@ class BubbleMenu : public MenuBase
 
         std::stack<SubMenu*> _openMenus; ///< stack of all currently opened SubMenus
 
-        oasclient::OASSound * click, * whoosh; ///< sound effects
+//        oasclient::OASSound * click, * whoosh; ///< sound effects
 };
 
 }

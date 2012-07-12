@@ -57,11 +57,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BubbleMenu/BubbleMenuSubMenuClosableGeometry.h
     ${HEADER_PATH}/BubbleMenu/BubbleMenuImageGeometry.h
     ${HEADER_PATH}/BubbleMenu/Lerp.h
-    
-    /home/cehughes/Sound/OASSound.h
-    /home/cehughes/Sound/OASClientInterface.h
-
-
 )
 
 SET(LIB_SRC_FILES
@@ -109,10 +104,6 @@ SET(LIB_SRC_FILES
     BubbleMenu/BubbleMenuSubMenuGeometry.cpp
     BubbleMenu/BubbleMenuSubMenuClosableGeometry.cpp
     BubbleMenu/Lerp.cpp
-
-    /home/cehughes/Sound/OASSound.cpp
-    /home/cehughes/Sound/OASClientInterface.cpp
- 
 )
 
 SET(LIB_EXTERNAL_INCLUDES
