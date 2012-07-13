@@ -18,6 +18,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <algorithm>
+#include <locale>
 
 #ifdef WITH_INTERLEAVER
 #include <cvrKernel/ScreenLenticular.h>
@@ -67,6 +69,29 @@ bool ScreenConfig::init()
         //putenv("__GL_SYNC_TO_VBLANK=0");
     }
     putenv(gsyncenv);
+
+    std::string displayenv = getenv("DISPLAY");
+    _displayServer = 0;
+    _displayPipe = 0;
+    if(!displayenv.empty())
+    {
+	size_t pos = displayenv.find_last_of(':');
+	if(pos != std::string::npos)
+	{
+	    char * deptr = &displayenv[pos];
+	    int ret;
+	    if((ret = sscanf(deptr,":%d.%d",&_displayServer,&_displayScreen)) != 2)
+	    {
+		std::cerr << "Warning: Unable to parse DISPLAY variable." << std::endl;
+		_displayServer = _displayScreen = 0;
+	    }
+	    else
+	    {
+		//std::cerr << "Display server: " << _displayServer << " screen: " << _displayScreen << std::endl;
+	    }
+	}
+    }
+    
 
     if(!readPipes() || !readWindows() || !readChannels() || !readScreens())
     {
@@ -253,6 +278,27 @@ bool ScreenConfig::readPipes()
         _pipeInfoList.push_back(pipePtr);
     }
 
+    bool displayPipeFound = false;
+    for(int i = 0; i < _pipeInfoList.size(); i++)
+    {
+	if(_pipeInfoList[i]->server == _displayServer && _pipeInfoList[i]->screen == _displayScreen)
+	{
+	    displayPipeFound = true;
+	    _displayPipe = i;
+	    break;
+	}
+    }
+
+    if(!displayPipeFound)
+    {
+	std::cerr << "Adding DISPLAY pipe" << std::endl;
+	PipeInfo * pi = new PipeInfo;
+	pi->server = _displayServer;
+	pi->screen = _displayScreen;
+	_pipeInfoList.push_back(pi);
+	_displayPipe = _pipeInfoList.size() - 1;
+    }
+
     std::cerr << "Found " << _pipeInfoList.size() << " pipe(s)." << std::endl;
 
     return true;
@@ -286,7 +332,19 @@ bool ScreenConfig::readWindows()
                     ComController::instance()->isMaster() ? true : false);
             windowPtr->quadBuffer = ConfigManager::getBool("quadBuffer",
                     ss.str(),false);
-            int pipeIndex = ConfigManager::getInt("pipeIndex",ss.str(),0);
+
+	    int pipeIndex;
+	    std::string pipe = ConfigManager::getEntry("pipeIndex",ss.str(),"");
+	    std::transform(pipe.begin(),pipe.end(),pipe.begin(),::tolower);
+	    if(pipe == "display")
+	    {
+		pipeIndex = _displayPipe;
+	    }
+	    else
+	    {
+		pipeIndex = ConfigManager::getInt("pipeIndex",ss.str(),0);
+	    }
+
             if(pipeIndex < _pipeInfoList.size())
             {
                 windowPtr->pipeIndex = pipeIndex;

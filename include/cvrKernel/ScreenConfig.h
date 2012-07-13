@@ -200,6 +200,10 @@ class CVRKERNEL_EXPORT ScreenConfig
 
         void syncMasterScreens();
 
+        int _displayServer;
+        int _displayScreen;
+        int _displayPipe;
+
         std::vector<PipeInfo *> _pipeInfoList; ///< list of pipe params from config file
         std::vector<WindowInfo *> _windowInfoList; ///< list of window params from config file
         std::vector<ChannelInfo *> _channelInfoList; ///< list of channel params from config file
