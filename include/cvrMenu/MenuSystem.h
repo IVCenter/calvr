@@ -85,6 +85,9 @@ class CVRMENU_EXPORT MenuSystem : public MenuSystemBase
          */
         virtual void itemDelete(MenuItem * item);
 
+        virtual MenuType getMenuType();
+        virtual bool setFavorites(bool showFav);
+
     protected:
         MenuSystem();
         virtual ~MenuSystem();

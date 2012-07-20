@@ -17,7 +17,8 @@ namespace cvr
 
 enum MenuType
 {
-    BOARDMENU
+    BOARDMENU,
+    BUBBLEMENU
 };
 
 class MenuItem;
