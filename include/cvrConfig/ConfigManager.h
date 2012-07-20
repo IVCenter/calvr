@@ -324,6 +324,7 @@ class CVRCONFIG_EXPORT ConfigManager
 
         static std::vector<ConfigFileReader*> _configFileList; ///< list of all loaded config files
         static std::string _configDir; ///< CalVR config file directory
+        static bool _debugOutput;
 };
 
 /**

@@ -16,6 +16,7 @@ using namespace cvr;
 
 std::vector<ConfigFileReader*> ConfigManager::_configFileList;
 std::string ConfigManager::_configDir;
+bool ConfigManager::_debugOutput = false;
 
 ConfigManager::ConfigManager()
 {
@@ -137,10 +138,10 @@ bool ConfigManager::init()
 	}
     }
 
-    bool debugOutput = getBool("ConfigDebug",false);
+    _debugOutput = getBool("ConfigDebug",false);
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	_configFileList[i]->setDebugOutput(debugOutput);
+	_configFileList[i]->setDebugOutput(_debugOutput);
     }
 
     return true;
@@ -172,19 +173,33 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
 	result = _configFileList[i]->getEntry(attribute,path,def,&wasFound);
 	if(wasFound)
 	{
-	    if(found)
-	    {
-		*found = true;
-	    }
-	    return result;
+	    break;
 	}
     }
 
     if(found)
     {
-	*found = false;
+	*found = wasFound;
     }
-    return def;
+
+    if(wasFound)
+    {
+	if(_debugOutput)
+	{
+	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+		<< result << std::endl;
+	}
+	return result;
+    }
+    else
+    {
+	if(_debugOutput)
+	{
+	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+		<< def << " (default)" << std::endl;
+	}
+	return def;
+    }
 }
 
 std::string ConfigManager::getEntryConcat(std::string attribute, std::string path,
@@ -229,10 +244,20 @@ std::string ConfigManager::getEntryConcat(std::string attribute, std::string pat
 
     if(wasFound)
     {
+	if(_debugOutput)
+	{
+	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+		<< result << std::endl;
+	}
 	return result;
     }
     else
     {
+	if(_debugOutput)
+	{
+	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+		<< def << " (default)" << std::endl;
+	}
 	return def;
     }
 }

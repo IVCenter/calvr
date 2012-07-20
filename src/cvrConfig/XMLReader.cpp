@@ -255,12 +255,12 @@ std::string XMLReader::getEntry(std::string attribute, std::string path,
                             {
                                 *found = true;
                             }
-                            if(_debugOutput)
+                            /*if(_debugOutput)
                             {
                                 std::cerr << "Path: " << path << " Attr: "
                                         << attribute << " value: " << attr
                                         << std::endl;
-                            }
+                            }*/
                             return attr;
                         }
                         else
@@ -307,11 +307,11 @@ std::string XMLReader::getEntry(std::string attribute, std::string path,
     {
         *found = false;
     }
-    if(_debugOutput)
+    /*if(_debugOutput)
     {
         std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
                 << def << " (default)" << std::endl;
-    }
+    }*/
     return def;
 }
 
@@ -450,20 +450,20 @@ std::string XMLReader::getEntryConcat(std::string attribute, std::string path,
 
     if(!wasFound)
     {
-	if(_debugOutput)
+	/*if(_debugOutput)
 	{
 	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
 		<< def << " (default)" << std::endl;
-	}
+	}*/
 	return def;
     }
     else
     {
-	if(_debugOutput)
+	/*if(_debugOutput)
 	{
 	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
 		<< result << std::endl;
-	}
+	}*/
 	return result;
     }
 }

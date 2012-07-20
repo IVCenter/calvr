@@ -852,15 +852,26 @@ void ScreenConfig::syncMasterScreens()
 		cheight = cheight - _screenInfoList[i]->myChannel->bottom;
 		resized = true;
 	    }
+	    else
+	    {
+		cheight = _screenInfoList[i]->myChannel->height;
+	    }
 
 	    if(_screenInfoList[i]->myChannel->left + _screenInfoList[i]->myChannel->width > cwidth)
 	    {
 		cwidth = cwidth - _screenInfoList[i]->myChannel->left;
 		resized = true;
 	    }
+	    else
+	    {
+		cwidth = _screenInfoList[i]->myChannel->width;
+	    }
 
-	    _screenList[i]->viewportResized((int)_screenInfoList[i]->myChannel->left,(int)_screenInfoList[i]->myChannel->bottom,(int)cwidth,(int)cheight);
-	    //std::cerr << "Screen width: " << _screenInfoList[i]->myChannel->width << " height: " << _screenInfoList[i]->myChannel->height << std::endl;
+	    if(resized)
+	    {
+		_screenList[i]->viewportResized((int)_screenInfoList[i]->myChannel->left,(int)_screenInfoList[i]->myChannel->bottom,(int)cwidth,(int)cheight);
+		//std::cerr << "Screen width: " << _screenInfoList[i]->myChannel->width << " height: " << _screenInfoList[i]->myChannel->height << std::endl;
+	    }
 	}
 
         int num = _pipeInfoList.size();
