@@ -3,6 +3,10 @@
 #include <cvrInput/TrackerShmem.h>
 #include <cvrInput/TrackerMouse.h>
 
+#ifdef WITH_OMICRON
+#include <cvrInput/TrackerOmicron.h>
+#endif
+
 #ifdef WITH_VRPN
 #include <cvrInput/TrackerVRPN.h>
 #endif
@@ -149,6 +153,12 @@ bool TrackingManager::init()
             {
                 tracker = new TrackerShmem();
             }
+#ifdef WITH_OMICRON
+	    else if(systemName == "OMICRON")
+	    {
+		tracker = new TrackerOmicron();
+	    }
+#endif
 #ifdef WITH_VRPN
             else if(systemName == "VRPN")
             {
