@@ -1,4 +1,4 @@
-FIND_PATH(OASCLIENT_INCLUDE_DIR OASSound.h
+FIND_PATH(OASCLIENT_INCLUDE_DIR OAS/OASSound.h
   PATHS
   /home/calvr/CalVR/extern_libs/include
   /home/covise/covise/extern_libs/include
