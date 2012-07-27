@@ -9,6 +9,7 @@
 
 #ifdef WITH_VRPN
 #include <cvrInput/TrackerVRPN.h>
+#include <cvrInput/TrackerGyroMouse.h>
 #endif
 
 #include <cvrConfig/ConfigManager.h>
@@ -163,6 +164,10 @@ bool TrackingManager::init()
             else if(systemName == "VRPN")
             {
                 tracker = new TrackerVRPN();
+            }
+	    else if(systemName == "GYROMOUSE")
+            {
+                tracker = new TrackerGyroMouse();
             }
 #endif
             else if(systemName == "MOUSE")
@@ -1209,11 +1214,8 @@ void TrackingManager::updateThreadHandMask()
 
 void TrackingManager::generateButtonEvents()
 {
-    int numEvents;
-    TrackedButtonInteractionEvent * events = NULL;
     if(ComController::instance()->isMaster())
     {
-        std::vector<TrackedButtonInteractionEvent*> eventList;
         for(int j = 0; j < _numHands; j++)
         {
             unsigned int bit = 1;
@@ -1232,8 +1234,21 @@ void TrackingManager::generateButtonEvents()
                 {
                     //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
 
-                    TrackedButtonInteractionEvent * buttonEvent =
-                            new TrackedButtonInteractionEvent();
+		    int system, body;
+		    system = _handAddress[j].first;
+		    body = _handAddress[j].second;
+
+		    TrackedButtonInteractionEvent * buttonEvent = NULL;
+
+		    if(system >= 0 && system < _systems.size() && _systems[system])
+		    {
+			buttonEvent = _systems[system]->getNewBaseEvent(body);
+		    }
+
+		    if(!buttonEvent)
+		    {
+			buttonEvent = new TrackedButtonInteractionEvent();
+		    }
 
                     if((_lastHandButtonMask[j] & bit) && (newMask & bit))
                     {
@@ -1251,48 +1266,12 @@ void TrackingManager::generateButtonEvents()
                     // set current pointer info
                     buttonEvent->setTransform(_handMatList[j]);
                     buttonEvent->setHand(j);
-                    eventList.push_back(buttonEvent);
+		    _eventMap[buttonEvent->getEventType()].push_back(buttonEvent);
                 }
                 bit = bit << 1;
             }
             _lastHandButtonMask[j] = newMask;
         }
-        numEvents = eventList.size();
-        ComController::instance()->sendSlaves(&numEvents,sizeof(int));
-        if(numEvents)
-        {
-            events = new TrackedButtonInteractionEvent[numEvents];
-            for(int i = 0; i < numEvents; i++)
-            {
-                events[i] = *eventList[i];
-                delete eventList[i];
-            }
-            ComController::instance()->sendSlaves(events,
-                    numEvents * sizeof(TrackedButtonInteractionEvent));
-        }
-    }
-    else
-    {
-        ComController::instance()->readMaster(&numEvents,sizeof(int));
-        if(numEvents)
-        {
-            events = new TrackedButtonInteractionEvent[numEvents];
-            ComController::instance()->readMaster(events,
-                    numEvents * sizeof(TrackedButtonInteractionEvent));
-        }
-    }
-
-    TrackedButtonInteractionEvent * ie;
-    for(int i = 0; i < numEvents; i++)
-    {
-        ie = new TrackedButtonInteractionEvent();
-        *ie = events[i];
-        InteractionManager::instance()->addEvent(ie);
-    }
-
-    if(events)
-    {
-        delete[] events;
     }
 }
 
@@ -1313,49 +1292,79 @@ void TrackingManager::generateThreadButtonEvents()
             }
             //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << " bit: " << bit << " " << (newMask & bit) << " " << (_lastButtonMask & bit) << std::endl;
             if((_threadLastHandButtonMask[j] & bit) != (newMask & bit))
-            {
-                buttonEvent = new TrackedButtonInteractionEvent();
-                //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-                if(_threadLastHandButtonMask[j] & bit)
-                {
-                    buttonEvent->setInteraction(BUTTON_UP);
-                }
-                else
-                {
-                    buttonEvent->setInteraction(BUTTON_DOWN);
-                }
-                buttonEvent->setButton(_handButtonMapping[j][i]);
-                // set current pointer info
-                if(getIsHandThreaded(j))
-                {
-                    buttonEvent->setTransform(_threadHandMatList[j]);
-                }
-                else
-                {
-                    buttonEvent->setTransform(_handMatList[j]);
-                }
-                buttonEvent->setHand(j);
-                //_threadEvents.push((InteractionEvent*)buttonEvent);
-                genComTrackEvents->processEvent(buttonEvent);
-            }
+	    {
+		buttonEvent = NULL;
+
+		int system, body;
+		system = _handAddress[j].first;
+		body = _handAddress[j].second;
+
+		if(system >= 0 && system < _systems.size() && _systems[system])
+		{
+		    buttonEvent = _systems[system]->getNewBaseEvent(body);
+		}
+
+		if(!buttonEvent)
+		{
+		    buttonEvent = new TrackedButtonInteractionEvent();
+		}
+
+		//std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
+		if(_threadLastHandButtonMask[j] & bit)
+		{
+		    buttonEvent->setInteraction(BUTTON_UP);
+		}
+		else
+		{
+		    buttonEvent->setInteraction(BUTTON_DOWN);
+		}
+		buttonEvent->setButton(_handButtonMapping[j][i]);
+		// set current pointer info
+		if(getIsHandThreaded(j))
+		{
+		    buttonEvent->setTransform(_threadHandMatList[j]);
+		}
+		else
+		{
+		    buttonEvent->setTransform(_handMatList[j]);
+		}
+		buttonEvent->setHand(j);
+		//_threadEvents.push((InteractionEvent*)buttonEvent);
+		genComTrackEvents->processEvent(buttonEvent);
+	    }
             else if((_threadLastHandButtonMask[j] & bit) && (newMask & bit))
-            {
-                buttonEvent = new TrackedButtonInteractionEvent();
-                buttonEvent->setInteraction(BUTTON_DRAG);
-                buttonEvent->setButton(_handButtonMapping[j][i]);
-                // set current pointer info
-                if(getIsHandThreaded(j))
-                {
-                    buttonEvent->setTransform(_threadHandMatList[j]);
-                }
-                else
-                {
-                    buttonEvent->setTransform(_handMatList[j]);
-                }
-                buttonEvent->setHand(j);
-                //_threadEvents.push((InteractionEvent*)buttonEvent);
-                genComTrackEvents->processEvent(buttonEvent);
-            }
+	    {
+		buttonEvent = NULL;
+
+		int system, body;
+		system = _handAddress[j].first;
+		body = _handAddress[j].second;
+
+		if(system >= 0 && system < _systems.size() && _systems[system])
+		{
+		    buttonEvent = _systems[system]->getNewBaseEvent(body);
+		}
+
+		if(!buttonEvent)
+		{
+		    buttonEvent = new TrackedButtonInteractionEvent();
+		}
+
+		buttonEvent->setInteraction(BUTTON_DRAG);
+		buttonEvent->setButton(_handButtonMapping[j][i]);
+		// set current pointer info
+		if(getIsHandThreaded(j))
+		{
+		    buttonEvent->setTransform(_threadHandMatList[j]);
+		}
+		else
+		{
+		    buttonEvent->setTransform(_handMatList[j]);
+		}
+		buttonEvent->setHand(j);
+		//_threadEvents.push((InteractionEvent*)buttonEvent);
+		genComTrackEvents->processEvent(buttonEvent);
+	    }
             bit = bit << 1;
         }
         _threadLastHandButtonMask[j] = newMask;

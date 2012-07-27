@@ -27,9 +27,16 @@ class VRPN_API vrpn_libusb : public vrpn_Button, public vrpn_Analog
         int _wheelOffset;
         bool _withWheel;
         bool _buttonOffsetSet;
+        bool _withXY;
+        int _xOffset;
+        int _yOffset;
         int _packetSize;
         float * _valLocal;
         int * _buttonLocal;
+
+        int _wheelIndex;
+        int _xIndex;
+        int _yIndex;
 
         struct timeval _lastUpdateTime;
     protected:
@@ -57,6 +64,7 @@ class VRPN_API vrpn_libusb : public vrpn_Button, public vrpn_Analog
         int _numEndpoints;
         int _address;
         float _wheelTimeout;
+        float _xyTimeout;
 
         bool _error;
 

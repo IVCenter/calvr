@@ -856,7 +856,13 @@ void CVRViewer::eventTraversal()
         }
     }
 
+#if OPENSCENEGRAPH_MAJOR_VERSION < 3
     _eventQueue->frame(getFrameStamp()->getReferenceTime());
+#else
+    double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
+    osgGA::EventQueue::Events queueEvents;
+    _eventQueue->takeEvents(queueEvents, cutOffTime);
+#endif
 
     if((_keyEventSetsDone != 0) || _quitEventSetsDone)
     {

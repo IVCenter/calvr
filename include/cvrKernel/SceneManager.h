@@ -44,7 +44,14 @@ class CVRKERNEL_EXPORT SceneManager
         enum PointerGraphicType
         {
             CONE = 0,
-            NONE
+            POINTER,
+            NONE,
+        };
+
+        enum WallType
+        {
+            WT_UNKNOWN = 0,
+            WT_PLANAR 
         };
 
         /**
@@ -204,7 +211,34 @@ class CVRKERNEL_EXPORT SceneManager
         };
 
         CameraCallbacks * getCameraCallbacks(osg::Camera * cam);
+
+        bool getTiledWallValid()
+        {
+            return _wallValid;
+        }
+
+        WallType getTiledWallType()
+        {
+            return _wallType;
+        }
+
+        float getTiledWallWidth()
+        {
+            return _wallWidth;
+        }
+
+        float getTiledWallHeight()
+        {
+            return _wallHeight;
+        }
+
+        const osg::Matrix & getTiledWallTransform()
+        {
+            return _wallTransform;
+        }
         
+        bool getPointOnTiledWall(const osg::Matrix & mat, osg::Vec3 & wallPoint);
+
     protected:
         SceneManager();
 
@@ -212,6 +246,10 @@ class CVRKERNEL_EXPORT SceneManager
         void initLights();
         void initSceneState();
         void initAxis();
+
+        void detectWallBounds();
+        void updateToExtremeCorners(std::vector<float>& corners);
+        void getNodeWorldCorners(std::vector<float>& corners);
 
         void updateActiveObject();
         SceneObject * findChildActiveObject(SceneObject * object,
@@ -254,6 +292,12 @@ class CVRKERNEL_EXPORT SceneManager
         float _menuMinDistance;
         float _menuMaxDistance;
         int _menuDefaultOpenButton;
+
+        WallType _wallType;
+        osg::Matrix _wallTransform;
+        float _wallWidth;
+        float _wallHeight;
+        bool _wallValid;
 };
 
 /**

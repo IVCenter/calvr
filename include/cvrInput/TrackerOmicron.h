@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 namespace cvr
 {
@@ -54,15 +55,24 @@ class TrackerOmicron : public TrackerBase, public omicronConnector::IOmicronConn
         virtual void onEvent(const omicronConnector::EventData& e);
     protected:
         omicronConnector::OmicronConnectorClient * _client;
+        std::string _server;
+        int _port;
+
+        int _numWands;
+        int _numPointers;
+        int _numMocaps;
 
         int _numBodies; ///< number of bodies
         int _numButtons; ///< number of buttons
-        int _numVals; ///< number of valuators
+        int _numValuators; ///< number of valuators
 
-        std::map<unsigned int,std::vector<TrackedBody*> > _bodyMap;
+        std::vector<TrackedBody*> _bodyList;
+        std::map<unsigned int,std::vector<TrackedBody*> > _mocapBodyMap;
 
         unsigned int _buttonMask; ///< current button mask
-        float * _valArray; ///< array of valuator values
+        std::vector<float> _valArray; ///< array of valuator values
+
+        std::map<int,std::list<InteractionEvent*> > * _eventMapPtr;
 };
 
 /**

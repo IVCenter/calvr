@@ -282,23 +282,43 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
         {
-            _point = tie->getTransform().getTrans();
-            osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
-            forward = forward - _point;
-            _normal = forward ^ osg::Vec3(0,0,1.0);
-            _normal.normalize();
+	    if(event->asPointerEvent())
+	    {
+		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),_point);
+	    }
+	    else
+	    {
+		_point = tie->getTransform().getTrans();
+		osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
+		forward = forward - _point;
+		_normal = forward ^ osg::Vec3(0,0,1.0);
+		_normal.normalize();
+	    }
             _lastDistance = 0.0;
             return;
         }
         if(event->getInteraction() == BUTTON_DRAG
                 || event->getInteraction() == BUTTON_UP)
         {
-            MenuRangeValue * mrv = (MenuRangeValue*)_item;
-            osg::Vec3 vec = tie->getTransform().getTrans();
-            vec = vec - _point;
-            float newDistance = vec * _normal;
+	    float newDistance;
+	    float range;
 
-            float range = 600;
+            MenuRangeValue * mrv = (MenuRangeValue*)_item;
+
+	    if(tie->asPointerEvent())
+	    {
+		osg::Vec3 newPoint;
+		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),newPoint);
+		newDistance = newPoint.z() - _point.z();
+		range = SceneManager::instance()->getTiledWallHeight() * 0.6;
+	    }
+	    else
+	    {
+		osg::Vec3 vec = tie->getTransform().getTrans();
+		vec = vec - _point;
+		newDistance = vec * _normal;
+		range = 600;
+	    }
 
             bool valueUpdated = false;
             if(newDistance < _lastDistance)

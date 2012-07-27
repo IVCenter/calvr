@@ -42,6 +42,7 @@ enum InteractionEventType
 {
     TRACKED_BUTTON_INTER_EVENT = 0,
     MOUSE_INTER_EVENT,
+    POINTER_INTER_EVENT,
     VALUATOR_INTER_EVENT,
     KEYBOARD_INTER_EVENT,
     POSITION_INTER_EVENT,
@@ -57,6 +58,7 @@ enum InteractionEventType
 
 class TrackedButtonInteractionEvent;
 class MouseInteractionEvent;
+class PointerInteractionEvent;
 class ValuatorInteractionEvent;
 class KeyboardInteractionEvent;
 class PositionInteractionEvent;
@@ -118,6 +120,11 @@ class InteractionEvent
          * @return NULL is returned if this class can not be cast to a MouseInteractionEvent
          */
         virtual MouseInteractionEvent * asMouseEvent()
+        {
+            return NULL;
+        }
+
+        virtual PointerInteractionEvent * asPointerEvent()
         {
             return NULL;
         }
@@ -346,6 +353,69 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
         int _x; ///< viewport x coord
         int _y; ///< viewport y coord
         int _masterScreenNum; ///< screen on the master when this event was generated
+};
+
+class PointerInteractionEvent : public TrackedButtonInteractionEvent
+{
+    public:
+        enum PointerType
+        {
+            UNKNOWN_POINTER = 0,
+            SAGE_POINTER,
+            TOUCH_POINTER,
+            TABLET_POINTER,
+            GYROMOUSE_POINTER
+        };
+
+        PointerInteractionEvent() :
+                TrackedButtonInteractionEvent(), _x(0.0f), _y(0.0f), _pointerType(UNKNOWN_POINTER)
+        {
+        }
+
+        void setX(float x)
+        {
+            _x = x;
+        }
+
+        float getX()
+        {
+            return _x;
+        }
+
+        void setY(float y)
+        {
+            _y = y;
+        }
+
+        float getY()
+        {
+            return _y;
+        }
+
+        void setPointerType(PointerType pt)
+        {
+            _pointerType = pt;
+        }
+
+        PointerType getPointerType()
+        {
+            return _pointerType;
+        }
+
+        virtual InteractionEventType getEventType()
+        {
+            return POINTER_INTER_EVENT;
+        }
+
+        virtual PointerInteractionEvent * asPointerEvent()
+        {
+            return this;
+        }
+
+    protected:
+        float _x;
+        float _y;
+        PointerType _pointerType;
 };
 
 /**

@@ -7,6 +7,7 @@
 
 #include <cvrKernel/Navigation.h>
 #include <cvrKernel/SceneManager.h>
+#include <cvrKernel/InteractionEvent.h>
 
 #include <osg/Matrix>
 
@@ -14,8 +15,6 @@
 
 namespace cvr
 {
-
-struct InteractionEvent;
 
 /**
  * @addtogroup input cvrInput
@@ -58,6 +57,7 @@ class TrackerBase
         enum TrackerType
         {
             TRACKER = 0,
+            POINTER,
             MOUSE,
             INVALID
         };
@@ -149,6 +149,11 @@ class TrackerBase
         virtual bool genDefaultButtonEvents()
         {
             return true;
+        }
+
+        virtual TrackedButtonInteractionEvent * getNewBaseEvent(int body)
+        {
+            return new TrackedButtonInteractionEvent();
         }
 };
 

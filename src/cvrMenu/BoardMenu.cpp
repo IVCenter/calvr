@@ -193,6 +193,16 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                         m.makeTranslate(menuPoint);
                         _menuRoot->setMatrix(m);
                     }
+		    else if(event->asPointerEvent())
+		    {
+			//TODO add rotation
+			SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),menuPoint);
+			osg::Vec3 menuOffset = osg::Vec3(
+                                _widthMap[_myMenu] / 2.0,0,0);
+                        osg::Matrix m;
+                        m.makeTranslate(menuPoint);
+                        _menuRoot->setMatrix(m);
+		    }
                     else
                     {
                         osg::Vec3 viewerPoint =

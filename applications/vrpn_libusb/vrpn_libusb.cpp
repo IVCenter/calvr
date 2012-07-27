@@ -28,6 +28,14 @@ vrpn_libusb::vrpn_libusb(const char *name, vrpn_Connection *c, std::string confi
     _buttonOffset = 0;
     _context = NULL;
 
+    _withXY = false;
+    _xOffset = -1;
+    _yOffset = -1;
+    _wheelIndex = 0;
+    _xIndex = 0;
+    _yIndex = 0;
+    _xyTimeout = 0.05;
+
     _error = false;
 
     num_buttons = 0;
@@ -41,6 +49,11 @@ vrpn_libusb::vrpn_libusb(const char *name, vrpn_Connection *c, std::string confi
     {
 	_error = true;
 	return;
+    }
+
+    if(_xOffset >= 0 && _yOffset >= 0)
+    {
+	_withXY = true;
     }
 
     if(libusb_init(&_context) < 0)
@@ -175,13 +188,35 @@ vrpn_libusb::vrpn_libusb(const char *name, vrpn_Connection *c, std::string confi
 	}
     }
 
+    int numChannels = 0;
+    int nextIndex = 0;
+
     if(_withWheel)
     {
-	num_channel = 1;
-	_valLocal = new float[1];
-	_valLocal[0] = 0.0;
-	channel[0] = 0.0;
-	last[0] = 0.0;
+	numChannels++;
+	_wheelIndex = nextIndex;
+	nextIndex++;
+    }
+
+    if(_withXY)
+    {
+	numChannels += 2;
+	_xIndex = nextIndex;
+	nextIndex++;
+	_yIndex = nextIndex;
+	nextIndex++;
+    }
+
+    if(numChannels)
+    {
+	num_channel = numChannels;
+	_valLocal = new float[numChannels];
+	for(int i = 0; i < numChannels; i++)
+	{
+	    _valLocal[i] = 0.0;
+	    channel[i] = 0.0;
+	    last[i] = 0.0;
+	}
     }
 
     _packet = new unsigned char[_packetSize];
@@ -258,16 +293,41 @@ void vrpn_libusb::mainloop()
 
     if(_withWheel)
     {
-	if(_valLocal[0] != 0.0)
+	if(_valLocal[_wheelIndex] != 0.0)
 	{
 	    double timeDif = (current_time.tv_sec - _lastUpdateTime.tv_sec) + ((current_time.tv_usec - _lastUpdateTime.tv_usec) / 1000000.0);
 	    //std::cerr << "Time diff: " << timeDif << std::endl;
 	    if(timeDif > _wheelTimeout)
 	    {
-		_valLocal[0] = 0.0;
+		_valLocal[_wheelIndex] = 0.0;
 	    }
 	}
-	channel[0] = _valLocal[0];
+	channel[_wheelIndex] = _valLocal[_wheelIndex];
+    }
+
+    if(_withXY)
+    {
+	if(_valLocal[_xIndex] != 0.0)
+	{
+	    double timeDif = (current_time.tv_sec - _lastUpdateTime.tv_sec) + ((current_time.tv_usec - _lastUpdateTime.tv_usec) / 1000000.0);
+	    //std::cerr << "Time diff: " << timeDif << std::endl;
+	    if(timeDif > _xyTimeout)
+	    {
+		_valLocal[_xIndex] = 0.0;
+	    }
+	}
+	channel[_xIndex] = _valLocal[_xIndex];
+
+	if(_valLocal[_yIndex] != 0.0)
+	{
+	    double timeDif = (current_time.tv_sec - _lastUpdateTime.tv_sec) + ((current_time.tv_usec - _lastUpdateTime.tv_usec) / 1000000.0);
+	    //std::cerr << "Time diff: " << timeDif << std::endl;
+	    if(timeDif > _xyTimeout)
+	    {
+		_valLocal[_yIndex] = 0.0;
+	    }
+	}
+	channel[_yIndex] = _valLocal[_yIndex];
     }
 
     for(int i = 0; i < num_buttons; i++)
@@ -333,6 +393,14 @@ bool vrpn_libusb::loadConfigFile(std::string & configFile)
 	    {
 		_buttonOffsetSet = true;
 		_buttonOffset = value;
+	    }
+	    else if(sscanf(line.c_str(),"xoffset %d",&value) == 1)
+	    {
+		_xOffset = value;
+	    }
+	    else if(sscanf(line.c_str(),"yoffset %d",&value) == 1)
+	    {
+		_yOffset = value;
 	    }
 	    else if(sscanf(line.c_str(),"wheeloffset %d",&value) == 1)
 	    {
@@ -452,6 +520,8 @@ void vrpn_libusb::printConfig()
     std::cerr << "Number of Endpoints: " << _numEndpoints << std::endl;
     std::cerr << "Endpoint Address: " << _address << std::endl;
     std::cerr << "Button Offset: " << _buttonOffset << std::endl;
+    std::cerr << "X Offset: " << _xOffset << std::endl;
+    std::cerr << "Y Offset: " << _yOffset << std::endl;
     std::cerr << "Packet Size: " << _packetSize << std::endl;
     if(_withWheel)
     {
@@ -519,8 +589,15 @@ void transCallback(struct libusb_transfer * transfer)
 		{
 		    val = -1.0;
 		}
-		mc->_valLocal[0] = val;
+		mc->_valLocal[mc->_wheelIndex] = val;
 	    }
+
+	    if(mc->_withXY)
+	    {
+		mc->_valLocal[mc->_xIndex] = (float)((char)(transfer->buffer)[mc->_xOffset]);
+		mc->_valLocal[mc->_yIndex] = (float)((char)(transfer->buffer)[mc->_yOffset]);
+	    }
+
 	    vrpn_gettimeofday(&mc->_lastUpdateTime,NULL);
 	    pthread_mutex_unlock(&mc->_updateLock);
 	}
