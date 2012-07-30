@@ -258,6 +258,7 @@ class NavPointer : public NavImplementationBase
          * @brief Use a hand orientation to create navigation
          */
         void processNav(NavMode nm, osg::Matrix & mat);
+        osg::Vec3 getWallTrackballPoint(osg::Vec3 & wallPoint);
 
         int _eventButton; ///< hand button for event
         NavMode _eventMode; ///< mode for active event

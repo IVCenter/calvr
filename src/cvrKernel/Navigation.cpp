@@ -750,13 +750,17 @@ void NavPointer::processEvent(InteractionEvent * ie)
             case WALK:
             case DRIVE:
             case FLY:
-            case MOVE_WORLD:
             case SCALE:
                 //std::cerr << "Starting event." << std::endl;
-                _eventPos = event->getTransform().getTrans();
+                SceneManager::instance()->getPointOnTiledWall(event->getTransform(),_eventPos);
                 _eventRot = event->getTransform().getRotate();
 		Navigation::instance()->setEventActive(true,_hand);
                 break;
+	    case MOVE_WORLD:
+		 SceneManager::instance()->getPointOnTiledWall(event->getTransform(),_eventPos);
+                _eventPos = getWallTrackballPoint(_eventPos);
+		Navigation::instance()->setEventActive(true,_hand);
+		break;
             case NONE:
             default:
                 break;
@@ -780,7 +784,9 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
         case WALK:
         case DRIVE:
         {
-            osg::Vec3 offset = -(mat.getTrans() - _eventPos) / 10.0;
+	    osg::Vec3 pos, offset;
+	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
+            offset.y() = -(pos.z() - _eventPos.z()) * 50.0 / SceneManager::instance()->getTiledWallHeight();
             offset = offset * Navigation::instance()->getScale();
             osg::Matrix m;
 
@@ -858,40 +864,52 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
             rot.getRotate(angle,vec);
             rot.makeRotate(angle / 20.0,vec);
             rotOffset.makeRotate(rot);
-            osg::Vec3 posOffset = (mat.getTrans() - _eventPos) / 20.0;
-            posOffset = posOffset * Navigation::instance()->getScale();
+            //osg::Vec3 posOffset = (mat.getTrans() - _eventPos) / 20.0;
+            //posOffset = posOffset * Navigation::instance()->getScale();
             osg::Matrix objmat =
                     SceneManager::instance()->getObjectTransform()->getMatrix();
-            objmat = objmat * osg::Matrix::translate(-_eventPos) * rotOffset
-                    * osg::Matrix::translate(_eventPos - posOffset);
+            objmat = objmat * osg::Matrix::translate(-mat.getTrans()) * rotOffset
+                    * osg::Matrix::translate(mat.getTrans());
             SceneManager::instance()->setObjectMatrix(objmat);
             break;
         }
         case MOVE_WORLD:
         {
-            osg::Matrix objmat = _startXForm
-                    * osg::Matrix::translate(-_eventPos)
-                    * osg::Matrix::rotate(_eventRot.inverse()) * mat;
+	    osg::Vec3 pos;
+	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
+	    osg::Vec3 tbPoint = getWallTrackballPoint(pos);
+
+	    osg::Vec3 center = SceneManager::instance()->getTiledWallTransform().getTrans();
+
+	    osg::Matrix rotOffset;
+	    rotOffset.makeRotate(_eventPos,tbPoint);
+
+	    osg::Matrix objmat =
+                    SceneManager::instance()->getObjectTransform()->getMatrix();
+            objmat = objmat * osg::Matrix::translate(-center) * rotOffset
+                    * osg::Matrix::translate(center);
             SceneManager::instance()->setObjectMatrix(objmat);
+	    _eventPos = tbPoint;
             break;
         }
         case SCALE:
         {
-            osg::Vec3 pos = mat.getTrans();
-            float xdiff = pos.x() - _eventPos.x();
-            xdiff = xdiff / 300.0;
+            osg::Vec3 pos;
+	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
+            float zdiff = pos.z() - _eventPos.z();
+            zdiff = zdiff / 300.0;
             float newScale;
             osg::Vec3 objectPos =
                     (_eventPos * osg::Matrix::inverse(_startXForm))
                             / _startScale;
             //std::cerr << "Pos x: " << objectPos.x() << " y: " << objectPos.y() << " z: " << objectPos.z() << std::endl;
-            if(xdiff >= 0)
+            if(zdiff >= 0)
             {
-                newScale = _startScale * (1.0 + xdiff);
+                newScale = _startScale * (1.0 + zdiff);
             }
             else
             {
-                newScale = _startScale / (1.0 + fabs(xdiff));
+                newScale = _startScale / (1.0 + fabs(zdiff));
             }
             SceneManager::instance()->setObjectScale(newScale);
             //std::cerr << "StartScale: " << _startScale << " newScale: " << newScale << std::endl;
@@ -909,6 +927,23 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
         default:
             break;
     }
+}
+
+osg::Vec3 NavPointer::getWallTrackballPoint(osg::Vec3 & wallPoint)
+{
+    float minDim = std::min(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
+    minDim /= 2.0;
+    osg::Matrix wallInv = osg::Matrix::inverse(SceneManager::instance()->getTiledWallTransform());
+    osg::Vec3 point = wallPoint * wallInv;
+    point.x() /= minDim;
+    point.y() = 0.0;
+    point.z() /= minDim;
+
+    point.y() = 1.0 - point.x() * point.x() - point.z() * point.z();
+    point.y() = point.y() > 0.0 ? -sqrt(point.y()) : 0.0;
+    point.normalize();
+
+    return point;
 }
 
 NavMouseKeyboard::NavMouseKeyboard()

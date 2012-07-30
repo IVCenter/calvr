@@ -202,7 +202,12 @@ bool TrackerGyroMouse::init(std::string tag)
     for(int i = 0; i < _numBodies; i++)
     {
         TrackedBody * tb = new TrackedBody;
-        tb->x = tb->y = tb->z = tb->qx = tb->qy = tb->qz = tb->qw = 0.0;
+        tb->x = tb->y = tb->z = 0.0;
+	osg::Quat q;
+	tb->qx = q.x();
+	tb->qy = q.y();
+	tb->qz = q.z();
+	tb->qw = q.w();
         _bodyList.push_back(tb);
 	_matList.push_back(osg::Matrix());
     }
