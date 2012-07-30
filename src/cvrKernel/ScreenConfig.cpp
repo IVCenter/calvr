@@ -70,7 +70,14 @@ bool ScreenConfig::init()
     }
     putenv(gsyncenv);
 
-    std::string displayenv = getenv("DISPLAY");
+    char * displayptr = getenv("DISPLAY");
+    std::string displayenv;
+
+    if(displayptr)
+    {
+	displayenv = displayptr;
+    }
+
     _displayServer = 0;
     _displayPipe = 0;
     if(!displayenv.empty())
