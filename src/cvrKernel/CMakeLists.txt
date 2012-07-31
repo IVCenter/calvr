@@ -36,6 +36,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CVRCullVisitor.h
     ${HEADER_PATH}/ThreadedLoader.h
     ${HEADER_PATH}/SceneObject.h
+    ${HEADER_PATH}/TiledWallSceneObject.h
     ${HEADER_PATH}/InteractionEvent.h
     ${HEADER_PATH}/CVRStatsHandler.h
     ${HEADER_PATH}/Export.h
@@ -90,6 +91,7 @@ SET(LIB_SRC_FILES
     CVRCullVisitor.cpp
     ThreadedLoader.cpp
     SceneObject.cpp
+    TiledWallSceneObject.cpp
     InteractionEvent.cpp
     CVRStatsHandler.cpp
 )

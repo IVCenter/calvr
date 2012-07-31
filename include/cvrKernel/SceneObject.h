@@ -411,7 +411,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
             _activeHand = hand;
         }
         void processMove(osg::Matrix & mat);
-        void moveCleanup();
+        virtual void moveCleanup();
 
         void computeBoundingBox();
 
