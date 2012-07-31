@@ -879,16 +879,21 @@ void SceneManager::detectWallBounds()
 
 	    unsigned int num_corners = num_slaves * FLOATS_FOR_CORNERS;
 	    float* msgs_back = new float[num_corners];
-	    assert(
-		    cvr::ComController::instance()->readSlaves(msgs_back, sizeof(float) *
-			FLOATS_FOR_CORNERS) );
+	    if(!cvr::ComController::instance()->readSlaves(msgs_back, sizeof(float) *
+			FLOATS_FOR_CORNERS) )
+	    {
+		delete[] msgs_back;
+		return;
+	    }
 	    std::vector<float> corners(msgs_back, msgs_back + num_corners);
 	    updateToExtremeCorners(corners);
 	    delete[] msgs_back;
 
-	    assert(
-		    cvr::ComController::instance()->sendSlaves(corners.data(),
-			sizeof(float)*corners.size()) );
+	    if(!cvr::ComController::instance()->sendSlaves(corners.data(),
+			sizeof(float)*corners.size()) )
+	    {
+		return;
+	    }
 
 	    final_bl = osg::Vec3(corners[ 0], corners[ 1], corners[ 2]);
 	    final_br = osg::Vec3(corners[ 3], corners[ 4], corners[ 5]);
@@ -903,15 +908,19 @@ void SceneManager::detectWallBounds()
 
 	    getNodeWorldCorners(corners);
 
-	    assert(
-		    cvr::ComController::instance()->sendMaster(corners.data(),
-			sizeof(float)*corners.size()) );
+	    if(!cvr::ComController::instance()->sendMaster(corners.data(),
+			sizeof(float)*corners.size()) )
+	    {
+		return;
+	    }
 
 	    // Receive final extremes from master
 	    float msgs_back[FLOATS_FOR_CORNERS];
-	    assert(
-		    cvr::ComController::instance()->readMaster(msgs_back,
-			sizeof(float) * FLOATS_FOR_CORNERS) );
+	    if(!cvr::ComController::instance()->readMaster(msgs_back,
+			sizeof(float) * FLOATS_FOR_CORNERS) )
+	    {
+		return;
+	    }
 
 	    final_bl = osg::Vec3(msgs_back[ 0], msgs_back[ 1], msgs_back[ 2]);
 	    final_br = osg::Vec3(msgs_back[ 3], msgs_back[ 4], msgs_back[ 5]);
