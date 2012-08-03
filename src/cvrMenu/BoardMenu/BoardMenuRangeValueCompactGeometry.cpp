@@ -67,8 +67,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
             osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(geo);
 
-    //TODO create icon
-    //_rvIcon = loadIcon("greater.rgb");
+    _rvIcon = loadIcon("left-right.rgb");
 
     if(_rvIcon)
     {

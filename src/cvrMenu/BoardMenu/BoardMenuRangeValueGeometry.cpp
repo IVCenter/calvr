@@ -71,6 +71,15 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
             osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(geo);
 
+    _rvIcon = loadIcon("left-right.rgb");
+
+    if(_rvIcon)
+    {
+        osg::StateSet * stateset = geo->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0,_rvIcon,
+                osg::StateAttribute::ON);
+    }
+
     MenuRangeValue * mrv = (MenuRangeValue*)item;
 
     const char * printstr;
