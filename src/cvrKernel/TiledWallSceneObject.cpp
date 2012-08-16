@@ -8,6 +8,7 @@ TiledWallSceneObject::TiledWallSceneObject(std::string name, bool navigation, bo
                 bool contextMenu, bool showBounds) : SceneObject(name,false,movable,clip,contextMenu,showBounds)
 {
     // set default center to tiled wall?
+    _tiledWallMovement = true;
 }
 
 TiledWallSceneObject::~TiledWallSceneObject()
@@ -92,7 +93,7 @@ bool TiledWallSceneObject::processEvent(InteractionEvent * ie)
 
 		    if(linePlaneIntersectionRef(lineP1,lineP2,planePoint,planeNormal,intersect,w))
 		    {
-			osg::Vec3 soPoint = _movePoint * _parent->getObjectToWorldMatrix();
+			osg::Vec3 soPoint = _movePoint * getTransform();
 			osg::Matrix m;
 			m.makeTranslate(intersect - soPoint);
 			setTransform(getTransform() * m);
