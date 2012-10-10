@@ -316,6 +316,7 @@ class CVRCOLLAB_EXPORT CollaborativeManager
         osg::ref_ptr<osg::MatrixTransform> _collabRoot; ///< root of all collaborative geometry
         std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHands; ///< transforms for each hand geometry in the session
         std::map<int,std::vector<osg::ref_ptr<osg::MatrixTransform> > > _collabHeads; ///< transforms for each head geometry in the session
+        osg::ref_ptr<osg::Node> _headModelNode;
 
         std::queue<std::pair<CollaborativeMessageHeader,char*> > _messageQueue; ///< queue of collaborative messages to send
 };

@@ -1,11 +1,13 @@
 #include <cvrCollaborative/CollaborativeManager.h>
 #include <cvrCollaborative/CollaborativeThread.h>
+#include <cvrConfig/ConfigManager.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/PluginManager.h>
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/CalVR.h>
 #include <cvrUtil/CVRSocket.h>
+#include <cvrUtil/ComputeBoundingBoxVisitor.h>
 
 #include <iostream>
 #include <cstring>
@@ -13,6 +15,7 @@
 #include <osg/Matrix>
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
+#include <osgDB/ReadFile>
 
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
@@ -988,13 +991,69 @@ osg::Node * CollaborativeManager::makeHand(int num)
 
 osg::Node * CollaborativeManager::makeHead(int num)
 {
-    osg::Cone * cone = new osg::Cone(osg::Vec3(0,0,0),50,200);
-    osg::Quat q = osg::Quat(-M_PI / 2.0,osg::Vec3(1.0,0,0));
-    cone->setRotation(q);
-    osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
-    osg::Geode * geode = new osg::Geode();
-    geode->addDrawable(sd);
-    return geode;
+    if(!_headModelNode)
+    {
+	std::string headGraphic = ConfigManager::getEntry("type","Collaborative.HeadGraphic","CONE");
+
+	if(headGraphic == "MODEL")
+	{
+	    std::string modelFile = ConfigManager::getEntry("file","Collaborative.HeadGraphic","");
+
+	    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(modelFile);
+	    if(model)
+	    {
+		float scale = 1.0;
+		osg::Vec3 center;
+		bool autoAdjust = ConfigManager::getBool("autoAdjust","Collaborative.HeadGraphic",true);
+		if(autoAdjust)
+		{
+		    ComputeBoundingBoxVisitor cbb;
+		    model->accept(cbb);
+		    osg::BoundingBox bb = cbb.getBound();
+		    center.x() = bb.xMin() + (bb.xMax() - bb.xMin()) * 0.5;
+		    center.y() = bb.yMin() + (bb.yMax() - bb.yMin()) * 0.5;
+		    center.z() = bb.zMin() + (bb.zMax() - bb.zMin()) * 0.5;
+
+		    scale = std::min(250.0 / (bb.xMax() - bb.xMin()), 250.0 / (bb.yMax() - bb.yMin()));
+		    scale = std::min((double)scale,250.0 / (bb.zMax() - bb.zMin()));
+		}
+		else
+		{
+		    scale = ConfigManager::getFloat("scale","Collaborative.HeadGraphic",1.0);
+		    center = ConfigManager::getVec3("Collaborative.HeadGraphic");
+		}
+
+		osg::Matrix offsetScale;
+		offsetScale.makeTranslate(-center);
+		offsetScale = offsetScale * osg::Matrix::scale(osg::Vec3(scale,scale,scale));
+
+		static const float DEG_2_RAD = M_PI / 180.0;
+		float h,p,r;
+		h = ConfigManager::getFloat("h","Collaborative.HeadGraphic",0.0);
+		p = ConfigManager::getFloat("p","Collaborative.HeadGraphic",0.0);
+		r = ConfigManager::getFloat("r","Collaborative.HeadGraphic",0.0);
+
+		osg::MatrixTransform * mt = new osg::MatrixTransform();
+		osg::Matrix m;
+		m.makeRotate(r*DEG_2_RAD,osg::Vec3(0,1,0),p*DEG_2_RAD,osg::Vec3(1,0,0),h*DEG_2_RAD,osg::Vec3(0,0,1));
+		mt->setMatrix(offsetScale * m);
+		mt->addChild(model);
+		_headModelNode = mt;
+	    }
+	}
+
+	if(!_headModelNode)
+	{
+	    osg::Cone * cone = new osg::Cone(osg::Vec3(0,0,0),50,200);
+	    osg::Quat q = osg::Quat(-M_PI / 2.0,osg::Vec3(1.0,0,0));
+	    cone->setRotation(q);
+	    osg::ShapeDrawable * sd = new osg::ShapeDrawable(cone);
+	    osg::Geode * geode = new osg::Geode();
+	    geode->addDrawable(sd);
+	    _headModelNode = geode;
+	}
+    }
+    return _headModelNode.get();
 }
 
 void CollaborativeManager::processMessage(CollaborativeMessageHeader & cmh,
