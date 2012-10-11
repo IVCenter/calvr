@@ -21,10 +21,9 @@
     </CUI>
 
       <Background r="0.0" g="0.0" b="0.0" />
-      <MultiThreaded value="CullDrawThreadPerContext" /> -->
-      <!-- <MultiThreaded value="SingleThreaded" /> -->
-      <!-- <CullingMode value="CALVR" /> -->
-      <CullingMode value="DEFAULT" />
+      <MultiThreaded value="CullDrawThreadPerContext" />
+      <!-- MultiThreaded value="SingleThreaded" / -->
+      <CullingMode value="CALVR" />
       <SyncToVBlank value="on" device="DFP-1" />
       <FloorHeight value="-1663" />
       <Near value="100" />
@@ -58,10 +57,10 @@
         <Marker value="off" />
         <Image value="off" /> <!-- DO NOT ENABLE ME -->
         <AirCurrents value="off" />
-        <StructView value="off" />
+        <StructView value="on" />
         <CCDBVR value="off" />
         <EQVis value="off" />
-	<Sketch value="on" />
+	<Sketch value="off" />
         <FloorPlan value="off" /> <!-- Turn on Calit2HallwaySound for audio demo -->
 	<Collaborative>
 	  <Server value="127.0.0.1" />
@@ -69,7 +68,7 @@
 	</Collaborative>
         <PointStream value="off" />
 	<ModelLoader value="on" />
-	<PanoView360 value="on" />
+	<PanoView360 value="off" />
 	<PanoViewLOD value="on" />
         <FileBrowser value="off" />
         <directFEA value="off" />
@@ -83,7 +82,6 @@
         <Calit2HallwaySound value="off" /> <!-- Turn on FloorPlan -->
 	<Sound_Medical value="off"/> <!-- Turn on CaveCAD -->
 	<!-- run opencover ~/data/JacobsHospital/JacobsHospitalRemodel.WRL -->
-        <GreenLight value="on" />
 <!-- Plugins not ready for demos: -->
       	<AudioAssetManagerCtrl value="off" /> <!-- Keep it OFF -->
         <TelePresence value="off" />
@@ -103,6 +101,29 @@
                 <ServerPort value="8084" />
 
 	</CaveCAD>
+	
+	    <CaveCADBeta value="off" />
+	    <CaveCADBeta>
+                <AudioServer value="off" />
+                <AudioServerAddress value="137.110.116.10" />
+                <AudioServerPort value="15003" />
+                <DataDir value="/home/covise/data/CaveCADBeta" />
+        </CaveCADBeta>
+        
+        <Maze2 value="off" />
+    <Maze2>
+			<DataDir value="/home/covise/data/maze2" />
+			<AudioServer value="on" />
+			<AudioServerAddress value="137.110.116.10" />
+			<AudioServerPort value="15003" />
+			
+			 <EOGDataServerAddress value="128.54.50.144" />
+       <EOGDataServerPort value="8084" />
+
+	</Maze2>
+		
+	<SpaceTraveler value="off" />
+		
         <PhotosynthVR value="off" />
         <GridPointCloudLoader value="off" />
         <HPWRENViewer value="off" />
@@ -113,7 +134,8 @@
 	<BlackBoxInfo value="off" />
 	<GML value="off" />
         <Point value="off" />
-        <ArtifactVis value="on" />
+	<ArchField value="off" />
+        <ArtifactVis value="off" />
         <LocationTracker value="off" />
         <MipMapVideo value="off" /> 
 	<TomsBirthday value="off" />
@@ -157,8 +179,6 @@
 	    <!-- <ColorTable value="/home/pweber/extern_libs/CVRPlugins/calit2/D3plot/shaders/red.rgb" /> -->
 	</D3plot>
 
-	<CollaborativePlugin value="off" />
-
         <Sketch>
           <ColorSelector x="0" y="1200" z="-150" />
 	</Sketch>
@@ -176,8 +196,8 @@
 	   <DataDir value="/home/covise/data/OsgPathRecorder" />
 	</OsgPathRecorder>
 
-        <CollaborativePlugin>
-	  <Server value="starcave.ucsd.edu" />
+  <CollaborativePlugin>
+	  <Server value="nexcave.ucsd.edu" />
 	  <Port value="11050" />
 	</CollaborativePlugin>
 
@@ -238,6 +258,10 @@
           <TempDir value="/home/covise/plugins/calit2/HMI/temp/" />
           <Datafile value="/home/covise/plugins/calit2/HMI/dir.out" />
         </HMI>
+
+	<OsgEarth>
+	    <Earth value="/data/data/osgEarth/test.earth" />
+	</OsgEarth>
 
         <GreenLight>
           <Components textureDir="/home/covise/data/GreenLight/maps/">
@@ -380,7 +404,8 @@
         <PanoViewLOD>
             <ShaderDir value="/home/covise/data/PansLOD/glsl/" />
             <FloorOffset value="1500.0" />
-            <ImageSearchPath value="/state/partition1/data/pan:/home/covise/data/PansLOD" />
+            <!-- <ImageSearchPath value="/state/partition1/data/pan:/home/covise/data/PansLOD" /> -->
+            <ImageSearchPath value="/data-local/PansLOD:/home/covise/data/PansLOD" />
             <DefaultConfigDir value="/home/covise/data/PansLOD/config/" />
 	    <SpinValuator value="0" />
 	    <ZoomValuator value="3" />
@@ -414,6 +439,13 @@
                 </Wisconsin>
                 <BluebonnetSet />
 		<CineGrid />
+		<KACST-Indoor2 />
+		<KACST-Outdoor1 />
+		<Curiosity />
+		<Gallery_Drones />
+		<Dr-Seuss />
+		<Taif-Set />
+		<SaudiCopperMine-Set />
             </Pans>
         </PanoViewLOD>
 
@@ -502,19 +534,38 @@
           </Files>
         </PanoView360>
 
-        <ArtifactVis>
-          <Database value="/home/covise/data/ArtifactVis/artifactslist.txt" />
+        <ArchField>
 	  <ArchInterfaceFolder value="/home/covise/ArchInterface/" />
-	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
 	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-	  <DCInfoFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
-	  <LociFile value="/home/covise/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
-	   <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
-          <MaxVisibleRange value="1000000000.0" />
-          <Offset>
+	  <LociFile value="/home/covise/CVRPlugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <Offset>
             <X value="-304670000.000"/>
             <Y value="1450800.00" />
             <Z value="-354990000.00" />
+          </Offset>
+	  <Tessellation value=".2" />
+          <ArtifactPanel x="-500" y="1250" />
+	  <SelectionStatsPanel x="500" y="1300" />
+	</ArchField>
+
+        <ArtifactVis>
+          <Database value="/home/covise/data/ArtifactVis/artifactslist.txt" />
+	  <!--ArchInterfaceFolder value="/home/covise/ArchInterface/" /-->
+	  <TopoFile value="/home/covise/data/kyle/3d-model/Ken3dv3.wrl" />
+	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+	  <DCInfoFile value="/home/covise/CVRPlugins/calit2/ArtifactVis/DCCategories.txt" />
+	  <LociFile value="/home/covise/CVRPlugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+          <!--MaxVisibleRange value="1000000000.0" /-->
+          <!--Offset>
+            <X value="-304670000.000"/>
+            <Y value="1450800.00" />
+            <Z value="-354990000.00" />
+          </Offset-->
+	  <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
           </Offset>
           <Site>
             <Longitude value="35.491239" />
@@ -1120,21 +1171,18 @@
 
     <MultiPC>
      <SyncMode value="TCP" />
-     <NumSlaves value="5" />   <!-- use 5 for all Xpol machines -->
-     <MasterInterface value="10.1.1.1" port="11011" />
+     <NumSlaves value="9" />   <!-- use 9 for all Xpol machines -->
+     <MasterInterface value="67.58.38.17" port="11011" />
      <CleanupScript value="tentakel killall -9 CalVR" />
-     <!--
-     <Startup arch="x11" value="ssh ${USER}@tile-0-0 CalVR \>\&amp; /tmp/errors.log" name="0" />
-     <Startup arch="x11" value="ssh ${USER}@tile-0-1 CalVR \>\&amp; /tmp/errors.log" name="1" />
-     <Startup arch="x11" value="ssh ${USER}@tile-0-2 CalVR \>\&amp; /tmp/errors.log" name="2" />
-     <Startup arch="x11" value="ssh ${USER}@tile-1-0 CalVR \>\&amp; /tmp/errors.log" name="3" />
-     <Startup arch="x11" value="ssh ${USER}@tile-1-1 CalVR \>\&amp; /tmp/errors.log" name="4" />
-     -->
-     <Startup arch="x11" value="ssh ${USER}@tile-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
-     <Startup arch="x11" value="ssh ${USER}@tile-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
-     <Startup arch="x11" value="ssh ${USER}@tile-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
-     <Startup arch="x11" value="ssh ${USER}@tile-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
-     <Startup arch="x11" value="ssh ${USER}@tile-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
+     <Startup arch="x11" value="ssh ${USER}@nexcave-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-1-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="5" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="6" />
+     <Startup arch="x11" value="ssh ${USER}@nexcave-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="7" />\
+     <Startup arch="x11" value="ssh ${USER}@nexcave-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="8" />
     </MultiPC>
  
     <Stereo enable="ON" value="ON" />
@@ -1220,7 +1268,7 @@
 	<NumBodies value="2" />
       </VRPN>
 
-      <Joystick value="false" />
+      <Joystick value="true" />
       <NumSensors value="3" />
 
       <TrackingSystem>
@@ -1389,7 +1437,7 @@
 
  </GLOBAL>
 
- <LOCAL host="calit2-137-110-111-71.ucsd.edu" >
+ <LOCAL host="nexcave" >
    <NumPipes value="1" />
    <NumScreens value="1" />
    <NumWindows value="1" />
@@ -1415,7 +1463,8 @@
  <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-sbs.xml</INCLUDE>-->
  <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-new.xml</INCLUDE>-->
 
-<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile.xml</INCLUDE>
+<!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile.xml</INCLUDE>-->
+<INCLUDE global="1" configname="xpolinter">xpol-17screen.xml</INCLUDE>
 <!--INCLUDE global="1" configname="xpolinter">xpol-john.xml</INCLUDE-->
 
 <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile-multi.xml</INCLUDE>-->
