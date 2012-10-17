@@ -100,13 +100,6 @@ bool SceneManager::init()
     _hidePointer = false;
     _menuOpenObject = NULL;
 
-    bool b = ConfigManager::getBool("ShowAxis",false);
-
-    setAxis(b);
-
-    b = ConfigManager::getBool("HidePointer",false);
-    setHidePointer(b);
-
     _menuScale = ConfigManager::getFloat("value","ContextMenus.Scale",1.0);
     _menuMinDistance = ConfigManager::getFloat("value",
             "ContextMenus.MinDistance",750.0);
@@ -152,6 +145,13 @@ bool SceneManager::init()
     initLights();
     initSceneState();
     initAxis();
+
+    bool b = ConfigManager::getBool("ShowAxis",false);
+
+    setAxis(b);
+
+    b = ConfigManager::getBool("HidePointer",false);
+    setHidePointer(b);
 
     return true;
 }
