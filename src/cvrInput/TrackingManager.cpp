@@ -1753,8 +1753,8 @@ void TrackingManager::setHandButtonMaps()
 		     break;
 		 }
 	     }
+	     mask = mask << 1;
 	 }
-	 mask = mask << 1;
     }
 
     for(int i = 0; i < _numHands; i++)
@@ -1862,8 +1862,8 @@ void TrackingManager::printInitDebug()
 		     break;
 		 }
 	     }
+	     mask = mask << 1;
 	 }
-	 mask = mask << 1;
     }
 
     std::cerr << std::endl << "Num Hands: " << _numHands << std::endl;
