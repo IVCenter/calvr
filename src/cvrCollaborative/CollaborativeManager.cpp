@@ -136,6 +136,7 @@ bool CollaborativeManager::connect(std::string host, int port)
         }
 
         //gethostname(cii.name, 254);
+	cii.name[255] = '\0';
         strncpy(cii.name,CalVR::instance()->getHostName().c_str(),254);
         cii.numHeads = TrackingManager::instance()->getNumHeads();
         cii.numHands = TrackingManager::instance()->getNumHands();

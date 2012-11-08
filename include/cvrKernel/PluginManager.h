@@ -81,6 +81,8 @@ class CVRKERNEL_EXPORT PluginManager
          */
         CVRPlugin * getPlugin(std::string plugin);
 
+        std::string getPluginName(CVRPlugin * plugin);
+
         /**
          * @brief Returns if the plugin with the given name is on
          */

@@ -72,7 +72,42 @@ void ScreenBase::defaultCameraInit(osg::Camera * cam)
 
 osg::Matrix & ScreenBase::getCurrentHeadMatrix(int head)
 {
-    return TrackingManager::instance()->getHeadMat(head);
+    // for ref return, single threaded, ok but not ideal
+    static osg::Matrix omniMat;
+
+    if(!_omniStereo)
+    {
+	return TrackingManager::instance()->getHeadMat(head);
+    }
+    else
+    {
+	osg::Vec3d headDir;
+	headDir = _myInfo->xyz - TrackingManager::instance()->getHeadMat(head).getTrans();
+	headDir.normalize();
+
+	osg::Vec3d headingDir = headDir;
+	headingDir.z() = 0.0;
+	headingDir.normalize();
+	osg::Vec3d pitchDir = headDir;
+	pitchDir.x() = 0.0;
+	pitchDir.normalize();
+
+	omniMat = osg::Matrix::identity();
+	// check if pitch is valid
+	if(pitchDir.length2() > 0.8)
+	{
+	    omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),pitchDir);
+	}
+
+	if(headingDir.length2() > 0.8)
+	{
+	    omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),headingDir);
+	}
+
+	omniMat *= osg::Matrix::translate(TrackingManager::instance()->getHeadMat(head).getTrans());
+
+	return omniMat;
+    }
 }
 
 osg::Vec3d ScreenBase::defaultLeftEye(int head)

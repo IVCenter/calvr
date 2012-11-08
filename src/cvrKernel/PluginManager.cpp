@@ -224,6 +224,18 @@ bool PluginManager::getPluginLoaded(std::string plugin)
     return _pluginMap[plugin];
 }
 
+std::string PluginManager::getPluginName(CVRPlugin * plugin)
+{
+    for(int i = 0; i < _loadedPluginList.size(); ++i)
+    {
+	if(_loadedPluginList[i]->ptr == plugin)
+	{
+	    return _loadedPluginList[i]->name;
+	}
+    }
+    return "";
+}
+
 std::vector<std::string> PluginManager::getLoadedPluginList()
 {
     std::vector<std::string> pluginList;

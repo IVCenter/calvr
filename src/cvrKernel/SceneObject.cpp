@@ -414,6 +414,7 @@ void SceneObject::removeChild(SceneObject * so)
     {
         if((*it) == so)
         {
+	    SceneManager::instance()->removeNestedObject(*it);
             (*it)->_parent = NULL;
             _childrenObjects.erase(it);
             break;
@@ -656,7 +657,12 @@ bool SceneObject::processEvent(InteractionEvent * ie)
                     viewerDir.z() = 0.0;
 
                     osg::Matrix menuRot;
-                    menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+
+		    // point towards viewer if not on tiled wall
+		    if(!ie->asPointerEvent())
+		    {
+			menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+		    }
 
                     osg::Matrix m;
                     m.makeTranslate(menuPoint);

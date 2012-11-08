@@ -254,6 +254,7 @@ class CVRKERNEL_EXPORT SceneManager
         void updateActiveObject();
         SceneObject * findChildActiveObject(SceneObject * object,
                 osg::Vec3 & start, osg::Vec3 & end);
+        void removeNestedObject(SceneObject * object);
         void removePluginObjects(CVRPlugin * plugin);
 
         void preDraw();
@@ -286,6 +287,8 @@ class CVRKERNEL_EXPORT SceneManager
         SceneObject * _menuOpenObject; ///< object with an open menu
         std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
         std::map<SceneObject*,int> _uniqueActiveObjects;
+        std::map<SceneObject*,bool> _uniqueBlacklistMap;
+        bool _uniqueMapInUse;
         std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
 
         float _menuScale;

@@ -7,6 +7,7 @@
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/SceneObject.h>
+#include <cvrKernel/PluginManager.h>
 #include <cvrUtil/OsgMath.h>
 
 #include <osg/ShapeDrawable>
@@ -42,6 +43,7 @@ SceneManager * SceneManager::_myPtr = NULL;
 SceneManager::SceneManager()
 {
     _wallValid = false;
+    _uniqueMapInUse = false;
 }
 
 SceneManager::~SceneManager()
@@ -236,16 +238,8 @@ void SceneManager::postEventUpdate()
 	    SceneObject * object = it->second;
 	    while(object)
 	    {
-		if(it->first >= 0)
-		{
-		    object->updateCallback(it->first,
-			    TrackingManager::instance()->getHandMat(it->first));
-		}
-		else
-		{
-		    object->updateCallback(it->first,
-			    InteractionManager::instance()->getMouseMat());
-		}
+		object->updateCallback(it->first,
+			TrackingManager::instance()->getHandMat(it->first));
 		object = object->_parent;
 	    }
         }
@@ -414,16 +408,38 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     }
     else
     {
-        for(std::map<SceneObject*,int>::iterator it =
-                _uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end();
-                it++)
-        {
-            if(it->first->processEvent(ie))
-            {
-                return true;
-            }
-        }
-        return false;
+	_uniqueMapInUse = true;
+	for(std::map<SceneObject*,int>::iterator it =
+		_uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end();
+		it++)
+	{
+	    if(_uniqueBlacklistMap.find(it->first) != _uniqueBlacklistMap.end())
+	    {
+		continue;
+	    }
+
+	    if(it->first->processEvent(ie))
+	    {
+		_uniqueMapInUse = false;
+
+		for(std::map<SceneObject*,bool>::iterator it = _uniqueBlacklistMap.begin(); it != _uniqueBlacklistMap.end(); it++)
+		{
+		    _uniqueActiveObjects.erase(it->first);
+		}
+		_uniqueBlacklistMap.clear();
+
+		return true;
+	    }
+	}
+
+	for(std::map<SceneObject*,bool>::iterator it = _uniqueBlacklistMap.begin(); it != _uniqueBlacklistMap.end(); it++)
+	{
+	    _uniqueActiveObjects.erase(it->first);
+	}
+	_uniqueBlacklistMap.clear();
+
+	_uniqueMapInUse = false;
+	return false;
     }
 
     if(hand == -2)
@@ -481,12 +497,40 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
                         _activeObjects.begin(); aobjit != _activeObjects.end();
                         aobjit++)
                 {
-                    if(aobjit->second == object)
+		    SceneObject * aoRoot = aobjit->second;
+		    while(aoRoot && aoRoot->_parent)
+		    {
+			aoRoot = aoRoot->_parent;
+		    }
+
+                    if(aoRoot == object)
                     {
                         aobjit->second = NULL;
                     }
                 }
-                _uniqueActiveObjects.erase(object);
+
+		// close menu if needed
+		SceneObject * menuSORoot = _menuOpenObject;
+		while(menuSORoot && menuSORoot->_parent)
+		{
+		    menuSORoot = menuSORoot->_parent;
+		}
+
+		if(menuSORoot == object)
+		{
+		    closeOpenObjectMenu();
+		}
+
+		// if this happened during the SceneManager's processEvent, don't invalidate iterator
+		if(!_uniqueMapInUse)
+		{
+		    _uniqueActiveObjects.erase(object);
+		}
+		else
+		{
+		    _uniqueBlacklistMap[object] = true;
+		}
+
                 object->setRegistered(false);
                 return;
             }
@@ -1325,9 +1369,56 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
     return object;
 }
 
+void SceneManager::removeNestedObject(SceneObject * object)
+{
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); ++it)
+    {
+	SceneObject * so = it->second;
+	while(so)
+	{
+	    if(so == object)
+	    {
+		it->second = so->_parent;
+		break;
+	    }
+	    so = so->_parent;
+	}
+    }
+
+    if(_uniqueActiveObjects.find(object) != _uniqueActiveObjects.end())
+    {
+	if(!_uniqueMapInUse)
+	{
+	    _uniqueActiveObjects.erase(object);
+	}
+	else
+	{
+	    _uniqueBlacklistMap[object] = true;
+	}
+    }
+
+    // close menu if this node is in its path
+    SceneObject * menuSO = _menuOpenObject;
+    while(menuSO)
+    {
+	if(menuSO == object)
+	{
+	    closeOpenObjectMenu();
+	}
+
+	menuSO = menuSO->_parent;
+    }
+}
+
 void SceneManager::removePluginObjects(CVRPlugin * plugin)
 {
-    //TODO create find plugin name function in PluginManager
+    std::string pluginName = PluginManager::instance()->getPluginName(plugin);
+    if(pluginName.empty())
+    {
+	return;
+    }
+
+    // TODO: finish this when I have a use case
 }
 
 void SceneManager::preDraw()

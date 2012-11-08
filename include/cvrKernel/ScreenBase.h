@@ -165,6 +165,8 @@ class ScreenBase
         static double _near; ///< near plane
         static double _far; ///< far plane
 
+        static bool _omniStereo;
+
         ScreenInfo * _myInfo; ///< config information for this screen
 
         std::map<int,osg::Matrix> _currentHeadMatList;

@@ -35,6 +35,7 @@ double ScreenBase::_separation;
 double ScreenBase::_eyeSepMult = 1.0;
 double ScreenBase::_near;
 double ScreenBase::_far;
+bool ScreenBase::_omniStereo = false;
 ScreenConfig * ScreenConfig::_myPtr = NULL;
 
 ScreenConfig::ScreenConfig()
@@ -109,6 +110,7 @@ bool ScreenConfig::init()
     ScreenBase::_far = ConfigManager::getFloat("Far",10000000);
     ScreenBase::_separation = ConfigManager::getFloat("separation","Stereo",
             64.0);
+    ScreenBase::_omniStereo = ConfigManager::getBool("omniStereo","Stereo",false,NULL);
 
     if(!makeWindows() || !makeScreens())
     {
