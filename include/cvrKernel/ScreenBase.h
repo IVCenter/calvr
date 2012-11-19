@@ -101,17 +101,33 @@ class ScreenBase
         }
 
         /**
+         * @brief Get near plane value for all screens
+         */
+        static double getNear()
+        {
+            return _near;
+        }
+
+        /**
          * @brief Set near plane value for all screens
          */
-        static void setNear(float near)
+        static void setNear(double near)
         {
             _near = near;
         }
 
         /**
+         * @brief Get far plane value for all screens
+         */
+        static double getFar()
+        {
+            return _far;
+        }
+
+        /**
          * @brief Set far plane value for all screens
          */
-        static void setFar(float far)
+        static void setFar(double far)
         {
             _far = far;
         }
@@ -133,12 +149,31 @@ class ScreenBase
         }
 
         /**
+         * @brief Get if omni stereo rendering mode is active
+         */
+        static bool getOmniStereoActive()
+        {
+            return _omniStereo;
+        }
+
+        /**
+         * @brief Set if omni stereo rendering mode is active
+         */
+        static void setOmniStereoActive(bool active)
+        {
+            _omniStereo = active;
+        }
+
+        /**
          * @brief Applies some default settings to the camera
          *
          * Sets up viewport, sets culling mode/masks, etc
          */
         void defaultCameraInit(osg::Camera * cam);
 
+        /**
+         * @brief Get the head orientation matrix for a given head id
+         */
         osg::Matrix & getCurrentHeadMatrix(int head = 0);
 
         /**
@@ -165,12 +200,9 @@ class ScreenBase
         static double _near; ///< near plane
         static double _far; ///< far plane
 
-        static bool _omniStereo;
+        static bool _omniStereo; ///< is omni stereo mode active
 
         ScreenInfo * _myInfo; ///< config information for this screen
-
-        std::map<int,osg::Matrix> _currentHeadMatList;
-        bool _headMatListInit;
 };
 
 /**

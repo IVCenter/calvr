@@ -17,7 +17,6 @@ using namespace cvr;
 
 ScreenBase::ScreenBase()
 {
-    _headMatListInit = false;
 }
 
 void ScreenBase::defaultCameraInit(osg::Camera * cam)
