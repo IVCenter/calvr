@@ -28,12 +28,7 @@ void BoardPopupMenu::updateStart()
 
 bool BoardPopupMenu::processIsect(IsectInfo & isect, int hand)
 {
-    if(BoardMenu::processIsect(isect,hand))
-    {
-        _currentPoint[hand] = isect.point;
-        return true;
-    }
-    return false;
+    return BoardMenu::processIsect(isect,hand);
 }
 
 void BoardPopupMenu::updateEnd()
@@ -209,41 +204,4 @@ void BoardPopupMenu::setVisible(bool v)
 bool BoardPopupMenu::isVisible()
 {
     return _menuActive;
-}
-
-void BoardPopupMenu::updateMovement(TrackedButtonInteractionEvent * tie)
-{
-    if(!tie->asPointerEvent())
-    {
-	osg::Vec3 menuPoint = osg::Vec3(0,_moveDistance,0);
-	//std::cerr << "move dist: " << _moveDistance << std::endl;
-	menuPoint = menuPoint * tie->getTransform();
-
-	//TODO: add hand/head mapping
-	osg::Vec3 viewerPoint =
-	    TrackingManager::instance()->getHeadMat(0).getTrans();
-
-	osg::Vec3 viewerDir = viewerPoint - menuPoint;
-	viewerDir.z() = 0.0;
-
-	osg::Matrix menuRot;
-	menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
-
-	_menuRoot->setMatrix(
-		osg::Matrix::translate(-_menuPoint) * menuRot
-		* osg::Matrix::translate(menuPoint));
-    }
-    else
-    {
-	osg::Vec3 point1, point2(0,1000,0), planePoint, planeNormal(0,-1,0), intersect;
-	float w;
-	point1 = point1 * tie->getTransform();
-	point2 = point2 * tie->getTransform();
-	planePoint = osg::Vec3(0,_moveDistance + tie->getTransform().getTrans().y(),0);
-
-	if(linePlaneIntersectionRef(point1,point2,planePoint,planeNormal,intersect,w))
-	{
-	    _menuRoot->setMatrix(osg::Matrix::translate(intersect - _menuPoint));
-	}
-    }
 }

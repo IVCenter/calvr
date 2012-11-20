@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuButton.h>
 #include <cvrMenu/MenuCheckbox.h>
 #include <cvrUtil/Intersection.h>
+#include <cvrUtil/OsgMath.h>
 #include <cvrConfig/ConfigManager.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/PluginHelper.h>
@@ -240,6 +241,16 @@ bool BoardMenu::processEvent(InteractionEvent * event)
             {
                 if(tie->getButton() == _primaryButton)
                 {
+		    if(tie->getInteraction() == BUTTON_DRAG || tie->getInteraction() == BUTTON_UP)
+		    {
+			BoardMenuSubMenuGeometry * smg =
+			    dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+			if(smg && smg->isMenuHead())
+			{
+			    updateMovement(tie);
+			}
+		    }
+
                     _activeItem->processEvent(event);
                     if(tie->getInteraction() == BUTTON_UP)
                     {
@@ -258,24 +269,42 @@ bool BoardMenu::processEvent(InteractionEvent * event)
             {
                 // do click
                 if(_activeItem)
-                {
-                    BoardMenuSubMenuGeometry * smg =
-                            dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-                    if(smg && !smg->isMenuHead())
-                    {
-                        if(smg->isMenuOpen())
-                        {
-                            closeMenu((SubMenu*)smg->getMenuItem());
-                        }
-                        else
-                        {
-                            openMenu(smg);
-                        }
-                    }
-                    _activeItem->processEvent(event);
-                    _clickActive = true;
-                    return true;
-                }
+		{
+		    BoardMenuSubMenuGeometry * smg =
+			dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+		    if(smg && smg->isMenuHead())
+		    {
+			osg::Vec3 ray;
+			ray = _currentPoint[tie->getHand()]
+			    - tie->getTransform().getTrans();
+
+			if(!tie->asPointerEvent())
+			{
+			    _moveDistance = ray.length();
+			}
+			else
+			{
+			    _moveDistance = ray.y();
+			}
+			_menuPoint = _currentPoint[tie->getHand()]
+			    * osg::Matrix::inverse(_menuRoot->getMatrix());
+			updateMovement(tie);
+		    }
+		    if(smg && !smg->isMenuHead())
+		    {
+			if(smg->isMenuOpen())
+			{
+			    closeMenu((SubMenu*)smg->getMenuItem());
+			}
+			else
+			{
+			    openMenu(smg);
+			}
+		    }
+		    _activeItem->processEvent(event);
+		    _clickActive = true;
+		    return true;
+		}
                 return false;
             }
         }
@@ -693,6 +722,7 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
     }
     else if(_clickActive)
     {
+	_currentPoint[hand] = isect.point;
         return true;
     }
 
@@ -706,12 +736,14 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
                     >= TrackingManager::instance()->getHandTrackerType(
                             _activeHand))
             {
+		_currentPoint[hand] = isect.point;
                 return true;
             }
         }
         _activeHand = hand;
         selectItem(_intersectMap[isect.geode]);
         _foundItem = true;
+	_currentPoint[hand] = isect.point;
         return true;
     }
 
@@ -816,5 +848,42 @@ void BoardMenu::closeMenu(SubMenu * menu)
         {
             _openMenus.pop();
         }
+    }
+}
+
+void BoardMenu::updateMovement(TrackedButtonInteractionEvent * tie)
+{
+    if(!tie->asPointerEvent())
+    {
+	osg::Vec3 menuPoint = osg::Vec3(0,_moveDistance,0);
+	//std::cerr << "move dist: " << _moveDistance << std::endl;
+	menuPoint = menuPoint * tie->getTransform();
+
+	//TODO: add hand/head mapping
+	osg::Vec3 viewerPoint =
+	    TrackingManager::instance()->getHeadMat(0).getTrans();
+
+	osg::Vec3 viewerDir = viewerPoint - menuPoint;
+	viewerDir.z() = 0.0;
+
+	osg::Matrix menuRot;
+	menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+
+	_menuRoot->setMatrix(
+		osg::Matrix::translate(-_menuPoint) * menuRot
+		* osg::Matrix::translate(menuPoint));
+    }
+    else
+    {
+	osg::Vec3 point1, point2(0,1000,0), planePoint, planeNormal(0,-1,0), intersect;
+	float w;
+	point1 = point1 * tie->getTransform();
+	point2 = point2 * tie->getTransform();
+	planePoint = osg::Vec3(0,_moveDistance + tie->getTransform().getTrans().y(),0);
+
+	if(linePlaneIntersectionRef(point1,point2,planePoint,planeNormal,intersect,w))
+	{
+	    _menuRoot->setMatrix(osg::Matrix::translate(intersect - _menuPoint));
+	}
     }
 }

@@ -118,6 +118,8 @@ class BoardMenu : public MenuBase
          */
         void closeMenu(SubMenu * menu);
 
+        void updateMovement(TrackedButtonInteractionEvent * tie);
+
         std::string _iconDir; ///< base directory when looking for icons
 
         SubMenu * _myMenu; ///< root submenu for this menu
@@ -149,6 +151,10 @@ class BoardMenu : public MenuBase
         std::map<SubMenu*,std::pair<BoardMenuGeometry*,BoardMenuGeometry*> > _menuGeometryMap; ///< map from SubMenu to geometry pair (line item, and menu head)
 
         std::stack<SubMenu*> _openMenus; ///< stack of all currently opened SubMenus
+
+        float _moveDistance;
+        std::map<int,osg::Vec3> _currentPoint;
+        osg::Vec3 _menuPoint;
 };
 
 /**

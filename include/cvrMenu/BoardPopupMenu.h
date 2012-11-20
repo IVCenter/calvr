@@ -53,14 +53,6 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         virtual bool isVisible();
 
     protected:
-        /**
-         * @brief Move menu based on an interaction
-         */
-        void updateMovement(TrackedButtonInteractionEvent * tie);
-
-        float _moveDistance;
-        std::map<int,osg::Vec3> _currentPoint;
-        osg::Vec3 _menuPoint;
 };
 
 /**
