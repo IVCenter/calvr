@@ -1774,7 +1774,7 @@ void TrackingManager::setHandButtonMaps()
     {
 	bool orderFound = false;
 	std::stringstream ss;
-	ss << "Input.Hand" << i << ".ButtonOrder";
+	ss << "Input.Hand" << i << ".ButtonMapping";
 	std::string order = ConfigManager::getEntry("value",ss.str(),"",&orderFound);
 
 	if(!orderFound)
