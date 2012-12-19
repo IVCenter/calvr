@@ -52,7 +52,7 @@
      <Hand0>
        <Address system="0" body="0" />
        <!--NavType value="MOUSEKEYBOARD" /-->
-       <ButtonMask system0="0x00" system1="0xFF" />
+       <ButtonMask system0="0xFF" system1="0xFF" />
        <Valuator0 system="0" number="0" type="NON_ZERO" />
      </Hand0>
      <Hand1>
