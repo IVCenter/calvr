@@ -56,8 +56,7 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
             osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(_iconGeometry.get());
 
-    //TODO make icon for this
-    osg::ref_ptr < osg::Texture2D > iconTexture;// = loadIcon("list.rgb");
+    osg::ref_ptr < osg::Texture2D > iconTexture = loadIcon("brackets.rgb");
     if(iconTexture.get() != NULL)
     {
         _geodeIcon->getOrCreateStateSet()->setTextureAttributeAndModes(0,

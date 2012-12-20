@@ -324,8 +324,7 @@ CVRViewer::CVRViewer() :
 
     _frameStartTime = _lastFrameStartTime = _programStartTime;
 
-    // TODO: read from config file
-    _doubleClickTimeout = 0.4;
+    _doubleClickTimeout = ConfigManager::getFloat("value","MouseDoubleClickTimeout",0.4);
 
     _updateList.push_back(new DefaultUpdate);
 
