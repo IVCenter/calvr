@@ -301,8 +301,8 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 			    openMenu(smg);
 			}
 		    }
-		    _activeItem->processEvent(event);
 		    _clickActive = true;
+		    _activeItem->processEvent(event);
 		    return true;
 		}
                 return false;
@@ -389,6 +389,12 @@ void BoardMenu::itemDelete(MenuItem * item)
     }
     while(removedItem);
 
+    if(_activeItem && item == _activeItem->getMenuItem())
+    {
+        _clickActive = false;
+        _activeItem = NULL;
+    }
+
     if(item->isSubMenu())
     {
         SubMenu * sm = (SubMenu*)item;
@@ -418,12 +424,6 @@ void BoardMenu::itemDelete(MenuItem * item)
             delete _geometryMap[item];
             _geometryMap.erase(item);
         }
-    }
-
-    if(_activeItem && item == _activeItem->getMenuItem())
-    {
-        _clickActive = false;
-        _activeItem = NULL;
     }
 
     if(item == _myMenu)
