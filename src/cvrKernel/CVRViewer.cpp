@@ -731,7 +731,21 @@ void CVRViewer::eventTraversal()
                             break;
 			case  (osgGA::GUIEventAdapter::SCROLL):
 			{
-			    evnt.param1 = event->getScrollingMotion();
+                            if(event->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_2D)
+                            {
+                                if(event->getScrollingDeltaY() >= 0.0)
+                                {
+                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_UP;
+                                }
+                                else
+                                {
+                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_DOWN;
+                                }
+                            }
+                            else
+                            {
+			        evnt.param1 = event->getScrollingMotion();
+                            }
 			    /*switch(event->getScrollingMotion())
 			    {
 				case (osgGA::GUIEventAdapter::SCROLL_UP) :
@@ -744,6 +758,11 @@ void CVRViewer::eventTraversal()
 				    std::cerr << "Scroll down." << std::endl;
 				    break;
 				}
+                                case (osgGA::GUIEventAdapter::SCROLL_2D) :
+                                {
+                                    std::cerr << "2D Scroll x: " << event->getScrollingDeltaX() << " y: " << event->getScrollingDeltaY() << std::endl;
+                                    break;
+                                }
 				default:
 				    break;
 			    }*/
