@@ -186,6 +186,21 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void unregisterSceneObject(SceneObject * object);
 
+        float getDefaultContextMenuScale()
+        {
+            return _menuScale;
+        }
+
+        float getDefaultContextMenuMinDistance()
+        {
+            return _menuMinDistance;
+        }
+
+        float getDefaultContextMenuMaxDistance()
+        {
+            return _menuMaxDistance;
+        }
+
         /**
          * @brief Set which SceneObject has the open context menu
          */
