@@ -37,6 +37,7 @@ void SubMenu::addItem(MenuItem * item)
     }
     _children.push_back(item);
     _dirty = true;
+    item->setParent(this);
 }
 
 void SubMenu::addItem(MenuItem * item, int position)
@@ -63,6 +64,7 @@ void SubMenu::addItem(MenuItem * item, int position)
     }
 
     _dirty = true;
+    item->setParent(this);
 }
 
 void SubMenu::removeItem(MenuItem * item)
@@ -74,6 +76,7 @@ void SubMenu::removeItem(MenuItem * item)
         {
             _children.erase(it);
             _dirty = true;
+	    item->setParent(0);
             return;
         }
     }

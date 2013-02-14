@@ -291,7 +291,14 @@ struct CVRKERNEL_EXPORT DefaultUpdate : public CVRViewer::UpdateTraversal
 struct CVRKERNEL_EXPORT PerContextCallback
 {
     public:
-        virtual void perContextCallback(int contextid) const
+        enum PCCType
+        {
+            PCC_UNKNOWN=0,
+            PCC_FRAME_START,
+            PCC_PRE_DRAW,
+            PCC_POST_FINISH
+        };
+        virtual void perContextCallback(int contextid, PCCType type) const
         {
         }
 };

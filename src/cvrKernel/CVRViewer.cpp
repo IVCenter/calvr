@@ -100,7 +100,7 @@ struct FrameStartCallbackOperation : public osg::Operation
 	{
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextFrameStartCallbacks(); i++)
 	    {
-		CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(_context);
+		CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(_context,PerContextCallback::PCC_FRAME_START);
 	    }
 	}
 
@@ -119,7 +119,7 @@ struct PreDrawCallbackOperation : public osg::Operation
 	{
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPreDrawCallbacks(); i++)
 	    {
-		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context);
+		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context,PerContextCallback::PCC_PRE_DRAW);
 	    }
 	}
 
@@ -138,7 +138,7 @@ struct PostFinishCallbackOperation : public osg::Operation
 	{
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPostFinishCallbacks(); i++)
 	    {
-		CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(_context);
+		CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(_context,PerContextCallback::PCC_POST_FINISH);
 	    }
 	}
 
@@ -731,7 +731,21 @@ void CVRViewer::eventTraversal()
                             break;
 			case  (osgGA::GUIEventAdapter::SCROLL):
 			{
-			    evnt.param1 = event->getScrollingMotion();
+                            if(event->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_2D)
+                            {
+                                if(event->getScrollingDeltaY() >= 0.0)
+                                {
+                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_UP;
+                                }
+                                else
+                                {
+                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_DOWN;
+                                }
+                            }
+                            else
+                            {
+			        evnt.param1 = event->getScrollingMotion();
+                            }
 			    /*switch(event->getScrollingMotion())
 			    {
 				case (osgGA::GUIEventAdapter::SCROLL_UP) :
@@ -744,6 +758,11 @@ void CVRViewer::eventTraversal()
 				    std::cerr << "Scroll down." << std::endl;
 				    break;
 				}
+                                case (osgGA::GUIEventAdapter::SCROLL_2D) :
+                                {
+                                    std::cerr << "2D Scroll x: " << event->getScrollingDeltaX() << " y: " << event->getScrollingDeltaY() << std::endl;
+                                    break;
+                                }
 				default:
 				    break;
 			    }*/
@@ -1300,7 +1319,17 @@ void CVRViewer::renderingTraversals()
 
     if(_swapReadyBarrier.valid())
     {
-        _swapReadyBarrier->block();
+	if(_done)
+	{
+	    while(_swapReadyBarrier->numThreadsCurrentlyBlocked() != contexts.size())
+	    {
+		// wait for render threads to catch up, then let them hang here where it is safe
+	    }
+	}
+	else
+	{
+	    _swapReadyBarrier->block();
+	}
     }
 
     for(itr = contexts.begin(); itr != contexts.end(); ++itr)

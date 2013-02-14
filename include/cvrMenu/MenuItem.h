@@ -49,6 +49,8 @@ class CVRMENU_EXPORT MenuItem
             _callback = NULL;
             _dirty = true;
             _hoverText = "";
+	    _extraData = 0;
+	    _parent = 0;
         }
 
         virtual ~MenuItem();
@@ -88,22 +90,22 @@ class CVRMENU_EXPORT MenuItem
             return _callback;
         }
 
-        /**
-         * @brief Place to provide some extra information that may be used by a menu 
-         *      system when creating the item geometry.
-         */
-        void setExtraInfo(std::string extra)
-        {
-            _extraInfo = extra;
-        }
 
-        /**
-         * @brief Get any existing extra information
-         */
-        std::string & getExtraInfo()
-        {
-            return _extraInfo;
-        }
+	/**
+	 * @brief A user supplied pointer that can be used to make decisions during menu callbacks
+	 */
+	void setExtraData(void* data)
+	{
+	    _extraData = data;
+	}
+
+	/**
+	 * @brief Get any user supplied pointer or 0 otherwise
+	 */
+	void* getExtraData() 
+	{
+	    return _extraData;
+	}
 
         /**
          * @brief Returns if this item's status has changed since its geometry was last checked
@@ -131,11 +133,22 @@ class CVRMENU_EXPORT MenuItem
             return _hoverText;
         }
 
+	const MenuItem* getParent() const
+	{
+		return _parent;
+	}
+
+	void setParent(const MenuItem* parent)
+	{
+		_parent = parent;
+	}
+
     protected:
         MenuCallback * _callback; ///< Pointer to class object to receive update callbacks from this item
-        std::string _extraInfo; ///< Extra information provided for the menu system
+	void* _extraData; ///< Extra data pointer supplied by the user for decision making in callbacks
         bool _dirty; ///< Has this item changed
         std::string _hoverText;
+	const MenuItem* _parent;
 };
 
 /**
