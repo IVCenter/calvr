@@ -136,7 +136,7 @@ CVRSocket * MultiListenSocket::accept()
     }
 
     sockaddr_in addr;
-    int length;
+    int length = sizeof(sockaddr_in);
     int val = (int)::accept(_socket,(sockaddr *)&addr,(socklen_t *)&length);
     if(val == -1)
     {
