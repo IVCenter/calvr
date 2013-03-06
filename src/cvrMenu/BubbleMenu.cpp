@@ -116,6 +116,7 @@ BubbleMenu::BubbleMenu()
 
     _menuActive = false;
     _activeItem = NULL;
+    _prevActiveItem = NULL;
 
     _clickActive = false;
 
