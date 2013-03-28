@@ -21,7 +21,9 @@
 #include <vector>
 #include <cstring>
 
-#ifdef WIN32
+#ifndef WIN32
+#include <unistd.h>
+#else
 #include <Winsock2.h>
 #include <stdlib.h>
 #pragma comment(lib, "wsock32.lib")
