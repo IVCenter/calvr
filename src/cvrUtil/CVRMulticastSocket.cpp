@@ -1,6 +1,7 @@
 #include <cvrUtil/CVRMulticastSocket.h>
 
 #ifndef WIN32
+#include <unistd.h>
 #include <arpa/inet.h>
 #endif
 
