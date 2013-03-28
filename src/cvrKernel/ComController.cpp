@@ -16,7 +16,9 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifdef WIN32
+#ifndef WIN32
+#include <unistd.h>
+#else
 #pragma comment(lib, "wsock32.lib")
 #endif
 
