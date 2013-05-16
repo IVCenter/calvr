@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <cstring>
 
 #ifdef WIN32
 #define snprintf _snprintf
