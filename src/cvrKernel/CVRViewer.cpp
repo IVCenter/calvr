@@ -1854,6 +1854,7 @@ PerContextCallback * CVRViewer::getPerContextFrameStartCallback(int callback)
     {
 	return _frameStartCallbacks[callback];
     }
+	return NULL;
 }
 
 
@@ -1876,6 +1877,7 @@ PerContextCallback * CVRViewer::getPerContextPreDrawCallback(int callback)
     {
 	return _preDrawCallbacks[callback];
     }
+	return NULL;
 }
 
 void CVRViewer::addPerContextPostFinishCallback(PerContextCallback * pcc)
@@ -1897,4 +1899,5 @@ PerContextCallback * CVRViewer::getPerContextPostFinishCallback(int callback)
     {
 	return _postFinishCallbacks[callback];
     }
+	return NULL;
 }

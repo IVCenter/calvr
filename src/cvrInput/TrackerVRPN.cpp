@@ -111,7 +111,12 @@ void VRPN_CALLBACK handleAnalog (void *userdata, const vrpn_ANALOGCB a)
      printf(" (%d chans)\n", a.num_channel);*/
 
     std::vector<float> * valList = (std::vector<float> *)userdata;
-    for (int i = 0; i < std::min((size_t)a.num_channel, valList->size()); i++)
+#ifndef WIN32
+	int maxVal = std::min((size_t)a.num_channel, valList->size());
+#else
+	int maxVal = min((size_t)a.num_channel, valList->size());
+#endif
+    for (int i = 0; i < maxVal; i++)
     {
         valList->at(i) = a.channel[i];
     }

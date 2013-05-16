@@ -96,7 +96,8 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
 
     _geode->addDrawable(_label.get());
 
-    char buffer[7];
+    char buffer[8];
+	memset(buffer,'\0',8);
     _widthLabel = _widthValue = _iconHeight + _border;
 
     snprintf(buffer,7,printstr,mrv->getValue());
@@ -121,7 +122,8 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
 {
     _geodeSelected->removeDrawable(_currentValue.get());
 
-    char buffer[7];
+    char buffer[8];
+	memset(buffer,'\0',8);
     const char * printstr;
     if(_sign)
     {

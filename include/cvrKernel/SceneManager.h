@@ -20,7 +20,7 @@ namespace cvr
 class CVRViewer;
 class SceneObject;
 class CVRPlugin;
-struct InteractionEvent;
+class InteractionEvent;
 
 /**
  * @addtogroup kernel

@@ -15,7 +15,7 @@
 namespace cvr
 {
 
-struct InteractionEvent;
+class InteractionEvent;
 struct DefaultUpdate;
 struct PerContextCallback;
 

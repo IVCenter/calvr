@@ -5,6 +5,10 @@
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
 
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#endif
+
 using namespace cvr;
 
 BubbleMenuSubMenuGeometry::BubbleMenuSubMenuGeometry(bool head) :

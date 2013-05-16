@@ -4,6 +4,8 @@
 #ifndef CALVR_COMP_BB_VIS_H
 #define CALVR_COMP_BB_VIS_H
 
+#include <cvrUtil/Export.h>
+
 #include <osg/BoundingBox>
 #include <osg/MatrixTransform>
 
@@ -18,7 +20,7 @@ namespace cvr
 /**
  * @brief Vistor that computes the bounding box for a subgraph
  */
-class ComputeBoundingBoxVisitor : public osg::NodeVisitor
+class CVRUTIL_EXPORT ComputeBoundingBoxVisitor : public osg::NodeVisitor
 {
     public:
         ComputeBoundingBoxVisitor();

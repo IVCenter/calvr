@@ -1,4 +1,8 @@
+#ifndef WIN32
 #include <sys/time.h>
+#else
+#include <cvrUtil/TimeOfDay.h>
+#endif
 #include <osg/Vec3>
 
 class Lerp
