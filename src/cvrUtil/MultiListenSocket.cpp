@@ -7,6 +7,7 @@
 #include <cstring>
 
 #ifndef WIN32
+#include <unistd.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <fcntl.h>
