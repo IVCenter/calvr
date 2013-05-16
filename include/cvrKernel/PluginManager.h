@@ -25,7 +25,7 @@ namespace cvr
  }
  };*/
 
-struct InteractionEvent;
+class InteractionEvent;
 
 /**
  * @addtogroup kernel

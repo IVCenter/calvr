@@ -526,8 +526,8 @@ void BoardMenuScrollTextGeometry::parseString(std::string & s)
 			_wordsraw.push_back(std::pair<std::string, float>(subword, size));
 			wsindex += wsleng;
 		    }
-		    _words.push_back(std::pair<std::string, float>("\n", 0));
-		    _wordsraw.push_back(std::pair<std::string, float>("\n", 0));
+		    _words.push_back(std::pair<std::string, float>("\n", 0.0f));
+		    _wordsraw.push_back(std::pair<std::string, float>("\n", 0.0f));
 		    wsindex++;
 		    continue;
 		}
@@ -650,7 +650,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
 		if(split1 == "")
 		{
 		    //cerr << "moving to next line: " << thing2 << endl;
-		    it = _words.insert(it, std::pair<std::string, float>("\n", 0.0));
+		    it = _words.insert(it, std::pair<std::string, float>("\n", 0.0f));
 		    it++;
 		    thing1.clear();
 		    thing2.clear();
@@ -662,7 +662,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
 		    bb = slabel->getBound();
 
 		    it = _words.insert(it, std::pair<std::string, float>(split2, bb.xMax() - bb.xMin()));
-		    it = _words.insert(it, std::pair<std::string, float>(split1, 0.0));
+		    it = _words.insert(it, std::pair<std::string, float>(split1, 0.0f));
 		    if(rowpos == 0.0)
 		    {
 			_rowindex.push_back(it);
@@ -690,7 +690,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
 	    else
 	    {
 		//cerr << "moving to next line: " << thing2 << endl;
-		it = _words.insert(it, std::pair<std::string, float>("\n", 0.0));
+		it = _words.insert(it, std::pair<std::string, float>("\n", 0.0f));
 		it++;
 		_rowindex.push_back(it);
 		thing1 = it->first;

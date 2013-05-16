@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include <cvrMenu/BubbleMenu/Lerp.h>
-#include <sys/time.h>
 
 Lerp::Lerp(osg::Vec3 startP, osg::Vec3 endP, float t, float d, bool hideFinish, bool hideDelay)
 {

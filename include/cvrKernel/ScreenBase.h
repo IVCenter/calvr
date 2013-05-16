@@ -5,6 +5,7 @@
 #ifndef CALVR_SCREEN_BASE_H
 #define CALVR_SCREEN_BASE_H
 
+#include <cvrKernel/Export.h>
 #include <cvrKernel/ScreenConfig.h>
 
 #include <osgViewer/Viewer>
@@ -26,7 +27,7 @@ namespace cvr
 /**
  * @brief Virtual base class for all screen implementations
  */
-class ScreenBase
+class CVRKERNEL_EXPORT ScreenBase
 {
         friend class ScreenConfig;
     public:

@@ -7,6 +7,10 @@
 #include <osg/Shape>
 #include <osg/ShapeDrawable>
 
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#endif
+
 using namespace cvr;
 
 BubbleMenuCheckboxGeometry::BubbleMenuCheckboxGeometry() :

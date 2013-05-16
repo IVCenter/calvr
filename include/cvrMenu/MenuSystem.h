@@ -13,7 +13,7 @@ class IsectInfo;
 namespace cvr
 {
 
-struct InteractionEvent;
+class InteractionEvent;
 class MenuBase;
 class MenuManager;
 

@@ -25,6 +25,10 @@
 #include <iostream>
 #include <cstdlib>
 
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#endif
+
 using namespace cvr;
 
 osg::Vec4 BubbleMenuGeometry::_textColor;

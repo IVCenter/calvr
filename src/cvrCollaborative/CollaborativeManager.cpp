@@ -1014,9 +1014,13 @@ osg::Node * CollaborativeManager::makeHead(int num)
 		    center.x() = bb.xMin() + (bb.xMax() - bb.xMin()) * 0.5;
 		    center.y() = bb.yMin() + (bb.yMax() - bb.yMin()) * 0.5;
 		    center.z() = bb.zMin() + (bb.zMax() - bb.zMin()) * 0.5;
-
+#ifndef WIN32
 		    scale = std::min(250.0 / (bb.xMax() - bb.xMin()), 250.0 / (bb.yMax() - bb.yMin()));
 		    scale = std::min((double)scale,250.0 / (bb.zMax() - bb.zMin()));
+#else
+			scale = min(250.0 / (bb.xMax() - bb.xMin()), 250.0 / (bb.yMax() - bb.yMin()));
+		    scale = min((double)scale,250.0 / (bb.zMax() - bb.zMin()));
+#endif
 		}
 		else
 		{

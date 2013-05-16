@@ -126,5 +126,6 @@ bool MenuSystem::setFavorites(bool showFav)
         return false;
        
     ((BubbleMenu*)_menu)->setFavorites(showFav);
+	return true;
 }
 
