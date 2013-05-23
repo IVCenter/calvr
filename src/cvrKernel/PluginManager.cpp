@@ -302,8 +302,7 @@ bool PluginManager::loadPlugin(std::string plugin)
 
 #ifdef WIN32
     libPath = plugin + ".dll";
-#endif
-#ifdef __APPLE__
+#elif __APPLE__
     libPath = std::string("lib") + plugin + ".dylib";
 #else
     libPath = std::string("lib") + plugin + ".so";
