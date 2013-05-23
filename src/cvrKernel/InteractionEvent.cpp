@@ -3,6 +3,33 @@
 namespace cvr
 {
 
+const char * interactionToName(Interaction i)
+{
+    switch(i)
+    {
+	case NO_INTERACTION:
+	    return "No Interaction";
+	case BUTTON_DOWN:
+	    return "Button Down";
+	case BUTTON_UP:
+	    return "Button Up";
+	case BUTTON_DRAG:
+	    return "Button Drag";
+	case BUTTON_DOUBLE_CLICK:
+	    return "Double Click";
+	case VALUATOR:
+	    return "Valuator";
+	case KEY_UP:
+	    return "Key Up";
+	case KEY_DOWN:
+	    return "Key Down";
+	case MOVE:
+	    return "Move";
+	default:
+	    return "Unknown";
+    }
+}
+
 InteractionEvent * loadEventWithType(InteractionEvent * event,
         InteractionEventType type)
 {

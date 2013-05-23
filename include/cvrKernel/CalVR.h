@@ -61,9 +61,24 @@ class CVRKERNEL_EXPORT CalVR
         /**
          * @brief returns the set home directory for the CalVR install
          */
-        std::string & getHomeDir()
+        const std::string & getHomeDir()
         {
-            return _home;
+            return _homeDir;
+        }
+
+        const std::string & getConfigDir()
+        {
+            return _configDir;
+        }
+
+        const std::string & getResourceDir()
+        {
+            return _resourceDir;
+        }
+
+        const std::string & getPluginsHomeDir()
+        {
+            return _pluginsHomeDir;
         }
 
         /**
@@ -77,7 +92,12 @@ class CVRKERNEL_EXPORT CalVR
     protected:
         static CalVR * _myPtr; ///< static self pointer
 
-        std::string _home; ///< CalVR home directory
+        bool setupDirectories();
+
+        std::string _homeDir; ///< CalVR home directory
+        std::string _resourceDir;
+        std::string _configDir;
+        std::string _pluginsHomeDir;
         std::string _hostName; ///< node's host name
 
         ConfigManager * _config;

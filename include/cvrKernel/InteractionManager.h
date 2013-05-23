@@ -166,6 +166,8 @@ class CVRKERNEL_EXPORT InteractionManager
         int _mouseWheel; ///< current mouse wheel state
 
         double _dragEventTime; ///< time since last drag event
+
+        bool _eventDebug;
 };
 
 /**

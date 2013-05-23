@@ -343,6 +343,10 @@ bool TrackingManager::init()
 	    {
 		ni = Navigation::TRACKER_NAV;
 	    }
+	    else if(nistr == "VALUATOR")
+	    {
+		ni = Navigation::VALUATOR_NAV;
+	    }
 	}
 	else
 	{

@@ -1312,7 +1312,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     stateset->setAttribute(new osg::PolygonMode(), osg::StateAttribute::PROTECTED);
 
-    std::string font(CalVR::instance()->getHomeDir() + "/resources/arial.ttf");
+    std::string font(CalVR::instance()->getResourceDir() + "/resources/arial.ttf");
 
     // collect all the relevant cameras
     osgViewer::ViewerBase::Cameras validCameras;

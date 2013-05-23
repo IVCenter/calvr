@@ -64,6 +64,8 @@ class KeyboardInteractionEvent;
 class PositionInteractionEvent;
 class HandInteractionEvent;
 
+const char * interactionToName(Interaction i);
+
 //TODO: add timestamps
 
 /**
@@ -104,6 +106,16 @@ class InteractionEvent
         virtual InteractionEventType getEventType()
         {
             return INTER_EVENT;
+        }
+
+        virtual const char * getEventName()
+        {
+            return "InteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            std::cerr << "Interaction: " << interactionToName(_interaction) << std::endl;
         }
 
         /**
@@ -200,6 +212,17 @@ class HandInteractionEvent : public InteractionEvent
             return HAND_INTER_EVENT;
         }
 
+        virtual const char * getEventName()
+        {
+            return "HandInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            InteractionEvent::printValues();
+            std::cerr << "Hand: " << _hand << std::endl;
+        }
+
         virtual HandInteractionEvent * asHandEvent()
         {
             return this;
@@ -255,6 +278,17 @@ class TrackedButtonInteractionEvent : public HandInteractionEvent
         virtual InteractionEventType getEventType()
         {
             return TRACKED_BUTTON_INTER_EVENT;
+        }
+
+        virtual const char * getEventName()
+        {
+            return "TrackedButtonInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            HandInteractionEvent::printValues();
+            std::cerr << "Button: " << _button << std::endl;
         }
 
         virtual TrackedButtonInteractionEvent * asTrackedButtonEvent()
@@ -344,6 +378,19 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
             return MOUSE_INTER_EVENT;
         }
 
+        virtual const char * getEventName()
+        {
+            return "MouseInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            TrackedButtonInteractionEvent::printValues();
+            std::cerr << "X: " << _x << std::endl;
+            std::cerr << "Y: " << _y << std::endl;
+            std::cerr << "Master Screen: " << _masterScreenNum << std::endl;
+        }
+
         virtual MouseInteractionEvent * asMouseEvent()
         {
             return this;
@@ -407,6 +454,18 @@ class PointerInteractionEvent : public TrackedButtonInteractionEvent
             return POINTER_INTER_EVENT;
         }
 
+        virtual const char * getEventName()
+        {
+            return "PointerInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            TrackedButtonInteractionEvent::printValues();
+            std::cerr << "X: " << _x << std::endl;
+            std::cerr << "Y: " << _y << std::endl;
+        }
+
         virtual PointerInteractionEvent * asPointerEvent()
         {
             return this;
@@ -464,6 +523,18 @@ class ValuatorInteractionEvent : public HandInteractionEvent
         virtual InteractionEventType getEventType()
         {
             return VALUATOR_INTER_EVENT;
+        }
+
+        virtual const char * getEventName()
+        {
+            return "ValuatorInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            HandInteractionEvent::printValues();
+            std::cerr << "Valuator: " << _valuator << std::endl;
+            std::cerr << "Value: " << _value << std::endl;
         }
 
         virtual ValuatorInteractionEvent * asValuatorEvent()
@@ -532,6 +603,18 @@ class KeyboardInteractionEvent : public InteractionEvent
             return KEYBOARD_INTER_EVENT;
         }
 
+        virtual const char * getEventName()
+        {
+            return "KeyboardInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            InteractionEvent::printValues();
+            std::cerr << "Key: " << _key << std::endl;
+            std::cerr << "Mod: " << _mod << std::endl;
+        }
+
         virtual KeyboardInteractionEvent * asKeyboardEvent()
         {
             return this;
@@ -572,6 +655,17 @@ class PositionInteractionEvent : public HandInteractionEvent
         virtual InteractionEventType getEventType()
         {
             return POSITION_INTER_EVENT;
+        }
+
+        virtual const char * getEventName()
+        {
+            return "PositionInteractionEvent";
+        }
+
+        virtual void printValues()
+        {
+            HandInteractionEvent::printValues();
+            std::cerr << "x: " << _position.x() << " y: " << _position.y() << " z: " << _position.z() << std::endl;
         }
 
         virtual PositionInteractionEvent * asPositionEvent()

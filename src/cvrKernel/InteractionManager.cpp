@@ -34,6 +34,8 @@ InteractionManager::InteractionManager()
     _mouseWheel = 0;
 
     _dragEventTime = 0;
+    
+    _eventDebug = ConfigManager::getBool("value","EventDebug",false,NULL);
 }
 
 InteractionManager::~InteractionManager()
@@ -108,6 +110,18 @@ void InteractionManager::handleEvents()
 
 void InteractionManager::handleEvent(InteractionEvent * event)
 {
+    if(!event)
+    {
+	return;
+    }
+
+    if(_eventDebug)
+    {
+	std::cerr << std::endl;
+	std::cerr << "Event: " << event->getEventName() << std::endl;
+	event->printValues();
+    }
+
     if(MenuManager::instance()->processEvent(event))
     {
         return;

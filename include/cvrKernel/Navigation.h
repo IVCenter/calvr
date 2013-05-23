@@ -135,6 +135,7 @@ class CVRKERNEL_EXPORT Navigation
             MOUSEKEYBOARD_NAV,
             POINTER_NAV,
             TRACKER_NAV,
+            VALUATOR_NAV,
             NONE_NAV
         };
 
@@ -187,6 +188,10 @@ class NavImplementationBase
 {
     friend class Navigation;
     public:
+        virtual bool init(std::string tagBase)
+        {
+            return true;
+        }
         /**
          * @brief Allows use of CalVR InteractionEvents for navigation
          */
@@ -266,6 +271,29 @@ class NavPointer : public NavImplementationBase
         osg::Matrix _startXForm; ///< object space transform at start of event
         osg::Vec3 _eventPos; ///< hand position at start of event
         osg::Quat _eventRot; ///< hand rotation at start of event
+};
+
+class NavValuator : public NavImplementationBase
+{
+    public:
+        virtual bool init(std::string tagBase);
+        virtual void processEvent(InteractionEvent * ie);
+    protected:
+        int _fbVal;
+        int _lrVal;
+        int _udVal;
+        int _headingVal;
+        int _pitchVal;
+        int _rollVal;
+
+        float _fbMult;
+        float _lrMult;
+        float _udMult;
+        float _headingMult;
+        float _pitchMult;
+        float _rollMult;
+
+        //osg::Vec3 _rotationPoint;
 };
 
 /**

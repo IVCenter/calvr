@@ -79,6 +79,11 @@ bool Navigation::init()
 		navbase = new NavTracker();
 		break;
 	    }
+	    case VALUATOR_NAV:
+	    {
+		navbase = new NavValuator();
+		break;
+	    }
 	    default:
 	    {
 		navbase = new NavImplementationBase();
@@ -86,6 +91,9 @@ bool Navigation::init()
 	    }
 	}
 	navbase->_hand = i;
+	std::stringstream ss;
+	ss << "Input.Hand" << i << ".NavType";
+	navbase->init(ss.str());
 	_navImpMap[i] = navbase;
     }
 
@@ -948,6 +956,103 @@ osg::Vec3 NavPointer::getWallTrackballPoint(osg::Vec3 & wallPoint)
     point.normalize();
 
     return point;
+}
+
+bool NavValuator::init(std::string tagBase)
+{
+    //_rotationPoint = ConfigManager::getVec3(tagBase);
+    _fbVal = ConfigManager::getInt("frontBack",tagBase,-1);
+    _lrVal = ConfigManager::getInt("leftRight",tagBase,-1);
+    _udVal = ConfigManager::getInt("upDown",tagBase,-1);
+    _headingVal = ConfigManager::getInt("heading",tagBase,-1);
+    _pitchVal = ConfigManager::getInt("pitch",tagBase,-1);
+    _rollVal = ConfigManager::getInt("roll",tagBase,-1);
+
+    _fbMult = ConfigManager::getFloat("frontBackMult",tagBase,1.0);
+    _lrMult = ConfigManager::getFloat("leftRightMult",tagBase,1.0);
+    _udMult = ConfigManager::getFloat("upDownMult",tagBase,1.0);
+    _headingMult = ConfigManager::getFloat("headingMult",tagBase,1.0);
+    _pitchMult = ConfigManager::getFloat("pitchMult",tagBase,1.0);
+    _rollMult = ConfigManager::getFloat("rollMult",tagBase,1.0);
+
+    return true;
+}
+
+void NavValuator::processEvent(InteractionEvent * ie)
+{
+    ValuatorInteractionEvent * vie = ie->asValuatorEvent();
+    if(!vie || vie->getHand() != _hand)
+    {
+	return;
+    }
+
+    osg::Vec3 moveVec;
+    osg::Matrix rotation;
+
+    bool move = false;
+    bool rotate = false;
+
+    float moveMult = 70.0;
+    float rotMult = 1.0 / 120.0;
+
+    if(vie->getValuator() == _fbVal)
+    {
+	moveVec.y() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _fbMult * moveMult;
+	move = true;
+    }
+    if(vie->getValuator() == _lrVal)
+    {
+	moveVec.x() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _lrMult * moveMult;
+	move = true;
+    }
+    if(vie->getValuator() == _udVal)
+    {
+	moveVec.z() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _udMult * moveMult;
+	move = true;
+    }
+
+    if(vie->getValuator() == _rollVal)
+    {
+	float angle = vie->getValue() * fabs(vie->getValue()) * M_PI * _rollMult * rotMult;
+	osg::Matrix r;
+	r.makeRotate(angle,osg::Vec3(0,1,0));
+	rotation = rotation * r;
+	rotate = true;
+    }
+    if(vie->getValuator() == _pitchVal)
+    {
+	float angle = vie->getValue()* fabs(vie->getValue()) * M_PI * _pitchMult * rotMult;
+	osg::Matrix r;
+	r.makeRotate(angle,osg::Vec3(1,0,0));
+	rotation = rotation * r;
+	rotate = true;
+    }
+    if(vie->getValuator() == _headingVal)
+    {
+	float angle = vie->getValue() * fabs(vie->getValue()) * M_PI * _headingMult * rotMult;
+	osg::Matrix r;
+	r.makeRotate(angle,osg::Vec3(0,0,1));
+	rotation = rotation * r;
+	rotate = true;
+    }
+
+    osg::Matrix objmat = SceneManager::instance()->getObjectTransform()->getMatrix();
+
+    if(rotate)
+    {
+	osg::Vec3 headPos = TrackingManager::instance()->getHeadMat(TrackingManager::instance()->getHeadForHand(vie->getHand())).getTrans();
+	//objmat = objmat * osg::Matrix::translate(-_rotationPoint) * rotation * osg::Matrix::translate(_rotationPoint);
+	objmat = objmat * osg::Matrix::translate(-headPos) * rotation * osg::Matrix::translate(headPos);
+    }
+    if(move)
+    {
+	objmat = objmat * osg::Matrix::translate(-moveVec);
+    }
+
+    if(rotate || move)
+    {
+	SceneManager::instance()->setObjectMatrix(objmat);
+    }
 }
 
 NavMouseKeyboard::NavMouseKeyboard()

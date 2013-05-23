@@ -20,6 +20,8 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <cstdlib>
+#include <sys/stat.h>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -114,8 +116,13 @@ CalVR * CalVR::instance()
 
 bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
-    _home = home;
+    _homeDir = home;
     
+    if(!setupDirectories())
+    {
+	std::cerr << "Error: Failure to find needed directory paths." << std::endl;
+	return false;
+    }
     
     if(!args.read("--host-name",_hostName))
     {
@@ -277,4 +284,94 @@ void CalVR::run()
 
         frameNum++;
     }
+}
+
+bool CalVR::setupDirectories()
+{
+    char * env;
+
+    env = getenv("CALVR_CONFIG_DIR");
+    if(env)
+    {
+	_configDir = env;
+    }
+    else
+    {
+	// look for default config dir
+	struct stat sb;
+	std::string path = _homeDir + "/config";
+	std::string testFile = path + "/config.xml";
+
+	if(stat(testFile.c_str(), &sb) == -1)
+	{
+	    path = _homeDir + "/share/calvr/config";
+	    testFile = path + "/config.xml";
+
+	    if(stat(testFile.c_str(), &sb) == -1)
+	    {
+		std::cerr << "Error: No valid config directory found.  Checked: " << _homeDir << "/config , " << _homeDir << "/share/calvr/config" << std::endl;
+		std::cerr << "Correct or manually set $CALVR_CONFIG_DIR." << std::endl;
+		return false;
+	    }
+	    else
+	    {
+		_configDir = path;
+	    }
+	}
+	else
+	{
+	    _configDir = path;
+	}
+    }
+
+    std::cerr << "Config Directory: " << _configDir << std::endl;
+
+    env = getenv("CALVR_RESOURCE_DIR");
+    if(env)
+    {
+	_resourceDir = env;
+    }
+    else
+    {
+	struct stat sb;
+	std::string path = _homeDir;
+	std::string testFile = path + "/icons/arrow-left.rgb";
+
+	if(stat(testFile.c_str(), &sb) == -1)
+	{
+	    path = _homeDir + "/share/calvr";
+	    testFile = path + "/icons/arrow-left.rgb";
+
+	    if(stat(testFile.c_str(), &sb) == -1)
+	    {
+		std::cerr << "Error: No calvr resource directory found. Checked: " << _homeDir << " , " << path << std::endl;
+		std::cerr << "Correct or manually set $CALVR_RESOURCE_DIR." << std::endl;
+		return false;
+	    }
+	    else
+	    {
+		_resourceDir = path;
+	    }
+	}
+	else
+	{
+	    _resourceDir = path;
+	}
+    }
+
+    std::cerr << "Resource Directory: " << _resourceDir << std::endl;
+
+    env = getenv("CALVR_PLUGINS_HOME");
+    if(env)
+    {
+	_pluginsHomeDir = env;
+    }
+    else
+    {
+	_pluginsHomeDir = _homeDir;
+    }
+
+    std::cerr << "Plugins Home Directory: " << _pluginsHomeDir << std::endl;
+
+    return true;
 }

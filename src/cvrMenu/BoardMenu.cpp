@@ -84,7 +84,7 @@ BoardMenu::BoardMenu()
 
     std::string fontfile;
 
-    _iconDir = CalVR::instance()->getHomeDir();
+    _iconDir = CalVR::instance()->getResourceDir();
     BoardMenuGeometry::_iconDir = _iconDir;
     fontfile = _iconDir;
 

@@ -138,7 +138,7 @@ BubbleMenu::BubbleMenu()
 
     std::string fontfile;
 
-    _iconDir = CalVR::instance()->getHomeDir();
+    _iconDir = CalVR::instance()->getResourceDir();
     BubbleMenuGeometry::_iconDir = _iconDir;
     fontfile = _iconDir;
 

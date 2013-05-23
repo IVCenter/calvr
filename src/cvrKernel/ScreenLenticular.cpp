@@ -31,7 +31,7 @@ ScreenLenticular::~ScreenLenticular()
 
 void ScreenLenticular::init(int)
 {
-    _shaderDir = CalVR::instance()->getHomeDir();
+    _shaderDir = CalVR::instance()->getResourceDir();
     _shaderDir += "/shaders/";
 
     initDisplay();

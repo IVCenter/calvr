@@ -142,7 +142,7 @@ void ScreenMVShader::init(int mode)
 #endif
 
     std::string shaderdir;
-    shaderdir = CalVR::instance()->getHomeDir() + "/shaders/";
+    shaderdir = CalVR::instance()->getResourceDir() + "/shaders/";
 
     _vert = osg::Shader::readShaderFile(osg::Shader::VERTEX,
             osgDB::findDataFile(shaderdir + "multiviewer.vert"));

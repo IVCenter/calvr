@@ -668,7 +668,7 @@ void SceneManager::initPointers()
 		stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
 		stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
-		osg::Image * image = osgDB::readImageFile(CalVR::instance()->getHomeDir() + "/icons/mousePointer.png");
+		osg::Image * image = osgDB::readImageFile(CalVR::instance()->getResourceDir() + "/icons/mousePointer.png");
 		if(image)
 		{
 		    osg::Texture2D* texture;
@@ -1378,6 +1378,21 @@ void SceneManager::removeNestedObject(SceneObject * object)
 	{
 	    if(so == object)
 	    {
+		// leave objects
+		SceneObject * tempso = it->second;
+		while(tempso)
+		{
+		    tempso->leaveCallback(it->first);
+		    if(tempso == object)
+		    {
+			break;
+		    }
+		    else
+		    {
+			tempso = tempso->_parent;
+		    }
+		}
+
 		it->second = so->_parent;
 		break;
 	    }

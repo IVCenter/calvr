@@ -5,9 +5,11 @@
 
 #include <iostream>
 #include <algorithm>
+#include <sys/stat.h>
 
 #ifndef WIN32
 #include <dlfcn.h>
+#include <unistd.h>
 #else
 #include <Windows.h>
 #endif
@@ -39,13 +41,42 @@ PluginManager * PluginManager::instance()
 
 bool PluginManager::init()
 {
-    _pluginLibDir = CalVR::instance()->getHomeDir();
+    std::string pluginsHome = CalVR::instance()->getPluginsHomeDir();
 
+    size_t position = 0;
+    
+    while(position < pluginsHome.size())
+    {
+	size_t lastPosition = position;
+	position = pluginsHome.find_first_of(':', position);
+	if(position == std::string::npos)
+	{
+	    size_t length = pluginsHome.size() - lastPosition;
+	    if(length)
+	    {
+		_pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
+		break;
+	    }
+	}
+	else
+	{
+	    size_t length = position - lastPosition;
+	    if(length)
+	    {
+		_pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
+	    }
+	    position++;
+	}
+    }
+
+    for(int i = 0; i < _pluginLibDirs.size(); ++i)
+    {
 #ifdef WIN32
-    _pluginLibDir += "/bin/plugins/";
+	_pluginLibDirs[i] += "/bin/calvr-plugins/";
 #else
-    _pluginLibDir += "/lib/plugins/";
+	_pluginLibDirs[i] += "/lib/calvr-plugins/";
 #endif
+    }
 
     std::vector<std::string> plugins;
     ConfigManager::getChildren("Plugin",plugins);
@@ -267,42 +298,59 @@ bool PluginManager::loadPlugin(std::string plugin)
     CVRPlugin * pluginPtr;
     CVRPlugin * (*func)();
 
+    std::string libPath;
+
+#ifdef WIN32
+    libPath = plugin + ".dll";
+#endif
+#ifdef __APPLE__
+    libPath = std::string("lib") + plugin + ".dylib";
+#else
+    libPath = std::string("lib") + plugin + ".so";
+#endif
+
+    for(int i = 0; i < _pluginLibDirs.size(); ++i)
+    {
+	struct stat sb;
+	std::string testPath = _pluginLibDirs[i] + "/" + libPath;
+	if(stat(testPath.c_str(), &sb) != -1)
+	{
+	    libPath = testPath;
+	    break;
+	}
+    }
+
 #ifndef WIN32
     char * error;
     void * libHandle;
-#ifdef __APPLE__
-    std::string libPath = _pluginLibDir + "lib" + plugin + ".dylib";
-#else
-    std::string libPath = _pluginLibDir + "lib" + plugin + ".so";
-#endif
+
     libHandle = dlopen(libPath.c_str(),RTLD_LAZY);
     if(!libHandle)
     {
-        std::cerr << dlerror() << std::endl;
-        return false;
+	std::cerr << dlerror() << std::endl;
+	return false;
     }
 
-    func = (CVRPlugin * (*)())dlsym(libHandle, "createPlugin");if
-(    (error = dlerror()) != NULL)
+    func = (CVRPlugin * (*)())dlsym(libHandle, "createPlugin");
+    if((error = dlerror()) != NULL)
     {
-        std::cerr << error << std::endl;
-        return false;
+	std::cerr << error << std::endl;
+	return false;
     }
 #else
     HINSTANCE libHandle;
-    std::string libPath = _pluginLibDir + plugin + ".dll";
     libHandle = LoadLibrary(libPath.c_str());
     if(!libHandle)
     {
-        std::cerr << "Error: Unable to open DLL: " << libPath << std::endl;
-        return false;
+	std::cerr << "Error: Unable to open DLL: " << libPath << std::endl;
+	return false;
     }
 
     func = (CVRPlugin * (*)()) GetProcAddress(libHandle, "createPlugin");
     if(!func)
     {
-        std::cerr << "Error: Unable to find function address in " << libPath << std::endl;
-        return false;
+	std::cerr << "Error: Unable to find function address in " << libPath << std::endl;
+	return false;
     }
 #endif
 

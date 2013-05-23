@@ -125,7 +125,7 @@ class CVRKERNEL_EXPORT PluginManager
                 }
         };
 
-        std::string _pluginLibDir; ///< directory containing plugin shared libraries
+        std::vector<std::string> _pluginLibDirs; ///< directories containing plugin shared libraries
         //std::priority_queue<std::pair<int,CVRPlugin*>,std::vector<std::pair<int,CVRPlugin*> >,PrioritySort<int,CVRPlugin*> > _pluginList;
         std::vector<PluginInfo *> _loadedPluginList; ///< list of loaded plugins
         std::map<std::string,bool> _pluginMap; ///< map containing all plugin names in the config file and if they are on

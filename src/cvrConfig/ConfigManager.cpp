@@ -40,8 +40,7 @@ bool ConfigManager::init()
     }
     else
     {
-        _configDir = CalVR::instance()->getHomeDir();
-        _configDir = _configDir + "/config";
+        _configDir = CalVR::instance()->getConfigDir();
     }
 
     std::string file;
