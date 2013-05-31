@@ -1,17 +1,12 @@
 <?xml version="1.0"?>
- <GLOBAL>
 
-  <CUI>
-   <ResourcesDirectory value="/home/aprudhom/CalVR/resources/" />
-  </CUI>
 
    <Background g="0.0" a="0.0" />
 
    <Stencil value="true" />
    <MultiThreaded value="CullDrawThreadPerContext" />
-   <!--MultiThreaded value="SingleThreaded" /-->
    <PreSwapOperation value="FINISH" />
-   <SyncToVBlank value="Off" />
+   <SyncToVBlank value="On" />
    <Near value="100"/>
    <Far value="100000000" />
    <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
@@ -20,11 +15,10 @@
    <ShowAxis value="off" />
 
    <ConfigDebug value="false" />
-   <GeneralDebug value="true" />
+   <EventDebug value="false" />
 
    <Input>
-     <Threaded FPS="60.0" />
-     <TrackingDebug value="true" />
+     <TrackingDebug value="false" />
      <TrackingSystem0 value="MOUSE">
        <Offset x="0" y="0" z="0" />
        <Orientation h="0" p="0" r="0" />
@@ -38,107 +32,18 @@
          <Orientation h="0" p="0" r="0" />
        </Body0>
      </TrackingSystem0>
-     <TrackingSystem1 value="NONE" >
-       <NumBodies value="6" />
-       <NumButtons value="0" />
-       <NumValuators value="0" />
-       <Omicron>
-         <Server value="137.110.119.244" />
-	 <Port value="27000" />
-	 <NumMocaps value="2" />
-       </Omicron>
-     </TrackingSystem1>
-     <TrackingSystem2 value="NONE" >
-       <NumBodies value="1" />
-       <NumButtons value="3" />
-       <NumValuators value="1" />
-       <GyroMouse>
-         <WithWheel value="true" />
-	 <Server value="Device0@localhost:7701" />
-       </GyroMouse>
-     </TrackingSystem2>
-     <!--TrackingSystem1 value="VRPN">
-       <NumBodies value="0" />
-       <NumButtons value="3" />
-       <NumValuators value="1" />
-       <VRPN>
-         <Server value="Device0@127.0.0.1:7701" />
-       </VRPN>
-     </TrackingSystem1-->
 
      <NumHeads value="0" />
      <Head0Address system="0" body="0" />
 
-     <NumHands value="2" />
+     <NumHands value="1" />
      <Hand0>
        <Address system="0" body="0" />
-       <!--NavType value="MOUSEKEYBOARD" /-->
-       <ButtonMask system0="0xFF" system1="0xFF" />
-       <!--ButtonOrder value="0,2,1" /-->
+       <ButtonMask system0="0xF"  />
        <Valuator0 system="0" number="0" type="NON_ZERO" />
      </Hand0>
-     <Hand1>
-       <Address system="0" body="1" />
-       <ButtonMask system0="0xF0" system1="0x00" />
-       <Valuator0 system="1" number="0" type="NON_ZERO" />
-       <!--PointerType /-->
-       <!--NavType /-->
-     </Hand1>
-     <Hand2>
-       <Address system="2" body="0" />
-       <ButtonMask system2="0x0F" />
-       <Valuator0 system="2" number="0" />
-       <!--PointerType value="CONE" /-->
-     </Hand2>
    </Input>
     
-   <!--Input>  
-      <ButtonSystem value="NONE" />
-      <TrackingSystem value="NONE" />
-
-      <MouseEvents value="on" />
-
-      <Threaded value="false" FPS="60.0" />
-      <ClickTimeout single="0.4" double="0.4" />
-
-      <NumHands value="0" />
-      <NumHeads value="1" />
-
-      <Hand1ButtonMask station1="0x0F" station2="0xFF" />
-      <Hand2ButtonMask station1="0xF0" station2="0x00" />
-
-      <HeadAddress value="1" />
-      <HandAddress value="0" />
-
-      <VRPN>
-        <Server value="DTrack@137.110.111.71" />
-        <NumBodies value="2" />
-	<NumButtons value="3" />
-	<NumValuators value="0" />
-      </VRPN>
-
-      <SHMEM>
-
-      </SHMEM>
-
-      <TrackingDebug value="false" button="true" body="true" station="0" />
-
-      <TrackingSystem>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </TrackingSystem>
-
-      <HeadDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HeadDevice>
-
-      <HandDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HandDevice>
-    </Input-->
-
    <Plugin>
     <ParticleDreams value="off">
       <DataDir value="/home/aprudhom/data/ParticleDreams" />
@@ -146,7 +51,6 @@
     <AlgebraInMotion value="on">
       <DataDir value="/home/aprudhom/data/ParticleDreams" />
     </AlgebraInMotion>
-    <OssimPlanet value="off" />
     <Sketch value="off" />
     <GreenLight value="off" />
     <OsgPdf value="on" />
@@ -190,6 +94,7 @@
 	  <Gallery2 x="0" y="1" z="0" name="Gallery-Drone-2" />
 	  <Gallery3 x="0" y="2" z="0" name="Gallery-Drone-3" />
 	</GalleryDrone>
+	<ply0 file="/home/aprudhom/Desktop/MosqueRed2/Mosque.0.ply" pointSize="0.2" />
       </Sets>
     </PointsWithPans>
 
@@ -200,6 +105,7 @@
      <ImageSearchPath value="/home/aprudhom/data/Pans/PansLOD" />
      <ImageSearchPath value="/home/aprudhom/Desktop/GalleryDronePans" />
      <DefaultConfigDir value="/home/aprudhom/data/Pans/PansLOD/config/:/home/aprudhom/Desktop/GalleryDronePans/config/" />
+     <!--CacheSize value="128" /-->
      <Pans>
                 <Gallery>
 		    <KGallery1 />
@@ -247,14 +153,10 @@
 
     <FuturePatient value="on">
       <PDFDir value="/home/aprudhom/data/FuturePatient/PDF" />
+      <LayoutDir value="/home/aprudhom/data/FuturePatient/layouts" />
       <PointLineScale value="0.4" />
       <DesktopMode value="true" />
     </FuturePatient>
-
-    <AndroidNavigator value="off" >
-     <TransMult value="1.0" />
-     <RotMult value="1.0" />
-    </AndroidNavigator>
 
     <SpaceNavigator value="off" >
      <TransMult value="7.0" />
@@ -262,9 +164,7 @@
     </SpaceNavigator>
     <PluginUtil value="off" />
 
-    <CudaTest value="off" />
-
-    <PanoView360 value="on" />
+    <PanoView360 value="off" />
     <TourCave value="off" />
 
     <PathRecorder value="off" >
@@ -373,14 +273,6 @@
       </Files>
     </ImageViewer>
 
-    <ThreadedLoader value="off" >
-     <Affinity value="1" />
-    </ThreadedLoader>
-
-    <OssimPlanet>
-     <ConfigFile value="/home/aprudhom/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
-    </OssimPlanet>
-
     <TourCave>
      <BackgroundAudio name="BGAudio" loop="true" />
      <Mode0>
@@ -424,11 +316,6 @@
     </BoardMenu>
    </MenuSystem>
 
-   <MultiPC>
-     <NumSlaves value="0" />
-     <MasterInterface value="127.0.0.1" port="11011" />
-     <Startup value="CalVR --host-name multitest \>\&amp; /tmp/errors.log" name="0" />
-   </MultiPC>
 
    <ViewerPosition x="0" y="-2957" z="0" />
    <SceneSize value="1000" />
@@ -443,40 +330,14 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  >
-     <ViewerPosition x="0.0" y="-3000" z="0.0" />
-    </Channel>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="1" stereoMode="MONO"  windowIndex="1"  name="1">
-      <ViewerPosition x="0" y="3000" z="0" />
-      <ThumbConfigFile value="/home/aprudhom/CalVR/config/thumb/host/alioscopy-40-1x1.xml" />
-      <Viewer eyes="8" ipd="0.208" distance="9.7" />
-      <BL x="-0.851653" y="-0.532283" z="0.0" />
-      <BR x="0.851653" y="-0.532283" z="0.0" />
-      <TL x="-0.851653" y="0.532283" z="0.0" />
-      <Array pitch="446.862244" angle="18.435000" thick="0.027600" shift="0.009270" quality="0.5"/>
-      <Slice name="0" cycle="0.875" />
-      <Slice name="1" cycle="0.875" />
-      <Slice name="2" cycle="0.875" />
-      <Slice name="3" cycle="0.875" />
-      <Slice name="4" cycle="0.875" />
-      <Slice name="5" cycle="0.875" />
-      <Slice name="6" cycle="0.875" />
-      <Slice name="7" cycle="0.875" />
-    </Channel>
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="1" stereoMode="MONO"  windowIndex="1"  name="1" />
    </ChannelConfig>
    
-   <LOCAL host="lava.ucsd.edu">
    <WindowConfig>
-    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="1" />
-    <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="true" cudaDevice="0" />
+    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="1100" name="1" decoration="true" cudaDevice="0" />
    </WindowConfig>
-   </LOCAL>
-
-   <LOCAL host="multitest">
-   <WindowConfig>
-    <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="0" decoration="true" cudaDevice="0" />
-   </WindowConfig>
-   </LOCAL>
 
 
    <ScreenConfig>
@@ -484,6 +345,3 @@
    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
    </ScreenConfig>
 
-   <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />
-
- </GLOBAL>
