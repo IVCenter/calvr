@@ -4,26 +4,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
   
@@ -31,26 +30,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -58,26 +56,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -85,26 +82,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-2568" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-1541" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -112,26 +108,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
   
@@ -139,26 +134,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -166,26 +160,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -193,26 +186,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="-514" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="514" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -220,26 +212,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="-864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
   
@@ -247,26 +238,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -274,26 +264,25 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
 
@@ -301,25 +290,24 @@
     <NumPipes value="2" />
     <NumScreens value="2" />
     <NumWindows value="2" />
-    <Stereo value="false" />
 
     <PipeConfig>
-      <Pipe display="not needed any more" server="0" screen="0" name="0" />
-      <Pipe display="not needed any more" server="0" screen="1" name="1" />
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
     </PipeConfig>
 
     <ChannelConfig>
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
-      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="1"  name="1"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1920" height="1080" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
     </ChannelConfig>
              
     <WindowConfig>
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
-      <Window width="1920" comment="FRONT" window="0" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1920" comment="FRONT" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
     </WindowConfig>
 
     <ScreenConfig>
-      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" screen="0" />
-      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" screen="1" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="1541" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1019" comment="FRONT" h="0.0" originX="2568" originY="0" originZ="864" height="568" p="0.0" r="0.0" name="1" />
     </ScreenConfig>
   </LOCAL>
