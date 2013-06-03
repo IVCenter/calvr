@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
-<GLOBAL> 
-<!-- enable or display master rendering -->
+
       <RenderOnMaster value="true" />
       <Stencil value="true" />
       <ShowAxis value="false" />
 
-      <CollisionDist value="1500" />
+      <PreSwapOperation value="FINISH" />
 
       <Background r="0.0" g="0.0" b="0.0" /> 
       <MultiThreaded value="CullDrawThreadPerContext" />
       <!-- MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" / -->
       <!--MultiThreaded value="SingleThreaded" /-->
-      <!-- CullingMode value="DEFAULT" / -->
       <MultiSample value="4" />
-      <SyncToVBlank value="on" device="DFP-1" />
-      <FloorHeight value="-1663" />
+      <SyncToVBlank value="on" />
+      <FloorHeight value="-1193" />
       <Near value="100" />
       <Far value="10000000000" />
       <UseDepthPartition value="false" />
@@ -23,24 +21,16 @@
 
       <ConfigDebug value="false" />
 
-      <PointerAppearance Length="2500" />
-
-      <Audio>
-       <AssetManager>
-        <Server value="137.110.119.83" />
-        <!--Server value="128.54.20.117" /-->
-       </AssetManager>
-      </Audio>
-
       <Plugin>
- <!-- Standard Cover plugins, should always be on: -->
         <ClipPlane value="off" />
-<!-- Demoable plugins: -->
 	<OsgEarth value="off" />
         <Kacst value="off" />
-        <Points value="off" />
+        <Site2 value="off" />
+        <Points value="on" />
 	<GreenLight value="off" />
         <StructView value="on" />
+        <Volume value="on" />
+        <SeismicViewer value="off" />
 	<Collaborative value="off">
 	  <Server value="127.0.0.1" />
 	  <Port value="11050" />
@@ -48,7 +38,8 @@
 	<ModelLoader value="on" />
 	<PanoView360 value="off" />
         <PanoViewLOD value="on" />
-        <ParticleDreams value="off" />
+        <ParticleDreams value="on" />
+        <AlgebraInMotion value="on" />
 
         <Maze value="off" />  <!-- turn off when not testing --> 
         <CaveCAD value="off" />  <!-- turn off when not testing -->
@@ -58,10 +49,9 @@
                 <ServerPort value="8084" />
 
 	</CaveCAD>
-	<GML value="off" />
-        <Point value="off" />
         <ArtifactVis value="off" />
-        <SliceViewer value="off" />
+        <ArtifactVis2 value="off" />
+        <PointsWithPans value="on" />
 
         <PathRecorder value="off">
          <DataDir value="/home/calvr/data/PathRecorder/" />
@@ -72,12 +62,55 @@
         </OsgPathRecorder>
 
     <ParticleDreams>
+     <DataDir value="/data-nfs/ParticleDreams" />
      <HandID value="0" />
     </ParticleDreams>
 
+    <AlgebraInMotion>
+         <DataDir value="/data-nfs/ParticleDreams" />
+         <HandID value="0" />
+    </AlgebraInMotion>
+
+    <Site2>
+      <ConfigDir value="/home/calvr/CVRPlugins/calit2/Site2" />
+      <DataPath value="/data/site" />
+      <ImagePath value="/data/site/images" />
+      <ShaderPath value="/home/calvr/CVRPlugins/calit2/Site2/shaders" />
+      <ColorTable value="/home/calvr/CVRPlugins/calit2/Site2/shaders/newcolortable.gif" />
+      <ImagePosition height="256.0" width="512.0" x="500.0" y="300.0" z="150.0" />
+    </Site2>
+
+    <PointsWithPans>
+      <Sets>
+        <Nuzzi file="/data-nfs/PointsData/Insu1_Combinedd40.xyb" scale="1000" x="-1000" y="-1000" z="500" pointSize = "0.02" >
+                <!--    <radius  value= "12000"/> -->
+          <Nuzzi-House-D x="0.0" y="0.0" z="0.0" name="Nuzzi-House-D" rotationOffset="38.0" textureFile="/home/calvr/Nuzzi-thumb/Nuzzi-D.jpg" selectDistance="9000.0"  />
+          <Nuzzi-House-C x="-1.98229" y="1.14319" z="0.0" name="Nuzzi-House-C" rotationOffset="130.0" textureFile="/home/calvr/Nuzzi-thumb/Nuzzi-C.jpg"selectDistance="9000.0"  />
+          <Nuzzi-House-B x="0.313813" y="5.15174" z="0.0" name="Nuzzi-House-B" rotationOffset="145.0" textureFile="/home/calvr/Nuzzi-thumb/Nuzzi-B.jpg"selectDistance="9000.0" />
+          <Nuzzi-House-A x="3.60283" y="4.49394" z="0.0" name="Nuzzi-House-A" rotationOffset="50.0" textureFile="/home/calvr/Nuzzi-thumb/Nuzzi-A.jpg"selectDistance="9000.0"  />
+         </Nuzzi>  
+
+ 
+        <GalleryTest file="/data-nfs/PointsData/gal12NdrfFilterFilt-r8.xyb" scale="1000" x="0" y="0" z="0">
+          <KGallery1 x="-0.208" y="0.1702" z="-0.25" name="KGallery1" rotationOffset="45.0" />
+          <KGallery2 x="-5.5968" y="-1.84257" z="-0.25" name="KGallery2"/>
+        </GalleryTest>
+        <CyberArchTest file="/home/calvr/ArchInterface/data/KIS2.ply" scale="1000" pointSize="0.001" x="0" y="0" z="0">
+        </CyberArchTest>
+        <CyberArchTest2 file="/home/calvr/ArchInterface/data/showbak_lab.xyb" scale="1000" pointSize="0.02" x="0" y="0" z="0">
+        </CyberArchTest2>
+        <CyberArchTest3 file="/home/calvr/ArchInterface/data/kislidar.xyb" scale="1000" pointSize="0.01" x="0" y="0" z="0">
+        </CyberArchTest3>
+	<MosqueTest file="/data-nfs/PointsData/Mosque.0.ply" pointSize="0.5" />
+	<MosqueTest2 file="/data-nfs/PointsData/Mosque2.0.ply" pointSize="0.5" />
+	<MosqueTest3 file="/data-nfs/PointsData/Mosque2.1.ply" pointSize="0.5" />
+      </Sets>
+    </PointsWithPans>
+
     <OsgEarth>
 	<!-- <Earth value="/home/calvr/data/osgearth/SimpleEarth.earth" /> -->
-	<Earth value="/home/calvr/data/osgearth/SanDiego.earth" />
+	<!-- <Earth value="/home/calvr/data/osgearth/SanDiego.earth" /> -->
+	<Earth value="/home/calvr/david/tests/yahoo_maps.earth" />
     </OsgEarth>
 
     <Points>
@@ -152,65 +185,24 @@
      </Mode3>
     </TourCave>
 
-        <SoundServer>
-          <Server value="137.110.111.239" />
-          <Port value="31231" />
-        </SoundServer>
-
         <Maze>
           <DataDir value="/home/calvr/data/maze" />
         </Maze> 
 
-        <PointAnim>
-          <PointPath value="/home/calvr/data/osaka/121904177" />
-        </PointAnim>
-        
-        <HPWRENViewer>
-          <TempDir value="/home/calvr/plugins/calit2/HPWRENViewer/tmp/" />
-        </HPWRENViewer>
-
-        <ThreadedLoader>
-          <Affinity value="3" />
-        </ThreadedLoader>
-
-        <HMI>
-          <TempDir value="/home/calvr/plugins/calit2/HMI/temp/" />
-          <Datafile value="/home/calvr/plugins/calit2/HMI/dir.out" />
-        </HMI>
-
-        <BlackBoxInfo>
-	  <WorldFile value="/home/calvr/data/blackbox/metaloader.wrl" />
-          <BlackBoxDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/BlackBoxInfo/" />
-          <MetaloaderRootName value="root_SCGR_1" />
-          <powerLiveStatDialDefauMax value = "500" />
-          <powerLiveStatDialDefauMin value = "230" />
-          <powerLiveStatDialDefauNorm value = "250" />
-          <Debug value = "0" />
-          <TempDir value="/home/calvr/plugins/calit2/BlackBoxInfo/tmp/" />
-          <RefreshTime value="10.0" />
-          <PDUlist>
-	    <PDU1 value="PDU10.10.10.11" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.11-" />
-	    <PDU2 value="PDU10.10.10.12" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.12-" />
-            <PDU3 value="PDU10.10.10.13" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.13-" />
-            <PDU4 value="PDU10.10.10.14" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.14-" />
-            <PDU5 value="PDU10.10.10.15" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.15-" />
-            <PDU6 value="PDU10.10.10.16" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.16-" />
-            <PDU7 value="PDU10.10.10.17" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.17-" />
-            <PDU8 value="PDU10.10.10.18" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.18-" />
-          </PDUlist>
-        </BlackBoxInfo>
-
 	<ModelLoader>
           <ConfigDir value="/home/calvr/ModelLoader/" />
 	  <Files>
-	    <QaserAlBint path="/home/calvr/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="0" />
-	    <!--Calit2 path="/home/calvr/data/floorplan/calit2-study2.wrl" mask="1" /-->
+<Wrl path="/home/calvr/data4dave/shops.wrl" mask="0" />
+<Ply path="/home/calvr/data4dave/shops.ply" mask="0" />
+	    <QaserAlBint path="/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="0" />
+	    <Calit2 path="/data/floorplan/calit2-study2.wrl" mask="1" />
+	    <preston path="/data-nfs/preston/preston-all.obj" mask="1" />
 	  <!--  <hammerhead_edit path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_edit.obj" mask="1"/>
 	    <hammerhead_parts_transparent path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts_transparent.obj" mask="1"/> -->
 	    <!--hammerhead_full_color path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_color.obj" mask="1" lights="0" /-->
 	<!--    <hammerhead_parts path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
 	    <hammerhead_full path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
-	    <se_building path="/home/calvr/data/falko/se_building.obj" mask="0" />
+	    <se_building path="/data/falko/se_building.obj" mask="0" />
             <!--<Moebius path="/home/calvr/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
             <ShowCase path="/home/calvr/Showcase.wrl" mask="1" />
             <bearing_and_shearkeys path="/home/calvr/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
@@ -220,45 +212,16 @@
             <EB_OBG path="/home/calvr/data/caltrans/EB_OBG.wrl" mask="1" />
             <WB_OBG path="/home/calvr/data/caltrans/WB_OBG.wrl" mask="1" />
             <Sphere path="/home/calvr/sphere.obj" mask="1" />-->
+	    <Dancer path="/data-nfs/poses/Dpose01.osgb" mask="0" />
 	  </Files>
 	</ModelLoader>
 
-        <PhotosynthVR>
-          <Slash value = "/" />
-          <DataPath value = "/home/calvr/data/PhotosynthVR/" />
-          <English>
-            <MainMenu value = "PhotosynthVR" />
-            <OptionsMenu value = "PhotosynthVR Options" />
-            <CannotLoadFile value = "Cannot load file: " />
-            <LoadFileSets value = "Load File Set" />
-            <FileSets value = "File Sets" />
-          </English>
-        </PhotosynthVR>
-        
-        <GridPointCloudLoader>
-          <Slash value = "/" />
-          <DataPath value = "/home/calvr/data/GridPointCloudLoader/" />
-          <SavedPrefFile value = "savedPref.config" />
-          <English>
-            <MainMenu value = "GridPointCloudLoader" />
-            <OptionsMenu value = "Grid-like Point Cloud Loader" />
-            <AutoLoadOsaka value = "Auto-Load Osaka Data" />
-            <ExteriorPoints value = "Render Exterior Points" />
-            <InteriorPoints value = "Render Interior Points" />
-            <Lines value = "Render Lines" />
-            <Triangles value = "Render Triangles" />
-            <CannotLoadFile value = "Cannot load file: " />
-            <LoadFileSets value = "Load File Set" />
-            <FileSets value = "File Sets" />
-          </English>
-        </GridPointCloudLoader>
-
         <PanoViewLOD>
-            <ShaderDir value="/home/calvr/data/Pans/PansLOD/glsl/" />
+            <ShaderDir value="/home/calvr/CVRPlugins/calit2/PanoViewLOD/glsl/" />
             <FloorOffset value="1193.0" />
-            <ImageSearchPath value="/home/calvr/localdata/Pans:/fastdata/PansLOD:/home/calvr/data/Pans/PansLOD" />
-            <DefaultConfigDir value="/home/calvr/data/Pans/PansLOD/config/" />
-            <CacheSize value="2048" />
+            <ImageSearchPath value="/data-ssd/Pans/PansLOD:/data/Pans/PansLOD:/data/Siggraph2012/KAUST:/data-nfs/Pans/PansLOD:/home/calvr/localdata/Pans:/fastdata/PansLOD:/data-nfs/Siggraph2012/KAUST:/home/calvr/data/Pans/PansLOD:/data/mvincent/Pans" />
+            <DefaultConfigDir value="/data-nfs/Pans/PansLOD/config/:/data/mvincent/Pans/config" />
+            <CacheSize value="850" />
             <SpinScale value="0.33" />
             <ZoomScale value="-1.0" />
             <DiskCacheSize value="4096" />
@@ -282,6 +245,45 @@
                     <Al-Balad-Sami-Office />
                     <Al-Balad-Set />
                 </Al-Balad>
+		<Jordan>
+                <Umayri_All_Set/>
+                <Umayri_Best_Set/>
+		<Umayri>
+			<Temple_Entry_1/>
+			<Temple_Shrine_Light/>
+			<Random_Field_H/>
+			<Temple_Shrine_Evening_1/>
+			<Temple_Shrine_Evening_2/>
+			<Temple_Entry_Morning_1/>
+			<Temple_Side_Room_1/>
+			<Temple_Side_Room_2/>
+			<Temple_Entry/>
+			<Temple_Entry/>
+			<Side_Room/>
+			<Temple_Side_Room/>
+			<Field_B_Exterior/>
+			<Tent/>
+			<Entry_Stairs_1/>
+			<Entry_Stairs_2/>
+			<View_from_the_West/>
+			<Back_of_Four_Room_House/>
+			<Courtyard_of_Four_Room_House/>
+			<Courtyard_II/>
+			<Roof_I/>
+			<Roof_II/>
+			<Outside_Dolmen/>
+			<Inside_Dolmen/>
+			<Overlooking_K/>
+			<Building_M_Center/>
+			<Building_M_South/>
+			<Building_M_North/>
+			<Building_B_Broadroom/>
+			<Building_B_Standing_Stone/>
+			<Building_C/>
+			<Build_D/>
+			</Umayri>
+		</Jordan>
+
                 <Luxor>
                     <LuxorKarnakObelisks />
                     <LuxorMedinetColumnsBlueCeiling />
@@ -297,12 +299,45 @@
                     <LuxorTempleNight2 />
                     <LuxorTempleOutsideColumn />
                 </Luxor>
+                <Madaen-Saleh>
+                    <Madaen-Saleh-Al-Diwan />
+                    <Madaen-Saleh-AlKhuraymat />
+                    <Madaen-Saleh-Rock-Formation />
+                    <Madaen-Saleh-Second-Tomb />
+                    <Madaen-Saleh-Tomb />
+                    <Madaen-Saleh-Set />
+                </Madaen-Saleh>
                 <KAUST>
+                 <Beacon_AfterNoon />
+                 <Bldg16Entrance />
+                 <CoffeeBeanBldg16 />
+                 <!--KAUST_DiningHAll /-->
+                 <KAUST_FrontBldg1 />
+                 <Grand-Mosque-1 />
+                 <Grand-Mosque-2 />
+                 <KAUSTCampus />
                     <KAUSTmuseum1 />
                     <KAUSTmuseum2 />
-                    <SaudiMar11 />
+                 <!--Library /-->
+                 <KAUST_MuseumEntrance />
+                 <StudentCenter />
+                 <YachtClub />
+                 <!--KAUST-Set /-->
                 </KAUST>
+		<KACST>
+		  <MosqueRoofCorner />
+		  <Rooftop3 />
+		  <RuinDark />
+		  <UshMosqueRoofDownCourtyard />
+		  <Ushaiger-1 />
+		  <Ushaiger-Courtyard-1 />
+		  <Ushaiger-Courtyard-2 />
+		  <Ushaiger-Ruin />
+		  <Ushaiger-Tower-Center />
+		  <Kacst-Set />
+		</KACST>
                 <Wisconsin>
+                 <Tom-Kathy-Wisco />
                     <Taliesin-Path />
                     <UPset />
                     <UW-Madison-2 />
@@ -313,17 +348,76 @@
                   <Nuzzi-2 />
                   <Nuzzi-3 />
                   <NuzziSet />
+                  <Nuzzi-House-A />
+                  <Nuzzi-House-B />
+                  <Nuzzi-House-C />
+                  <Nuzzi-House-D />
+                  <Nuzzi-House-E />
                 </Nuzzi>
+		<Mars>
+		  <Duck-Bay-L256atc />
+		  <Duck-Bay-L256F />
+		  <Cape-Verde-L257atc />
+		  <Cape-Verde-L257F />
+		  <McMurdo-L257F />
+		  <McMurdo-L456atc />
+		  <!--Curiosity1 /-->
+		  <Curiosity_Aug />
+		  <Curiosity_Nov />
+		  <Curiosity_Mastcam />
+		  <Curiosity_Navcam />
+		  <!--Mars-Set /-->
+		</Mars>
+                <Gallery>
+                  <KGallery1 />
+                  <KGallery2 />
+                </Gallery>
+                <Taif>
+                  <Taif-Set />
+                  <DamTop />  <!-- stereo ok -->
+                  <DamWell />  <!-- stereo ok -->
+
+                  <FortOutsidePetroglyphSOuthside />  <!-- stereo ok -->
+                  <TTF_Inside_Sunset-DA />
+                  <TTF_Outside_Corner_Sunrise-DA />
+                  <Taif-Dam-Wall-Light-Dark-Set />
+                  <Dam-Wall-Dark />   
+                  <Turkish-Fort-Inside-Sunset-V3 />
+<!-- no stereo in the following pans
+                  <DamWall />   
+                  <FortPetroglyphSunrise />
+                  <FortOutsideSunset /> 
+                  <FortInsideSunset />
+                  <TurkishFortPetro1 />
+                  <FortInsideSunrise />
+-->
+<!--              <TurkishFort />   this is a duplicate of FortInsideSunset -->
+                  <TTF_Inside_Sunrise_No_Graff />
+		  <Turkish-Fort-Graffiti-Set />
+                </Taif>
+                <SaudiCopperMine>
+                  <SaudiCopperMine-Set />
+                  <SlagHillMine /> <!-- stereo correct -->
+                  <SlagHillMineTwo /> <!-- correct, great picture -->
+                  <SlagOne />   <!-- correct, great picture -->
+                  <SLAG_One-DA />
+                  <SLAG_Two-DA />
+                  <!--SLAG_Three-DA /-->
+<!--              <SlagTwo />    hurts eyes, big height difference between two images -->
+<!--              <SlagThree />   stereo correct, looks ok, but noticeable vertical seams -->
+                </SaudiCopperMine>
                 <BluebonnetSet />
                 <CineGrid />
                 <KACST-Indoor2 />
                 <KACST-Outdoor1 />
+		<Conservatory />
+		<Stone-Bear-Set />
                 <Dr-Seuss />
             </Pans>
         </PanoViewLOD>
 
 	<PanoView360>
-          <FloorOffset value="1500.00" />
+          <FloorOffset value="1193.00" />
           <RenderOnMaster value="true" />
           <ScreenConfig value="/home/calvr/plugins/calit2/PanoView360-temp/xpol.xml" />
           <HighRamLoad value="true" />
@@ -372,67 +466,179 @@
           </Files>
         </PanoView360>
 
-        <ArtifactVis>
-          <TopoFile value="/home/calvr/data/kyle/3d-model-reduced/Ken3dv3.wrl" />
-          <ArtifactsFile value="/home/calvr/data/kyle/artifact-databank/AreaM_Artifacts2006.txt" />
-          <DataBase value="/home/calvr/data/kyle/artifact-databank/artifactslist.txt" />
-          <ObjectFolder value="/home/calvr/data/kyle/3d-artifacts/" />
-        </ArtifactVis>
-        
-        <Point>
-          <DataDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/Point/earthquakes.xyz" />
-        </Point>
+               <ArtifactVis>
+	             <TopoFile value="/data/mvincent/ArtifactVis/kyle/3d-model/Ken3dv3.wrl" />
+		     <Database value="/data/mvincent/ArtifactVis/artifactslist.txt" />
+		     <PicFolder value="/data/mvincent/ArtifactVis/kyle/pictures/AllPics/" />
+		     <DCInfoFile value="/data/mvincent/ArtifactVis/kyle/DCCategories.txt" />
+		     <LociFile value="/data/mvincent/ArtifactVis/kyle/AreaMLociDepth.kml" />
+						 
+				 <Offset>
+				   <X value="-3396591.862" />
+				   <Y value="-733458.55" />
+				   <Z value="-49.44" />
+				 </Offset>
+				 <Site>
+				   <Longitude value="35.491239" />
+				   <Latitude value="30.628039" />
+		         </Site>
+		  <Tessellation value=".2" />
+		  <ArtifactPanel x="-200" y="1000" z="100" scale="1.0" />
+	      <SelectionStatsPanel x="500" y="1000" />
+		</ArtifactVis>
+        <ArtifactVis2>
+          <StartArtifactVis2 value="false" />
+          <MoveCamera value="true" />
+          <FlyToDefault value="4" />
+           <Database value="/home/calvr/ArchInterface/queries/" />
+              <ArchInterfaceFolder value="/home/calvr/ArchInterface/" />
+              <3DModelFolder value="/home/calvr/ArchInterface/data/" />
+                                                                                                 <MaxVisibleRange value="100000000000.0" />
+                 <Offset>
+                  <!-- <X value="-304670000.000" />
+                       <Y value="1450800.00" />
+                      <Z value="-354990000.00" />/-->
+                 <X value="-700000" />
+                 <Y value="-3300000" />
+                 <Z value="0" />
+                 </Offset>
+                 <Site>
+                 <Longitude value="35.491239" />
+                 <Latitude value="30.628039" />
+             <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+             <Tessellation value=".2" />
+          <InfoPanel x="-500" y="1000" z="300" scale="0.5" />
+          <FileManagerPanel x="-300" y="1000" z="300" scale="0.5" />
+          <BookmarkPanel x="300" y="1000" z="0" scale="0.5" />
+          <UtilsPanel x="400" y="1000" z="0" scale="0.5" />
+          <QsPanel x="400" y="1000" z="300" scale="0.5" />
+          <FileManagerTypes value="ply,obj,wrl,pts,xyb,xyz,3ds,jpg,tif,png,kml,xml" />
+         
+	 <KinectDefaultOn value="false" >
+	      <MoveWithCam value="true" />
+	      <FlyToDefault value="4" />
+	      <ShowPCloud value="false" />
+	      <ShowColor value="false" />
+	      <NavSpheres value="false" />
+	      <UseGestures value="false" />
+	      <LockPos value="false" />
+	      <LockRot value="false" />
+	      <LockScale value="true" />
+	      <ShowArtifactPanel value="true" />
+	      <ShowInfoPanel value="true" />
+	 </KinectDefaultOn>
 
-        <Molecules>
-          <DataDir value="/home/calvr/data/itt" />
-        </Molecules>
-        <PDBSequenceDisplay>
-          <Location value="/home/calvr/data/PDBSequenceDisplay/1A01.pdb" />
-          <CacheDirectory value="/home/calvr/data/PDB/pdb" />
-          <ProteinName value="1A01.pdb" />
-          <Menusize value="0.15" />
-        </PDBSequenceDisplay>
+          <KinectServer>
+              <DepthMap value="tcp://67.58.33.222:9000" /> 
+              <ColorMap value="tcp://67.58.33.222:9001" />
+              <Skeleton value="tcp://67.58.33.222:9002" />
+              <PointCloud value="tcp://67.58.33.222:9003" />
+          </KinectServer>
+       
+          <KinectNavSphere>
+	        <navSphereOffsetY value="0.3" />
+	        <navSphereOffsetZ value="0.1" />
+	        <diffScaleY value="0.15" />
+	    	<diffScaleNegY value="-0.05" />
+                <tranScaleY value="-200" />
+            	<diffScaleX value="0.1" />
+	    	<diffScaleNegX value="-0.1" />
+		<tranScaleX value="0.006" />
+            	<diffScaleZ value="0.05" />
+	    	<diffScaleNegZ value="-0.05" />
+		<tranScaleZ value="-50" />
+            	<diffScaleRY value="-0.5" />
+	    	<diffScaleNegRY value="-0.8" />
+		<tranScaleRY value="0.005" />
+          </KinectNavSphere> 
 
-      </Plugin>
+	  <Cylinder>
+            <Min value="0.2" />
+            <Max value="1.0" />
+          </Cylinder>
 
-      <FrameAngle value="18.0" />
-      <ScaleAll value="OFF" />
+	  <QueryTest value ="false">
+	      <Query value="zb" />
+	  </QueryTest>
+	  
+          <ShaderVert value="/home/calvr/osgdata/shaders/gooch.vert" />
+          <ShaderFrag value="/home/calvr/osgdata/shaders/gooch.frag" />
+	  <Nvidia value="true" />
+	  <scaleP value="5.0" />
+           </ArtifactVis2>
 
-      <TabletPC>
-        <Server value="localhost" />
-      </TabletPC>
+<KinectDemo value="off" />
+ <KinectDemo>
+          <3DModelFolder value="/home/calvr/osgdata/" />
+          <MaxVisibleRange value="100000000000.0" />
+          <Offset>
+            <X value="-700000" />
+            <Y value="-3300000" />
+            <Z value="0" />
+          </Offset>
+          <Tessellation value=".2" />
+          <ArtifactPanel x="-200" y="2000" z="100" scale="1.0" />
+          <InfoPanel x="-900" y="3000" z="350" scale="1.0" />
+          <KinectSkeleton x="-0.2" y="1.7" z="0.6" />
+          <CamStart s="1000" x="0.0249151" y="3.41685" z="-0.191232" rx="0.0143035" ry="-0.0208855" rz="0.999386" rw="-0.0242437" />
+	 <KinectDefaultOn value="false" >
+	      <MoveWithCam value="true" />
+	      <KinectPointSize value="2" />
+	      <FlyToDefault value="4" />
+	      <ShowPCloud value="true" />
+	      <KinectThreaded value="false" />
+	      <ShowColor value="false" />
+	      <NavSpheres value="true" />
+	      <UseGestures value="false" />
+	      <LockPos value="false" />
+	      <LockRot value="false" />
+	      <LockScale value="true" />
+	      <ShowArtifactPanel value="false" />
+	      <ShowInfoPanel value="true" />
+	 </KinectDefaultOn>
 
-      <Plugin>
-        <PointModel>
-	  <Files>
-	    <Palazzo_Vecchio_25 value="/home/calvr/data/maurico/binarydata/test5.xyz" />
-	    <!-- <Hall value="/home/calvr/optithumper/data/maurizio/Hall.pts" /> 
-	    <PV1 value="/home/calvr/optithumper/data/maurizio/PV1.pts" />
-	    <PV7 value="/home/calvr/optithumper/data/maurizio/PV7.pts" />
-	    <CC12 value="/home/calvr/optithumper/data/maurizio/CC12.pts" />
-	    <CP12 value="/home/calvr/optithumper/data/maurizio/CP12.pts" />
-	    <Gardens value="/home/calvr/optithumper/data/maurizio/G123.pts" />
-	    -->
-	    <!-- <Test1 value="/home/calvr/data/maurico/binarydata/G123.pts" /> -->
-	    <!-- <Palazzo_Vecchio value="/home/calvr/data/maurico/New_10x10x10.xyz" /> -->
-            <!-- <Shake_Table_Tests value="/home/calvr/data/maurico/binarydata/ShakeTableAfter.xyz" /> -->
-            <!-- <Connecting_Hall value="/home/calvr/data/maurico/binarydata/Hall.xyz" /> -->
-            <Court_Yard_1 value="/home/calvr/data/maurico/binarydata/cc12.xyz" />
-            <!-- <Court_Yard_2 value="/home/calvr/data/maurico/binarydata/CP12.xyz" /> -->
-            <!-- <Garden value="/home/calvr/data/maurico/binarydata/G123.xyz" /> --> 
-	    <!-- <Powell_Laboratory_tests value="/home/calvr/data/maurico/binarydata/PowellTestAfter.xyz" /> -->
-	    <!-- <Test value="/home/calvr/data/maurico/Largeset3.xyz" /> -->
-	  </Files>
-	</PointModel>
+          <KinectServer>
+              <DepthMap value="tcp://67.58.33.222:9000" /> 
+              <ColorMap value="tcp://67.58.33.222:9001" />
+              <Skeleton value="tcp://67.58.33.222:9002" />
+              <PointCloud value="tcp://67.58.33.222:9003" />
+              <!--<DepthMap value="tcp://localhost:9000" /> 
+              <ColorMap value="tcp://localhost:9001" />
+              <Skeleton value="tcp://localhost:9002" />
+              <PointCloud value="tcp://localhost:9003" />-->
+          </KinectServer>
+       
+          <KinectNavSphere>
+	        <navSphereOffsetY value="0.3" />
+	        <navSphereOffsetZ value="0.1" />
+	        <diffScaleY value="0.15" />
+	    	<diffScaleNegY value="-0.05" />
+                <tranScaleY value="-200" />
+            	<diffScaleX value="0.1" />
+	    	<diffScaleNegX value="-0.1" />
+		<tranScaleX value="0.006" />
+            	<diffScaleZ value="0.05" />
+	    	<diffScaleNegZ value="-0.05" />
+		<tranScaleZ value="-50" />
+            	<diffScaleRY value="-0.5" />
+	    	<diffScaleNegRY value="-0.8" />
+		<tranScaleRY value="0.005" />
+          </KinectNavSphere> 
 
-        <PointStream>
-          <QSplatModelDir value="/home/calvr/data/qsplat" />
-          <C3DModelDir value="/home/calvr/data/c3dmodel" />
-        </PointStream>
+	  <Cylinder>
+            <Min value="0.2" />
+            <Max value="1.0" />
+          </Cylinder>
 
-        <LOOK>
-          <ConfigFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/LOOK/ice.kwl" />
-        </LOOK>
+	  <QueryTest value ="false">
+	      <Query value="zb" />
+	  </QueryTest>
+	  
+	  <Nvidia value="true" />
+	  <scaleP value="1.0" />
+</KinectDemo>
 
         <OssimPlanet>
           <ConfigFile value="/home/calvr/data/ossimPlanet/ice.kwl" />
@@ -465,529 +671,38 @@
       fragment="/home/calvr/data/GreenLight/shaders/component.frag"
       vertex="/home/calvr/data/GreenLight/shaders/component.vert" />
   </GreenLight>
-        <VRMoleculeViewerPlugin>
-         <DataDir value="/home/jschulze/data/itt" />
-        </VRMoleculeViewerPlugin>
-
-        <DNAPlugin>
-         <DataDir value="/mnt/raid/cod/sandia/igrid/DNA Drawer/Data" />
-        </DNAPlugin>
-
-        <TetraTrace>
-         <BoxIncreaseFactor value="2" />
-        </TetraTrace>
 
         <Volume>
+	 <ConfigDir value="/data-nfs/volume/" />
          <Files>
-            <MRIHead value="/home/calvr/data/mri-head-8bit.xvf" />
-            <HeartR value="/home/calvr/data/ramesh-heart/test-8bit-2.xvf" />
-            <HeartL value="/home/calvr/data/larrys-heart/larry-heart.xvf" />
-            <KneeJ value="/home/calvr/data/jerrys-knee/jerrys-knee.xvf" />
-            <Newton1 value="/home/calvr/data/pnewton/set3.xvf" />
-            <Newton2 value="/home/calvr/data/pnewton/coronal_cuts-8bit.xvf" />
-            <Ultrasound3d value="/home/calvr/data/susan/time_all.xvf" />
-            <CTSkull value="/home/calvr/data/vhd/fctskull.xvf" />
-            <CTBody value="/home/calvr/data/vhd/fctbody-scaled.xvf" />
-            <fctbody-scaled value="/home/calvr/data/vhd/fctbody-scaled.xvf" />
-            <fctfeet value="/home/calvr/data/vhd/fctfeet256.xvf" />
-            <female-feet value="/home/calvr/data/vhd/female-feet.xvf" />
-            <female value="/home/calvr/data/vhd/female.xvf" />
-            <hand value="/home/calvr/data/vhd/hand.xvf" />
-            <lungs16m value="/home/calvr/data/vhd/lunge3.xvf" />
-            <ncttorso value="/home/calvr/data/vhd/ncttorso-cl.xvf" />
-            <face value="/home/calvr/data/vhd/face.xvf" />
-<!--
-            <Baby value="/home/calvr/data/karen/baby-3d-8bit.xvf" />
-            <SonarScan value="/home/calvr/data/graham/256x256x256-crop-flipz.rvf" />
-            <NCMIR-f value="/home/calvr/data/ncmir/f0001.xvf" />
-            <NCMIR-rwt value="/home/calvr/data/ncmir/rwt.xvf" />
-            <MonkeyMRI value="/home/calvr/data/jacopo/monkey_mri-half.xvf" />
-            <GROEL value="/home/calvr/data/kriegman/groel.xvf" />
-            <wt1g value="/home/calvr/data/kristi/wt1g.rvf" />
-            <NCHC-Brain value="/home/calvr/data/nchc/brain2-8-small-double.rvf" />
-            <NCHC-Dendridic_Spine value="/home/calvr/data/nchc/osaka-8.rvf" />
-            <Fish value="/home/calvr/data/LarryFrank/1704.xvf" />
--->
+            <MRIHead value="/data-nfs/volume/mri-series14-color-fill.xvf" />
+            <CTSkull value="/data-nfs/volume/fctskull.xvf" />
+            <FctFeet value="/data-nfs/volume/fctfeet256.xvf" />
+            <Female-Feet value="/data-nfs/volume/female-feet.xvf" />
+            <Hand value="/data-nfs/volume/hand.xvf" />
+            <Lungs16m value="/data-nfs/volume/lunge3.xvf" />
+            <NctTorso value="/data-nfs/volume/ncttorso-cl.xvf" />
           </Files>
         </Volume>
 
-        <AirCurrents>
-          <Exaggeration value="8.0" />
-          <SoundScale value="1.0" />  <!-- sound scale multiplier -->
-          <SoundScaleEnabled value="1" /> <!-- 1 enable or 0 disable -->
-          <SoundVolume value="1.0" /> <!-- 1 enable or 0 disable -->
-          <DataPath value="/home/calvr/data/AirCurrents/" />
-          <Data value="NewModelFinal-1266-low.ive" />
-          <!-- <Data value="KaustFinalSoundSetMedium.ive" /> -->
-          <!-- <Data value="KaustFinalSoundSetLow.ive" /> -->
-          <!-- <Data value="KaustFinalSoundSetHigh.ive" /> -->
-          <Pool value="60" /> <!-- Default = 120 -->
-          <Active value="30" /> <!-- Default = 60 -->
-          <!-- <Server value="132.239.235.200" /> --> <!-- spat lab -->
-          <!-- <Server value="137.110.118.77" /> --> <!-- new sound server -->
-          <Server value="10.1.255.245" /> --> <!-- sc09 -->
-          <Port value="32001" />
-          <!-- <Server value="137.110.119.188" /> --> <!-- old sound server -->
-          <!-- <Server value="dyn172-19-115-46.ucsd.edu" /> -->
-        </AirCurrents>
-
-        <Slice>
-          <SliceDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/SliceViewer/images" />
-          <SliceThumbs value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/SliceViewer/thumbs/" />
-          <SliceMap>
-            <A0007 value="Myelin_5_10" />
-          </SliceMap>
-          <Name value="false"/>
-          <DistanceXBetweenScreens value="7.0" />
-          <DistanceYBetweenScreens value="5.0" />
-          <CenterTopLeftX value="-14.0" />
-          <CenterTopLeftY value="4.5" />
-          <Sensitivity value="0.5" />
-          <Size>
-                 <X_Value value="1900"/>
-                 <Y_Value value="1080"/>
-          </Size>
-          <MinSize value="1000.0" />
-          <MarkerSize value="10.0" />
-          <Files>
-            <BlockFace value="test" />
-          </Files>
-        </Slice>
-
-
-        <ThumbnailBrowser>
-            <Dir value="/home/calvr/plugins/ThumbnailBrowser/images/" />
-            <!-- Set the size of one thumbnail image -->
-            <ThumbnailHeight value="300" />
-            <ThumbnailWidth value="450" />
-            <Spacing value="15" />
-            <BufferSpace value="20" />
-            <!-- Set size and position of scroller arrows -->
-            <ScrollerSize value="150" />
-            <ScrollerWidth value= "2500" />
-            <!-- Set size of info text and histogram -->
-            <TextSize value="35" />
-            <HistSize value="400" />
-            <!--Set coordinates for bottom left corner-->
-            <BrowserPosx value="-850" />
-            <BrowserPosy value="850" />
-            <BrowserPosz value="-1000" />
-            <AutoFit value="0" /> <!-- if 1, will try to use screen config parameters to place the browser,  scrollerWidth and BrowserPos will not be used -->
-       </ThumbnailBrowser>
-
-
-       <Image>
-          <ImageDir value="/home/calvr/data/osga" />
-          <ImageConfig value="/home/calvr/plugins/calit2/Image/config/" />
-          <ImageFadeLowDist value="-500.0" />      <!-- 1000.0 is 1 meter -->
-          <ImageFadeHighDist value="300.0" />
-          <ImageWandTracked value="0" />  <!-- 1= true, means it is enabled -->
-          <ImageDist value="0.5" /> 
-          <LockSets value="1" /> 
-          <AutoTrans value="1" /> 
-	  <MaxScaleFactor value="1" />
-          <MarkerSize value="10.0" />
-          <Files>
-<!--
-            <UCSD_bear value="bear" />
-	    <Calit2_courtyard value="calit2-courtyard" />
-	    <CSE_courtyard value="cse-courtyard" />
-	    <EBU1 value="ebu1" />
-	    <Geisel value="geisel" />
-	    <Powell_Focht value="powell-focht" />
-            <CB-FIB value="CB-FIB" />
-            <He_ion_ORION value="He_ion_ORION" />
-            <Libra_120 value="Libra_120" />
-            <NEON_40EsB value="NEON_40EsB" />
-            <UCSD_Rady_3 value="UCSD_Rady_3" />
-            <UCSD_Rady_2 value="UCSD_Rady_2" />
-            <UCSD_Rady_1 value="UCSD_Rady_1" />
-            <LRC_MiracleMile_v2_ca value="LRC_MiracleMile_v2_ca" />
-            <SFSU_Int_3 value="SFSU_Int_3" />
-            <stitched_choice value="stitched_choice" />
-            <SFSU_Int_1 value="SFSU_Int_1" />
-            <SFSU_Int_2 value="SFSU_Int_2" />
-            <Foundation value="foundation" />
-	    <PICT0014 value="PICT0014" />
-            <PICT0018 value="PICT0018" />
-            <PICT0025 value="PICT0025" />
-            <virtual-model value="virtual-model" />
-            <Zeiss value="andy-kummel" />
-            <Mouse_brain value="mouse_brain" />
-            <tester value="battaglia" />
-            <Campus value="campus" />
-            <Monkey_Brain value="test4" />
-            <Cerebellum value="test10" />
-            <Golden_Gate value="golden" />
--->
-            <Adoration value="magi.ipp" />
-            <Adoration2 value="almagi.ipp" />
-<!--
-            <StGeorge value="algeorge.ipp" />
-            <South_wall value="south.ipp"/>
-            <Annuncia value="annun.ipp" />
-            <MysticIndia value="mi.ipp" />
-            <STAIRS value="stairs.ipp" />
-            <ELEPHANT value="elephant.ipp" />
-            <HORSES value="horses.ipp" />
-            <VIRGIN value="virgin.ipp" />
-            <FACES value="faces.ipp" />
-            <FACE_SMALL value="face_small.ipp" />
-            <Annuncia_lab_new value="annunciazione-lab" />
-            <Annuncia_new value="annunciazione" />
-            <Annuncia24_new value="annunciazione24" />
-            <ELAB_DEF_new value="ELAB_DEF" />
-            <Montaggio_IR_new value="ir_fc_montaggio" />
-            <Montaggio_RX_new value="montaggioc_rx" />
-            <Montaggio_UV_new value="montaggio_uv" />
-            <Montaggio_vis_new value="montaggio_vis" />
-            <Montaggio_vis_mezzo_new value="montaggio_vis_mezzo" />
-            <Riflettograf_IR_new value="riflettograf_ir" />
--->
-            <!--
-            <StGeorgeIR value="IR" />
-            <StGeorgePseudo value="pseudo" />
-            <StGeorgeUV value="UV" />
-            <StGeorgeVisible value="visible" />
-            -->
-          </Files>
-          <Config>
-            <ZImages value="BKZ.cfg" />
-            <StructView value="structview.cfg" />
-            <Test1 value="test1.cfg" />
-            <Test2 value="test2.cfg" />
-          </Config>
-        </Image>
-
-        <CAMERAVis>
-          <GlobeDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis" />
-          <GOSDirectory value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis" />
-          <GOSFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/GOS_Metadata.txt" />
-          <GOSFile2 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/GOS2.txt" />
-          <windowHeight value="1080"/>
-          <windowWidth value="1920"/>
-          <_scaleSize value="3.0" />
-          <MINSIZE value="25" />
-          <MAXSIZE value="120" />
-          <shapeScale value="5" />
-          <locationfile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/andrew_export.csv" />
-          <logfile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/query.log" />
-          <timePerRotation value="60.0" />
-          <waitTime value="20.0" />
-          <fadeTime value="100.0" />
-          <useLive value="1" />
-          <timeoffset value="-20.0" />
-          <dbinfo>
-            <host value="camera-console.camera.calit2.net" />
-            <port value="5433" />
-            <dbname value="cameradb_v1p1" />
-            <user value="readonly" />
-            <password value="readonly" />
-          </dbinfo>
-          
-          	<!-- IMAGES -->
-          	<Images>
-			<InfoBox0 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/infobox1.png" />
-          		<InfoBox1 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel2.png" />
-          		<InfoBox2 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel3.png" />
-          		<InfoBox3 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel4.png" />
-          		<InfoBox4 value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel2.png" />
-          	</Images>
-          
-       		 <!--FONTS-->
-		<Fonts>
-			<FontFile value="/home/calvr/covise/fonts/arial.ttf"/>
-		</Fonts>
-        </CAMERAVis>
-
-      <!--  <Sound>
-          <SoundConfig value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/Sound/Config/" />
-          <Volume value="0.4" />
-          <Size value="20.0" />
-          <Scale value="1.0" />
-          <ServerAddress value="10.1.255.245" />
-          <ServerPort value="32000" />
-          <Samples>
-            <Rain value="1" />
-            <Car value="2" />
-            <Crowd value="3" />
-            <Elevator value="4" />
-          </Samples>
-          <Configs>
-            <Mailand value="MaiLand.cfg" />
-          </Configs>
-        </Sound>
--->
-
-    <Sound_Medical>
-          <SoundConfig value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/Sound_Medical/Config/" />
-          <Volume value="0.5" />
-          <Size value="10.0" />
-          <Scale value="1.0" />
-          <ServerAddress value="10.1.255.246" />
-          <UDPPort value="15003" />
-          <Models>
-            <Loudspeaker value="/home/calvr/plugins/calit2/Sound_Medical/loudspeaker_2-4-10.IVE" />
-            <HeliBody value="/home/calvr/plugins/calit2/Sound_Medical/heli_norotors.IVE" />
-            <HeliRotor value="/home/calvr/plugins/calit2/Sound_Medical/heli_rotor.IVE" />
-            <HeliTailRotor value="/home/calvr/plugins/calit2/Sound_Medical/heli_tailrotor.IVE" />
-          </Models>
-          <Samples>
-            <HVAC value="0" />
-            <Hosp_AE value="1" />
-            <Heart80BPM value="2" />
-            <EKG2 value="3" />
-            <Peter value="4" />
-            <Cafe_Lobby value="5" />
-            <Maternity value="6" />
-            <Ventilator value="7" />
-            <Heart100BPM value="8" />
-            <Heart61BPM value="9" />
-            <EKG1 value="10" />
-          </Samples>
-          <Configs>
-            <Helicopter value="Helicopter.cfg" />
-            <HospitalInternal value="HospitalInternal.cfg" />
-          </Configs>
-        </Sound_Medical>
-
-
-	<AudioAssetManager>
-          <ServerAddress value="10.1.255.245" />
-          <ServerPortTCP value="15002" />
-          <ServerPortUDP value="15003" />
-	  <SendHeadPos value="off" />
-	</AudioAssetManager>
-
-
-        <Calit2HallwaySound>
-	  <BaseOSCAddress value="/Calit2HallwaySound" />
-          <Volume value="1.0" />
-          <Size value="40.0" />
-          <Scale value="1.0" /> <!-- sound scale multiplier -->
-          <ScaleEnabled value="0" /> <!-- 1 enable or 0 disable -->
-        </Calit2HallwaySound>
-
-        <FloorPlan>
-	  <ModelFile value="/home/calvr/data/floorplan/calit2-study2.wrl" />
-          <GoalFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/FloorPlan/maps/dollar.bmp" />
-          <FontFile value="/home/calvr/covise/fonts/arial.ttf" />
-          <ServerAddress value="137.110.118.239" /> 
-          <ServerPort value="4001" />
-          <SubjectID value="STUDY" />
-          <LogFileDirectory value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/FloorPlan/log/" />
-          <DebugMessages value="on" />
-          <ScreenShotType value=".tiff" />
-          <ScreenShotWidth value="320" />
-          <ScreenShotHeight value="240" />
-          <ScreenShotDirectory value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/FloorPlan/screenshots/" />
-        </FloorPlan>
-
-        <PDB>
-          <BrowserDirectory value="/home/calvr/data/PDB/thumbnails" />
-          <PDBPluginTempDir value="/home/calvr/data/PDB/cache/" />
-          <PDBPluginPymolDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/PDB/pymol/" /> 
-          <PDBUrl value="www.pdb.org/pdb/files/" />
-          <TopsanDir value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/PDB/Topsan/" />
-          <LayoutDir value="/home/calvr/plugins/calit2/PDB/Layout/" />
-          <PDBDir value="/home/calvr/data/PDB/pdb" />
-          <MAMMOTHDir value="/home/calvr/plugins/calit2/PDB/MAMMOTH" />
-          <AnimationURL value="www.molmovdb.org/uploads/" />
-          <Scale value="3" />
-          <MarkerSize value="80" />
-          <ViewerDistance value="70" />
-          <FadeDistance value="40" />
-          <FileSize value="19500000" />
-          <NumPerRing value="10" />
-          <Radius value="15" />
-          <MaxStructures value="120" />
-          <Structures>
-<!-- below thursday resserach structures
-	    <p2MAD value="2MAD" /> 
-	    <p2RCR value="2RCR" /> 
-	    <p1UW6 value="1UW6" /> 
-	    <p1YI5 value="1YI5" /> 
-	    <p2HU4 value="2HU4" /> 
-	    <p1RVT value="1RVT" /> 
-	    <p1RVO value="1RV0" /> 
-	    <p3EYM value="3EYM" /> 
--->
-	    <!--
-            <XLWBuchE value="1XLW" />
-            <JFOZR value="2JFO" />
-            <hAChEFas2 value="HACH" />
-            <nl4-nrx1b-xtalZR value="NRX1" />
-            -->
-            <!--
-            <Achbp-spxIBm value="AAAA" />
-            <Ana value="BBBB" />
-            <Click140Hana value="CCCC" />
-            <Click1 value="DDDD" />
-            <ConoOMIAm value="EEEE" />
-            <DMXBA value="FFFF" />
-            <D-tub value="GGGG" />
-            <EpibatidineM value="HHHH" />
-            <Imida value="IIII" />
-            <Meta1 value="JJJJ" />
-            <Meta2 value="KKKK" />
-            <Meta2SPX value="LLLL" />
-            <Thai value="MMMM" />
-            <Trop value="NNNN" />
-            -->
-            <!-- <Gos1 value="gos1" /> -->
-            <!-- <Gos2 value="gos2" /> -->
-            <!-- <Gos-ferredoxin-like4 value="2OD4" /> -->
-            <!-- <Gos-ferredoxin-like5 value="2OD5" /> -->
-            <!-- <Gos-ferredoxin-like6 value="2OD6" /> -->
-            <!-- <Heme-peroxidase value="2IIZ" /> -->
-	    <!-- <Imi_endTcrave value="imi" /> -->
-	    <!-- <Thi_end value="thi" /> -->
-            <!-- <Phosphatase value="2F46" /> -->
-            <!-- <TM1030 value="1030" /> -->
-            <!-- <TM1030-ligand value="1ZKG" /> -->
-            <!-- <TM1030-apo value="1Z77" />  -->
-            <!-- <TM1030_JCSG value="tm1030_jcsg" /> -->
-            <!-- <TM1030_MCSG value="tm1030_mcsg" /> -->
-            <!-- <JCSG value="jcsg.pdp" /> -->
-            <!-- Thermatoga_group value="blah.pdp" / --> 
-            <Flu value="1RUZ" />
-            <RNA_Editing_Ligase value="1XDN" />
-            <PDBID_2HU4 value="2HU4" />
-            <Hermes value="2BW3" />
-            <TN5-DNA value="1MUS" />
-            <Gleevec value="1XBB" />
-            <Luciferin value="2D1S" />
-            <Hemoglobin value="4HHB" />
-            <HIV_Protease value="1HVR" />
-            <Smad4 value="1YGS" />
-            <Photosystem_I value="1JBO" />
-            <Cytochrome_c_Oxidase value="1OCO" />
-            <MHC_Class_II value="1DLH" />
-            <Potassium_Channel_A value="1BL8" />
-            <Potassium_Channel_B value="1FQY" />
-            <SARS value="2D2D" />
-            <Acetylcholine_Receptor value="2BG9" />
-            <Acetylcholine_Cobratoxin value="1YI5" />
-            <Thermus_Thermophilus value="1J5E" />
-            <Polyketide_Synthase value="1U0M" />
-            <Calcium_Pump value="1SU4" /> 
-            <Antibody_bound_Influenza value="1KEN" />
-            <Thermatoga value="2F8J" />
-            <RNA_POLYMERASE_2 value="1I6H" />
-            <KAUST_1WNH value="1WNH" />
-            <KAUST_1PCV value="1PCV" />
-            <KAUST_2AXD value="2AXD" />
-            <KAUST_3G43 value="3G43" />
-            <!--
-            <P-2BYP value="2BYP" />
-            <P-2BYR value="2BYR" />
-            <P-2BYS value="2BYS" />
-            <P-2BYZ value="2BYZ" />
-            <Xtal value="XTAL" />
-            <HXtal value="HTAL" />
-            -->
-          </Structures>
-          <Animations>
-            <Serotonin_N_Acetyltransferase value="22943-38" />
-            <Calcium_Pump value="396506-12995" />
-            <FecA_transporter value="829808-15750" />
-            <Actin value="763408-1487" />
-            <Calmodulin value="17833-29779" />
-          </Animations>
-        </PDB>
-
-        <CCDBVR>
-          <ModelPath>
-             <ModelDir value="/home/calvr/data/CCDBVR/" />
-          </ModelPath>    
-
-          <TreeSpacing>
-            <ShiftX value="400" />
-            <ShiftY value="0" />
-            <ShiftZ value="-200" />
-            <RootSpacing value="1350" />
-            <SpaceRatio value="1.25" />
-            <FontSize value="50" />
-          </TreeSpacing>
-
-          <Scale value="1" />
-          <ViewerDistance value="2" />
-          <Mitochondria>
-            <mito_inner value="inner_2.wrl" />
-            <mito_outer value="outer_2.wrl" />
-            <mito_crista_1 value="crista1_2.wrl" />
-            <mito_crista14 value="crista14.wrl" />
-            <mito_crista15 value="crista15.wrl" />
-          </Mitochondria>
-          <HPFNode>
-            <axon value="axon.synu.iv" />
-            <loop1 value="loop1_lower_best.synu.iv" />
-            <loop2L value="loop2_lower.synu.iv" />
-            <loop2U value="loop2_upper.synu.iv" />
-            <loop3L value="loop3_lower.synu.iv" />
-            <loop3U value="loop3_upper.synu.iv" />
-            <lysosome value="Lysosome_1.synu.iv" />
-            <paranode value="paranode.iv" />
-          </HPFNode>
-          <Complete>
-            <Dendrite value="DENDRITE" />
-            <Mitochondrion value="MITO" />
-            <HPFNode value="HPF" />
-            <CONNode value="CON" />
-            <MouseHeart value="TAKE" />
-           <Shark value="SHARK" />
-            <Latest value="LATEST" />
-	    <Latest_Remesh value="LATEST_REMESH" />
-          </Complete>
-        </CCDBVR>
-
-       <VisualAcuity>
-         <ImageDirectory value="/home/calvr/data/EyeCharts" />
-         <Pos x="0" y="1506" z="0" />
-         <Scale value="1.0" />
-         <Rotation value="0" />
-       </VisualAcuity>
-        
          <StructView>
-             <Layer0File value="/home/calvr/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
-             <Layer1File value="/home/calvr/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
-             <Layer2File value="/home/calvr/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
-             <Layer3File value="/home/calvr/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
-             <Layer4File value="/home/calvr/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
-             <Layer5File value="/home/calvr/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
-             <Layer6File value="/home/calvr/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
-             <Layer7File value="/home/calvr/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
-             <Layer8File value="/home/calvr/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
-             <Layer9File value="/home/calvr/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
-             <Layer10File value="/home/calvr/data/baybridge/T1Block13_FullConcrete.WRL" />
-             <Layer11File value="/home/calvr/data/baybridge/Tower-all.wrl" />
+             <Layer0File value="/data-nfs/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+             <Layer1File value="/data-nfs/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+             <Layer2File value="/data-nfs/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+             <Layer3File value="/data-nfs/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+             <Layer4File value="/data-nfs/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+             <Layer5File value="/data-nfs/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+             <Layer6File value="/data-nfs/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+             <Layer7File value="/data-nfs/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+             <Layer8File value="/data-nfs/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+             <Layer9File value="/data-nfs/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+             <Layer10File value="/data-nfs/baybridge/T1Block13_FullConcrete.WRL" />
+             <Layer11File value="/data-nfs/baybridge/Tower-all.wrl" />
           </StructView>
 
-          <WebBrowser>
-             <CacheDir value="/home/jschulze/svn/trunk/covise/src/renderer/OpenCOVER/plugins/WebBrowser/Cache" />
-             <BookMarks>
-                 <Rescue value="http://itr-rescue.org" />
-                 <Magpie value="http://magpie.ucsd.edu/magpie/sp_test2/ost_01_008/ost_01_008_home.html" />
-                 <Aurantimonas value="http://magpie.ucsd.edu/magpie/aurantimonas/private/index.html" />
-                 <LocalFile value="file:///local/home/vhuynh/magpie/si859a1_01_home.html" />
-             </BookMarks>        
-         </WebBrowser>
-
-         <Molecules>
-           <DataDir value="/home/jschulze/data/itt" />
-         </Molecules>
-
-	<MipMapVideo>
-		<!--<ConfigFile value="/home/calvr/data/tornado/2k-512/config_final.txt"/>-->
-		<ConfigFile value="/state/partition1/data/tornado/512/config_final_1200.txt"/>
-		<!--<ConfigFile value="/home/calvr/data/ncmir/compressed/config.txt"/>-->
-		<!--<ConfigFile value="/home/calvr/data/tornado/2k-tiff-mipmap-512/config_final.txt"/>-->
-		<!--<ConfigFile value="/home/calvr/data/ncmir/uncompressed/config.txt"/>-->
-	</MipMapVideo>
        </Plugin>
 
     <MultiPC>
-     <SyncMode value="TCP" />
      <NumSlaves value="7" />   <!-- use 7 for all tourcave machines -->
      <MasterInterface value="67.58.33.242" />
      <Startup value="ssh ${USER}@tourcave-1 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="0" />  
@@ -1000,6 +715,7 @@
     </MultiPC>
  
     <Input>
+     <TrackingDebug value="off" />
      <Threaded FPS="60.0" />
      <TrackingSystem1 value="MOUSE">
        <Offset x="0" y="0" z="0" />
@@ -1017,7 +733,6 @@
 
      <TrackingSystem0 value="VRPN">
        <Offset x="0" y="0" z="-1193" />
-       <!--Offset x="0" y="0" z="-1500" /-->
        <Orientation h="0" p="0" r="0" />
 
        <VRPN>
@@ -1029,7 +744,7 @@
        <NumValuators value="0" />
 
        <Body0>
-        <Offset x="0" y="0" z="0" />
+        <Offset x="0" y="-20" z="-40" />
         <Orientation h="0" p="0" r="0" />
        </Body0>
        <Body1>
@@ -1046,6 +761,26 @@
        </Body3>
      </TrackingSystem0>
 
+     <!--TrackingSystem0 value="VRPN">
+       <Offset x="0" y="0" z="-1193" />
+       
+       <VRPN>
+         <Server value="head@67.58.33.254" />
+       </VRPN>
+
+       <NumBodies value="1" />
+     </TrackingSystem0>
+
+     <TrackingSystem3 value="VRPN">
+       <Offset x="0" y="0" z="-1193" />
+       
+       <VRPN>
+         <Server value="hand@67.58.33.254" />
+       </VRPN>
+
+       <NumBodies value="1" />
+     </TrackingSystem3-->
+
      <TrackingSystem2 value="VRPN">
        <NumBodies value="0" />
        <NumButtons value="3" />
@@ -1058,7 +793,7 @@
 
      <NumHeads value="1" />
      <Head0Address system="0" body="0" />
-
+<TrackingDebug value="false" button="true" body="true" station="1" />
      <NumHands value="2" />
      <Hand1>
        <Address system="1" body="0" />
@@ -1068,7 +803,7 @@
      <Hand0>
        <Address system="0" body="1" />
        <ButtonMask system0="0x00" system1="0x00" system2="0xFF" />
-       <Graphic value="NONE" />
+       <!--Graphic value="NONE" /-->
        <NumValuators value="1" />
        <Valuator0 system="2" index="0" />
      </Hand0>
@@ -1095,45 +830,8 @@
 
     <SceneSize value="2000" />
     <ViewerPosition x="0" y="0" z="0" />
-    <CoordAxis value="off" />
     <Freeze value="off" />
     <EyeSeparation value="on" />
-    <ViewAll value="off" />
-    <!--<NumPipes value="2" />
-    <NumScreens value="2" />
-    <NumWindows value="2" />-->
-    <Headlight value="on" />
-
-    <Plugin>
-      <Vrml97>
-        <!--<Audio value="none" > -->
-        <!-- <Audio value="AServer" >
-          <Host value="137.110.111.209" />
-        
-        </Audio> -->
-      </Vrml97>
-      
-      <ModelViewer>
-        <ModelFile value="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts.obj" />
-      </ModelViewer> 
-		<HotSpot>
-			 <LinearShaderFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/linear.frag" />
-                    <Lut1DShaderFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut1d.frag" />
-                    <Lut1DDataFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut1d.csv" />
-                    <Lut2DShaderFile value="/home/calvr/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut2d.frag" />
-			<ProjCoordSource value="config" />
-			<Enabled value="false" />
-			<UseHeadTrackerData value="true" />
-			<MarkHotspot value="false" />
-			<MinAlpha value="0.8" />
-			<MaxAlpha value="1.5" />
-		</HotSpot>
-	</Plugin>
-
-    <DebugLevel value="0" /> 
-    <FPS value="false" />
-
- </GLOBAL>
 
 <LOCAL host="tourcave.local">
   <NumPipes value="1" />
@@ -1141,15 +839,15 @@
   <NumWindows value="1" />
 
   <WindowConfig>
-    <Window width="1024" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" cudaDevice="0" />
+    <Window width="1024" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="true" cudaDevice="0" />
   </WindowConfig>
 
   <ChannelConfig>
-    <Channel channel="0" left="0"    width="1024" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel left="0"    width="1024" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
   </ChannelConfig>
 
   <ScreenConfig>
-    <Screen height="1125" h="0.0" width="1500" p="0.0"   originX="0"  comment="S_A" originY="1500"  r="0.0" name="0" originZ="0"    screen="0" />
+    <Screen height="1125" h="0.0" width="1500" p="0.0"   originX="0"  comment="S_A" originY="1500"  r="0.0" name="0" originZ="0" />
   </ScreenConfig>
 </LOCAL>
 
