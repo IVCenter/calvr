@@ -125,6 +125,7 @@ bool Navigation::init()
     }
 
     _floorOffset = ConfigManager::getFloat("value","FloorOffset",1500);
+    _snapToGround = ConfigManager::getBool("value","SnapToGround",false,NULL);
 
     return true;
 }
@@ -1047,6 +1048,23 @@ void NavValuator::processEvent(InteractionEvent * ie)
     if(move)
     {
 	objmat = objmat * osg::Matrix::translate(-moveVec);
+	if(Navigation::instance()->getPrimaryButtonMode() == DRIVE && Navigation::instance()->getSnapToGround())
+	{
+	    float range = 300;
+	    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
+
+	    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
+	    if(isecvec.size())
+	    {
+		if(isecvec[0].point.z() < -Navigation::instance()->getFloorOffset() + range)
+		{
+		    float adjust = isecvec[0].point.z() + Navigation::instance()->getFloorOffset();
+		    osg::Matrix adjMat;
+		    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
+		    objmat = objmat * adjMat;
+		}
+	    }
+	}
     }
 
     if(rotate || move)
