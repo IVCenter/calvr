@@ -1,98 +1,51 @@
 <?xml version="1.0"?>
-<GLOBAL> 
-<!-- enable or display master rendering -->
+
       <RenderOnMaster value="true" />
       <Stencil value="true" />
       <ShowAxis value="false" />
       <HidePointer value="false" />
       <UseDepthPartition value="false" />
       <PipeConfig>
-        <Pipe display="not needed any more" server="0" screen="0" name="0" />
-        <Pipe display="n" server="0" screen="1" name="1" />
+        <Pipe server="0" screen="0" name="0" />
+        <Pipe server="0" screen="1" name="1" />
       </PipeConfig>
 
       <!-- disabled befault 4 -->
       <MultiSample value="0" />
 
-      <CollisionDist value="1500" />
-
-    <CUI>
-      <ResourcesDirectory value="/home/covise/covise/src/renderer/OpenCOVER/osgcaveui/resources" />
-    </CUI>
-
       <Background r="0.0" g="0.0" b="0.0" />
       <MultiThreaded value="CullDrawThreadPerContext" />
       <!-- MultiThreaded value="SingleThreaded" / -->
       <CullingMode value="CALVR" />
-      <SyncToVBlank value="on" device="DFP-1" />
+      <SyncToVBlank value="on" />
       <FloorHeight value="-1663" />
       <Near value="100" />
       <Far value="10000000" />
 
       <ConfigDebug value="false" />
 
-      <PointerAppearance Length="2500" />
-
-      <Audio>
-        <AssetManager>
-	  <Server value="10.1.255.245" />
-	</AssetManager>
-      </Audio>
-
       <Plugin>
- <!-- Standard Cover plugins, should always be on: -->
         <ClipPlane value="off" />
-        <Vrml97 value="off" />
         <Site value="off" />
-<!-- Demoable plugins: -->
+        <WaterMaze value="off" />
+        <ElevatorRoom value="off" />
+	<SoundPlayer value="off" />
         <GreenLight value="off" />
-        <VisualAcuity value="off" />
         <OssimPlanet value="off" />
         <OsgEarth value="off" />
         <OsgMovie value="off" />
-        <Volume value="off" />
-        <Molecules value="off" />
-        <CAMERAVis value="off" />
-        <PDB value="off" /> 
-        <Marker value="off" />
-        <Image value="off" /> <!-- DO NOT ENABLE ME -->
-        <AirCurrents value="off" />
-        <StructView value="on" />
-        <CCDBVR value="off" />
-        <EQVis value="off" />
+        <OsgChromosome value="off"/>
+	<Volume value="on" />
+        <StructView value="off" />
 	<Sketch value="off" />
-        <FloorPlan value="off" /> <!-- Turn on Calit2HallwaySound for audio demo -->
 	<Collaborative>
-	  <Server value="127.0.0.1" />
-	  <Port value="11050" />
-	</Collaborative>
-        <PointStream value="off" />
-	<ModelLoader value="on" />
-	<PanoView360 value="off" />
-	<PanoViewLOD value="on" />
-        <FileBrowser value="off" />
-        <directFEA value="off" />
-        <SGDump value="off" />
-        <PluginUtil value="off" />
-        <Measure value="off" />
-        <Sound value="off" /> <!-- For hallway demo, use Calit2HallwaySound -->
+	        <Server value="127.0.0.1" />
+	        <Port value="11050" />
+        </Collaborative>
+	      <ModelLoader value="on" />
+	      <PanoView360 value="off" />
+	      <PanoViewLOD value="on" />
 
-	<!-- Plugins using Audio Asset Manager -->
-	<!-- AirCurrents -->
-        <Calit2HallwaySound value="off" /> <!-- Turn on FloorPlan -->
-	<Sound_Medical value="off"/> <!-- Turn on CaveCAD -->
-	<!-- run opencover ~/data/JacobsHospital/JacobsHospitalRemodel.WRL -->
-<!-- Plugins not ready for demos: -->
-      	<AudioAssetManagerCtrl value="off" /> <!-- Keep it OFF -->
-        <TelePresence value="off" />
-        <Hand2 value="off" />
-        <Argus value="off" />
-        <PointModel value="off" /> <!-- DO NOT ENABLE, under devel -->
-        <Talha value="off"> 
-        	<ConfigFile value="/home/covise/data/Talha/sample.tma"/>
-        	<TextureFile value="/home/covise/data/Talha/sampleTex.png"/>
-        </Talha>
-        <HotSpot value="off" />
         <Maze value="off" />  <!-- turn off when not testing --> 
         <CaveCAD value="off" />  <!-- turn off when not testing -->
 	<CaveCAD>
@@ -124,52 +77,10 @@
 		
 	<SpaceTraveler value="off" />
 		
-        <PhotosynthVR value="off" />
-        <GridPointCloudLoader value="off" />
-        <HPWRENViewer value="off" />
-        <ThreadedLoader value="off" />
-        <Look value="off" /> <!-- under devel -->
-        <PointAnim value="off" />
-        <HMI value="off" />
-	<BlackBoxInfo value="off" />
-	<GML value="off" />
-        <Point value="off" />
+        <Points value="on" />
 	<ArchField value="off" />
-        <ArtifactVis value="off" />
-        <LocationTracker value="off" />
-        <MipMapVideo value="off" /> 
-	<TomsBirthday value="off" />
-        <Vic value="off" />
-        <WebMonitor value="off" >
-		<WebcamDataFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/WebMonitor/query/WebcamData.out" />
-               <PhotoDataPath value = "/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/WebMonitor/photos/" />
-	</WebMonitor>
-        <WebBrowser value="off" />
-        <SliceViewer value="off" />
-        <PDBSequenceDisplay value="off" />
-        <Anchorage value="off" />
-        <ThumbnailBrowser value="off" />
-        <Active value="off" />
-        <Cliff value="off" />
-        <VanNuys value="off" />
-        <Particles value="off" />
-        <DepthOfFocus value="off" />
-        <Calit2Building value="off" />
-        <Birch value="off" />
-	<SoundGame value = "off" />
-        <Earthquake value="off" />
-        <MessagePlugin value="off" />
-        <Measure value="off" />
-        <ModelViewer value="off" />
-        <AtlasInSilico value="off" />
-        <RIVis value="off" />
-        <GeoFusion value="off" />
+        <ArtifactVis value="on" />
         <Seismic value="off" /> <!-- under development -->
-	<Wtest value="off" />
-        <SoundServer value="off" />
-        <SoundTest value="off" />
-	<Kaust value="off" />
-        <SGDump value="off" />
         <PathRecorder value="off" />
 	<OsgPathRecorder value="off" />
 	<TourCave value="off" />
@@ -183,10 +94,132 @@
           <ColorSelector x="0" y="1200" z="-150" />
 	</Sketch>
 
-        <SoundServer>
-          <Server value="137.110.111.239" />
-          <Port value="31231" />
-        </SoundServer>
+
+<WaterMaze>
+   <!-- All values in millimeters -->
+   <WidthTile  value="2000" />
+   <HeightTile value="2000" />
+   <NumWidth   value="8" />
+   <NumHeight  value="8" />
+   <Depth      value="10" />
+   <WallHeight value="3000" />
+   <StartingHeight value="2000" />
+   <GridWidth  value="50" />
+
+   <DataDir value="/home/cehughes/data/WaterMaze/" />
+     <Textures>
+     <Wall value="textures/DarkStucco.jpg" />
+   </Textures>
+
+   <Models>
+     <Painting value="models/AbstractPainting/models/Sans.dae" />
+     <DesertPainting value="models/DesertPainting/models/DesertPainting.dae" />
+     <Bookshelf value="models/Bookshelf2/models/skpfile.dae" />
+     <Chair value="models/Chair/models/chair.dae" />
+     <Clock value="models/clockmodel/models/clock.dae" />
+   </Models>
+
+</WaterMaze>
+
+
+
+
+
+
+ <ElevatorRoom>
+
+    <Levels>
+      <Space>
+        <WallTexture     value="DarkGranite.jpg" />
+        <CeilingTexture  value="DarkGranite.jpg" />
+        <FloorTexture    value="Rusted_Iron_Grip_desaturated.jpg" />
+        <DoorTexture     value="Aluminum_Brush.jpg" />
+        <ElevatorTexture value="Needlepoint_Steel.jpg" />
+        <AllyTexture     value="Astronaut.jpg" />
+        <AlienTexture    value="Alien.jpg" />
+        <CheckerTexture1 value="checkboard1.jpg" />
+        <CheckerTexture2 value="checkboard2.jpg" />
+      </Space>
+
+      <Farm>
+        <WallTexture     value="Woodplanks.jpg" />
+        <CeilingTexture  value="Woodplanks.jpg" />
+        <FloorTexture    value="Dirt.jpg" />
+        <DoorTexture     value="WideWoodPlanks.jpg" />
+        <ElevatorTexture value="GreySlate.jpg" />
+        <AllyTexture     value="Pig.jpg" />
+        <AlienTexture    value="Sheep.jpg" />
+        <CheckerTexture1 value="checkboard1.jpg" />
+        <CheckerTexture2 value="checkboard2.jpg" />
+      </Farm>
+
+      <Forest>
+        <WallTexture     value="Stone.jpg" />
+        <CeilingTexture  value="WideWoodPlanks.jpg" />
+        <FloorTexture    value="LongGrass.jpg" />
+        <DoorTexture     value="Woodplanks.jpg" />
+        <ElevatorTexture value="Slush.jpg" />
+        <AllyTexture     value="rabbit.jpg" />
+        <AlienTexture    value="bear.jpg" />
+        <CheckerTexture1 value="checkboard1.jpg" />
+        <CheckerTexture2 value="checkboard2.jpg" />
+      </Forest>
+    </Levels>
+
+
+    <DataDir        value="/home/cehughes/data/ElevatorData" />
+    <WallTexture    value="DarkGranite.jpg" />
+    <CeilingTexture value="DarkGranite.jpg" />
+    <FloorTexture   value="Rusted_Iron_Grip.jpg" />
+    <DoorTexture    value="Aluminum_Brush.jpg" />
+    <ElevatorTexture value="Needlepoint_Steel.jpg" />
+    <AllyTexture    value="Astronaut.jpg" />
+    <AlienTexture   value="Alien.jpg" />
+    <CheckerTexture1 value="checkboard1.jpg" />
+    <CheckerTexture2 value="checkboard2.jpg" />
+
+    <Position x="0.0" y="0.0" z="-700.0" />
+    <Scale x="200.0" y="200.0" z="200.0" />
+
+    <Server value="137.110.119.175" />
+    <Port value ="31231" />
+
+    <AudioServer value="on" />
+    <AudioServerAddress value="137.110.116.10" />
+    <AudioServerPort value="15003" />
+    <DingSound path="/home/cehughes/data/ElevatorData" file="elevator-ding.wav" />
+    <LaserSound file="pulsephaser.wav" />
+    <HitSound file="hullbreak30.wav" />
+
+    <Debug value="on" />
+    <Crosshair value="off" />
+
+    <StaticDoor value="-1" /> <!-- -1 for off -->
+    <StaticMode value="off" /> <!-- Checker, Alien, Ally, or off -->
+    <DoorMovement value="on" />
+    <RotateOnlyNavigation value="on" />
+
+
+    <CheckerFlashSpeed value="20" />
+    <AvatarFlashSpeed value="10" />
+    <DoorFlashSpeed value="10" />
+
+    <SolidColorTime min="0.5" max="2" />
+    <DoorOpenTime  min="1" max="2" />
+
+    <Phases>
+      <0 trials="50" pause="20" theme="Space" />
+      <1 trials="50" pause="20" theme="Farm" />
+      <2 trials="50" pause="20" theme="Forest" />
+      <3 trials="50" pause="20" theme="Space" />
+      <4 trials="50" pause="20" theme="Farm" />
+      <5 trials="50" pause="20" theme="Forest" />
+    </Phases>
+
+    <Probabilities alien="50" ally="40" checker="10" /> <!-- should sum to 100 -->
+    <ErrorProbability value="5" />
+
+ </ElevatorRoom>
 
         <PathRecorder>
 	      <DataDir value="/home/covise/data/PathRecorder/" />
@@ -210,7 +243,6 @@
      <Mode0>
       <PathID value="1" speed="1.0" />
       <Audio>
-       <File0 name="/Ambient/Masjid" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
        <File1 name="/Voice/TourCAVE" time="0.0" stopLocation="END" stopAction="STOP" />
       </Audio>
      </Mode0>
@@ -241,23 +273,6 @@
         <Maze>
           <DataDir value="/home/covise/data/maze" />
         </Maze> 
-
-        <PointAnim>
-          <PointPath value="/home/covise/data/osaka/121904177" />
-        </PointAnim>
-        
-        <HPWRENViewer>
-          <TempDir value="/home/covise/plugins/calit2/HPWRENViewer/tmp/" />
-        </HPWRENViewer>
-
-        <ThreadedLoader>
-          <Affinity value="3" />
-        </ThreadedLoader>
-
-        <HMI>
-          <TempDir value="/home/covise/plugins/calit2/HMI/temp/" />
-          <Datafile value="/home/covise/plugins/calit2/HMI/dir.out" />
-        </HMI>
 
 	<OsgEarth>
 	    <Earth value="/data/data/osgEarth/test.earth" />
@@ -299,54 +314,6 @@
             vertex="/home/covise/data/GreenLight/shaders/component.vert" /> 
         </GreenLight>
 
-        <BlackBoxInfo>
-	  <WorldFile value="/home/covise/data/blackbox/metaloader.wrl" />
-          <BlackBoxDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/BlackBoxInfo/" />
-          <MetaloaderRootName value="root_SCGR_1" />
-          <powerLiveStatDialDefauMax value = "500" />
-          <powerLiveStatDialDefauMin value = "230" />
-          <powerLiveStatDialDefauNorm value = "250" />
-          <Debug value = "0" />
-          <TempDir value="/home/covise/plugins/calit2/BlackBoxInfo/tmp/" />
-          <RefreshTime value="10.0" />
-          <PDUlist>
-	    <PDU1 value="PDU10.10.10.11" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.11-" />
-	    <PDU2 value="PDU10.10.10.12" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.12-" />
-            <PDU3 value="PDU10.10.10.13" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.13-" />
-            <PDU4 value="PDU10.10.10.14" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.14-" />
-            <PDU5 value="PDU10.10.10.15" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.15-" />
-            <PDU6 value="PDU10.10.10.16" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.16-" />
-            <PDU7 value="PDU10.10.10.17" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.17-" />
-            <PDU8 value="PDU10.10.10.18" url="https://nm6.calit2.optiputer.net/g48c8bc0d/chart/PDU10.10.10.18-" />
-          </PDUlist>
-        </BlackBoxInfo>
-
-        <GreenLight>
-          <Components textureDir="/home/covise/data/GreenLight/maps/">
-            <!-- Texture files should contain both the front and back faces, front on top-->
-            <C1 startname="convey" height="2" minWattage="640" maxWattage="690471" texture="unwrap_ConveyHC1.png" />
-            <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
-            <C3 startname="compute" height="1" minWattage="195" maxWattage="453" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
-            <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
-            <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
-            <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
-            <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
-            <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
-            <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
-            <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
-          </Components>
-          <Hardware
-            local="/home/covise/data/GreenLight/GreenLightAssets.fakejson"
-            download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
-          <ModelsDir value="/home/covise/data/GreenLight/Models/" />
-          <Power
-            local="/home/covise/data/GreenLight/GLpower.xml"
-            download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power&amp;method=live" />
-          <Shaders
-            fragment="/home/covise/data/GreenLight/shaders/component.frag"
-            vertex="/home/covise/data/GreenLight/shaders/component.vert" />
-        </GreenLight>
-
 	<ModelLoader>
           <ConfigDir value="/home/covise/data/ModelLoader/CVR" />
 	  <Files>
@@ -356,7 +323,12 @@
 	<!--    <hammerhead_parts path="/home/covise/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
 	    <hammerhead_full path="/home/covise/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
 	    <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
-            <!--<Moebius path="/home/covise/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
+	    <!--<coral1 path="/home/covise/data/sio/coral_a.osgb" mask="1" />
+	    <coral2 path="/home/covise/data/sio/coral_b.osgb" mask="1" />
+	    <coral3 path="/home/covise/data/sio/coral_c.osgb" mask="1" />
+	    <coral4 path="/home/covise/data/sio/coral_d.osgb" mask="1" />
+	    <coral5 path="/home/covise/data/sio/coral_e.osgb" mask="1" />
+            <Moebius path="/home/covise/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
             <ShowCase path="/home/covise/Showcase.wrl" mask="1" />
             <bearing_and_shearkeys path="/home/covise/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
             <cross_beam path="/home/covise/data/caltrans/cross_beam.wrl" mask="1" />
@@ -371,35 +343,17 @@
 	  </Files>
 	</ModelLoader>
 
-        <PhotosynthVR>
-          <Slash value = "/" />
-          <DataPath value = "/home/covise/data/PhotosynthVR/" />
-          <English>
-            <MainMenu value = "PhotosynthVR" />
-            <OptionsMenu value = "PhotosynthVR Options" />
-            <CannotLoadFile value = "Cannot load file: " />
-            <LoadFileSets value = "Load File Set" />
-            <FileSets value = "File Sets" />
-          </English>
-        </PhotosynthVR>
-        
-        <GridPointCloudLoader>
-          <Slash value = "/" />
-          <DataPath value = "/home/covise/data/GridPointCloudLoader/" />
-          <SavedPrefFile value = "savedPref.config" />
-          <English>
-            <MainMenu value = "GridPointCloudLoader" />
-            <OptionsMenu value = "Grid-like Point Cloud Loader" />
-            <AutoLoadOsaka value = "Auto-Load Osaka Data" />
-            <ExteriorPoints value = "Render Exterior Points" />
-            <InteriorPoints value = "Render Interior Points" />
-            <Lines value = "Render Lines" />
-            <Triangles value = "Render Triangles" />
-            <CannotLoadFile value = "Cannot load file: " />
-            <LoadFileSets value = "Load File Set" />
-            <FileSets value = "File Sets" />
-          </English>
-        </GridPointCloudLoader>
+	<Points>
+	    <ShaderPath value="/home/covise/CVRPlugins/calit2/Points/shaders" />
+	    <ColorTable value="/home/covise/CVRPlugins/calit2/Points/shaders/colortable.rgb" />
+	    <ConfigDir  value="/home/covise/data/PointsConfig" />
+	    <Files>
+		    <Dec19 path="/home/covise/data/Trish/SESMI_Dec19.xyb" />
+		    <Lafayette path="/home/covise/data/Trish/SESMI_Lafayette_LIDAR.xyb" />
+		    <Garden path="/home/covise/data/Trish/SESMI_Garden_LIDAR.xyb" />
+		    <Wigs path="/home/covise/data/Trish/SESMI_Wigs_LIDAR.xyb" />
+	    </Files>
+	</Points>
 
         <PanoViewLOD>
             <ShaderDir value="/home/covise/data/PansLOD/glsl/" />
@@ -407,6 +361,7 @@
             <!-- <ImageSearchPath value="/state/partition1/data/pan:/home/covise/data/PansLOD" /> -->
             <ImageSearchPath value="/data-local/PansLOD:/home/covise/data/PansLOD" />
             <DefaultConfigDir value="/home/covise/data/PansLOD/config/" />
+	    <ConfigDir value="/home/covise/data/PansLOD/initconfig/" />
 	    <SpinValuator value="0" />
 	    <ZoomValuator value="3" />
 	    <CacheSize value="512" />
@@ -426,26 +381,133 @@
                     <LuxorTempleNight2 />
                     <LuxorTempleOutsideColumn />
                 </Luxor>
+		<Jordan>
+			<Umayri_Set/>
+			<ELRAP>
+			  <KF18_001 />
+ 			  <KF18_002 />
+  		          <KF18_003 />
+  			  <KNA_001 />
+  			  <KNA_002 />
+			</ELRAP>
+			<Umayri>
+				<Temple_Entry_1/>
+				<Temple_Shrine_Light/>
+				<Random_Field_H/>
+				<Temple_Shrine_Evening_1/>
+				<Temple_Shrine_Evening_2/>
+				<Temple_Entry_Morning_1/>
+				<Temple_Side_Room_1/>
+				<Temple_Side_Room_2/>
+				<Temple_Entry/>
+				<Temple_Entry/>
+				<Side_Room/>
+				<Temple_Side_Room/>
+				<Field_B_Exterior/>
+				<Tent/>
+				<Entry_Stairs_1/>
+				<Entry_Stairs_2/>
+				<View_from_the_West/>
+				<Back_of_Four_Room_House/>
+				<Courtyard_of_Four_Room_House/>
+				<Courtyard_II/>
+				<Roof_I/>
+				<Roof_II/>
+				<Outside_Dolmen/>
+				<Inside_Dolmen/>
+				<Overlooking_K/>
+				<Building_M_Center/>
+				<Building_M_South/>
+				<Building_M_North/>
+				<Building_B_Broadroom/>
+				<Building_B_Standing_Stone/>
+				<Building_C/>
+				<Build_D/>
+			</Umayri>
+		</Jordan>
+		<SLAG>
+		    <SLAG_HillMineOne />
+		    <SLAG_HillMineTwo />
+		    <SLAG_One />
+		    <SLAG_Two />
+		    <SLAG_Three />
+		    <SLAG_Set />
+		</SLAG>
+		<TTF>
+		    <TTF_Inside_Sunrise />
+		    <TTF_Inside_Sunset />
+		    <TTF_Outside_Corner_Sunrise />
+		    <TTF_Outside_Petroglyph_Southside />
+		    <TTF_Outside_Petroglyph_Tower_Sunrise />
+		    <TTF_Outside_Sunset />
+		    <TTF_Petro1 />
+		    <TTF_Set />
+		</TTF>
+		<Dam>
+		    <Dam_Top1 />
+		    <Dam_Well />
+		</Dam>
                 <KAUST>
                     <KAUSTmuseum1 />
                     <KAUSTmuseum2 />
                     <SaudiMar11 />
                 </KAUST>
+		<Al-Masri>
+		    <Al-MasriBigFlag />
+		    <Al-MasriDome />
+		    <Al-MasriGardenLittleFlag />
+		    <Al-MasriLibrary />
+		    <Al-MasriOffice />
+		    <Al-MasriVase />
+		    <Al-MasriVase-Better />
+		    <Al-MasriVase-Set />
+		    <AlMasriGazebo />
+		    <Al-Masri-Set />
+		</Al-Masri>
                 <Wisconsin>
                     <Taliesin-Path />
                     <UPset />
                     <UW-Madison-2 />
                     <wiscoSet />
                 </Wisconsin>
+		<SESMI>
+	 		<SESMI_cam1 />
+	 		<SESMI_Roof />
+	 		<SESMI_Wigs1 />
+	 		<SESMI_Wigs2 />
+	 		<SESMI_Wigs3 />
+	 		<SESMI_Wigs_Duy />
+	 		<SESMI_Wigs_Heidi />
+	 		<SESMI_Wigs_MT />
+	 		<SESMI_LaFayette1 />
+	 		<SESMI_Lafayette2 />
+	 		<SESMI_LaFayette_Adriana />
+	 		<SESMI_LaFayette_Angela />
+	 		<SESMI_LaFayette_MTrings />
+		 	<SESMI_Houses1 />
+		 	<SESMI_Houses2 />
+		</SESMI>
                 <BluebonnetSet />
+		<AlMasriGazebo />
+		<Jets />
+		<ForwardTest />
 		<CineGrid />
 		<KACST-Indoor2 />
 		<KACST-Outdoor1 />
-		<Curiosity />
+		<Curiosity>
+		<Curiosity_Aug />
+		<Curiosity_Nov />
+		<Curiosity_Mastcam />
+		<Curiosity_Navcam />
+		</Curiosity>
 		<Gallery_Drones />
+
 		<Dr-Seuss />
 		<Taif-Set />
 		<SaudiCopperMine-Set />
+		<TTF_Inside_Sunset-DA />
+		<TTF_Outside_Corner_Sunrise-DA />
+		<Taif-Dam-Wall-Light-Dark-Set />
             </Pans>
         </PanoViewLOD>
 
@@ -583,61 +645,6 @@
 	  <ColorTable value="/home/covise/CVRPlugins/calit2/Site/colortable.rgb" />
 	</Site>
 
-        <Point>
-          <DataDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/Point/earthquakes.xyz" />
-        </Point>
-
-        <Molecules>
-          <DataDir value="/home/covise/data/itt" />
-        </Molecules>
-        <PDBSequenceDisplay>
-          <Location value="/home/covise/data/PDBSequenceDisplay/1A01.pdb" />
-          <CacheDirectory value="/home/covise/data/PDB/pdb" />
-          <ProteinName value="1A01.pdb" />
-          <Menusize value="0.15" />
-        </PDBSequenceDisplay>
-
-      </Plugin>
-
-      <FrameAngle value="18.0" />
-      <ScaleAll value="OFF" />
-
-      <TabletPC>
-        <Server value="localhost" />
-      </TabletPC>
-
-      <Plugin>
-        <PointModel>
-	  <Files>
-	    <Palazzo_Vecchio_25 value="/home/covise/data/maurico/binarydata/test5.xyz" />
-	    <!-- <Hall value="/home/covise/optithumper/data/maurizio/Hall.pts" /> 
-	    <PV1 value="/home/covise/optithumper/data/maurizio/PV1.pts" />
-	    <PV7 value="/home/covise/optithumper/data/maurizio/PV7.pts" />
-	    <CC12 value="/home/covise/optithumper/data/maurizio/CC12.pts" />
-	    <CP12 value="/home/covise/optithumper/data/maurizio/CP12.pts" />
-	    <Gardens value="/home/covise/optithumper/data/maurizio/G123.pts" />
-	    -->
-	    <!-- <Test1 value="/home/covise/data/maurico/binarydata/G123.pts" /> -->
-	    <!-- <Palazzo_Vecchio value="/home/covise/data/maurico/New_10x10x10.xyz" /> -->
-            <!-- <Shake_Table_Tests value="/home/covise/data/maurico/binarydata/ShakeTableAfter.xyz" /> -->
-            <!-- <Connecting_Hall value="/home/covise/data/maurico/binarydata/Hall.xyz" /> -->
-            <Court_Yard_1 value="/home/covise/data/maurico/binarydata/cc12.xyz" />
-            <!-- <Court_Yard_2 value="/home/covise/data/maurico/binarydata/CP12.xyz" /> -->
-            <!-- <Garden value="/home/covise/data/maurico/binarydata/G123.xyz" /> --> 
-	    <!-- <Powell_Laboratory_tests value="/home/covise/data/maurico/binarydata/PowellTestAfter.xyz" /> -->
-	    <!-- <Test value="/home/covise/data/maurico/Largeset3.xyz" /> -->
-	  </Files>
-	</PointModel>
-
-        <PointStream>
-          <QSplatModelDir value="/home/covise/data/qsplat" />
-          <C3DModelDir value="/home/covise/data/c3dmodel" />
-        </PointStream>
-
-        <LOOK>
-          <ConfigFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/LOOK/ice.kwl" />
-        </LOOK>
-
         <OssimPlanet>
           <ConfigFile value="/home/covise/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
 <!--	  <Kml>
@@ -647,18 +654,6 @@
 		<Medan value="/home/covise/data/collada/medan/doc.kml" />
 	  </Kml> -->
         </OssimPlanet>
-
-        <VRMoleculeViewerPlugin>
-         <DataDir value="/home/jschulze/data/itt" />
-        </VRMoleculeViewerPlugin>
-
-        <DNAPlugin>
-         <DataDir value="/mnt/raid/cod/sandia/igrid/DNA Drawer/Data" />
-        </DNAPlugin>
-
-        <TetraTrace>
-         <BoxIncreaseFactor value="2" />
-        </TetraTrace>
 
         <Volume>
          <Files>
@@ -694,443 +689,6 @@
           </Files>
         </Volume>
 
-        <AirCurrents>
-          <Exaggeration value="8.0" />
-          <SoundScale value="1.0" />  <!-- sound scale multiplier -->
-          <SoundScaleEnabled value="1" /> <!-- 1 enable or 0 disable -->
-          <SoundVolume value="1.0" /> <!-- 1 enable or 0 disable -->
-          <DataPath value="/home/covise/data/AirCurrents/" />
-          <Data value="NewModelFinal-1266-low.ive" />
-          <!-- <Data value="KaustFinalSoundSetMedium.ive" /> -->
-          <!-- <Data value="KaustFinalSoundSetLow.ive" /> -->
-          <!-- <Data value="KaustFinalSoundSetHigh.ive" /> -->
-          <Pool value="60" /> <!-- Default = 120 -->
-          <Active value="30" /> <!-- Default = 60 -->
-          <!-- <Server value="132.239.235.200" /> --> <!-- spat lab -->
-          <!-- <Server value="137.110.118.77" /> --> <!-- new sound server -->
-          <Server value="10.1.255.245" /> --> <!-- sc09 -->
-          <Port value="32001" />
-          <!-- <Server value="137.110.119.188" /> --> <!-- old sound server -->
-          <!-- <Server value="dyn172-19-115-46.ucsd.edu" /> -->
-        </AirCurrents>
-
-        <Slice>
-          <SliceDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/SliceViewer/images" />
-          <SliceThumbs value="/home/covise/covise/src/renderer/OpenCOVER/plugins/SliceViewer/thumbs/" />
-          <SliceMap>
-            <A0007 value="Myelin_5_10" />
-          </SliceMap>
-          <Name value="false"/>
-          <DistanceXBetweenScreens value="7.0" />
-          <DistanceYBetweenScreens value="5.0" />
-          <CenterTopLeftX value="-14.0" />
-          <CenterTopLeftY value="4.5" />
-          <Sensitivity value="0.5" />
-          <Size>
-                 <X_Value value="1900"/>
-                 <Y_Value value="1080"/>
-          </Size>
-          <MinSize value="1000.0" />
-          <MarkerSize value="10.0" />
-          <Files>
-            <BlockFace value="test" />
-          </Files>
-        </Slice>
-
-
-        <ThumbnailBrowser>
-            <Dir value="/home/covise/plugins/ThumbnailBrowser/images/" />
-            <!-- Set the size of one thumbnail image -->
-            <ThumbnailHeight value="300" />
-            <ThumbnailWidth value="450" />
-            <Spacing value="15" />
-            <BufferSpace value="20" />
-            <!-- Set size and position of scroller arrows -->
-            <ScrollerSize value="150" />
-            <ScrollerWidth value= "2500" />
-            <!-- Set size of info text and histogram -->
-            <TextSize value="35" />
-            <HistSize value="400" />
-            <!--Set coordinates for bottom left corner-->
-            <BrowserPosx value="-850" />
-            <BrowserPosy value="850" />
-            <BrowserPosz value="-1000" />
-            <AutoFit value="0" /> <!-- if 1, will try to use screen config parameters to place the browser,  scrollerWidth and BrowserPos will not be used -->
-       </ThumbnailBrowser>
-
-
-       <Image>
-          <ImageDir value="/home/covise/data/osga" />
-          <ImageConfig value="/home/covise/plugins/calit2/Image/config/" />
-          <ImageFadeLowDist value="-500.0" />      <!-- 1000.0 is 1 meter -->
-          <ImageFadeHighDist value="300.0" />
-          <ImageWandTracked value="0" />  <!-- 1= true, means it is enabled -->
-          <ImageDist value="0.5" /> 
-          <LockSets value="1" /> 
-          <AutoTrans value="1" /> 
-	  <MaxScaleFactor value="1" />
-          <MarkerSize value="10.0" />
-          <Files>
-<!--
-            <UCSD_bear value="bear" />
-	    <Calit2_courtyard value="calit2-courtyard" />
-	    <CSE_courtyard value="cse-courtyard" />
-	    <EBU1 value="ebu1" />
-	    <Geisel value="geisel" />
-	    <Powell_Focht value="powell-focht" />
-            <CB-FIB value="CB-FIB" />
-            <He_ion_ORION value="He_ion_ORION" />
-            <Libra_120 value="Libra_120" />
-            <NEON_40EsB value="NEON_40EsB" />
-            <UCSD_Rady_3 value="UCSD_Rady_3" />
-            <UCSD_Rady_2 value="UCSD_Rady_2" />
-            <UCSD_Rady_1 value="UCSD_Rady_1" />
-            <LRC_MiracleMile_v2_ca value="LRC_MiracleMile_v2_ca" />
-            <SFSU_Int_3 value="SFSU_Int_3" />
-            <stitched_choice value="stitched_choice" />
-            <SFSU_Int_1 value="SFSU_Int_1" />
-            <SFSU_Int_2 value="SFSU_Int_2" />
-            <Foundation value="foundation" />
-	    <PICT0014 value="PICT0014" />
-            <PICT0018 value="PICT0018" />
-            <PICT0025 value="PICT0025" />
-            <virtual-model value="virtual-model" />
-            <Zeiss value="andy-kummel" />
-            <Mouse_brain value="mouse_brain" />
-            <tester value="battaglia" />
-            <Campus value="campus" />
-            <Monkey_Brain value="test4" />
-            <Cerebellum value="test10" />
-            <Golden_Gate value="golden" />
--->
-            <Adoration value="magi.ipp" />
-            <Adoration2 value="almagi.ipp" />
-<!--
-            <StGeorge value="algeorge.ipp" />
-            <South_wall value="south.ipp"/>
-            <Annuncia value="annun.ipp" />
-            <MysticIndia value="mi.ipp" />
-            <STAIRS value="stairs.ipp" />
-            <ELEPHANT value="elephant.ipp" />
-            <HORSES value="horses.ipp" />
-            <VIRGIN value="virgin.ipp" />
-            <FACES value="faces.ipp" />
-            <FACE_SMALL value="face_small.ipp" />
-            <Annuncia_lab_new value="annunciazione-lab" />
-            <Annuncia_new value="annunciazione" />
-            <Annuncia24_new value="annunciazione24" />
-            <ELAB_DEF_new value="ELAB_DEF" />
-            <Montaggio_IR_new value="ir_fc_montaggio" />
-            <Montaggio_RX_new value="montaggioc_rx" />
-            <Montaggio_UV_new value="montaggio_uv" />
-            <Montaggio_vis_new value="montaggio_vis" />
-            <Montaggio_vis_mezzo_new value="montaggio_vis_mezzo" />
-            <Riflettograf_IR_new value="riflettograf_ir" />
--->
-            <!--
-            <StGeorgeIR value="IR" />
-            <StGeorgePseudo value="pseudo" />
-            <StGeorgeUV value="UV" />
-            <StGeorgeVisible value="visible" />
-            -->
-          </Files>
-          <Config>
-            <ZImages value="BKZ.cfg" />
-            <StructView value="structview.cfg" />
-            <Test1 value="test1.cfg" />
-            <Test2 value="test2.cfg" />
-          </Config>
-        </Image>
-
-        <CAMERAVis>
-          <GlobeDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis" />
-          <GOSDirectory value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis" />
-          <GOSFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/GOS_Metadata.txt" />
-          <GOSFile2 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/GOS2.txt" />
-          <windowHeight value="1080"/>
-          <windowWidth value="1920"/>
-          <_scaleSize value="3.0" />
-          <MINSIZE value="25" />
-          <MAXSIZE value="120" />
-          <shapeScale value="5" />
-          <locationfile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/andrew_export.csv" />
-          <logfile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/query.log" />
-          <timePerRotation value="60.0" />
-          <waitTime value="20.0" />
-          <fadeTime value="100.0" />
-          <useLive value="1" />
-          <timeoffset value="-20.0" />
-          <dbinfo>
-            <host value="camera-console.camera.calit2.net" />
-            <port value="5433" />
-            <dbname value="cameradb_v1p1" />
-            <user value="readonly" />
-            <password value="readonly" />
-          </dbinfo>
-          
-          	<!-- IMAGES -->
-          	<Images>
-			<InfoBox0 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/infobox1.png" />
-          		<InfoBox1 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel2.png" />
-          		<InfoBox2 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel3.png" />
-          		<InfoBox3 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel4.png" />
-          		<InfoBox4 value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/CAMERAVis/media/controlpanel2.png" />
-          	</Images>
-          
-       		 <!--FONTS-->
-		<Fonts>
-			<FontFile value="/home/covise/covise/fonts/arial.ttf"/>
-		</Fonts>
-        </CAMERAVis>
-
-      <!--  <Sound>
-          <SoundConfig value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/Sound/Config/" />
-          <Volume value="0.4" />
-          <Size value="20.0" />
-          <Scale value="1.0" />
-          <ServerAddress value="10.1.255.245" />
-          <ServerPort value="32000" />
-          <Samples>
-            <Rain value="1" />
-            <Car value="2" />
-            <Crowd value="3" />
-            <Elevator value="4" />
-          </Samples>
-          <Configs>
-            <Mailand value="MaiLand.cfg" />
-          </Configs>
-        </Sound>
--->
-
-    <Sound_Medical>
-          <SoundConfig value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/Sound_Medical/Config/" />
-          <Volume value="0.5" />
-          <Size value="10.0" />
-          <Scale value="1.0" />
-          <ServerAddress value="10.1.255.246" />
-          <UDPPort value="15003" />
-          <Models>
-            <Loudspeaker value="/home/covise/plugins/calit2/Sound_Medical/loudspeaker_2-4-10.IVE" />
-            <HeliBody value="/home/covise/plugins/calit2/Sound_Medical/heli_norotors.IVE" />
-            <HeliRotor value="/home/covise/plugins/calit2/Sound_Medical/heli_rotor.IVE" />
-            <HeliTailRotor value="/home/covise/plugins/calit2/Sound_Medical/heli_tailrotor.IVE" />
-          </Models>
-          <Samples>
-            <HVAC value="0" />
-            <Hosp_AE value="1" />
-            <Heart80BPM value="2" />
-            <EKG2 value="3" />
-            <Peter value="4" />
-            <Cafe_Lobby value="5" />
-            <Maternity value="6" />
-            <Ventilator value="7" />
-            <Heart100BPM value="8" />
-            <Heart61BPM value="9" />
-            <EKG1 value="10" />
-          </Samples>
-          <Configs>
-            <Helicopter value="Helicopter.cfg" />
-            <HospitalInternal value="HospitalInternal.cfg" />
-          </Configs>
-        </Sound_Medical>
-
-
-	<!--AudioAssetManager>
-          <ServerAddress value="10.1.255.245" />
-          <ServerPortTCP value="15002" />
-          <ServerPortUDP value="15003" />
-	  <SendHeadPos value="off" />
-	</AudioAssetManager-->
-
-
-        <Calit2HallwaySound>
-	  <BaseOSCAddress value="/Calit2HallwaySound" />
-          <Volume value="1.0" />
-          <Size value="40.0" />
-          <Scale value="1.0" /> <!-- sound scale multiplier -->
-          <ScaleEnabled value="0" /> <!-- 1 enable or 0 disable -->
-        </Calit2HallwaySound>
-
-        <FloorPlan>
-	  <ModelFile value="/home/covise/data/floorplan/calit2-study2.wrl" />
-          <GoalFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/FloorPlan/maps/dollar.bmp" />
-          <FontFile value="/home/covise/covise/fonts/arial.ttf" />
-          <ServerAddress value="137.110.118.239" /> 
-          <ServerPort value="4001" />
-          <SubjectID value="STUDY" />
-          <LogFileDirectory value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/FloorPlan/log/" />
-          <DebugMessages value="on" />
-          <ScreenShotType value=".tiff" />
-          <ScreenShotWidth value="320" />
-          <ScreenShotHeight value="240" />
-          <ScreenShotDirectory value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/FloorPlan/screenshots/" />
-        </FloorPlan>
-
-        <PDB>
-          <BrowserDirectory value="/home/covise/data/PDB/thumbnails" />
-          <PDBPluginTempDir value="/home/covise/data/PDB/cache/" />
-          <PDBPluginPymolDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/PDB/pymol/" /> 
-          <PDBUrl value="www.pdb.org/pdb/files/" />
-          <TopsanDir value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/PDB/Topsan/" />
-          <LayoutDir value="/home/covise/plugins/calit2/PDB/Layout/" />
-          <PDBDir value="/home/covise/data/PDB/pdb" />
-          <MAMMOTHDir value="/home/covise/plugins/calit2/PDB/MAMMOTH" />
-          <AnimationURL value="www.molmovdb.org/uploads/" />
-          <Scale value="3" />
-          <MarkerSize value="80" />
-          <ViewerDistance value="70" />
-          <FadeDistance value="40" />
-          <FileSize value="19500000" />
-          <NumPerRing value="10" />
-          <Radius value="15" />
-          <MaxStructures value="120" />
-          <Structures>
-<!-- below thursday resserach structures
-	    <p2MAD value="2MAD" /> 
-	    <p2RCR value="2RCR" /> 
-	    <p1UW6 value="1UW6" /> 
-	    <p1YI5 value="1YI5" /> 
-	    <p2HU4 value="2HU4" /> 
-	    <p1RVT value="1RVT" /> 
-	    <p1RVO value="1RV0" /> 
-	    <p3EYM value="3EYM" /> 
--->
-	    <!--
-            <XLWBuchE value="1XLW" />
-            <JFOZR value="2JFO" />
-            <hAChEFas2 value="HACH" />
-            <nl4-nrx1b-xtalZR value="NRX1" />
-            -->
-            <!--
-            <Achbp-spxIBm value="AAAA" />
-            <Ana value="BBBB" />
-            <Click140Hana value="CCCC" />
-            <Click1 value="DDDD" />
-            <ConoOMIAm value="EEEE" />
-            <DMXBA value="FFFF" />
-            <D-tub value="GGGG" />
-            <EpibatidineM value="HHHH" />
-            <Imida value="IIII" />
-            <Meta1 value="JJJJ" />
-            <Meta2 value="KKKK" />
-            <Meta2SPX value="LLLL" />
-            <Thai value="MMMM" />
-            <Trop value="NNNN" />
-            -->
-            <!-- <Gos1 value="gos1" /> -->
-            <!-- <Gos2 value="gos2" /> -->
-            <!-- <Gos-ferredoxin-like4 value="2OD4" /> -->
-            <!-- <Gos-ferredoxin-like5 value="2OD5" /> -->
-            <!-- <Gos-ferredoxin-like6 value="2OD6" /> -->
-            <!-- <Heme-peroxidase value="2IIZ" /> -->
-	    <!-- <Imi_endTcrave value="imi" /> -->
-	    <!-- <Thi_end value="thi" /> -->
-            <!-- <Phosphatase value="2F46" /> -->
-            <!-- <TM1030 value="1030" /> -->
-            <!-- <TM1030-ligand value="1ZKG" /> -->
-            <!-- <TM1030-apo value="1Z77" />  -->
-            <!-- <TM1030_JCSG value="tm1030_jcsg" /> -->
-            <!-- <TM1030_MCSG value="tm1030_mcsg" /> -->
-            <!-- <JCSG value="jcsg.pdp" /> -->
-            <!-- Thermatoga_group value="blah.pdp" / --> 
-            <Flu value="1RUZ" />
-            <RNA_Editing_Ligase value="1XDN" />
-            <PDBID_2HU4 value="2HU4" />
-            <Hermes value="2BW3" />
-            <TN5-DNA value="1MUS" />
-            <Gleevec value="1XBB" />
-            <Luciferin value="2D1S" />
-            <Hemoglobin value="4HHB" />
-            <HIV_Protease value="1HVR" />
-            <Smad4 value="1YGS" />
-            <Photosystem_I value="1JBO" />
-            <Cytochrome_c_Oxidase value="1OCO" />
-            <MHC_Class_II value="1DLH" />
-            <Potassium_Channel_A value="1BL8" />
-            <Potassium_Channel_B value="1FQY" />
-            <SARS value="2D2D" />
-            <Acetylcholine_Receptor value="2BG9" />
-            <Acetylcholine_Cobratoxin value="1YI5" />
-            <Thermus_Thermophilus value="1J5E" />
-            <Polyketide_Synthase value="1U0M" />
-            <Calcium_Pump value="1SU4" /> 
-            <Antibody_bound_Influenza value="1KEN" />
-            <Thermatoga value="2F8J" />
-            <RNA_POLYMERASE_2 value="1I6H" />
-            <KAUST_1WNH value="1WNH" />
-            <KAUST_1PCV value="1PCV" />
-            <KAUST_2AXD value="2AXD" />
-            <KAUST_3G43 value="3G43" />
-            <!--
-            <P-2BYP value="2BYP" />
-            <P-2BYR value="2BYR" />
-            <P-2BYS value="2BYS" />
-            <P-2BYZ value="2BYZ" />
-            <Xtal value="XTAL" />
-            <HXtal value="HTAL" />
-            -->
-          </Structures>
-          <Animations>
-            <Serotonin_N_Acetyltransferase value="22943-38" />
-            <Calcium_Pump value="396506-12995" />
-            <FecA_transporter value="829808-15750" />
-            <Actin value="763408-1487" />
-            <Calmodulin value="17833-29779" />
-          </Animations>
-        </PDB>
-
-        <CCDBVR>
-          <ModelPath>
-             <ModelDir value="/home/covise/data/CCDBVR/" />
-          </ModelPath>    
-
-          <TreeSpacing>
-            <ShiftX value="400" />
-            <ShiftY value="0" />
-            <ShiftZ value="-200" />
-            <RootSpacing value="1350" />
-            <SpaceRatio value="1.25" />
-            <FontSize value="50" />
-          </TreeSpacing>
-
-          <Scale value="1" />
-          <ViewerDistance value="2" />
-          <Mitochondria>
-            <mito_inner value="inner_2.wrl" />
-            <mito_outer value="outer_2.wrl" />
-            <mito_crista_1 value="crista1_2.wrl" />
-            <mito_crista14 value="crista14.wrl" />
-            <mito_crista15 value="crista15.wrl" />
-          </Mitochondria>
-          <HPFNode>
-            <axon value="axon.synu.iv" />
-            <loop1 value="loop1_lower_best.synu.iv" />
-            <loop2L value="loop2_lower.synu.iv" />
-            <loop2U value="loop2_upper.synu.iv" />
-            <loop3L value="loop3_lower.synu.iv" />
-            <loop3U value="loop3_upper.synu.iv" />
-            <lysosome value="Lysosome_1.synu.iv" />
-            <paranode value="paranode.iv" />
-          </HPFNode>
-          <Complete>
-            <Dendrite value="DENDRITE" />
-            <Mitochondrion value="MITO" />
-            <HPFNode value="HPF" />
-            <CONNode value="CON" />
-            <MouseHeart value="TAKE" />
-           <Shark value="SHARK" />
-            <Latest value="LATEST" />
-	    <Latest_Remesh value="LATEST_REMESH" />
-          </Complete>
-        </CCDBVR>
-
-       <VisualAcuity>
-         <ImageDirectory value="/home/covise/data/EyeCharts" />
-         <Pos x="0" y="1506" z="0" />
-         <Scale value="1.0" />
-         <Rotation value="0" />
-       </VisualAcuity>
-        
          <StructView>
              <Layer0File value="/home/covise/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
              <Layer1File value="/home/covise/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
@@ -1146,47 +704,23 @@
              <Layer11File value="/home/covise/data/baybridge/Tower-all.wrl" />
           </StructView>
 
-          <WebBrowser>
-             <CacheDir value="/home/jschulze/svn/trunk/covise/src/renderer/OpenCOVER/plugins/WebBrowser/Cache" />
-             <BookMarks>
-                 <Rescue value="http://itr-rescue.org" />
-                 <Magpie value="http://magpie.ucsd.edu/magpie/sp_test2/ost_01_008/ost_01_008_home.html" />
-                 <Aurantimonas value="http://magpie.ucsd.edu/magpie/aurantimonas/private/index.html" />
-                 <LocalFile value="file:///local/home/vhuynh/magpie/si859a1_01_home.html" />
-             </BookMarks>        
-         </WebBrowser>
-
-         <Molecules>
-           <DataDir value="/home/jschulze/data/itt" />
-         </Molecules>
-
-	<MipMapVideo>
-		<!--<ConfigFile value="/home/covise/data/tornado/2k-512/config_final.txt"/>-->
-		<ConfigFile value="/state/partition1/data/tornado/512/config_final_1200.txt"/>
-		<!--<ConfigFile value="/home/covise/data/ncmir/compressed/config.txt"/>-->
-		<!--<ConfigFile value="/home/covise/data/tornado/2k-tiff-mipmap-512/config_final.txt"/>-->
-		<!--<ConfigFile value="/home/covise/data/ncmir/uncompressed/config.txt"/>-->
-	</MipMapVideo>
        </Plugin>
 
     <MultiPC>
-     <SyncMode value="TCP" />
      <NumSlaves value="9" />   <!-- use 9 for all Xpol machines -->
      <MasterInterface value="67.58.38.17" port="11011" />
      <CleanupScript value="tentakel killall -9 CalVR" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
-     <Startup arch="x11" value="ssh ${USER}@nexcave-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-1-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="5" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="6" />
-     <Startup arch="x11" value="ssh ${USER}@nexcave-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="7" />\
-     <Startup arch="x11" value="ssh ${USER}@nexcave-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="8" />
+     <Startup value="ssh ${USER}@nexcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
+     <Startup value="ssh ${USER}@nexcave-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
+     <Startup value="ssh ${USER}@nexcave-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
+     <Startup value="ssh ${USER}@nexcave-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" /> -->
+     <Startup value="ssh ${USER}@nexcave-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
+     <Startup value="ssh ${USER}@nexcave-1-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="5" />
+     <Startup value="ssh ${USER}@nexcave-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="6" />
+     <Startup value="ssh ${USER}@nexcave-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="7" />
+     <Startup value="ssh ${USER}@nexcave-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="8" />
     </MultiPC>
  
-    <Stereo enable="ON" value="ON" />
-
     <Input>
      <Threaded FPS="60.0" />
      <TrackingSystem0 value="SHMEM">
@@ -1229,6 +763,7 @@
      <Hand0>
        <Address system="0" body="1" />
        <ButtonMask system0="0xFFFF" system1="0x0" />
+       <NumValuators value="4" />
        <Valuator0 system="0" number="0" />
        <Valuator1 system="0" number="1" />
        <Valuator2 system="0" number="2" />
@@ -1239,63 +774,6 @@
        <ButtonMask system0="0x00" system1="0xFFFF" />
      </Hand1>
    </Input>
-
-    <!--Input> 
-    
-      <NumHands value="1" />
-      <NumHeads value="1" />
-
-      <Threaded value="true" />
-
-      <Hand1ButtonMask station1="0x7" station2="0xFF" />
-      <Hand2ButtonMask station1="0x38" station2="0x00" />
-
-      <HeadAddress value="0" />
-      <Head2Address value="3" />
-      <HandAddress value="1" />
-      <Hand2Address value="2" />
-     
-      <DebugButtons value="FALSE" />
-
-      <TrackingDebug value="false" />
-
-      <ButtonSystem value="SHMEM" />
-      <TrackingSystem value="SHMEM" />
-      <MouseNav value="ON" />
-
-      <VRPN>
-        <Server value="DTrack@127.0.0.1" />
-	<NumBodies value="2" />
-      </VRPN>
-
-      <Joystick value="true" />
-      <NumSensors value="3" />
-
-      <TrackingSystem>
-        <Offset x="0" y="0" z="-1663" />
-        <Orientation h="0" p="0" r="0" />
-      </TrackingSystem>
-
-      <HeadDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HeadDevice>
-
-      <HandDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HandDevice>
-
-      <DebugTracking value="RAW" />
-      <DebugStation value="4" />
-
-      <Filter value="off">
-        <Station value="1" />
-        <MemorySize value="10" />
-        <BypassButton value="1" />
-      </Filter>
-
-    </Input-->
 
    <ContextMenus>
     <Scale value="1.0" />
@@ -1317,143 +795,23 @@
     <ViewerPosition x="0" y="-500" z="0" />
     <CoordAxis value="off" />
     <Freeze value="off" />
-    <ViewAll value="off" />
-    <!--<NumPipes value="2" />
-    <NumScreens value="2" />
-    <NumWindows value="2" />-->
-    <Headlight value="on" />
-
-    <VRUI>
-      <TFE>
-        <Menu>
-          <Size value="1.0" />
-          <Position x="0" y="1000" z="0" />
-        </Menu>
-      </TFE>
-      <PDUUsage>
-        <Menu>
-          <Size value="1.0" />
-          <Position x="-600" y="700" z="0" />
-        </Menu>
-      </PDUUsage>
-    </VRUI>
- 
-    <VRUI>
-      <pdbSequenceDisplay>
-        <Menu>
-          <Size value="1.0" />
-          <WindowSize value="10" />
-        </Menu>
-      </pdbSequenceDisplay>
-    </VRUI>
-
-    <VRUI>
-      <ProteinControl>
-        <Menu>
-          <Size value="1.0" />
-          <Position x="0" y="1000" z="0" />
-        </Menu>
-      </ProteinControl>
-    </VRUI>
-
-    <VRUI>
-      <TOPSAN>
-        <Menu>
-          <Size value="1.2" />
-          <Position x="-1000" y="1000" z="0" />
-        </Menu>
-      </TOPSAN>
-    </VRUI>
-
-    <Plugin>
-      <Vrml97>
-        <!--<Audio value="none" > -->
-        <!-- <Audio value="AServer" >
-          <Host value="137.110.111.209" />
-        
-        </Audio> -->
-      </Vrml97>
-      
-      <ModelViewer>
-        <ModelFile value="/home/covise/data/LarryFrank/hammerhead/hammerhead_parts.obj" />
-      </ModelViewer> 
-		<HotSpot>
-			 <LinearShaderFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/linear.frag" />
-                    <Lut1DShaderFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut1d.frag" />
-                    <Lut1DDataFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut1d.csv" />
-                    <Lut2DShaderFile value="/home/covise/covise/src/renderer/OpenCOVER/plugins/calit2/HotSpot/lut2d.frag" />
-			<ProjCoordSource value="config" />
-			<Enabled value="false" />
-			<UseHeadTrackerData value="true" />
-			<MarkHotspot value="false" />
-			<MinAlpha value="0.8" />
-			<MaxAlpha value="1.5" />
-		</HotSpot>
-	</Plugin>
-
-    <DebugLevel value="0" /> 
-    <FPS value="false" />
- 
-
-  <PDBLoader>
-    <WindowSize value="10" />
-  </PDBLoader>
-
-  <MarkerControl>
-    <WindowSize value="10" />
-  </MarkerControl>
-
-  <AudioControl>
-    <WindowSize value="10" />
-  </AudioControl>
-
-  <Protein>
-    <WindowSize value="10" />
-  </Protein>
-
-  <Messages>
-    <WindowSize value="10" />
-  </Messages>
-
-  <SetControl>
-    <WindowSize value="10" />
-  </SetControl>
-
-  <Displacement_Waveforms>
-    <WindowSize value="0.01" />
-  </Displacement_Waveforms>
-
-  <Text_Information>
-    <WindowSize value="10"/>
-  </Text_Information>
-
-  <LayerControl>
-    <WindowSize value="10" />
-  </LayerControl>
-
-  <ProteinControl>
-    <WindowSize value="10" />
-  </ProteinControl>
-
- </GLOBAL>
 
  <LOCAL host="nexcave" >
    <NumPipes value="1" />
    <NumScreens value="1" />
    <NumWindows value="1" />
-   <Stereo value="true" />
 
    <WindowConfig>
-     <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1280" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
    </WindowConfig>
 
    <ChannelConfig>
-    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
-    <!--Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MULTI_VIEWER_MASTER"  windowIndex="0" name="0" comment="LEFT" /-->
+    <Channel left="0"    width="1280" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
+    <!--Channel left="0"    width="1280" bottom="0" height="768" stereoMode="MULTI_VIEWER_MASTER"  windowIndex="0" name="0" comment="LEFT" /-->
    </ChannelConfig>
 
    <ScreenConfig>
-    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
+    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" comment="LEFT" />
    </ScreenConfig>
  </LOCAL>
 
