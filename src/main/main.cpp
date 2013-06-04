@@ -36,6 +36,7 @@ int main(int argc, char **argv)
     cvr::CalVR * calvr = new cvr::CalVR();
     if(!calvr->init(args,cvrDir))
     {
+	delete calvr;
         return 0;
     }
 

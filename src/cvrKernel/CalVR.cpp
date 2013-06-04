@@ -207,8 +207,11 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     {
         std::cerr << "Error setting up screens." << std::endl;
 	_initStatus = SCREEN_INIT_ERROR;
-	syncClusterInitStatus();
-        return false;
+    }
+
+    if(!syncClusterInitStatus())
+    {
+	return false;
     }
 
     _scene = cvr::SceneManager::instance();
@@ -216,8 +219,11 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     {
         std::cerr << "Error setting up scene." << std::endl;
 	_initStatus = SCENE_INIT_ERROR;
-	syncClusterInitStatus();
-        return false;
+    }
+
+    if(!syncClusterInitStatus())
+    {
+	return false;
     }
 
     _scene->setViewerScene(_viewer);
@@ -235,8 +241,11 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     {
         std::cerr << "Error setting up menu systems." << std::endl;
 	_initStatus = MENU_INIT_ERROR;
-	syncClusterInitStatus();
-        return false;
+    }
+
+    if(!syncClusterInitStatus())
+    {
+	return false;
     }
 
     _file = cvr::FileHandler::instance();
@@ -249,7 +258,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         cvr::FileHandler::instance()->loadFile(fileList[i]);
     }
 
-    return syncClusterInitStatus();
+    return true;
 }
 
 void CalVR::run()
@@ -462,6 +471,11 @@ bool CalVR::syncClusterInitStatus()
 	    return false;
 	}
 	_communication->readMaster(&initOK,sizeof(bool));
+    }
+
+    if(!initOK)
+    {
+	std::cerr << "Cluster startup failure." << std::endl;
     }
 
     return initOK;
