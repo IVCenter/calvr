@@ -18,6 +18,7 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <cstring>
 #include <cstdlib>
@@ -37,6 +38,8 @@ CalVR * CalVR::_myPtr = NULL;
 
 CalVR::CalVR()
 {
+    _initStatus = INIT_OK;
+
     _config = NULL;
     _communication = NULL;
     _tracking = NULL;
@@ -203,6 +206,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_screens->init())
     {
         std::cerr << "Error setting up screens." << std::endl;
+	_initStatus = SCREEN_INIT_ERROR;
+	syncClusterInitStatus();
         return false;
     }
 
@@ -210,6 +215,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_scene->init())
     {
         std::cerr << "Error setting up scene." << std::endl;
+	_initStatus = SCENE_INIT_ERROR;
+	syncClusterInitStatus();
         return false;
     }
 
@@ -227,6 +234,8 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_menu->init())
     {
         std::cerr << "Error setting up menu systems." << std::endl;
+	_initStatus = MENU_INIT_ERROR;
+	syncClusterInitStatus();
         return false;
     }
 
@@ -240,7 +249,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         cvr::FileHandler::instance()->loadFile(fileList[i]);
     }
 
-    return true;
+    return syncClusterInitStatus();
 }
 
 void CalVR::run()
@@ -374,4 +383,86 @@ bool CalVR::setupDirectories()
     std::cerr << "Plugins Home Directory: " << _pluginsHomeDir << std::endl;
 
     return true;
+}
+
+bool CalVR::syncClusterInitStatus()
+{
+    if(_communication->getIsSyncError())
+    {
+	return false;
+    }
+
+    if(!_communication->getNumSlaves())
+    {
+	if(_initStatus == INIT_OK)
+	{
+	    return true;
+	}
+	else
+	{
+	    return false;
+	}
+    }
+
+    bool initOK = (_initStatus == INIT_OK);
+    if(_communication->isMaster())
+    {
+	CVRInitStatus * is = new CVRInitStatus[_communication->getNumSlaves()];
+	if(_communication->readSlaves(is,sizeof(CVRInitStatus)))
+	{
+	    for(int i = 0; i < _communication->getNumSlaves(); ++i)
+	    {
+		std::stringstream nodeNamess;
+		nodeNamess << "Node " << i << ": ";
+		switch(is[i])
+		{
+		    case INIT_OK:
+		    {
+			break;
+		    }
+		    case SCREEN_INIT_ERROR:
+		    {
+			std::cerr << nodeNamess.str() << "Error setting up screens." << std::endl;
+			initOK = false;
+			break;
+		    }
+		    case SCENE_INIT_ERROR:
+		    {
+			std::cerr << nodeNamess.str() << "Error during scene init." << std::endl;
+			initOK = false;
+			break;
+		    }
+		    case MENU_INIT_ERROR:
+		    {
+			std::cerr << nodeNamess.str() << "Error setting up menu." << std::endl;
+			initOK = false;
+			break;
+		    }
+		    default:
+		    {
+			std::cerr << nodeNamess.str() << "Unknown init error." << std::endl;
+			initOK = false;
+			break;
+		    }
+		}
+	    }
+	}
+	else
+	{
+	    std::cerr << "Error reading cluster init status." << std::endl;
+	    return false;
+	}
+	_communication->sendSlaves(&initOK,sizeof(bool));
+    }
+    else
+    {
+	if(!_communication->sendMaster(&_initStatus,sizeof(CVRInitStatus)))
+	{
+	    std::cerr << "Error sending init status to master." << std::endl;
+	    return false;
+	}
+	_communication->readMaster(&initOK,sizeof(bool));
+    }
+
+    return initOK;
 }
