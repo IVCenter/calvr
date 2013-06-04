@@ -93,6 +93,17 @@ class CVRKERNEL_EXPORT CalVR
         static CalVR * _myPtr; ///< static self pointer
 
         bool setupDirectories();
+        bool syncClusterInitStatus();
+
+        enum CVRInitStatus
+        {
+            INIT_OK=0,
+            SCREEN_INIT_ERROR,
+            SCENE_INIT_ERROR,
+            MENU_INIT_ERROR
+        };
+
+        CVRInitStatus _initStatus;
 
         std::string _homeDir; ///< CalVR home directory
         std::string _resourceDir;
