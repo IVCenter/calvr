@@ -2,13 +2,13 @@
 
 <LOCAL host="calit2-137-110-111-71.ucsd.edu">
   <WindowConfig>
-    <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+    <Window width="1280" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
   </WindowConfig>
   <ChannelConfig>
-    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MONO"  windowIndex="0" name="0" />
+    <Channel left="0"    width="1280" bottom="0" height="768" stereoMode="MONO"  windowIndex="0" name="0" />
   </ChannelConfig>
   <ScreenConfig>
-    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
+    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" comment="LEFT" />
   </ScreenConfig>
 </LOCAL>
 

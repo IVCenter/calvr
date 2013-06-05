@@ -1,9 +1,4 @@
 <?xml version="1.0"?>
- <GLOBAL>
-
-  <CUI>
-   <ResourcesDirectory value="/home/aprudhom/CalVR/resources/" />
-  </CUI>
 
    <Background g="0.0" a="0.0" />
 
@@ -18,7 +13,6 @@
    <ShowAxis value="off" />
 
    <ConfigDebug value="false" />
-   <GeneralDebug value="true" />
 
    <Input>
      <Threaded FPS="60.0" />
@@ -50,58 +44,8 @@
        <ButtonMask system0="0xF0" system1="0x00" />
        <Graphic value="NONE" />
      </Hand1>
-
-     <NumValuators value="0" />
-     <Valuator0 station="0" number="0" />
    </Input>
     
-   <!--Input>  
-      <ButtonSystem value="NONE" />
-      <TrackingSystem value="NONE" />
-
-      <MouseEvents value="on" />
-
-      <Threaded value="false" FPS="60.0" />
-      <ClickTimeout single="0.4" double="0.4" />
-
-      <NumHands value="0" />
-      <NumHeads value="1" />
-
-      <Hand1ButtonMask station1="0x0F" station2="0xFF" />
-      <Hand2ButtonMask station1="0xF0" station2="0x00" />
-
-      <HeadAddress value="1" />
-      <HandAddress value="0" />
-
-      <VRPN>
-        <Server value="DTrack@137.110.111.71" />
-        <NumBodies value="2" />
-	<NumButtons value="3" />
-	<NumValuators value="0" />
-      </VRPN>
-
-      <SHMEM>
-
-      </SHMEM>
-
-      <TrackingDebug value="false" button="true" body="true" station="0" />
-
-      <TrackingSystem>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </TrackingSystem>
-
-      <HeadDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HeadDevice>
-
-      <HandDevice>
-        <Offset x="0" y="0" z="0" />
-        <Orientation h="0" p="0" r="0" />
-      </HandDevice>
-    </Input-->
-
    <Plugin>
     <OssimPlanet value="off" />
     <Sketch value="on" />
@@ -214,10 +158,6 @@
       </Files>
     </ModelLoader>
 
-    <ThreadedLoader value="off" >
-     <Affinity value="1" />
-    </ThreadedLoader>
-
     <OssimPlanet>
      <ConfigFile value="/home/aprudhom/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
     </OssimPlanet>
@@ -276,43 +216,22 @@
    <NumScreens value="1" />
 
    <PipeConfig>
-    <Pipe display="not needed any more" server="0" screen="0" name="0" />
-    <Pipe display="not needed any more" server="0" screen="1" name="1" />
+    <Pipe server="0" screen="0" name="0" />
+    <Pipe server="0" screen="1" name="1" />
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  >
-     <ViewerPosition x="0.0" y="-3000" z="0.0" />
-    </Channel>
-    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" channel="1" stereoMode="FIXED_VIEWER"  windowIndex="0"  name="1">
-      <ViewerPosition x="0" y="3000" z="0" />
-      <ThumbConfigFile value="/home/aprudhom/CalVR/config/thumb/host/alioscopy-40-1x1.xml" />
-      <Viewer eyes="8" ipd="0.208" distance="9.7" />
-      <BL x="-0.851653" y="-0.532283" z="0.0" />
-      <BR x="0.851653" y="-0.532283" z="0.0" />
-      <TL x="-0.851653" y="0.532283" z="0.0" />
-      <Array pitch="446.862244" angle="18.435000" thick="0.027600" shift="0.009270" quality="0.5"/>
-      <Slice name="0" cycle="0.875" />
-      <Slice name="1" cycle="0.875" />
-      <Slice name="2" cycle="0.875" />
-      <Slice name="3" cycle="0.875" />
-      <Slice name="4" cycle="0.875" />
-      <Slice name="5" cycle="0.875" />
-      <Slice name="6" cycle="0.875" />
-      <Slice name="7" cycle="0.875" />
-    </Channel>
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" />
+    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="1" />
    </ChannelConfig>
    
    <WindowConfig>
-    <Window width="1024" comment="FRONT" window="0" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" />
-    <Window width="1024" comment="FRONT" window="1" pipeIndex="1" height="768" left="00" bottom="0" name="1" decoration="true" />
+    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" />
+    <Window width="1024" comment="FRONT" pipeIndex="1" height="768" left="00" bottom="0" name="1" decoration="true" />
    </WindowConfig>
 
    <ScreenConfig>
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" screen="0" />
-   <Screen width="2000" comment="FRONT" h="180.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" screen="1" />
+   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
+   <Screen width="2000" comment="FRONT" h="180.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
    </ScreenConfig>
 
-   <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />
-
- </GLOBAL>

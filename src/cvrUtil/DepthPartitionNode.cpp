@@ -1,19 +1,7 @@
-/* OpenSceneGraph example, osgdepthpartion.
+/* 
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ * OpenSceneGraph example, osgdepthpartion.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
  */
 
 #include <cvrUtil/DepthPartitionNode.h>
@@ -45,15 +33,13 @@ struct PrintDebug : public osg::Camera::DrawCallback
 	int _camNum;
 };
 
-#define CURRENT_CLASS DepthPartitionNode
-
-CURRENT_CLASS::CURRENT_CLASS()
+DepthPartitionNode::DepthPartitionNode()
 {
     _forwardOtherTraversals = true;
     init();
 }
 
-CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn,
+DepthPartitionNode::DepthPartitionNode(const DepthPartitionNode& dpn,
         const osg::CopyOp& copyop) :
         osg::Group(dpn,copyop), _active(dpn._active), _renderOrder(
                 dpn._renderOrder), _clearColorBuffer(dpn._clearColorBuffer), _forwardOtherTraversals(
@@ -62,11 +48,11 @@ CURRENT_CLASS::CURRENT_CLASS(const CURRENT_CLASS& dpn,
     _numCameras = 0;
 }
 
-CURRENT_CLASS::~CURRENT_CLASS()
+DepthPartitionNode::~DepthPartitionNode()
 {
 }
 
-void CURRENT_CLASS::init()
+void DepthPartitionNode::init()
 {
     _active = true;
     _numCameras = 0;
@@ -75,14 +61,14 @@ void CURRENT_CLASS::init()
     _clearColorBuffer = true;
 }
 
-void CURRENT_CLASS::setActive(bool active)
+void DepthPartitionNode::setActive(bool active)
 {
     if(_active == active)
         return;
     _active = active;
 }
 
-void CURRENT_CLASS::setClearColorBuffer(bool clear)
+void DepthPartitionNode::setClearColorBuffer(bool clear)
 {
     _clearColorBuffer = clear;
 
@@ -109,7 +95,7 @@ void CURRENT_CLASS::setClearColorBuffer(bool clear)
      }*/
 }
 
-void CURRENT_CLASS::setRenderOrder(osg::Camera::RenderOrder order)
+void DepthPartitionNode::setRenderOrder(osg::Camera::RenderOrder order)
 {
     _renderOrder = order;
 
@@ -127,7 +113,7 @@ void CURRENT_CLASS::setRenderOrder(osg::Camera::RenderOrder order)
     }
 }
 
-void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
+void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
 {
     //printf("DEPTH ADDRESS %d\n", this);
 
@@ -246,12 +232,12 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
     }
 }
 
-bool CURRENT_CLASS::addChild(osg::Node *child)
+bool DepthPartitionNode::addChild(osg::Node *child)
 {
     return insertChild(_children.size(),child);
 }
 
-bool CURRENT_CLASS::insertChild(unsigned int index, osg::Node *child)
+bool DepthPartitionNode::insertChild(unsigned int index, osg::Node *child)
 {
     if(!Group::insertChild(index,child))
         return false; // Insert child
@@ -271,7 +257,7 @@ bool CURRENT_CLASS::insertChild(unsigned int index, osg::Node *child)
     return true;
 }
 
-bool CURRENT_CLASS::removeChildren(unsigned int pos, unsigned int numRemove)
+bool DepthPartitionNode::removeChildren(unsigned int pos, unsigned int numRemove)
 {
     if(!Group::removeChildren(pos,numRemove))
         return false; // Remove child
@@ -291,7 +277,7 @@ bool CURRENT_CLASS::removeChildren(unsigned int pos, unsigned int numRemove)
     return true;
 }
 
-bool CURRENT_CLASS::setChild(unsigned int i, osg::Node *node)
+bool DepthPartitionNode::setChild(unsigned int i, osg::Node *node)
 {
     if(!Group::setChild(i,node))
         return false; // Set child
@@ -332,7 +318,7 @@ void DepthPartitionNode::removeNodesFromCameras()
     }
 }
 
-osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
+osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
         double znear, double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam, const int numCameras)
 {
     _lock.lock();
@@ -449,4 +435,3 @@ osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
 
     return camera;
 }
-#undef CURRENT_CLASS

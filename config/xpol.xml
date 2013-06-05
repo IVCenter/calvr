@@ -710,15 +710,15 @@
      <NumSlaves value="9" />   <!-- use 9 for all Xpol machines -->
      <MasterInterface value="67.58.38.17" port="11011" />
      <CleanupScript value="tentakel killall -9 CalVR" />
-     <Startup value="ssh ${USER}@nexcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="0" />  
-     <Startup value="ssh ${USER}@nexcave-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="1" />
-     <Startup value="ssh ${USER}@nexcave-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="2" />
-     <Startup value="ssh ${USER}@nexcave-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="3" /> -->
-     <Startup value="ssh ${USER}@nexcave-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="4" />
-     <Startup value="ssh ${USER}@nexcave-1-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="5" />
-     <Startup value="ssh ${USER}@nexcave-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="6" />
-     <Startup value="ssh ${USER}@nexcave-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="7" />
-     <Startup value="ssh ${USER}@nexcave-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;opencover \>\&amp; /tmp/errors.log" name="8" />
+     <Startup value="ssh ${USER}@nexcave-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="0" />  
+     <Startup value="ssh ${USER}@nexcave-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="1" />
+     <Startup value="ssh ${USER}@nexcave-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="2" />
+     <Startup value="ssh ${USER}@nexcave-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="3" /> -->
+     <Startup value="ssh ${USER}@nexcave-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="4" />
+     <Startup value="ssh ${USER}@nexcave-1-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="5" />
+     <Startup value="ssh ${USER}@nexcave-2-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="6" />
+     <Startup value="ssh ${USER}@nexcave-2-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="7" />
+     <Startup value="ssh ${USER}@nexcave-2-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="8" />
     </MultiPC>
  
     <Input>
@@ -815,14 +815,14 @@
    </ScreenConfig>
  </LOCAL>
 
-  <!--<INCLUDE global="1" configname="xpolside">xpol-side.xml</INCLUDE> -->
- <!--<INCLUDE global="1" configname="xpolinter">xpol-inter.xml</INCLUDE>-->
- <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter.xml</INCLUDE>-->
- <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-sbs.xml</INCLUDE>-->
- <!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-new.xml</INCLUDE>-->
+  <!--<INCLUDE>xpol-side.xml</INCLUDE> -->
+ <!--<INCLUDE>xpol-inter.xml</INCLUDE>-->
+ <!--<INCLUDE>xpol-cinter.xml</INCLUDE>-->
+ <!--<INCLUDE>xpol-cinter-sbs.xml</INCLUDE>-->
+ <!--<INCLUDE>xpol-cinter-new.xml</INCLUDE>-->
 
-<!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile.xml</INCLUDE>-->
-<INCLUDE global="1" configname="xpolinter">xpol-17screen.xml</INCLUDE>
-<!--INCLUDE global="1" configname="xpolinter">xpol-john.xml</INCLUDE-->
+<!--<INCLUDE>xpol-cinter-mobile.xml</INCLUDE>-->
+<INCLUDE>xpol-17screen.xml</INCLUDE>
+<!--INCLUDE>xpol-john.xml</INCLUDE-->
 
-<!--<INCLUDE global="1" configname="xpolinter">xpol-cinter-mobile-multi.xml</INCLUDE>-->
+<!--<INCLUDE>xpol-cinter-mobile-multi.xml</INCLUDE>-->

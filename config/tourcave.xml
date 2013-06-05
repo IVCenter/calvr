@@ -851,4 +851,4 @@
   </ScreenConfig>
 </LOCAL>
 
-<INCLUDE global="1" configname="xpolinter">tourcaveLG-screens-2level.xml</INCLUDE>
+<INCLUDE>tourcaveLG-screens-2level.xml</INCLUDE>

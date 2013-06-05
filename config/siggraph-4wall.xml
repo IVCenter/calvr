@@ -1,50 +1,43 @@
 <?xml version="1.0"?>
 
-<PipeConfig>
-        <Pipe display="not needed any more" server="0" screen="2" name="0" />
-	    <Pipe display="n" server="0" screen="3" name="1" />
-		<Pipe display="n" server="0" screen="0" name="2" />
-		    <Pipe display="n" server="0" screen="1" name="3" />
-		          </PipeConfig>
-
- <!--ChannelConfig>
-  <Channel name="0" stereoMode="ANAGLYPHIC" />
-  <Channel name="1" stereoMode="ANAGLYPHIC" />
-  <Channel name="2" stereoMode="ANAGLYPHIC" />
-  <Channel name="3" stereoMode="ANAGLYPHIC" />
- </ChannelConfig-->
+  <PipeConfig>
+    <Pipe server="0" screen="2" name="0" />
+    <Pipe server="0" screen="3" name="1" />
+    <Pipe server="0" screen="0" name="2" />
+    <Pipe server="0" screen="1" name="3" />
+  </PipeConfig>
 
  <LOCAL host="vcalvr-00" >
     <NumPipes value="4" />
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="-5772" y="0" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="-5772" y="0" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="0" y="-3000" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="0" y="-3000" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="-1536" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="-512" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="-1536" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="-512" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="-1536" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="-512" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="-1536" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="-512" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>
 
@@ -53,32 +46,32 @@
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="-5772" y="0" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="-5772" y="0" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="0" y="-3000" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="0" y="-3000" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="512" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="1536" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="512" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="1536" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="512" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="1536" originY="0" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="512" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="1536" originY="0" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>
 
@@ -87,32 +80,32 @@
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="1536" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="512" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="1536" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="512" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="1536" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="512" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="1536" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="512" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>
 
@@ -121,32 +114,32 @@
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="0" y="3000" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="-512" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="-1536" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="-512" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="-1536" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="-512" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="-1536" originY="0" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="-512" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="-1536" originY="0" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>
 
@@ -155,32 +148,32 @@
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="-3000" y="0" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="-3000" y="0" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="-3000" y="0" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="-3000" y="0" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="0" originY="512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="0" originY="-512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="0" originY="512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="0" originY="-512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="0" originY="512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="0" originY="-512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="0" originY="512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="0" originY="-512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>
 
@@ -189,31 +182,31 @@
     <NumScreens value="4" />
     <NumWindows value="4" />
    <ChannelConfig>
-    <Channel channel="0" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
       <ViewerPosition x="3000" y="0" z="0" />
     </Channel>
-    <Channel channel="1" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
       <ViewerPosition x="3000" y="0" z="0" />
     </Channel>
-    <Channel channel="2" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
       <ViewerPosition x="3000" y="0" z="0" />
     </Channel>
-    <Channel channel="3" left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+    <Channel left="0" width="1366" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
       <ViewerPosition x="3000" y="0" z="0" />
     </Channel>
    </ChannelConfig>
     
    <WindowConfig>
-     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ScreenConfig>
-    <Screen originX="0" originY="-512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
-    <Screen originX="0" originY="512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="1" screen="1" comment="S0" />
-    <Screen originX="0" originY="-512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="2" screen="2" comment="S0" />
-    <Screen originX="0" originY="512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="3" screen="3" comment="S0" />
+    <Screen originX="0" originY="-512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="0" originY="512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="0" originY="-512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="0" originY="512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="3" comment="S0" />
    </ScreenConfig>
  </LOCAL>

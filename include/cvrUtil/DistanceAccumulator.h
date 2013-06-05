@@ -2,20 +2,6 @@
  *
  *  OpenSceneGraph example, osgdepthpartion.
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
  */
 
 #ifndef _OF_DISTANCEACCUMULATOR_
@@ -27,7 +13,6 @@
 #include <osg/fast_back_stack>
 #include <OpenThreads/Mutex>
 
-#define CURRENT_CLASS DistanceAccumulator
 /**********************************************************
  * Ravi Mathur
  * OpenFrames API, class DistanceAccumulator
@@ -35,13 +20,13 @@
  * visible drawable, and splits up the scene if the drawables are
  * too far away (in the z direction) from each other. 
  **********************************************************/
-class CURRENT_CLASS : public osg::NodeVisitor
+class DistanceAccumulator : public osg::NodeVisitor
 {
     public:
         typedef std::pair<double,double> DistancePair;
         typedef std::vector<DistancePair> PairList;
 
-        CURRENT_CLASS();
+        DistanceAccumulator();
 
         virtual void apply(osg::Node &node);
         virtual void apply(osg::Projection &proj);
@@ -94,7 +79,7 @@ class CURRENT_CLASS : public osg::NodeVisitor
         }
 
     protected:
-        virtual ~CURRENT_CLASS();
+        virtual ~DistanceAccumulator();
 
         void pushLocalFrustum();
         void pushDistancePair(double zNear, double zFar);
@@ -129,6 +114,5 @@ class CURRENT_CLASS : public osg::NodeVisitor
         // Maximum depth to traverse to
         unsigned int _maxDepth, _currentDepth;
 };
-#undef CURRENT_CLASS
 
 #endif

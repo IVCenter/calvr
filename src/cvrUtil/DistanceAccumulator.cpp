@@ -1,19 +1,7 @@
-/* OpenSceneGraph example, osgdepthpartion.
+/* 
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ * OpenSceneGraph example, osgdepthpartion.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
  */
 
 #include <cvrUtil/DistanceAccumulator.h>
@@ -47,8 +35,7 @@ double distanceDA(const osg::Vec3 &coord, const osg::Matrix& matrix)
             + coord[2] * matrix(2,2) + matrix(3,2));
 }
 
-#define CURRENT_CLASS DistanceAccumulator
-CURRENT_CLASS::CURRENT_CLASS() :
+DistanceAccumulator::DistanceAccumulator() :
         osg::NodeVisitor(TRAVERSE_ALL_CHILDREN), _nearFarRatio(0.0005), _maxDepth(
                 UINT_MAX)
 {
@@ -56,11 +43,11 @@ CURRENT_CLASS::CURRENT_CLASS() :
     reset();
 }
 
-CURRENT_CLASS::~CURRENT_CLASS()
+DistanceAccumulator::~DistanceAccumulator()
 {
 }
 
-void CURRENT_CLASS::pushLocalFrustum()
+void DistanceAccumulator::pushLocalFrustum()
 {
     osg::Matrix& currMatrix = _viewMatrices.back();
 
@@ -79,7 +66,7 @@ void CURRENT_CLASS::pushLocalFrustum()
     _bbCorners.push_back(corner);
 }
 
-void CURRENT_CLASS::pushDistancePair(double zNear, double zFar)
+void DistanceAccumulator::pushDistancePair(double zNear, double zFar)
 {
     if(zFar > 0.0) // Make sure some of drawable is visible
     {
@@ -105,7 +92,7 @@ void CURRENT_CLASS::pushDistancePair(double zNear, double zFar)
 /** Return true if the node should be traversed, and false if the bounding sphere
  of the node is small enough to be rendered by one Camera. If the latter
  is true, then store the node's near & far plane distances. */
-bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
+bool DistanceAccumulator::shouldContinueTraversal(osg::Node &node)
 {
     // Allow traversal to continue if we haven't reached maximum depth.
     bool keepTraversing = (_currentDepth < _maxDepth);
@@ -180,7 +167,7 @@ bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
     return keepTraversing;
 }
 
-void CURRENT_CLASS::apply(osg::Node &node)
+void DistanceAccumulator::apply(osg::Node &node)
 {
     if(shouldContinueTraversal(node))
     {
@@ -191,7 +178,7 @@ void CURRENT_CLASS::apply(osg::Node &node)
     }
 }
 
-void CURRENT_CLASS::apply(osg::Projection &proj)
+void DistanceAccumulator::apply(osg::Projection &proj)
 {
     if(shouldContinueTraversal(proj))
     {
@@ -211,7 +198,7 @@ void CURRENT_CLASS::apply(osg::Projection &proj)
     }
 }
 
-void CURRENT_CLASS::apply(osg::Transform &transform)
+void DistanceAccumulator::apply(osg::Transform &transform)
 {
     if(shouldContinueTraversal(transform))
     {
@@ -240,7 +227,7 @@ void CURRENT_CLASS::apply(osg::Transform &transform)
     }
 }
 
-void CURRENT_CLASS::apply(osg::Geode &geode)
+void DistanceAccumulator::apply(osg::Geode &geode)
 {
     // Contained drawables will only be individually considered if we are
     // allowed to continue traversing.
@@ -275,14 +262,14 @@ void CURRENT_CLASS::apply(osg::Geode &geode)
     }
 }
 
-void CURRENT_CLASS::setMatrices(const osg::Matrix &modelview,
+void DistanceAccumulator::setMatrices(const osg::Matrix &modelview,
         const osg::Matrix &projection)
 {
     _modelview = modelview;
     _projection = projection;
 }
 
-void CURRENT_CLASS::reset()
+void DistanceAccumulator::reset()
 {
     //printf("ADDRESS %d\n", this);
     // Clear vectors & values
@@ -306,7 +293,7 @@ void CURRENT_CLASS::reset()
     pushLocalFrustum();
 }
 
-void CURRENT_CLASS::computeCameraPairs()
+void DistanceAccumulator::computeCameraPairs()
 {
     // Nothing in the scene, so no cameras needed
     if(_distancePairs.empty())
@@ -417,10 +404,9 @@ void CURRENT_CLASS::computeCameraPairs()
     }
 }
 
-void CURRENT_CLASS::setNearFarRatio(double ratio)
+void DistanceAccumulator::setNearFarRatio(double ratio)
 {
     if(ratio <= 0.0 || ratio >= 1.0)
         return;
     _nearFarRatio = ratio;
 }
-#undef CURRENT_CLASS

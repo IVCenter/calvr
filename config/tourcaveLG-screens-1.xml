@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 
- <GLOBAL>
    <Stereo separation="64.0" />
- </GLOBAL>
 
- <GLOBAL>
    <NumPipes value="1" />
    <NumScreens value="6" />
    <NumWindows value="1" />
@@ -19,18 +16,17 @@
    </PipeConfig>
 
    <WindowConfig>
-     <Window width="6480" comment="MAIN" window="0" pipeIndex="1" height="1920" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="6480" comment="MAIN" pipeIndex="1" height="1920" left="0" bottom="0" name="0" decoration="false" />
    </WindowConfig>
 
    <ChannelConfig>
-    <Channel channel="0" left="0"    width="6480" bottom="0" height="1920" stereoMode="HORIZONTAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel left="0"    width="6480" bottom="0" height="1920" stereoMode="HORIZONTAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
    </ChannelConfig>
 
    <ScreenConfig>
-    <Screen height="1432" h="62.0" width="805" p="0.0"   originX="-1423"  comment="S_A" originY="752"  r="-90.0" name="0" originZ="0"    screen="0" />
-    <Screen height="1432" h="32.0" width="805" p="0.0"   originX="-815"  comment="S_A" originY="1323"  r="-90.0" name="1" originZ="0"    screen="1" />
-    <Screen height="1432" h="0.0" width="805" p="0.0"   originX="0"  comment="S_A" originY="1500"      r="-90.0" name="2" originZ="0"    screen="2" />
-    <Screen height="1432" h="-33.0" width="805" p="0.0"   originX="781"  comment="S_A" originY="1219"  r="-90.0" name="3" originZ="0"    screen="3" />
-    <Screen height="1432" h="-67.0" width="805" p="0.0"   originX="1263"  comment="S_A" originY="546"  r="-90.0" name="4" originZ="0"    screen="4" />
+    <Screen height="1432" h="62.0" width="805" p="0.0"   originX="-1423"  comment="S_A" originY="752"  r="-90.0" name="0" originZ="0" />
+    <Screen height="1432" h="32.0" width="805" p="0.0"   originX="-815"  comment="S_A" originY="1323"  r="-90.0" name="1" originZ="0" />
+    <Screen height="1432" h="0.0" width="805" p="0.0"   originX="0"  comment="S_A" originY="1500"      r="-90.0" name="2" originZ="0" />
+    <Screen height="1432" h="-33.0" width="805" p="0.0"   originX="781"  comment="S_A" originY="1219"  r="-90.0" name="3" originZ="0" />
+    <Screen height="1432" h="-67.0" width="805" p="0.0"   originX="1263"  comment="S_A" originY="546"  r="-90.0" name="4" originZ="0" />
    </ScreenConfig>
- </GLOBAL>

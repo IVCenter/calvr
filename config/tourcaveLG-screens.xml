@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 
- <GLOBAL>
    <Stereo separation="-64.0" />
- </GLOBAL>
 
- <GLOBAL>
    <NumPipes value="4" />
    <NumScreens value="4" />
    <NumWindows value="4" />
@@ -17,23 +14,22 @@
    </PipeConfig>
 
    <WindowConfig>
-     <Window width="1080" comment="MAIN" window="0" pipeIndex="0" height="1920" left="0" bottom="0" name="0" decoration="false" />
-     <Window width="1080" comment="MAIN" window="1" pipeIndex="1" height="1920" left="0" bottom="0" name="1" decoration="false" />
-     <Window width="1080" comment="MAIN" window="2" pipeIndex="2" height="1920" left="0" bottom="0" name="2" decoration="false" />
-     <Window width="1080" comment="MAIN" window="3" pipeIndex="3" height="1920" left="0" bottom="0" name="3" decoration="false" />
+     <Window width="1080" comment="MAIN" pipeIndex="0" height="1920" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1080" comment="MAIN" pipeIndex="1" height="1920" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1080" comment="MAIN" pipeIndex="2" height="1920" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1080" comment="MAIN" pipeIndex="3" height="1920" left="0" bottom="0" name="3" decoration="false" />
    </WindowConfig>
 
    <ChannelConfig>
-    <Channel channel="0" left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
-    <Channel channel="1" left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="1" name="1" comment="RIGHT" />
-    <Channel channel="2" left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="2" name="2" comment="RIGHT" />
-    <Channel channel="3" left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="3" name="3" comment="RIGHT" />
+    <Channel left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="1" name="1" comment="RIGHT" />
+    <Channel left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="2" name="2" comment="RIGHT" />
+    <Channel left="0"    width="1080" bottom="0" height="1920" stereoMode="VERTICAL_SPLIT"  windowIndex="3" name="3" comment="RIGHT" />
    </ChannelConfig>
 
    <ScreenConfig>
-    <Screen width="805" h="62.0" height="1432" p="0.0"   originX="-1423"  comment="S_A" originY="752"  r="0.0" name="0" originZ="0"    screen="0" />
-    <Screen width="805" h="32.0" height="1432" p="0.0"   originX="-815"  comment="S_A" originY="1323"  r="0.0" name="1" originZ="0"    screen="1" />
-    <Screen width="805" h="0.0" height="1432" p="0.0"   originX="0"  comment="S_A" originY="1500"  r="0.0" name="2" originZ="0"    screen="2" />
-    <Screen width="805" h="-33.0" height="1432" p="0.0"   originX="781"  comment="S_A" originY="1219"  r="0.0" name="3" originZ="0"    screen="3" />
+    <Screen width="805" h="62.0" height="1432" p="0.0"   originX="-1423"  comment="S_A" originY="752"  r="0.0" name="0" originZ="0" />
+    <Screen width="805" h="32.0" height="1432" p="0.0"   originX="-815"  comment="S_A" originY="1323"  r="0.0" name="1" originZ="0" />
+    <Screen width="805" h="0.0" height="1432" p="0.0"   originX="0"  comment="S_A" originY="1500"  r="0.0" name="2" originZ="0" />
+    <Screen width="805" h="-33.0" height="1432" p="0.0"   originX="781"  comment="S_A" originY="1219"  r="0.0" name="3" originZ="0" />
    </ScreenConfig>
- </GLOBAL>
