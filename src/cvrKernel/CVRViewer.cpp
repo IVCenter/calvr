@@ -259,7 +259,7 @@ struct syncOperation : public osg::Operation
 struct printOperation : public osg::Operation
 {
         printOperation(std::string text) :
-                osg::Operation("sleepOperation",true)
+                osg::Operation("printOperation",true)
         {
             _output = text;
         }
@@ -1232,6 +1232,25 @@ void CVRViewer::renderingTraversals()
     if(_startRenderingBarrier.valid())
         _startRenderingBarrier->block();
 
+    // do per context callback for single threaded
+    if(_threadingModel == SingleThreaded && _preDrawCallbacks.size())
+    {
+	Contexts contexts;
+	getContexts(contexts);
+	Contexts::iterator itr;
+	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+	{
+	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+	    {
+		makeCurrent(*itr);
+		for(int i = 0; i < _preDrawCallbacks.size(); i++)
+		{
+		    _preDrawCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_PRE_DRAW);
+		}
+	    }
+	}
+    }
+
     // reset any double buffer graphics objects
     for(Cameras::iterator camItr = cameras.begin(); camItr != cameras.end();
             ++camItr)
@@ -1273,6 +1292,25 @@ void CVRViewer::renderingTraversals()
 		case PSO_NONE:
 		default:
 		    break;
+	    }
+	}
+    }
+
+    // do per context callback for single threaded
+    if(_threadingModel == SingleThreaded && _postFinishCallbacks.size())
+    {
+	Contexts contexts;
+	getContexts(contexts);
+	Contexts::iterator itr;
+	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+	{
+	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+	    {
+		makeCurrent(*itr);
+		for(int i = 0; i < _postFinishCallbacks.size(); i++)
+		{
+		    _postFinishCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_POST_FINISH);
+		}
 	    }
 	}
     }
@@ -1401,24 +1439,29 @@ void CVRViewer::startThreading()
 
     unsigned int numThreadsOnStartBarrier = 0;
     unsigned int numThreadsOnEndBarrier = 0;
+    unsigned int numThreadsOnFrameStartBarrier = 0;
 
     switch(_threadingModel)
     {
         case (SingleThreaded):
             numThreadsOnStartBarrier = 1;
             numThreadsOnEndBarrier = 1;
+	    numThreadsOnFrameStartBarrier = 1;
             return;
         case (CullDrawThreadPerContext):
             numThreadsOnStartBarrier = contexts.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
+	    numThreadsOnFrameStartBarrier = contexts.size() + 1;
             break;
         case (DrawThreadPerContext):
-            numThreadsOnStartBarrier = 1;
+            numThreadsOnStartBarrier = contexts.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
+	    numThreadsOnFrameStartBarrier = contexts.size() + 1;
             break;
         case (CullThreadPerCameraDrawThreadPerContext):
             numThreadsOnStartBarrier = cameras.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
+	    numThreadsOnFrameStartBarrier = contexts.size() + cameras.size() + 1;
             break;
         default:
             //OSG_NOTIFY(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
@@ -1512,17 +1555,21 @@ void CVRViewer::startThreading()
         }
     }
 
+    if(numThreadsOnFrameStartBarrier > 1)
+    {
+	_frameStartBarrier = new osg::BarrierOperation(
+                    numThreadsOnFrameStartBarrier,
+                    osg::BarrierOperation::NO_OPERATION);
+    }
+    else
+    {
+	_frameStartBarrier = 0;
+    }
+
     if(numThreadsOnEndBarrier > 1)
     {
         _endRenderingDispatchBarrier = new osg::BarrierOperation(
                 numThreadsOnEndBarrier,osg::BarrierOperation::NO_OPERATION);
-    }
-
-    if(_threadingModel == CullThreadPerCameraDrawThreadPerContext)
-    {
-        _cullDrawBarrier = new osg::BarrierOperation(
-                cameras.size() + contexts.size(),
-                osg::BarrierOperation::NO_OPERATION);
     }
 
     _swapReadyBarrier =
@@ -1537,8 +1584,7 @@ void CVRViewer::startThreading()
     typedef std::map<OpenThreads::Thread*,int> ThreadAffinityMap;
     ThreadAffinityMap threadAffinityMap;
 
-    // IVL
-    static bool addSync = true;
+    //std::map<osg::GraphicsContext*,osg::ref_ptr<osg::BarrierOperation> > contextCullBarrierMap;
 
     unsigned int processNum = 1;
     for(citr = contexts.begin(); citr != contexts.end(); ++citr, ++processNum)
@@ -1576,21 +1622,25 @@ void CVRViewer::startThreading()
 
 	//gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
 
+	if(_frameStartBarrier.valid())
+            gc->getGraphicsThread()->add(_frameStartBarrier.get());
+
 	gc->getGraphicsThread()->add(new FrameStartCallbackOperation(gc->getState()->getContextID()));
 
         // add the startRenderingBarrier
-        if((_threadingModel == CullDrawThreadPerContext)
+        if((_threadingModel == CullDrawThreadPerContext || _threadingModel == DrawThreadPerContext)
                 && _startRenderingBarrier.valid())
             gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
-        if(_threadingModel == CullThreadPerCameraDrawThreadPerContext
-                && _cullDrawBarrier.valid())
+        /*if(_threadingModel == CullThreadPerCameraDrawThreadPerContext)
         {
+	    contextCullBarrierMap[gc] = new osg::BarrierOperation(gc->getCameras().size()+1,
+                osg::BarrierOperation::NO_OPERATION);
             if(!ComController::instance()->isMaster() || _renderOnMaster)
             {
-                gc->getGraphicsThread()->add(_cullDrawBarrier.get());
+                gc->getGraphicsThread()->add(contextCullBarrierMap[gc].get());
             }
-        }
+        }*/
 
 	gc->getGraphicsThread()->add(new PreDrawCallbackOperation(gc->getState()->getContextID()));
 
@@ -1645,12 +1695,17 @@ void CVRViewer::startThreading()
             camera->createCameraThread();
 
             if(affinity)
+	    {
                 camera->getCameraThread()->setProcessorAffinity(
                         processNum % numProcessors);
+	    }
             threadAffinityMap[camera->getCameraThread()] = processNum
                     % numProcessors;
 
             osg::GraphicsContext* gc = camera->getGraphicsContext();
+
+	    if(_frameStartBarrier.valid())
+                camera->getCameraThread()->add(_frameStartBarrier.get());
 
             // add the startRenderingBarrier
             if(_startRenderingBarrier.valid())
@@ -1660,12 +1715,18 @@ void CVRViewer::startThreading()
                     dynamic_cast<osgViewer::Renderer*>(camera->getRenderer());
             renderer->setGraphicsThreadDoesCull(false);
             camera->getCameraThread()->add(renderer);
-
-            if(_cullDrawBarrier.valid())
-            {
-                camera->getCameraThread()->add(_cullDrawBarrier.get());
-            }
         }
+
+	/*for(citr = contexts.begin(); citr != contexts.end(); ++citr)
+	{
+	    for(std::list<osg::Camera*>::iterator it = (*citr)->getCameras().begin(); it != (*citr)->getCameras().end(); ++it)
+	    {
+		if(!ComController::instance()->isMaster() || _renderOnMaster)
+		{
+		    (*it)->getCameraThread()->add(contextCullBarrierMap[(*citr)].get());
+		}
+	    }
+	}*/
 
         for(camItr = cameras.begin(); camItr != cameras.end(); ++camItr)
         {
@@ -1749,6 +1810,30 @@ void CVRViewer::frameStart()
 
     _lastFrameStartTime = _frameStartTime;
     _frameStartTime = frameUp.currentTime;
+
+    if(_frameStartBarrier.valid())
+    {
+	_frameStartBarrier->block();
+    }
+
+    // do per context callback for single threaded
+    if(_threadingModel == SingleThreaded && _frameStartCallbacks.size())
+    {
+	Contexts contexts;
+	getContexts(contexts);
+	Contexts::iterator itr;
+	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+	{
+	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+	    {
+		makeCurrent(*itr);
+		for(int i = 0; i < _frameStartCallbacks.size(); i++)
+		{
+		    _frameStartCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_FRAME_START);
+		}
+	    }
+	}
+    }
 }
 
 void CVRViewer::addUpdateTraversalFront(UpdateTraversal * ut)
