@@ -92,6 +92,12 @@ class CVRKERNEL_EXPORT PluginManager
          * @brief Get a list of the names of all loaded plugins
          */
         std::vector<std::string> getLoadedPluginList();
+        
+        /**
+         *  @brief Searches for plugin in table of loaded plugins and
+         *  returns its path if found; if not found, returns empty string.
+         */
+        std::string getPathOfPlugin(std::string plugin_name);
 
     protected:
         PluginManager();
@@ -111,6 +117,7 @@ class CVRKERNEL_EXPORT PluginManager
                 int priority;       ///< plugin priority
                 CVRPlugin * ptr;    ///< pointer to instance of loaded plugin
                 std::string name;   ///< name of plugin
+                std::string path;   ///< path to plugin's dynamic library
         };
 
         /**
