@@ -47,34 +47,34 @@ bool PluginManager::init()
     
     while(position < pluginsHome.size())
     {
-	size_t lastPosition = position;
-	position = pluginsHome.find_first_of(':', position);
-	if(position == std::string::npos)
-	{
-	    size_t length = pluginsHome.size() - lastPosition;
-	    if(length)
-	    {
-		_pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
-		break;
-	    }
-	}
-	else
-	{
-	    size_t length = position - lastPosition;
-	    if(length)
-	    {
-		_pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
-	    }
-	    position++;
-	}
+        size_t lastPosition = position;
+        position = pluginsHome.find_first_of(':', position);
+        if(position == std::string::npos)
+        {
+            size_t length = pluginsHome.size() - lastPosition;
+            if(length)
+            {
+                _pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
+                break;
+            }
+        }
+        else
+        {
+            size_t length = position - lastPosition;
+            if(length)
+            {
+                _pluginLibDirs.push_back(pluginsHome.substr(lastPosition,length));
+            }
+            position++;
+        }
     }
 
     for(int i = 0; i < _pluginLibDirs.size(); ++i)
     {
 #ifdef WIN32
-	_pluginLibDirs[i] += "/bin/calvr-plugins/";
+        _pluginLibDirs[i] += "/bin/calvr-plugins/";
 #else
-	_pluginLibDirs[i] += "/lib/calvr-plugins/";
+        _pluginLibDirs[i] += "/lib/calvr-plugins/";
 #endif
     }
 
@@ -143,38 +143,38 @@ void PluginManager::preFrame()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStats"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
     }
 
     osg::Stats * statsPlugins;
     statsPlugins = CVRViewer::instance()->getViewerStats();
     if(statsPlugins && !statsPlugins->collectStats("CalVRStatsPlugins"))
     {
-	statsPlugins = NULL;
+        statsPlugins = NULL;
     }
 
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	double pluginsStartTime, pluginsEndTime;
-	if(statsPlugins)
-	{
-	    pluginsStartTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-	}
+        double pluginsStartTime, pluginsEndTime;
+        if(statsPlugins)
+        {
+            pluginsStartTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        }
 
-	_loadedPluginList[i]->ptr->preFrame();
+        _loadedPluginList[i]->ptr->preFrame();
 
-	if(statsPlugins)
-	{
-	    pluginsEndTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame begin time", pluginsStartTime);
-	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame end time", pluginsEndTime);
-	    statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame time taken", pluginsEndTime-pluginsStartTime);
-	}
+        if(statsPlugins)
+        {
+            pluginsEndTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+            statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame begin time", pluginsStartTime);
+            statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame end time", pluginsEndTime);
+            statsPlugins->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _loadedPluginList[i]->name + " preFrame time taken", pluginsEndTime-pluginsStartTime);
+        }
     }
 
     if(stats)
@@ -199,12 +199,12 @@ void PluginManager::postFrame()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStatsAdvanced"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
     }
 
     for(int i = 0; i < _loadedPluginList.size(); i++)
@@ -259,10 +259,10 @@ std::string PluginManager::getPluginName(CVRPlugin * plugin)
 {
     for(int i = 0; i < _loadedPluginList.size(); ++i)
     {
-	if(_loadedPluginList[i]->ptr == plugin)
-	{
-	    return _loadedPluginList[i]->name;
-	}
+        if(_loadedPluginList[i]->ptr == plugin)
+        {
+            return _loadedPluginList[i]->name;
+        }
     }
     return "";
 }
@@ -273,10 +273,22 @@ std::vector<std::string> PluginManager::getLoadedPluginList()
 
     for(int i = 0; i < _loadedPluginList.size(); i++)
     {
-	pluginList.push_back(_loadedPluginList[i]->name);
+        pluginList.push_back(_loadedPluginList[i]->name);
     }
 
     return pluginList;
+}
+
+std::string PluginManager::getPathOfPlugin(std::string plugin_name)
+{
+    for(size_t i = 0; i < _loadedPluginList.size(); i++)
+    {
+        PluginInfo * pi = _loadedPluginList[i];
+        if(pi && pi->name == plugin_name)
+            return pi->path;
+    }
+    
+    return "";
 }
 
 CVRPlugin * PluginManager::getPlugin(std::string plugin)
@@ -310,13 +322,13 @@ bool PluginManager::loadPlugin(std::string plugin)
 
     for(int i = 0; i < _pluginLibDirs.size(); ++i)
     {
-	struct stat sb;
-	std::string testPath = _pluginLibDirs[i] + "/" + libPath;
-	if(stat(testPath.c_str(), &sb) != -1)
-	{
-	    libPath = testPath;
-	    break;
-	}
+        struct stat sb;
+        std::string testPath = _pluginLibDirs[i] + "/" + libPath;
+        if(stat(testPath.c_str(), &sb) != -1)
+        {
+            libPath = testPath;
+            break;
+        }
     }
 
 #ifndef WIN32
@@ -326,30 +338,30 @@ bool PluginManager::loadPlugin(std::string plugin)
     libHandle = dlopen(libPath.c_str(),RTLD_LAZY);
     if(!libHandle)
     {
-	std::cerr << dlerror() << std::endl;
-	return false;
+        std::cerr << dlerror() << std::endl;
+        return false;
     }
 
     func = (CVRPlugin * (*)())dlsym(libHandle, "createPlugin");
     if((error = dlerror()) != NULL)
     {
-	std::cerr << error << std::endl;
-	return false;
+        std::cerr << error << std::endl;
+        return false;
     }
 #else
     HINSTANCE libHandle;
     libHandle = LoadLibrary(libPath.c_str());
     if(!libHandle)
     {
-	std::cerr << "Error: Unable to open DLL: " << libPath << std::endl;
-	return false;
+        std::cerr << "Error: Unable to open DLL: " << libPath << std::endl;
+        return false;
     }
 
     func = (CVRPlugin * (*)()) GetProcAddress(libHandle, "createPlugin");
     if(!func)
     {
-	std::cerr << "Error: Unable to find function address in " << libPath << std::endl;
-	return false;
+        std::cerr << "Error: Unable to find function address in " << libPath << std::endl;
+        return false;
     }
 #endif
 
@@ -360,6 +372,7 @@ bool PluginManager::loadPlugin(std::string plugin)
     pi->priority = priority;
     pi->name = plugin;
     pi->ptr = pluginPtr;
+    pi->path = libPath;
 
     _loadedPluginList.push_back(pi);
 
