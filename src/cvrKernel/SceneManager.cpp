@@ -538,6 +538,21 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
     }
 }
 
+std::vector< SceneObject* >
+SceneManager::getSceneObjects(void)
+{
+    std::vector< SceneObject* > scene_objects;
+
+    for (std::map< std::string, std::vector< SceneObject* > >::iterator it = _pluginObjectMap.begin();
+        _pluginObjectMap.end() != it;
+        ++it)
+    {
+        scene_objects.insert( scene_objects.end(), it->second.begin(), it->second.end() );
+    }
+
+    return scene_objects;
+}
+
 void SceneManager::setMenuOpenObject(SceneObject * object)
 {
     if(object != _menuOpenObject)

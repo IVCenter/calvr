@@ -186,6 +186,8 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void unregisterSceneObject(SceneObject * object);
 
+        std::vector< SceneObject* > getSceneObjects(void);
+
         float getDefaultContextMenuScale()
         {
             return _menuScale;
