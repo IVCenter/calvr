@@ -2,6 +2,7 @@
 #include <cvrInput/TrackerSlave.h>
 #include <cvrInput/TrackerShmem.h>
 #include <cvrInput/TrackerMouse.h>
+#include <cvrInput/TrackerPlugin.h>
 
 #ifdef WITH_OMICRON
 #include <cvrInput/TrackerOmicron.h>
@@ -173,6 +174,10 @@ bool TrackingManager::init()
             else if(systemName == "MOUSE")
             {
                 tracker = new TrackerMouse();
+            }
+	    else if(systemName == "PLUGIN")
+            {
+                tracker = new TrackerPlugin();
             }
             else
             {
