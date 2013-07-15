@@ -5,7 +5,7 @@
 #ifndef CALVR_SCREEN_MV_MASTER_H
 #define CALVR_SCREEN_MV_MASTER_H
 
-#include <cvrKernel/ScreenMVSimulator.h>
+#include <cvrKernel/Screens/ScreenMVSimulator.h>
 
 namespace cvr
 {

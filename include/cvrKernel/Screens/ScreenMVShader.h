@@ -6,7 +6,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-#include <cvrKernel/ScreenMVSimulator.h>
+#include <cvrKernel/Screens/ScreenMVSimulator.h>
 
 #include <osg/Program>
 #include <osg/Shader>

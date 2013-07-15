@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/CVRCullVisitor.h>
 #include <cvrInput/TrackingManager.h>

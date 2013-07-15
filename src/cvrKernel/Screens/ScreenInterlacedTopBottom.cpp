@@ -1,5 +1,5 @@
 #include <cvrConfig/ConfigManager.h>
-#include <cvrKernel/ScreenInterlacedTopBottom.h>
+#include <cvrKernel/Screens/ScreenInterlacedTopBottom.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/CalVR.h>
 

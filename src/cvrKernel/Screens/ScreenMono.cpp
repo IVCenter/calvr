@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenMono.h>
+#include <cvrKernel/Screens/ScreenMono.h>
 #include <cvrKernel/CVRViewer.h>
 
 #include <iostream>

@@ -8,22 +8,23 @@ ENDIF(WIN32)
 
 SET(LIB_NAME cvrKernel)
 SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
+SET(SCREEN_HEADER_PATH ${HEADER_PATH}/Screens)
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CalVR.h
     ${HEADER_PATH}/ScreenConfig.h
-    ${HEADER_PATH}/ScreenBase.h
-    ${HEADER_PATH}/ScreenMono.h
-    ${HEADER_PATH}/ScreenStereo.h
-    ${HEADER_PATH}/ScreenInterlacedTopBottom.h
-    ${HEADER_PATH}/ScreenLenticular.h
-    ${HEADER_PATH}/ScreenMVShader.h
-    ${HEADER_PATH}/ScreenMVCullVisitor.h
-    ${HEADER_PATH}/ScreenMVMaster.h
-    ${HEADER_PATH}/ScreenMVSimulator.h
-    ${HEADER_PATH}/ScreenMVZones.h
-    ${HEADER_PATH}/ScreenFixedViewer.h
-    ${HEADER_PATH}/ScreenHMD.h
-    ${HEADER_PATH}/ScreenMVStencil.h
+    ${SCREEN_HEADER_PATH}/ScreenBase.h
+    ${SCREEN_HEADER_PATH}/ScreenMono.h
+    ${SCREEN_HEADER_PATH}/ScreenStereo.h
+    ${SCREEN_HEADER_PATH}/ScreenInterlacedTopBottom.h
+    ${SCREEN_HEADER_PATH}/ScreenLenticular.h
+    ${SCREEN_HEADER_PATH}/ScreenMVShader.h
+    ${SCREEN_HEADER_PATH}/ScreenMVCullVisitor.h
+    ${SCREEN_HEADER_PATH}/ScreenMVMaster.h
+    ${SCREEN_HEADER_PATH}/ScreenMVSimulator.h
+    ${SCREEN_HEADER_PATH}/ScreenMVZones.h
+    ${SCREEN_HEADER_PATH}/ScreenFixedViewer.h
+    ${SCREEN_HEADER_PATH}/ScreenHMD.h
+    ${SCREEN_HEADER_PATH}/ScreenMVStencil.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
     ${HEADER_PATH}/SceneManager.h
@@ -49,11 +50,11 @@ IF(WIN32)
 	IF(GLEW_FOUND)
 	    SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES} ${GLEW_INCLUDE_DIR})
 		SET(LIB_EXTERNAL_LIBRARIES ${LIB_EXTERNAL_LIBRARIES} ${GLEW_LIBRARY})
-		SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMVShader.cpp)
+		SET(EXTRA_SOURCE ${EXTRA_SOURCE} Screens/ScreenMVShader.cpp)
 		ADD_DEFINITIONS(-DWITH_SCREEN_MULTI_VIEWER)
 	ENDIF(GLEW_FOUND)
 ELSE(WIN32)
-    SET(EXTRA_SOURCE ${EXTRA_SOURCE} ScreenMVShader.cpp)
+    SET(EXTRA_SOURCE ${EXTRA_SOURCE} Screens/ScreenMVShader.cpp)
 	ADD_DEFINITIONS(-DWITH_SCREEN_MULTI_VIEWER)
 ENDIF(WIN32)
 
@@ -69,17 +70,17 @@ SET(LIB_SRC_FILES
     ${EXTRA_SOURCE}
     CalVR.cpp
     ScreenConfig.cpp
-    ScreenBase.cpp
-    ScreenMono.cpp
-    ScreenStereo.cpp
-    ScreenInterlacedTopBottom.cpp
-    ScreenMVCullVisitor.cpp
-    ScreenMVMaster.cpp
-    ScreenMVSimulator.cpp
-    ScreenMVZones.cpp
-    ScreenFixedViewer.cpp
-    ScreenHMD.cpp
-    ScreenMVStencil.cpp
+    Screens/ScreenBase.cpp
+    Screens/ScreenMono.cpp
+    Screens/ScreenStereo.cpp
+    Screens/ScreenInterlacedTopBottom.cpp
+    Screens/ScreenMVCullVisitor.cpp
+    Screens/ScreenMVMaster.cpp
+    Screens/ScreenMVSimulator.cpp
+    Screens/ScreenMVZones.cpp
+    Screens/ScreenFixedViewer.cpp
+    Screens/ScreenHMD.cpp
+    Screens/ScreenMVStencil.cpp
     ComController.cpp
     CVRViewer.cpp
     SceneManager.cpp

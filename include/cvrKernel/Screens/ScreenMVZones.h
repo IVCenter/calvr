@@ -8,8 +8,8 @@
 
 #include <vector>
 #include <cvrKernel/Export.h>
-#include <cvrKernel/ScreenBase.h>
-#include <cvrKernel/ScreenMVSimulator.h>
+#include <cvrKernel/Screens/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenMVSimulator.h>
 #include <osgViewer/Renderer>
 
 namespace cvr

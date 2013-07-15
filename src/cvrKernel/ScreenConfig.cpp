@@ -1,13 +1,13 @@
 #include <cvrKernel/ScreenConfig.h>
-#include <cvrKernel/ScreenMono.h>
-#include <cvrKernel/ScreenStereo.h>
-#include <cvrKernel/ScreenInterlacedTopBottom.h>
-#include <cvrKernel/ScreenMVShader.h>
-#include <cvrKernel/ScreenMVZones.h>
-#include <cvrKernel/ScreenMVMaster.h>
-#include <cvrKernel/ScreenMVStencil.h>
-#include <cvrKernel/ScreenFixedViewer.h>
-#include <cvrKernel/ScreenHMD.h>
+#include <cvrKernel/Screens/ScreenMono.h>
+#include <cvrKernel/Screens/ScreenStereo.h>
+#include <cvrKernel/Screens/ScreenInterlacedTopBottom.h>
+#include <cvrKernel/Screens/ScreenMVShader.h>
+#include <cvrKernel/Screens/ScreenMVZones.h>
+#include <cvrKernel/Screens/ScreenMVMaster.h>
+#include <cvrKernel/Screens/ScreenMVStencil.h>
+#include <cvrKernel/Screens/ScreenFixedViewer.h>
+#include <cvrKernel/Screens/ScreenHMD.h>
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrInput/TrackingManager.h>
@@ -22,7 +22,7 @@
 #include <locale>
 
 #ifdef WITH_INTERLEAVER
-#include <cvrKernel/ScreenLenticular.h>
+#include <cvrKernel/Screens/ScreenLenticular.h>
 #endif
 
 #ifdef WIN32

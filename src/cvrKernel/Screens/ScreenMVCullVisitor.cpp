@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenMVCullVisitor.h>
+#include <cvrKernel/Screens/ScreenMVCullVisitor.h>
 
 #include <osg/Geode>
 #include <osg/OcclusionQueryNode>

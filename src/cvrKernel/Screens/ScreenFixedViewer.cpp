@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenFixedViewer.h>
+#include <cvrKernel/Screens/ScreenFixedViewer.h>
 #include <cvrConfig/ConfigManager.h>
 #include <cvrKernel/CVRViewer.h>
 

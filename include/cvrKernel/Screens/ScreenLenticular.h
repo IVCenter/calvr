@@ -7,7 +7,7 @@
 
 #include <coInterleaver.h>
 
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 
 #include <osg/Camera>
 #include <OpenThreads/Mutex>

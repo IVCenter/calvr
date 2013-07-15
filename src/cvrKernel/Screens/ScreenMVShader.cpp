@@ -4,10 +4,10 @@
 #pragma comment(lib, "Opengl32.lib")
 #endif
 
-#include <cvrKernel/ScreenMVShader.h>
+#include <cvrKernel/Screens/ScreenMVShader.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/SceneManager.h>
-#include <cvrKernel/ScreenMVCullVisitor.h>
+#include <cvrKernel/Screens/ScreenMVCullVisitor.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrConfig/ConfigManager.h>
 

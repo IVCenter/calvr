@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenMVSimulator.h>
+#include <cvrKernel/Screens/ScreenMVSimulator.h>
 
 using namespace cvr;
 

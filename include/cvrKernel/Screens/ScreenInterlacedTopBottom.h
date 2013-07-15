@@ -5,7 +5,7 @@
 #ifndef CALVR_SCREEN_INTERLACED_TOP_BOTTOM_H
 #define CALVR_SCREEN_INTERLACED_TOP_BOTTOM_H
 
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 
 #include <osg/DisplaySettings>
 #include <osg/Texture2D>

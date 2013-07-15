@@ -5,7 +5,7 @@
 #ifndef CALVR_SCREEN_STEREO_H
 #define CALVR_SCREEN_STEREO_H
 
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 
 #include <osg/DisplaySettings>
 #include <osgUtil/SceneView>

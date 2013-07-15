@@ -1,7 +1,7 @@
 #include <cvrKernel/CVRCullVisitor.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/PluginHelper.h>
-#include <cvrKernel/ScreenMVMaster.h>
+#include <cvrKernel/Screens/ScreenMVMaster.h>
 
 #include <iostream>
 

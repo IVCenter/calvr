@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <map>
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 #include <osgViewer/Renderer>
 
 namespace cvr

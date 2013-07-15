@@ -1,11 +1,11 @@
 /**
- * @file ScreenMono.h
+ * @file ScreenFixedViewer.h
  */
 
-#ifndef CALVR_SCREEN_MONO_H
-#define CALVR_SCREEN_MONO_H
+#ifndef CALVR_SCREEN_FIXED_VIEWER_H
+#define CALVR_SCREEN_FIXED_VIEWER_H
 
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 
 namespace cvr
 {
@@ -16,27 +16,18 @@ namespace cvr
  */
 
 /**
- * @brief Creates a screen for non stereo rendering
+ * @brief Creates a screen with the viewer positon set from
+ * the config file 
  */
-class ScreenMono : public ScreenBase
+class ScreenFixedViewer : public ScreenBase
 {
     public:
-        ScreenMono();
-        virtual ~ScreenMono();
-
-        /**
-         * @brief defines the eye being rendered
-         */
-        enum monoType
-        {
-            CENTER = 0,
-            LEFT,
-            RIGHT
-        };
+        ScreenFixedViewer();
+        virtual ~ScreenFixedViewer();
 
         /**
          * @brief Creates the screen and adds it to the viewer
-         * @param mode value interpreted as ScreenMono::monoType, defines eye position
+         * @param mode currently ignored
          */
         virtual void init(int mode = 0);
 
@@ -59,13 +50,11 @@ class ScreenMono : public ScreenBase
          * @brief See if this screen created the given osg::Camera
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c);
-
-        virtual void viewportResized(int left, int bottom, int width, int height);
     protected:
-        monoType _type;                     ///< defines eye location
         osg::ref_ptr<osg::Camera> _camera;  ///< camera created for screen
         osg::Matrix _view;                  ///< view matrix
         osg::Matrix _proj;                  ///< projection matrix
+        osg::Matrix _viewerMat; ///< matrix to use for viewer position/orientation
 };
 
 /**

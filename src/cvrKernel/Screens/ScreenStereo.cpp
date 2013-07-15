@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenStereo.h>
+#include <cvrKernel/Screens/ScreenStereo.h>
 #include <cvrKernel/CVRViewer.h>
 
 #include <osgViewer/Renderer>

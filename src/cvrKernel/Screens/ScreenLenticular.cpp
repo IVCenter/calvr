@@ -1,6 +1,6 @@
 #ifdef WITH_INTERLEAVER
 
-#include <cvrKernel/ScreenLenticular.h>
+#include <cvrKernel/Screens/ScreenLenticular.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/CalVR.h>
 #include <cvrConfig/ConfigManager.h>

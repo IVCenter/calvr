@@ -1,4 +1,4 @@
-#include <cvrKernel/ScreenMVZones.h>
+#include <cvrKernel/Screens/ScreenMVZones.h>
 #include <cvrKernel/CVRCullVisitor.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/NodeMask.h>
