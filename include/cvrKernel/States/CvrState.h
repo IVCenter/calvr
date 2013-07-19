@@ -15,77 +15,27 @@
 #ifndef CVRSTATE_H_
 #define CVRSTATE_H_
 
+#include <map>
 #include <string>
 #include <osg/Referenced>
 
 #include <cvrUtil/Shouter.hpp>
-#include <cvrUtil/Listener.h>
 
 #include <cdbapp/State.h>
-
-class AudioAnnotationState;
-class AudioServerState;
-class GenericAnnotationState;
-class LoadState;
-class MetadataState;
-class SlideshowState;
-class SpatialState;
-class WallState;
 
 class CvrState : public State, public Shouter<CvrState>, public osg::Referenced
 {
 public:
-    CvrState(std::string const& type);
+    /*
+     * Returns a CvrState* to the appropriate subclass implementation registered
+     * to the given State's type, or NULL if none exist.
+     */
+    static CvrState*
+    AdaptToDerivedCvrState(State& state);
 
-    CvrState(State const& state);
-
-    virtual AudioAnnotationState*
-    AsAudioAnnotation(void) { return NULL; }
-
-    virtual AudioAnnotationState const*
-    AsAudioAnnotation(void) const { return NULL; }
-
-    virtual AudioServerState*
-    AsAudioServer(void) { return NULL; }
-
-    virtual AudioServerState const*
-    AsAudioServer(void) const { return NULL; }
-
-    virtual GenericAnnotationState*
-    AsGenericAnnotation(void) { return NULL; }
-
-    virtual GenericAnnotationState const*
-    AsGenericAnnotation(void) const { return NULL; }
-
-    virtual LoadState*
-    AsLoad(void) { return NULL; }
-
-    virtual LoadState const*
-    AsLoad(void) const { return NULL; }
-
-    virtual MetadataState*
-    AsMetadata(void) { return NULL; }
-
-    virtual MetadataState const*
-    AsMetadata(void) const { return NULL; }
-
-    virtual SlideshowState*
-    AsSlideshow(void) { return NULL; }
-
-    virtual SlideshowState const*
-    AsSlideshow(void) const { return NULL; }
-
-    virtual SpatialState*
-    AsSpatial(void) { return NULL; }
-
-    virtual SpatialState const*
-    AsSpatial(void) const { return NULL; }
-
-    virtual WallState*
-    AsWall(void) { return NULL; }
-
-    virtual WallState const*
-    AsWall(void) const { return NULL; }
+    // Note: This should call the protected static Register function, and must be called once before any usage of the class.
+    virtual void
+    Register(void) = 0;
 
     std::string const
     Type(void);
@@ -93,16 +43,27 @@ public:
     bool const
     Valid(void);
 
-    inline void
-    Valid(bool const valid) { SetVariable("valid", valid); }
+    void
+    Valid(bool const valid);
 
 protected:
+    typedef CvrState* (*STATIC_ADAPTER)(State const& state);
+
+    static void
+    Register(std::string const& type, STATIC_ADAPTER staticAdapter);
+
+    // To be used for new states
+    CvrState(std::string const& type);
+
+    // To be used for adapters
+    CvrState(State const& state);
+
     virtual
     ~CvrState(void);
 
 private:
-    virtual void
-    Init(void);
+    typedef std::map< std::string, STATIC_ADAPTER > TypeAdapterMap;
+    static TypeAdapterMap mTypeAdapters;
 };
 
 #endif /* CVRSTATE_H_ */

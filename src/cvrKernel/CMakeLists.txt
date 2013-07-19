@@ -9,6 +9,7 @@ ENDIF(WIN32)
 SET(LIB_NAME cvrKernel)
 SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(SCREEN_HEADER_PATH ${HEADER_PATH}/Screens)
+SET(STATE_HEADER_PATH ${HEADER_PATH}/States)
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CalVR.h
     ${HEADER_PATH}/ScreenConfig.h
@@ -25,6 +26,8 @@ SET(LIB_PUBLIC_HEADERS
     ${SCREEN_HEADER_PATH}/ScreenFixedViewer.h
     ${SCREEN_HEADER_PATH}/ScreenHMD.h
     ${SCREEN_HEADER_PATH}/ScreenMVStencil.h
+    ${HEADER_PATH}/StateManager.h
+    ${STATE_HEADER_PATH}/CvrState.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
     ${HEADER_PATH}/SceneManager.h
@@ -41,6 +44,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/InteractionEvent.h
     ${HEADER_PATH}/CVRStatsHandler.h
     ${HEADER_PATH}/Export.h
+    ${HEADER_PATH}/DatabaseHandler.h
 )
 
 SET(EXTRA_SOURCE)
@@ -81,6 +85,8 @@ SET(LIB_SRC_FILES
     Screens/ScreenFixedViewer.cpp
     Screens/ScreenHMD.cpp
     Screens/ScreenMVStencil.cpp
+    StateManager.cpp
+    States/CvrState.cpp
     ComController.cpp
     CVRViewer.cpp
     SceneManager.cpp
@@ -95,16 +101,19 @@ SET(LIB_SRC_FILES
     TiledWallSceneObject.cpp
     InteractionEvent.cpp
     CVRStatsHandler.cpp
+    DatabaseHandler.cpp
 )
 
 SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES}
     ${MXML_INCLUDE_DIR}
     ${OSG_INCLUDE_DIR}
+    ${CDBAPP_INCLUDE_DIR}
 )
 
 SET(LIB_EXTERNAL_LIBRARIES ${LIB_EXTERNAL_LIBRARIES}
     ${MXML_LIBRARY}
     ${OSG_LIBRARIES}
+    ${CDBAPP_LIBRARY}
 )
 
 SET(LIB_INTERNAL_LIBRARIES

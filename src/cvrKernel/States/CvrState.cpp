@@ -7,23 +7,29 @@
 #include <iostream>
 #include <cvrKernel/States/CvrState.h>
 
-CvrState::CvrState(std::string const& type)
+// static member fields
+/*static*/ CvrState::TypeAdapterMap CvrState::mTypeAdapters;
+
+/*static*/ CvrState*
+CvrState::AdaptToDerivedCvrState(State& state)
 {
-    SetVariable("type", type);
-    Init();
-}
+    std::string type;
+    if (State::NO_ERROR != state.GetVariable("type", type))
+    {
+        std::cerr << "CvrState::AdaptToDerivedCvrState passed a State without"
+                << " a type variable." << std::endl;
+        return NULL;
+    }
 
-CvrState::CvrState(State const& state) : State(state.Variables(), state.Uuid())
-{}
-
-/*virtual*/
-CvrState::~CvrState()
-{}
-
-/*virtual*/ void
-CvrState::Init(void)
-{
-    Valid(true);
+    TypeAdapterMap::iterator tamit = mTypeAdapters.find(type);
+    if (mTypeAdapters.end() == tamit)
+    {
+        std::cerr << "CvrState::AdaptToDerivedState passed a State with unknown"
+                << " type \'" << type << "\'." << std::endl;
+        return NULL;
+    }
+    
+    return tamit->second(state);
 }
 
 std::string const
@@ -43,4 +49,41 @@ CvrState::Valid()
 
     return valid;
 }
+
+void
+CvrState::Valid(bool const valid)
+{
+    SetVariable("valid", valid);
+}
+
+/////// BEING PROTECTED FUNCTIONS //////////
+
+CvrState::CvrState(std::string const& type)
+{
+    SetVariable("type", type);
+    Valid(true);
+}
+
+CvrState::CvrState(State const& state) : State(state.Variables(), state.Uuid())
+{}
+
+/*static*/ void
+CvrState::Register(std::string const& type, STATIC_ADAPTER staticAdapter)
+{
+    TypeAdapterMap::iterator tamit = mTypeAdapters.find(type);
+    if (mTypeAdapters.end() == tamit)
+    {
+        std::pair< std::string, STATIC_ADAPTER > adapter(type, staticAdapter);
+        mTypeAdapters.insert(tamit, adapter );
+    }
+    else if (tamit->second != staticAdapter)
+    {
+        std::cerr << "Warning: Differing Adapter functions provided for derived"
+                << " CvrState of type \'" << type << "\'." << std::endl;
+    }
+}
+
+/*virtual*/
+CvrState::~CvrState()
+{}
 
