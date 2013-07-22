@@ -23,7 +23,7 @@
 
 #include <cdbapp/State.h>
 
-class CvrState : public State, public Shouter<CvrState>, public osg::Referenced
+class CvrState : public cdb::State, public Shouter<CvrState>, public osg::Referenced
 {
 public:
     /*
@@ -31,11 +31,7 @@ public:
      * to the given State's type, or NULL if none exist.
      */
     static CvrState*
-    AdaptToDerivedCvrState(State& state);
-
-    // Note: This should call the protected static Register function, and must be called once before any usage of the class.
-    virtual void
-    Register(void) = 0;
+    AdaptToDerivedCvrState(cdb::State& state);
 
     std::string const
     Type(void);
@@ -47,7 +43,7 @@ public:
     Valid(bool const valid);
 
 protected:
-    typedef CvrState* (*STATIC_ADAPTER)(State const& state);
+    typedef CvrState* (*STATIC_ADAPTER)(cdb::State const&);
 
     static void
     Register(std::string const& type, STATIC_ADAPTER staticAdapter);
@@ -56,7 +52,7 @@ protected:
     CvrState(std::string const& type);
 
     // To be used for adapters
-    CvrState(State const& state);
+    CvrState(cdb::State const& state);
 
     virtual
     ~CvrState(void);

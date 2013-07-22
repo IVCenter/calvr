@@ -171,7 +171,7 @@ StateManager::UpdateLocalStates(void)
     std::list< std::string >::iterator it;
     for (it = returned_states.begin(); it != returned_states.end(); ++it)
     {
-        State state = State::Read( *it );
+        cdb::State state = cdb::State::Read( *it );
         osg::ref_ptr<CvrState> cvrstate = CvrState::AdaptToDerivedCvrState( state );
 
         if (cvrstate)
@@ -202,7 +202,7 @@ StateManager::LoadStateChanges(std::list< std::string >& returnedStates)
     if (cvr::ComController::instance()->isMaster())
     {
         mDatabaseHandler.LoadStateChanges( returnedStates );
-        State::ConvertStringsToJsonStateArray( returnedStates, json_array_of_states );
+        cdb::State::ConvertStringsToJsonStateArray( returnedStates, json_array_of_states );
         file_size = json_array_of_states.length();
 
         cvr::ComController::instance()->sendSlaves(&file_size, sizeof(file_size));
@@ -222,7 +222,7 @@ StateManager::LoadStateChanges(std::list< std::string >& returnedStates)
             json_array_of_states = cArray;
             delete[] cArray;
 
-            State::ConvertJsonStateArrayToStrings(json_array_of_states, returnedStates);
+            cdb::State::ConvertJsonStateArrayToStrings(json_array_of_states, returnedStates);
         }
     }
 }

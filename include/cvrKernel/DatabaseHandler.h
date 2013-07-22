@@ -45,7 +45,7 @@ protected:
     void
     Hear(CvrState* cvrState);
 
-    ApplicationDatabaseInterface          mDatabase;
+    cdb::ApplicationDatabaseInterface     mDatabase;
     uint64_t                              mLastLoadTimestep;
     std::map< std::string, std::string >  mHeardStates;
 
