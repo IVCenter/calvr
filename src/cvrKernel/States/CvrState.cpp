@@ -36,7 +36,8 @@ std::string const
 CvrState::Type()
 {
     std::string type;
-    assert( State::NO_ERROR == GetVariable("type", type) );
+    State::ErrorType error = GetVariable("type", type);
+    assert( State::NO_ERROR == error );
 
     return type;
 }
@@ -45,7 +46,8 @@ bool const
 CvrState::Valid()
 {
     bool valid;
-    assert( State::NO_ERROR == GetVariable("valid",valid) );
+    State::ErrorType error = GetVariable("valid",valid);
+    assert( State::NO_ERROR == error );
 
     return valid;
 }
