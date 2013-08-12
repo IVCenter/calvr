@@ -255,7 +255,10 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     for(int i = 0; i < fileList.size(); i++)
     {
-        cvr::FileHandler::instance()->loadFile(fileList[i]);
+        SceneObject* so = cvr::FileHandler::instance()->loadFile(fileList[i]);
+
+        if (so)
+            so->attachToScene();
     }
 
     return true;

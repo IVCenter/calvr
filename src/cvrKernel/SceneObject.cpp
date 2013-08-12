@@ -1270,3 +1270,29 @@ void SceneObject::interactionCountDec()
         _boundsTransform->addChild(_boundsGeode);
     }
 }
+
+void SceneObject::addCvrState( CvrState* const state )
+{
+    _cvrStates[ state->Type() ].insert( state );
+}
+
+void SceneObject::removeCvrState( CvrState* const state )
+{
+    std::map< std::string, std::set< CvrState* > >::iterator it;
+    it = _cvrStates.find( state->Type() );
+
+    if (_cvrStates.end() != it)
+        it->second.erase( state );
+}
+
+std::set< CvrState* > SceneObject::getCvrStatesByType( std::string type )
+{
+    std::map< std::string, std::set< CvrState* > >::iterator it;
+    it = _cvrStates.find( type );
+
+    if (_cvrStates.end() == it)
+       return std::set< CvrState* >();
+
+    return it->second;
+}
+

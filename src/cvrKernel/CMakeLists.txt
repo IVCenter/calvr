@@ -28,6 +28,7 @@ SET(LIB_PUBLIC_HEADERS
     ${SCREEN_HEADER_PATH}/ScreenMVStencil.h
     ${HEADER_PATH}/StateManager.h
     ${STATE_HEADER_PATH}/CvrState.h
+    ${STATE_HEADER_PATH}/MetadataState.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
     ${HEADER_PATH}/SceneManager.h
@@ -87,6 +88,7 @@ SET(LIB_SRC_FILES
     Screens/ScreenMVStencil.cpp
     StateManager.cpp
     States/CvrState.cpp
+    States/MetadataState.cpp
     ComController.cpp
     CVRViewer.cpp
     SceneManager.cpp

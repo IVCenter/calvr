@@ -1,4 +1,5 @@
 #include <cvrKernel/FileHandler.h>
+#include <cvrKernel/PluginHelper.h>
 #include <cvrKernel/SceneManager.h>
 
 #include <osgDB/ReadFile>
@@ -27,7 +28,36 @@ FileHandler * FileHandler::instance()
     return _myPtr;
 }
 
-bool FileHandler::loadFile(std::string file)
+SceneObject* FileHandler::loadFile(std::string file)
+{
+    SceneObject* sceneObject = loadFileDriver(file);
+
+    if (sceneObject)
+    {
+        MetadataState* state = new MetadataState;
+        state->Path(file);
+        //TODO: state->Volume(osg::Vec3)
+        sceneObject->addCvrState( state );
+        //TODO: ?? register interest in metadata state
+    }
+
+    return sceneObject;
+}
+
+SceneObject* FileHandler::loadFile(MetadataState* state)
+{
+    SceneObject* sceneObject = loadFileDriver( state->Path() );
+
+    if (sceneObject)
+    {
+        sceneObject->addCvrState( state );
+        //TODO: ?? register interest in metadata state
+    }
+
+    return sceneObject;
+}
+
+SceneObject* FileHandler::loadFileDriver(std::string file)
 {
     std::string filext;
     // get file ext
@@ -55,27 +85,29 @@ bool FileHandler::loadFile(std::string file)
 
     std::transform(filext.begin(),filext.end(),filext.begin(),::tolower);
 
-    if(_extMap.find(filext) != _extMap.end())
+    SceneObject* sceneObject = NULL;
+
+    std::map< std::string, FileLoadCallback* >::iterator emit = _extMap.find(filext);    
+    if(_extMap.end() != emit)
+        sceneObject = emit->second->loadFile(file);
+    if (NULL == sceneObject) // if all else fails
     {
-        if(_extMap[filext]->loadFile(file))
+        osg::ref_ptr < osg::Node > loadedModel = osgDB::readNodeFile(file);
+
+        if(!loadedModel)
         {
-            return true;
+            std::cerr << "Unable to load file " << file << std::endl;
+            return NULL;
         }
+
+        sceneObject = new SceneObject(file, true, false, false, true, false);
+        sceneObject->addMoveMenuItem();
+        sceneObject->addNavigationMenuItem();
+        sceneObject->addChild( loadedModel );
+        PluginHelper::registerSceneObject(sceneObject, "FileHandler");
     }
 
-    // if all else fails
-
-    osg::ref_ptr < osg::Node > loadedModel = osgDB::readNodeFile(file);
-
-    if(loadedModel)
-    {
-        SceneManager::instance()->getObjectsRoot()->addChild(loadedModel);
-        return true;
-    }
-
-    std::cerr << "Unable to load file " << file << std::endl;
-
-    return false;
+    return sceneObject;
 }
 
 void FileHandler::registerExt(std::string ext, FileLoadCallback * flc)

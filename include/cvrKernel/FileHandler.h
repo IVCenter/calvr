@@ -6,6 +6,8 @@
 #define CALVR_FILE_HANDLER_H
 
 #include <cvrKernel/Export.h>
+#include <cvrKernel/SceneObject.h>
+#include <cvrKernel/States/MetadataState.h>
 
 #include <string>
 #include <map>
@@ -38,14 +40,25 @@ class CVRKERNEL_EXPORT FileHandler
 
         /**
          * @brief try to load a file
-         * @param file file to load
+         * @param file filepath of file to load
          * @return true if file is loaded
          *
          * Will determine if the extension is registered with a callback and attempt
          * to load with it.  If callback not present, or fails, osg readNodeFile is tried
          * and the result is attached to the object root.
          */
-        bool loadFile(std::string file);
+        SceneObject* loadFile(std::string file);
+
+        /**
+         * @brief try to load a file
+         * @param state metadata of file to load
+         * @return true if file is loaded
+         *
+         * Will determine if the extension is registered with a callback and attempt
+         * to load with it.  If callback not present, or fails, osg readNodeFile is tried
+         * and the result is attached to the object root.
+         */
+        SceneObject* loadFile(MetadataState* state);
 
         /**
          * @brief register a callback for when a file with a certain extension is loaded
@@ -71,6 +84,8 @@ class CVRKERNEL_EXPORT FileHandler
 
         static FileHandler * _myPtr; ///< static self pointer
 
+        SceneObject* loadFileDriver(std::string file);
+
         std::map<std::string,FileLoadCallback *> _extMap; ///< map of file extension to callback
 };
 
@@ -92,7 +107,7 @@ class CVRKERNEL_EXPORT FileLoadCallback
         /**
          * @brief function called when a file with a registered extension is loaded
          */
-        virtual bool loadFile(std::string file) = 0;
+        virtual SceneObject* loadFile(std::string file) = 0;
     private:
         std::vector<std::string> _exts; ///< list of extensions registed to this callback
 };

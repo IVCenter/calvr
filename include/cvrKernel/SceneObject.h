@@ -9,12 +9,14 @@
 #include <cvrMenu/PopupMenu.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrKernel/States/CvrState.h>
 
 #include <osg/MatrixTransform>
 #include <osg/Geode>
 #include <osg/Matrix>
 #include <osg/BoundingBox>
 
+#include <set>
 #include <string>
 #include <iostream>
 
@@ -392,6 +394,12 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void closeMenu();
 
+        void addCvrState( CvrState* const state );
+
+        void removeCvrState( CvrState* const state );
+
+        std::set< CvrState* > getCvrStatesByType( std::string type );
+
     protected:
         bool getRegistered()
         {
@@ -472,6 +480,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         SceneObject * _parent;
 
         int _interactionCount;
+
+        std::map< std::string, std::set< CvrState* > > _cvrStates;
 };
 
 /**
