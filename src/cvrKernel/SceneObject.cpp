@@ -555,6 +555,19 @@ osg::Matrix SceneObject::getWorldToObjectMatrix()
     }
 }
 
+bool SceneObject::processEvent(InteractionEvent * ie, VectorWithPosition<SceneObject*> & nodeList)
+{
+    nodeList.next();
+    if(nodeList.getPosition() < nodeList.size())
+    {
+	return nodeList[nodeList.getPosition()]->processEvent(ie,nodeList);
+    }
+    else
+    {
+	return processEvent(ie);
+    }
+}
+
 bool SceneObject::processEvent(InteractionEvent * ie)
 {
     TrackedButtonInteractionEvent * tie = ie->asTrackedButtonEvent();

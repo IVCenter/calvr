@@ -297,6 +297,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         osg::Matrix getWorldToObjectMatrix();
 
+        virtual bool processEvent(InteractionEvent * ie, VectorWithPosition<SceneObject*> & nodeList);
+
         /**
          * @brief Process an InteractionEvent from the event pipeline
          * @return Return true if the event has been consumed
