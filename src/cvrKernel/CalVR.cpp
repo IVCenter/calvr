@@ -9,6 +9,7 @@
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/FileHandler.h>
+#include <cvrKernel/PluginHelper.h>
 #include <cvrKernel/PluginManager.h>
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/Navigation.h>
@@ -258,7 +259,10 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         SceneObject* so = cvr::FileHandler::instance()->loadFile(fileList[i]);
 
         if (so)
+        {
+            PluginHelper::registerSceneObject(so,"CommandLine");
             so->attachToScene();
+        }
     }
 
     return true;

@@ -104,7 +104,7 @@ SceneObject* FileHandler::loadFileDriver(std::string file)
         sceneObject->addMoveMenuItem();
         sceneObject->addNavigationMenuItem();
         sceneObject->addChild( loadedModel );
-        PluginHelper::registerSceneObject(sceneObject, "FileHandler");
+        PluginHelper::registerSceneObject(sceneObject, "FileHandler-OSG");
     }
 
     return sceneObject;

@@ -41,22 +41,22 @@ class CVRKERNEL_EXPORT FileHandler
         /**
          * @brief try to load a file
          * @param file filepath of file to load
-         * @return true if file is loaded
+         * @return NULL if file could not be loaded, SceneObject* otherwise that is neither registered nor attached to the scene
          *
          * Will determine if the extension is registered with a callback and attempt
          * to load with it.  If callback not present, or fails, osg readNodeFile is tried
-         * and the result is attached to the object root.
+         * and the result is attached to a SceneObject.
          */
         SceneObject* loadFile(std::string file);
 
         /**
          * @brief try to load a file
-         * @param state metadata of file to load
-         * @return true if file is loaded
+         * @param file filepath of file to load
+         * @return NULL if file could not be loaded, SceneObject* otherwise that is neither registered nor attached to the scene
          *
          * Will determine if the extension is registered with a callback and attempt
          * to load with it.  If callback not present, or fails, osg readNodeFile is tried
-         * and the result is attached to the object root.
+         * and the result is attached to a SceneObject.
          */
         SceneObject* loadFile(MetadataState* state);
 
@@ -91,7 +91,7 @@ class CVRKERNEL_EXPORT FileHandler
 
 /**
  * @brief Interface class to receive a callback from the FileHandler when a file with a certain 
- * extension is being loaded
+ * extension is being loaded.
  */
 class CVRKERNEL_EXPORT FileLoadCallback
 {
@@ -105,7 +105,7 @@ class CVRKERNEL_EXPORT FileLoadCallback
         virtual ~FileLoadCallback();
 
         /**
-         * @brief function called when a file with a registered extension is loaded
+         * @brief function called when a file with a registered extension is loaded. It is expected that the returned SceneObject is neither registered nor attached to the scene.
          */
         virtual SceneObject* loadFile(std::string file) = 0;
     private:
