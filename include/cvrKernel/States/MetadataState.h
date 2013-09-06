@@ -9,7 +9,7 @@
  *     Authors: David Srour <dsrour@eng.ucsd.edu>,
  *              John Mangan <jmangan@eng.ucsd.edu>
  *
- *  CalVr Port: Jul 22, 2013
+ *  CalVR Port: Jul 22, 2013
  *      Author: John Mangan <jmangan@eng.ucsd.edu>
  */
 
@@ -18,6 +18,8 @@
 
 #include <osg/Vec3>
 #include <cvrKernel/States/CvrState.h>
+
+namespace cvr {
 
 class MetadataState : public CvrState
 {
@@ -50,5 +52,7 @@ protected:
     virtual
     ~MetadataState(void);
 };
+
+}
 
 #endif /* METADATASTATE_H_ */

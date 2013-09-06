@@ -21,6 +21,8 @@
 #include <cdbapp/ApplicationDatabaseInterface.h>
 #include <cvrKernel/States/CvrState.h>
 
+namespace cvr {
+
 class DatabaseHandler : public Listener<CvrState>
 {
 public:
@@ -62,6 +64,8 @@ inline void
 DatabaseHandler::Disconnect(void)
 {
     mDatabase.Disconnect();
+}
+
 }
 
 #endif /* DATABASE_HANDLER_H_ */

@@ -23,6 +23,8 @@
 
 #include <cdbapp/State.h>
 
+namespace cvr {
+
 class CvrState : public cdb::State, public Shouter<CvrState>, public osg::Referenced
 {
 public:
@@ -61,5 +63,7 @@ private:
     typedef std::map< std::string, STATIC_ADAPTER > TypeAdapterMap;
     static TypeAdapterMap mTypeAdapters;
 };
+
+}
 
 #endif /* CVRSTATE_H_ */

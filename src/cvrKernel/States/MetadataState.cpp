@@ -7,6 +7,8 @@
 #include <cvrKernel/States/MetadataState.h>
 #include <iostream>
 
+using namespace cvr;
+
 std::string const MetadataState::TYPE = "metadata";
 
 MetadataState::MetadataState() : CvrState(TYPE)

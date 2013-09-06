@@ -19,6 +19,8 @@
 #include <cvrKernel/States/CvrState.h>
 #include <cvrKernel/StateManager.h>
 
+using namespace cvr;
+
 StateManager::~StateManager()
 {
     mStates.clear();  // will unref automatically

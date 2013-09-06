@@ -13,6 +13,8 @@
 #include <cvrKernel/DatabaseHandler.h>
 #include <cdbapp/State.h>
 
+using namespace cvr;
+
 bool
 DatabaseHandler::LoadStateChanges(std::list< std::string >& loadedStates)
 {

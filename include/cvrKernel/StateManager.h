@@ -37,6 +37,8 @@
 #include <cvrKernel/DatabaseHandler.h>
 #include <cvrKernel/States/CvrState.h>
 
+namespace cvr {
+
 class StateManager : public Listener<CvrState>
 {
 public:
@@ -94,5 +96,7 @@ protected:
     CvrStateMap                  mStates;
     Shouter<CvrState>::Listeners mListeners;
 };
+
+}
 
 #endif /* STATE_MANAGER_H_ */

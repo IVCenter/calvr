@@ -7,6 +7,8 @@
 #include <iostream>
 #include <cvrKernel/States/CvrState.h>
 
+using namespace cvr;
+
 // static member fields
 /*static*/ CvrState::TypeAdapterMap CvrState::mTypeAdapters;
 
