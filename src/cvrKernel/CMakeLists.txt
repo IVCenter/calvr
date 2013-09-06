@@ -29,6 +29,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/StateManager.h
     ${STATE_HEADER_PATH}/CvrState.h
     ${STATE_HEADER_PATH}/MetadataState.h
+    ${STATE_HEADER_PATH}/SpatialState.h
     ${HEADER_PATH}/ComController.h
     ${HEADER_PATH}/CVRViewer.h
     ${HEADER_PATH}/SceneManager.h
@@ -89,6 +90,7 @@ SET(LIB_SRC_FILES
     StateManager.cpp
     States/CvrState.cpp
     States/MetadataState.cpp
+    States/SpatialState.cpp
     ComController.cpp
     CVRViewer.cpp
     SceneManager.cpp
