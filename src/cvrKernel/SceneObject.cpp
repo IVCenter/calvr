@@ -1,5 +1,6 @@
 #include <cvrKernel/SceneObject.h>
 #include <cvrKernel/PluginHelper.h>
+#include <cvrKernel/States/SpatialState.h>
 #include <cvrUtil/LocalToWorldVisitor.h>
 #include <cvrUtil/ComputeBoundingBoxVisitor.h>
 #include <cvrMenu/MenuCheckbox.h>
@@ -15,7 +16,7 @@ using namespace cvr;
 
 SceneObject::SceneObject(std::string name, bool navigation, bool movable,
         bool clip, bool contextMenu, bool showBounds) :
-        _name(name), _navigation(navigation), _movable(movable), _clip(clip), _contextMenu(
+        _name(name), _movable(movable), _clip(clip), _contextMenu(
                 contextMenu), _showBounds(showBounds)
 {
     _registered = false;
@@ -65,6 +66,12 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
 
     _activeHand = -2;
+
+    // TODO - register as a Listener<CvrState> with StateManager
+    SpatialState* spatial = getOrCreateSpatialState();
+    setTransform(osg::Matrix::identity());
+    setNavigationOn(navigation);
+    // TODO - Register this spatial state - or alertlisteners and then do it
 }
 
 SceneObject::~SceneObject()
@@ -86,26 +93,26 @@ SceneObject::~SceneObject()
 
     if(_moveMenuItem)
     {
-	delete _moveMenuItem;
-	_moveMenuItem = NULL;
+        delete _moveMenuItem;
+        _moveMenuItem = NULL;
     }
 
     if(_navMenuItem)
     {
-	delete _navMenuItem;
-	_navMenuItem = NULL;
+        delete _navMenuItem;
+        _navMenuItem = NULL;
     }
 
     if(_scaleMenuItem)
     {
-	delete _scaleMenuItem;
-	_scaleMenuItem = NULL;
+        delete _scaleMenuItem;
+        _scaleMenuItem = NULL;
     }
 
     if(_myMenu)
     {
-	delete _myMenu;
-	_myMenu = NULL;
+        delete _myMenu;
+        _myMenu = NULL;
     }
 }
 
@@ -113,7 +120,7 @@ bool SceneObject::getNavigationOn()
 {
     if(!_parent)
     {
-        return _navigation;
+        return getOrCreateSpatialState()->Navigation();
     }
     else
     {
@@ -123,7 +130,7 @@ bool SceneObject::getNavigationOn()
 
 void SceneObject::setNavigationOn(bool nav)
 {
-    if(nav == _navigation)
+    if(nav == getOrCreateSpatialState()->Navigation())
     {
         return;
     }
@@ -149,10 +156,11 @@ void SceneObject::setNavigationOn(bool nav)
         splitMatrix();
     }
 
-    _navigation = nav;
+    getOrCreateSpatialState()->Navigation(nav);
+
     if(_navMenuItem)
     {
-        _navMenuItem->setValue(_navigation);
+        _navMenuItem->setValue(nav);
     }
 }
 
@@ -173,6 +181,7 @@ void SceneObject::setMovable(bool mov)
     }
 
     _movable = mov;
+
     if(_moveMenuItem)
     {
         _moveMenuItem->setValue(_movable);
@@ -228,23 +237,23 @@ void SceneObject::setShowBounds(bool bounds)
 
 osg::Vec3 SceneObject::getPosition()
 {
-    return _transMat.getTrans();
+    return getOrCreateSpatialState()->Position();
 }
 
 void SceneObject::setPosition(osg::Vec3 pos)
 {
-    _transMat.setTrans(pos);
+    getOrCreateSpatialState()->Position(pos);
     updateMatrices();
 }
 
 osg::Quat SceneObject::getRotation()
 {
-    return _transMat.getRotate();
+    return getOrCreateSpatialState()->Rotation();
 }
 
 void SceneObject::setRotation(osg::Quat rot)
 {
-    _transMat.setRotate(rot);
+    getOrCreateSpatialState()->Rotation(rot);
     updateMatrices();
 }
 
@@ -261,12 +270,12 @@ void SceneObject::setTransform(osg::Matrix m)
 
 float SceneObject::getScale()
 {
-    return _scaleMat.getScale().x();
+    return getOrCreateSpatialState()->Scale().x();
 }
 
 void SceneObject::setScale(float scale)
 {
-    _scaleMat.makeScale(osg::Vec3(scale,scale,scale));
+    getOrCreateSpatialState()->Scale( osg::Vec3(scale,scale,scale) );
     updateMatrices();
     if(_scaleMenuItem)
     {
@@ -295,7 +304,7 @@ void SceneObject::attachToScene()
         return;
     }
 
-    if(_navigation)
+    if(getNavigationOn())
     {
         SceneManager::instance()->getObjectsRoot()->addChild(_root);
     }
@@ -321,7 +330,7 @@ void SceneObject::detachFromScene()
         SceneManager::instance()->closeOpenObjectMenu();
     }
 
-    if(_navigation)
+    if(getNavigationOn())
     {
         SceneManager::instance()->getObjectsRoot()->removeChild(_root);
     }
@@ -393,6 +402,14 @@ void SceneObject::addChild(SceneObject * so)
         _root->addChild(so->_root);
     }
 
+    std::set< CvrState* > child_spatials = so->getCvrStatesByType( SpatialState::TYPE );
+    if (!child_spatials.empty())
+    {
+        SpatialState* spatial = dynamic_cast< SpatialState* >( *child_spatials.begin() );
+        if (NULL != spatial)
+            spatial->Parent( getOrCreateSpatialState()->Uuid() );
+    }
+
     so->_parent = this;
     _childrenObjects.push_back(so);
     so->updateMatrices();
@@ -414,7 +431,15 @@ void SceneObject::removeChild(SceneObject * so)
     {
         if((*it) == so)
         {
-	    SceneManager::instance()->removeNestedObject(*it);
+            std::set< CvrState* > child_spatials = (*it)->getCvrStatesByType( SpatialState::TYPE );
+            if (!child_spatials.empty())
+            {
+                SpatialState* spatial = dynamic_cast< SpatialState* >( *child_spatials.begin() );
+                if (NULL != spatial)
+                    spatial->Parent("");
+            }
+
+            SceneManager::instance()->removeNestedObject(*it);
             (*it)->_parent = NULL;
             _childrenObjects.erase(it);
             break;
@@ -487,10 +512,10 @@ void SceneObject::addNavigationMenuItem(std::string label)
     {
         if(!_navMenuItem)
         {
-            _navMenuItem = new MenuCheckbox(label,_navigation);
+            _navMenuItem = new MenuCheckbox(label,getNavigationOn());
             _navMenuItem->setCallback(this);
         }
-        _navMenuItem->setValue(_navigation);
+        _navMenuItem->setValue(getNavigationOn());
         _myMenu->removeMenuItem(_navMenuItem);
         _myMenu->addMenuItem(_navMenuItem);
     }
@@ -658,11 +683,11 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 
                     osg::Matrix menuRot;
 
-		    // point towards viewer if not on tiled wall
-		    if(!ie->asPointerEvent())
-		    {
-			menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
-		    }
+                    // point towards viewer if not on tiled wall
+                    if(!ie->asPointerEvent())
+                    {
+                        menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+                    }
 
                     osg::Matrix m;
                     m.makeTranslate(menuPoint);
@@ -720,17 +745,11 @@ void SceneObject::menuCallback(MenuItem * item)
 {
     if(item == _moveMenuItem)
     {
-        if(_moveMenuItem->getValue() != _movable)
-        {
-            setMovable(_moveMenuItem->getValue());
-        }
+        setMovable(_moveMenuItem->getValue());
     }
     else if(item == _navMenuItem)
     {
-        if(_navMenuItem->getValue() != _navigation)
-        {
-            setNavigationOn(_navMenuItem->getValue());
-        }
+        setNavigationOn(_navMenuItem->getValue());
     }
     else if(item == _scaleMenuItem)
     {
@@ -1217,7 +1236,15 @@ void SceneObject::updateBoundsGeometry()
 
 void SceneObject::updateMatrices()
 {
-    _root->setMatrix(_scaleMat * _transMat);
+    osg::Matrix scale_mat, trans_mat;
+
+    float scale = getScale();
+    scale_mat.makeScale( osg::Vec3(scale,scale,scale) );
+
+    trans_mat = osg::Matrix::rotate( getRotation() ) *
+                osg::Matrix::translate( getPosition() );
+
+    _root->setMatrix(scale_mat * trans_mat);
     _invTransform = osg::Matrix::inverse(_root->getMatrix());
 
     if(!_parent)
@@ -1245,8 +1272,10 @@ void SceneObject::splitMatrix()
 
     _root->getMatrix().decompose(trans,rot,scale,so);
 
-    _transMat = osg::Matrix::rotate(rot) * osg::Matrix::translate(trans);
-    _scaleMat = osg::Matrix::scale(scale);
+    SpatialState* spatial = getOrCreateSpatialState();
+    spatial->Position(trans);
+    spatial->Scale(scale);
+    spatial->Rotation(rot);
 
     updateMatrices();
 }
@@ -1294,5 +1323,39 @@ std::set< CvrState* > SceneObject::getCvrStatesByType( std::string type )
        return std::set< CvrState* >();
 
     return it->second;
+}
+
+void SceneObject::Hear(CvrState* cvrstate)
+{
+    std::string type = cvrstate->Type();
+
+    if (SpatialState::TYPE != type)
+        return;
+
+    SpatialState* spatial = static_cast<SpatialState*>(cvrstate);
+
+    SpatialState* my_spatial = getOrCreateSpatialState();
+
+    if (my_spatial->Uuid() != spatial->Uuid())
+        return;
+
+    setNavigationOn( spatial->Navigation() );
+    my_spatial->Variables( spatial->Variables() );
+    updateMatrices();
+}
+
+SpatialState* SceneObject::getOrCreateSpatialState(void)
+{
+    std::set< CvrState* > spatials = getCvrStatesByType( SpatialState::TYPE );
+
+    if (!spatials.empty())
+        return static_cast< SpatialState* >( *spatials.begin() );
+
+    SpatialState* spatial = new SpatialState();
+    addCvrState(spatial);
+    spatial->AddListener(this);
+    // register spatial state with state manager
+
+    return spatial;
 }
 

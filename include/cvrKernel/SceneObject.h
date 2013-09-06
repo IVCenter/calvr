@@ -10,6 +10,7 @@
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/States/CvrState.h>
+#include <cvrUtil/Listener.h>
 
 #include <osg/MatrixTransform>
 #include <osg/Geode>
@@ -25,6 +26,7 @@ namespace cvr
 
 class MenuCheckbox;
 class MenuRangeValue;
+class SpatialState;
 
 /**
  * @addtogroup kernel
@@ -36,7 +38,7 @@ class MenuRangeValue;
  *
  * Handles movement, navigation and interaction.  These objects can be nested.
  */
-class CVRKERNEL_EXPORT SceneObject : public MenuCallback
+class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrState>
 {
         friend class SceneManager;
     public:
@@ -433,6 +435,14 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         void updateMatrices();
         void splitMatrix();
 
+        /**
+         * @brief If it hears it's own SpatialState, it overrides all spatial
+         * with the newly heard state.
+         */
+        void Hear(CvrState* cvrstate);
+
+        SpatialState* getOrCreateSpatialState(void);
+
         void interactionCountInc();
         void interactionCountDec();
 
@@ -441,7 +451,6 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         osg::ref_ptr<osg::MatrixTransform> _boundsTransform;
         osg::ref_ptr<osg::Geode> _boundsGeode;
         osg::ref_ptr<osg::Geode> _boundsGeodeActive;
-        osg::Matrix _transMat, _scaleMat;
 
         osg::Matrix _obj2root, _root2obj;
         osg::Matrix _invTransform;
@@ -452,7 +461,6 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         MenuRangeValue * _scaleMenuItem;
 
         std::string _name;
-        bool _navigation;
         bool _movable;
         bool _clip;
         bool _contextMenu;
