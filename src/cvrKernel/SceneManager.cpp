@@ -447,9 +447,10 @@ bool SceneManager::processEvent(InteractionEvent * ie)
         return false;
     }
 
-    if(_activeObjects[hand])
+    if(_activeObjects[hand] && _activeObjectNodeLists[hand].size())
     {
-        return _activeObjects[hand]->processEvent(ie);
+	_activeObjectNodeLists[hand].setPosition(0);
+        return _activeObjectNodeLists[hand][0]->processEvent(ie,_activeObjectNodeLists[hand]);
     }
     else if(_menuOpenObject)
     {
@@ -506,6 +507,7 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
                     if(aoRoot == object)
                     {
                         aobjit->second = NULL;
+			_activeObjectNodeLists[aobjit->first].clear();
                     }
                 }
 
@@ -1224,9 +1226,12 @@ void SceneManager::updateActiveObject()
             sortQueue.pop();
         }
 
+	_activeObjectNodeLists[hand].clear();
+
         if(currentObject)
         {
-            currentObject = findChildActiveObject(currentObject,start,end);
+	    _activeObjectNodeLists[hand].push_back(currentObject);
+            currentObject = findChildActiveObject(currentObject,start,end,_activeObjectNodeLists[hand]);
             if(_activeObjects[hand] != currentObject)
             {
 		std::list<SceneObject*> lastObjList;
@@ -1310,7 +1315,7 @@ void SceneManager::updateActiveObject()
 }
 
 SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
-        osg::Vec3 & start, osg::Vec3 & end)
+        osg::Vec3 & start, osg::Vec3 & end, VectorWithPosition<SceneObject*> & nodeList)
 {
     std::list<SceneObject*> hitList;
 
@@ -1378,7 +1383,8 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
 
     if(currentObject)
     {
-        return findChildActiveObject(currentObject,start,end);
+	nodeList.push_back(currentObject);
+        return findChildActiveObject(currentObject,start,end,nodeList);
     }
 
     return object;
@@ -1388,6 +1394,11 @@ void SceneManager::removeNestedObject(SceneObject * object)
 {
     for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); ++it)
     {
+	VectorWithPosition<SceneObject*>::iterator listit = _activeObjectNodeLists[it->first].begin();
+	if(_activeObjectNodeLists[it->first].size())
+	{
+	    listit += _activeObjectNodeLists[it->first].size() - 1;
+	}
 	SceneObject * so = it->second;
 	while(so)
 	{
@@ -1409,9 +1420,14 @@ void SceneManager::removeNestedObject(SceneObject * object)
 		}
 
 		it->second = so->_parent;
+		_activeObjectNodeLists[it->first].erase(listit,_activeObjectNodeLists[it->first].end());
 		break;
 	    }
 	    so = so->_parent;
+	    if(so)
+	    {
+		--listit;
+	    }
 	}
     }
 

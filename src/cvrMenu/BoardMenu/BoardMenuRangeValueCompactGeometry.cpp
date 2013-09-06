@@ -33,12 +33,10 @@ void BoardMenuRangeValueCompactGeometry::selectItem(bool on)
     if(on)
     {
         _node->addChild(_groupSelected);
-	_width = _widthValue;
     }
     else
     {
         _node->addChild(_group);
-	_width = _widthLabel;
     }
 }
 
@@ -116,7 +114,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
 
     _height = _iconHeight;
 
-    _width = _widthLabel;
+    _width = std::max(_widthLabel,_widthValue);
 }
 
 void BoardMenuRangeValueCompactGeometry::updateGeometry()
@@ -146,14 +144,7 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
     osg::BoundingBox bb = _currentValue->getBound();
     _widthValue = bb.xMax() - bb.xMin() + _border + _iconHeight;
 
-    if(_group->getNumParents())
-    {
-	_width = _widthLabel;
-    }
-    else
-    {
-	_width = _widthValue;
-    }
+    _width = std::max(_widthLabel,_widthValue);
 }
 
 void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)

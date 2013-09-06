@@ -22,6 +22,34 @@ class SceneObject;
 class CVRPlugin;
 class InteractionEvent;
 
+template <typename T> class VectorWithPosition : public std::vector <T>
+{
+    public:
+        void setPosition(int pos)
+        {
+            _position = pos;
+        }
+
+        int getPosition()
+        {
+            return _position;
+        }
+
+        int next()
+        {
+            ++_position;
+            return _position;
+        }
+
+        int prev()
+        {
+            --_position;
+            return _position;
+        }
+    protected:
+        int _position;
+};
+
 /**
  * @addtogroup kernel
  * @{
@@ -270,7 +298,7 @@ class CVRKERNEL_EXPORT SceneManager
 
         void updateActiveObject();
         SceneObject * findChildActiveObject(SceneObject * object,
-                osg::Vec3 & start, osg::Vec3 & end);
+                osg::Vec3 & start, osg::Vec3 & end, VectorWithPosition<SceneObject*> & nodeList);
         void removeNestedObject(SceneObject * object);
         void removePluginObjects(CVRPlugin * plugin);
 
@@ -303,6 +331,7 @@ class CVRKERNEL_EXPORT SceneManager
 
         SceneObject * _menuOpenObject; ///< object with an open menu
         std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
+        std::map<int,VectorWithPosition<SceneObject*> > _activeObjectNodeLists;
         std::map<SceneObject*,int> _uniqueActiveObjects;
         std::map<SceneObject*,bool> _uniqueBlacklistMap;
         bool _uniqueMapInUse;
