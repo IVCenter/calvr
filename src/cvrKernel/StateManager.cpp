@@ -21,6 +21,17 @@
 
 using namespace cvr;
 
+/*static*/ StateManager* StateManager::mInstance = NULL;
+
+/*virtual*/ StateManager*
+StateManager::instance(void)
+{
+    if (NULL == mInstance)
+        mInstance = new StateManager;
+
+    return mInstance;
+}
+
 StateManager::~StateManager()
 {
     mStates.clear();  // will unref automatically

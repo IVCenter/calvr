@@ -42,6 +42,10 @@ namespace cvr {
 class StateManager : public Listener<CvrState>
 {
 public:
+
+    virtual StateManager*
+    instance(void);
+
     virtual
     ~StateManager();
 
@@ -79,6 +83,11 @@ public:
     UpdateServerStates(void);
 
 protected:
+    static StateManager* mInstance;
+
+    StateManager()
+    {}
+
     // NOTE: May want to split into multiple maps in the future for efficiency, as necc.
     typedef std::map< std::string, osg::ref_ptr<CvrState> > CvrStateMap;  // uuid -> cvrstate
 
