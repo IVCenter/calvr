@@ -591,7 +591,7 @@ void ThreadedLoader::LoaderThread::run()
         {
             if(_job->strs.size())
             {
-                system(_job->strs[0].c_str());
+                int no_warning = system(_job->strs[0].c_str());
             }
             break;
         }
@@ -601,7 +601,7 @@ void ThreadedLoader::LoaderThread::run()
             {
                 if(_job->strs.size())
                 {
-                    system(_job->strs[0].c_str());
+                    int no_warning = system(_job->strs[0].c_str());
                 }
             }
             break;
