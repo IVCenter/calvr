@@ -1,6 +1,11 @@
 #include <cvrKernel/FileHandler.h>
 #include <cvrKernel/PluginHelper.h>
+#include <cvrKernel/StateManager.h>
 #include <cvrKernel/SceneManager.h>
+#include <cvrKernel/SceneObject.h>
+#include <cvrKernel/States/CollaborationState.h>
+#include <cvrKernel/States/MetadataState.h>
+#include <cvrKernel/States/SpatialState.h>
 
 #include <osgDB/ReadFile>
 
@@ -34,24 +39,74 @@ SceneObject* FileHandler::loadFile(std::string file)
 
     if (sceneObject)
     {
-        MetadataState* state = new MetadataState;
-        state->Path(file);
+        MetadataState* metadata = new MetadataState;
+        std::string meta_uuid = metadata->Uuid();
+        metadata->Path(file);
         //TODO: state->Volume(osg::Vec3)
-        sceneObject->addCvrState( state );
-        //TODO: ?? register interest in metadata state
+        sceneObject->addCvrState( metadata );
+        SceneManager::instance()->_metadataToSceneObjects[ meta_uuid ] = sceneObject;
+
+        SpatialState* spatial = sceneObject->getSpatialState();
+        if (spatial)
+            spatial->Metadata( meta_uuid );
+
+        CollaborationState* collab = sceneObject->getCollaborationState();
+        if (collab)
+            collab->Metadata( meta_uuid );
+
+        std::map< std::string, std::set< std::string > >::iterator mo
+            = SceneManager::instance()->_metaOrphans.find( meta_uuid );
+        if (SceneManager::instance()->_metaOrphans.end() != mo)
+        {
+            std::set< std::string >::iterator oit;
+            for (oit = mo->second.begin(); mo->second.end() != oit; ++oit)
+            {
+                osg::ref_ptr< CvrState > orphan = StateManager::instance()->StateFromUuid( *oit );
+                orphan->ShoutAt( sceneObject );
+            }
+
+            SceneManager::instance()->_metaOrphans.erase( mo );
+        }
     }
 
     return sceneObject;
 }
 
-SceneObject* FileHandler::loadFile(MetadataState* state)
+SceneObject* FileHandler::loadFile(MetadataState* metadata)
 {
-    SceneObject* sceneObject = loadFileDriver( state->Path() );
+    SceneObject* sceneObject = loadFileDriver( metadata->Path() );
 
     if (sceneObject)
     {
-        sceneObject->addCvrState( state );
-        //TODO: ?? register interest in metadata state
+        std::string meta_uuid = metadata->Uuid();
+
+        osg::ref_ptr<MetadataState> meta = metadata; // Hold a reference to avoid deletion
+        StateManager::instance()->Unregister(metadata);
+
+        sceneObject->addCvrState( metadata );
+        SceneManager::instance()->_metadataToSceneObjects[ meta_uuid ] = sceneObject;
+
+        SpatialState* spatial = sceneObject->getSpatialState();
+        if (spatial)
+            spatial->Metadata( meta_uuid );
+
+        CollaborationState* collab = sceneObject->getCollaborationState();
+        if (collab)
+            collab->Metadata( meta_uuid );
+
+        std::map< std::string, std::set< std::string > >::iterator mo
+            = SceneManager::instance()->_metaOrphans.find( meta_uuid );
+        if (SceneManager::instance()->_metaOrphans.end() != mo)
+        {
+            std::set< std::string >::iterator oit;
+            for (oit = mo->second.begin(); mo->second.end() != oit; ++oit)
+            {
+                osg::ref_ptr< CvrState > orphan = StateManager::instance()->StateFromUuid( *oit );
+                orphan->ShoutAt( sceneObject );
+            }
+
+            SceneManager::instance()->_metaOrphans.erase( mo );
+        }
     }
 
     return sceneObject;

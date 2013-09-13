@@ -6,8 +6,6 @@
 #define CALVR_FILE_HANDLER_H
 
 #include <cvrKernel/Export.h>
-#include <cvrKernel/SceneObject.h>
-#include <cvrKernel/States/MetadataState.h>
 
 #include <string>
 #include <map>
@@ -15,6 +13,9 @@
 
 namespace cvr
 {
+
+class SceneObject;
+class MetadataState;
 
 class CVRKERNEL_EXPORT FileLoadCallback;
 
@@ -51,14 +52,14 @@ class CVRKERNEL_EXPORT FileHandler
 
         /**
          * @brief try to load a file
-         * @param file filepath of file to load
+         * @param metadata MetadataState containing data of the file to load
          * @return NULL if file could not be loaded, SceneObject* otherwise that is neither registered nor attached to the scene
          *
          * Will determine if the extension is registered with a callback and attempt
          * to load with it.  If callback not present, or fails, osg readNodeFile is tried
          * and the result is attached to a SceneObject.
          */
-        SceneObject* loadFile(MetadataState* state);
+        SceneObject* loadFile(MetadataState* metadata);
 
         /**
          * @brief register a callback for when a file with a certain extension is loaded
