@@ -34,6 +34,7 @@
 #include <cvrUtil/Listener.h>
 #include <cvrUtil/Shouter.hpp>
 
+#include <cvrKernel/CalVR.h>
 #include <cvrKernel/DatabaseHandler.h>
 #include <cvrKernel/States/CvrState.h>
 
@@ -42,12 +43,10 @@ namespace cvr {
 class StateManager : public Listener<CvrState>
 {
 public:
+    friend class CalVR;
 
-    virtual StateManager*
+    static StateManager*
     instance(void);
-
-    virtual
-    ~StateManager();
 
     void
     AlertListeners(CvrState* cvrstate);
@@ -85,8 +84,10 @@ public:
 protected:
     static StateManager* mInstance;
 
-    StateManager()
-    {}
+    StateManager();
+
+    virtual
+    ~StateManager();
 
     // NOTE: May want to split into multiple maps in the future for efficiency, as necc.
     typedef std::map< std::string, osg::ref_ptr<CvrState> > CvrStateMap;  // uuid -> cvrstate
@@ -101,7 +102,9 @@ protected:
     void
     LoadStateChanges(std::list< std::string >& returned_states);
 
+    bool mNotConnected;
     DatabaseHandler              mDatabaseHandler;
+    // TODO: make Registered states contain a reference count, so multiple systems can Register/Unregister
     CvrStateMap                  mStates;
     Shouter<CvrState>::Listeners mListeners;
 };

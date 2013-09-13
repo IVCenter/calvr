@@ -23,7 +23,7 @@ using namespace cvr;
 
 /*static*/ StateManager* StateManager::mInstance = NULL;
 
-/*virtual*/ StateManager*
+/*static*/ StateManager*
 StateManager::instance(void)
 {
     if (NULL == mInstance)
@@ -32,8 +32,14 @@ StateManager::instance(void)
     return mInstance;
 }
 
+StateManager::StateManager()
+{
+    mNotConnected = true;
+}
+
 StateManager::~StateManager()
 {
+    Disconnect();
     mStates.clear();  // will unref automatically
 }
 
@@ -74,6 +80,8 @@ StateManager::CollaborateState(std::string const& uuid, bool const collaborate)
 void
 StateManager::Connect(std::string const& connectionAddress)
 {
+    mNotConnected = false;
+
     if (cvr::ComController::instance()->isMaster())
         mDatabaseHandler.Connect( connectionAddress );
 }
@@ -81,6 +89,8 @@ StateManager::Connect(std::string const& connectionAddress)
 void
 StateManager::Disconnect(void)
 {
+    mNotConnected = true;
+
     if (cvr::ComController::instance()->isMaster())
         mDatabaseHandler.Disconnect();
 }
@@ -177,6 +187,9 @@ StateManager::Unregister(CvrState* cvrstate)
 void
 StateManager::UpdateLocalStates(void)
 {
+    if (mNotConnected)
+        return;
+
     std::list< std::string > returned_states;
 
     LoadStateChanges(returned_states);
@@ -198,6 +211,9 @@ StateManager::UpdateLocalStates(void)
 void
 StateManager::UpdateServerStates(void)
 {
+    if (mNotConnected)
+        return;
+
     if (cvr::ComController::instance()->isMaster())
         mDatabaseHandler.SendHeardStates();
 }
