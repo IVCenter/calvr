@@ -31,6 +31,9 @@ public:
 
     SpatialState(void);
 
+    static void
+    Register(void);
+
     osg::Vec3 const
     Position(void);
 

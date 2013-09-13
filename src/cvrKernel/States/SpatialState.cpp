@@ -31,6 +31,17 @@ SpatialState::Adapter( State const& state )
     return new SpatialState( state );
 }
 
+/*static*/ void
+SpatialState::Register(void)
+{
+    static bool FIRST_ONE = true;
+    if (FIRST_ONE)
+    {
+        FIRST_ONE = false;
+        CvrState::Register(TYPE, &Adapter);
+    }
+}
+
 osg::Vec3 const
 SpatialState::Position(void)
 {
