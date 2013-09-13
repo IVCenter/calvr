@@ -27,6 +27,7 @@ class MenuManager;
 class FileHandler;
 class PluginManager;
 class ThreadedLoader;
+class StateManager;
 
 /**
  * @addtogroup kernel cvrKernel
@@ -124,6 +125,7 @@ class CVRKERNEL_EXPORT CalVR
         FileHandler * _file;
         PluginManager * _plugins;
         ThreadedLoader * _threadedLoader;
+        StateManager * _stateManager;
 };
 
 /**

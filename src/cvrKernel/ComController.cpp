@@ -416,7 +416,7 @@ bool ComController::setupConnections()
             else
             {
                 std::cerr << "Running Cleanup Script: " << cleanup << std::endl;
-                system(cleanup.c_str());
+                int no_warning = system(cleanup.c_str());
                 _listenSocket = new MultiListenSocket(baseport,_numSlaves);
                 if(!_listenSocket->setup())
                 {
@@ -488,7 +488,7 @@ bool ComController::setupConnections()
             it != _startupMap.end(); it++)
     {
         std::cerr << it->second << std::endl;
-        system((it->second + " &").c_str());
+        int no_warning = system((it->second + " &").c_str());
     }
 
     bool ok = true;

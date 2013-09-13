@@ -9,12 +9,15 @@
 #include <cvrMenu/PopupMenu.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrKernel/States/CvrState.h>
+#include <cvrUtil/Listener.h>
 
 #include <osg/MatrixTransform>
 #include <osg/Geode>
 #include <osg/Matrix>
 #include <osg/BoundingBox>
 
+#include <set>
 #include <string>
 #include <iostream>
 
@@ -23,6 +26,9 @@ namespace cvr
 
 class MenuCheckbox;
 class MenuRangeValue;
+class MetadataState;
+class SpatialState;
+class CollaborationState;
 
 /**
  * @addtogroup kernel
@@ -34,7 +40,7 @@ class MenuRangeValue;
  *
  * Handles movement, navigation and interaction.  These objects can be nested.
  */
-class CVRKERNEL_EXPORT SceneObject : public MenuCallback
+class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrState>
 {
         friend class SceneManager;
     public:
@@ -94,6 +100,17 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          * @brief Set if this object is movable with the wand
          */
         void setMovable(bool mov);
+
+
+        /**
+         * @brief Get if this object shoudl be collaborated.
+         */
+        bool getCollaborate();
+
+        /**
+         * @brief Set if this object shoudl be collaborated.
+         */
+        void setCollaborate(bool collab);
 
         /**
          * @brief Get if this object is clippable
@@ -272,6 +289,18 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         void removeNavigationMenuItem();
 
         /**
+         * @brief Add a MenuCheckbox to this object's context menu that toggles
+         * if this object is collaborative
+         * @param label Label to use for the MenuItem
+         */
+        void addCollaborateMenuItem(std::string label = "Collaborate");
+
+        /**
+         * @brief Remove collaborate MenuCheckbox if it has been added to the context menu
+         */
+        void removeCollaborateMenuItem();
+
+        /**
          * @brief Add a MenuRangeValue to this object's context menu that controls the scale
          * of the object
          * @param label MenuRangeValue label
@@ -394,6 +423,16 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void closeMenu();
 
+        void addCvrState( CvrState* const state );
+
+        void removeCvrState( CvrState* const state );
+
+        std::set< CvrState* > getCvrStatesByType( std::string type );
+
+        MetadataState* getMetadataState(void);
+        SpatialState* getSpatialState(void);
+        CollaborationState* getCollaborationState(void);
+
     protected:
         bool getRegistered()
         {
@@ -426,6 +465,17 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         void updateBoundsGeometry();
         void updateMatrices();
         void splitMatrix();
+        void checkAndUpdateNavigation();
+        void checkAndUpdateCollaboration();
+
+        /**
+         * @brief If it hears it's own SpatialState, it overrides all spatial
+         * with the newly heard state.
+         */
+        void Hear(CvrState* cvrstate);
+
+        SpatialState* getOrCreateSpatialState(void);
+        CollaborationState* getOrCreateCollaborationState(void);
 
         void interactionCountInc();
         void interactionCountDec();
@@ -435,7 +485,6 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         osg::ref_ptr<osg::MatrixTransform> _boundsTransform;
         osg::ref_ptr<osg::Geode> _boundsGeode;
         osg::ref_ptr<osg::Geode> _boundsGeodeActive;
-        osg::Matrix _transMat, _scaleMat;
 
         osg::Matrix _obj2root, _root2obj;
         osg::Matrix _invTransform;
@@ -443,10 +492,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         PopupMenu * _myMenu;
         MenuCheckbox * _moveMenuItem;
         MenuCheckbox * _navMenuItem;
+        MenuCheckbox * _collabMenuItem;
         MenuRangeValue * _scaleMenuItem;
 
         std::string _name;
-        bool _navigation;
         bool _movable;
         bool _clip;
         bool _contextMenu;
@@ -454,6 +503,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         bool _registered;
         bool _attached;
         bool _eventActive;
+        bool _collaborated;
 
         int _moveButton;
         int _menuButton;
@@ -474,6 +524,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         SceneObject * _parent;
 
         int _interactionCount;
+
+        std::map< std::string, std::set< CvrState* > > _cvrStates;
 };
 
 /**

@@ -8,12 +8,15 @@
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/SceneManager.h>
+#include <cvrKernel/SceneObject.h>
 #include <cvrKernel/FileHandler.h>
+#include <cvrKernel/PluginHelper.h>
 #include <cvrKernel/PluginManager.h>
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/Navigation.h>
 #include <cvrKernel/ThreadedLoader.h>
 #include <cvrKernel/CVRStatsHandler.h>
+#include <cvrKernel/StateManager.h>
 
 #include <osgViewer/ViewerEventHandlers>
 
@@ -53,6 +56,7 @@ CalVR::CalVR()
     _file = NULL;
     _plugins = NULL;
     _threadedLoader = NULL;
+    _stateManager = NULL;
     _myPtr = this;
 }
 
@@ -101,6 +105,10 @@ CalVR::~CalVR()
     if(_tracking)
     {
         delete _tracking;
+    }
+    if(_stateManager)
+    {
+        delete _stateManager;
     }
     if(_communication)
     {
@@ -190,6 +198,11 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
         }
     }
 
+    _stateManager = StateManager::instance();
+
+    if (ConfigManager::getBool("CollaborationServer", false))
+        _stateManager->Connect( ConfigManager::getEntry("value","CollaborationServer.Address","tcp://localhost:5570") );
+
     _tracking = cvr::TrackingManager::instance();
     _tracking->init();
 
@@ -255,7 +268,13 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     for(int i = 0; i < fileList.size(); i++)
     {
-        cvr::FileHandler::instance()->loadFile(fileList[i]);
+        SceneObject* so = cvr::FileHandler::instance()->loadFile(fileList[i]);
+
+        if (so)
+        {
+            PluginHelper::registerSceneObject(so,"CommandLine");
+            so->attachToScene();
+        }
     }
 
     return true;
@@ -287,9 +306,11 @@ void CalVR::run()
         _screens->computeViewProj();
         _screens->updateCamera();
         _collaborative->update();
+        _stateManager->UpdateLocalStates();
         _threadedLoader->update();
         _plugins->preFrame();
         _viewer->updateTraversal();
+        _stateManager->UpdateServerStates();
         _viewer->renderingTraversals();
 
         if(_communication->getIsSyncError())

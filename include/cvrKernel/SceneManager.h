@@ -7,6 +7,9 @@
 
 #include <cvrKernel/Export.h>
 #include <cvrUtil/DepthPartitionNode.h>
+#include <cvrKernel/States/CvrState.h>
+#include <cvrUtil/Listener.h>
+#include <cvrKernel/FileHandler.h>
 
 #include <osg/ClipNode>
 #include <osg/MatrixTransform>
@@ -58,7 +61,7 @@ template <typename T> class VectorWithPosition : public std::vector <T>
 /**
  * @brief Creates and manages the main scenegraph
  */
-class CVRKERNEL_EXPORT SceneManager
+class CVRKERNEL_EXPORT SceneManager : public Listener<CvrState>
 {
         friend class CVRViewer;
         friend class CVRPlugin;
@@ -284,6 +287,9 @@ class CVRKERNEL_EXPORT SceneManager
         
         bool getPointOnTiledWall(const osg::Matrix & mat, osg::Vec3 & wallPoint);
 
+        friend SceneObject* FileHandler::loadFile(std::string);
+        friend SceneObject* FileHandler::loadFile(MetadataState*);
+
     protected:
         SceneManager();
 
@@ -304,6 +310,8 @@ class CVRKERNEL_EXPORT SceneManager
 
         void preDraw();
         void postDraw();
+
+        void Hear(CvrState* cvrstate);
 
         static SceneManager * _myPtr;   ///< static self pointer
 
@@ -336,6 +344,9 @@ class CVRKERNEL_EXPORT SceneManager
         std::map<SceneObject*,bool> _uniqueBlacklistMap;
         bool _uniqueMapInUse;
         std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
+
+        std::map< std::string, SceneObject* > _metadataToSceneObjects;
+        std::map< std::string, std::set< std::string > > _metaOrphans;
 
         float _menuScale;
         float _menuMinDistance;

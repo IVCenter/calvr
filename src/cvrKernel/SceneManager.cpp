@@ -9,6 +9,11 @@
 #include <cvrKernel/SceneObject.h>
 #include <cvrKernel/PluginManager.h>
 #include <cvrUtil/OsgMath.h>
+#include <cvrKernel/States/MetadataState.h>
+#include <cvrKernel/States/SpatialState.h>
+#include <cvrKernel/States/CollaborationState.h>
+#include <cvrKernel/StateManager.h>
+#include <cvrKernel/FileHandler.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
@@ -154,6 +159,11 @@ bool SceneManager::init()
 
     b = ConfigManager::getBool("HidePointer",false);
     setHidePointer(b);
+
+    StateManager::instance()->Register(this);
+    MetadataState::Register();
+    SpatialState::Register(); // TODO: Find a better place to Register the SpatialState class.
+    CollaborationState::Register();
 
     return true;
 }
@@ -1504,3 +1514,80 @@ void SceneManager::postDraw()
         _depthPartitionRight->removeNodesFromCameras();
     }
 }
+
+void SceneManager::Hear(CvrState* cvrstate)
+{
+    std::string type = cvrstate->Type();
+    std::string uuid = cvrstate->Uuid();
+
+    if (MetadataState::TYPE == type)
+    {
+        MetadataState* metadata = static_cast< MetadataState* >(cvrstate);
+
+        std::map< std::string, SceneObject* >::iterator mo
+            = _metadataToSceneObjects.find( uuid );
+
+        // Invalid Metadata leads to SceneObject deletion
+        if (!metadata->Valid())
+        {
+            if (mo != _metadataToSceneObjects.end())
+            {
+                unregisterSceneObject(mo->second);
+
+                if (mo->second)
+                    delete mo->second;
+
+                _metadataToSceneObjects.erase( mo );
+                StateManager::instance()->Unregister( metadata );
+            }
+
+            return;
+        }
+
+        // New Metadata leads to registration and sceneobject loading.
+        if (mo == _metadataToSceneObjects.end())
+        {
+            StateManager::instance()->Register( metadata );
+            SceneObject* so = FileHandler::instance()->loadFile( metadata );
+            registerSceneObject(so,"HeardBySceneManager");
+            return;
+        }
+    }
+    else if (CollaborationState::TYPE == type)
+    {
+        CollaborationState* collab = static_cast< CollaborationState* >(cvrstate);
+
+        std::string meta_uuid = collab->Metadata();
+
+        if (_metadataToSceneObjects.end() != _metadataToSceneObjects.find (meta_uuid))
+            return;
+
+        std::map< std::string, std::set< std::string > >::iterator it
+            = _metaOrphans.find( meta_uuid );
+        if (_metaOrphans.end() != it)
+            if (it->second.end() != it->second.find( uuid ))
+                return;
+
+        StateManager::instance()->Register(collab);
+        _metaOrphans[ meta_uuid ].insert( uuid );
+    }
+    else if (SpatialState::TYPE == type)
+    {
+        SpatialState* spatial = static_cast< SpatialState* >(cvrstate);
+
+        std::string meta_uuid = spatial->Metadata();
+
+        if (_metadataToSceneObjects.end() != _metadataToSceneObjects.find (meta_uuid))
+            return;
+
+        std::map< std::string, std::set< std::string > >::iterator it
+            = _metaOrphans.find( meta_uuid );
+        if (_metaOrphans.end() != it)
+            if (it->second.end() != it->second.find( uuid ))
+                return;
+
+        StateManager::instance()->Register(spatial);
+        _metaOrphans[ meta_uuid ].insert( uuid );
+    }
+}
+

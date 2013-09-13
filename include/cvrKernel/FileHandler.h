@@ -14,6 +14,9 @@
 namespace cvr
 {
 
+class SceneObject;
+class MetadataState;
+
 class CVRKERNEL_EXPORT FileLoadCallback;
 
 // TODO: add unload function call
@@ -38,14 +41,25 @@ class CVRKERNEL_EXPORT FileHandler
 
         /**
          * @brief try to load a file
-         * @param file file to load
-         * @return true if file is loaded
+         * @param file filepath of file to load
+         * @return NULL if file could not be loaded, SceneObject* otherwise that is neither registered nor attached to the scene
          *
          * Will determine if the extension is registered with a callback and attempt
          * to load with it.  If callback not present, or fails, osg readNodeFile is tried
-         * and the result is attached to the object root.
+         * and the result is attached to a SceneObject.
          */
-        bool loadFile(std::string file);
+        SceneObject* loadFile(std::string file);
+
+        /**
+         * @brief try to load a file
+         * @param metadata MetadataState containing data of the file to load
+         * @return NULL if file could not be loaded, SceneObject* otherwise that is neither registered nor attached to the scene
+         *
+         * Will determine if the extension is registered with a callback and attempt
+         * to load with it.  If callback not present, or fails, osg readNodeFile is tried
+         * and the result is attached to a SceneObject.
+         */
+        SceneObject* loadFile(MetadataState* metadata);
 
         /**
          * @brief register a callback for when a file with a certain extension is loaded
@@ -71,12 +85,14 @@ class CVRKERNEL_EXPORT FileHandler
 
         static FileHandler * _myPtr; ///< static self pointer
 
+        SceneObject* loadFileDriver(std::string file);
+
         std::map<std::string,FileLoadCallback *> _extMap; ///< map of file extension to callback
 };
 
 /**
  * @brief Interface class to receive a callback from the FileHandler when a file with a certain 
- * extension is being loaded
+ * extension is being loaded.
  */
 class CVRKERNEL_EXPORT FileLoadCallback
 {
@@ -90,9 +106,9 @@ class CVRKERNEL_EXPORT FileLoadCallback
         virtual ~FileLoadCallback();
 
         /**
-         * @brief function called when a file with a registered extension is loaded
+         * @brief function called when a file with a registered extension is loaded. It is expected that the returned SceneObject is neither registered nor attached to the scene.
          */
-        virtual bool loadFile(std::string file) = 0;
+        virtual SceneObject* loadFile(std::string file) = 0;
     private:
         std::vector<std::string> _exts; ///< list of extensions registed to this callback
 };

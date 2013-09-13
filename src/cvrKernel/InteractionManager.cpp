@@ -7,7 +7,7 @@
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/ScreenConfig.h>
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 #include <cvrKernel/PluginManager.h>
 #include <cvrConfig/ConfigManager.h>
 

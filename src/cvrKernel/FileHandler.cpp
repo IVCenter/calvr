@@ -1,5 +1,11 @@
 #include <cvrKernel/FileHandler.h>
+#include <cvrKernel/PluginHelper.h>
+#include <cvrKernel/StateManager.h>
 #include <cvrKernel/SceneManager.h>
+#include <cvrKernel/SceneObject.h>
+#include <cvrKernel/States/CollaborationState.h>
+#include <cvrKernel/States/MetadataState.h>
+#include <cvrKernel/States/SpatialState.h>
 
 #include <osgDB/ReadFile>
 
@@ -27,7 +33,86 @@ FileHandler * FileHandler::instance()
     return _myPtr;
 }
 
-bool FileHandler::loadFile(std::string file)
+SceneObject* FileHandler::loadFile(std::string file)
+{
+    SceneObject* sceneObject = loadFileDriver(file);
+
+    if (sceneObject)
+    {
+        MetadataState* metadata = new MetadataState;
+        std::string meta_uuid = metadata->Uuid();
+        metadata->Path(file);
+        //TODO: state->Volume(osg::Vec3)
+        sceneObject->addCvrState( metadata );
+        SceneManager::instance()->_metadataToSceneObjects[ meta_uuid ] = sceneObject;
+
+        SpatialState* spatial = sceneObject->getSpatialState();
+        if (spatial)
+            spatial->Metadata( meta_uuid );
+
+        CollaborationState* collab = sceneObject->getCollaborationState();
+        if (collab)
+            collab->Metadata( meta_uuid );
+
+        std::map< std::string, std::set< std::string > >::iterator mo
+            = SceneManager::instance()->_metaOrphans.find( meta_uuid );
+        if (SceneManager::instance()->_metaOrphans.end() != mo)
+        {
+            std::set< std::string >::iterator oit;
+            for (oit = mo->second.begin(); mo->second.end() != oit; ++oit)
+            {
+                osg::ref_ptr< CvrState > orphan = StateManager::instance()->StateFromUuid( *oit );
+                orphan->ShoutAt( sceneObject );
+            }
+
+            SceneManager::instance()->_metaOrphans.erase( mo );
+        }
+    }
+
+    return sceneObject;
+}
+
+SceneObject* FileHandler::loadFile(MetadataState* metadata)
+{
+    SceneObject* sceneObject = loadFileDriver( metadata->Path() );
+
+    if (sceneObject)
+    {
+        std::string meta_uuid = metadata->Uuid();
+
+        osg::ref_ptr<MetadataState> meta = metadata; // Hold a reference to avoid deletion
+        StateManager::instance()->Unregister(metadata);
+
+        sceneObject->addCvrState( metadata );
+        SceneManager::instance()->_metadataToSceneObjects[ meta_uuid ] = sceneObject;
+
+        SpatialState* spatial = sceneObject->getSpatialState();
+        if (spatial)
+            spatial->Metadata( meta_uuid );
+
+        CollaborationState* collab = sceneObject->getCollaborationState();
+        if (collab)
+            collab->Metadata( meta_uuid );
+
+        std::map< std::string, std::set< std::string > >::iterator mo
+            = SceneManager::instance()->_metaOrphans.find( meta_uuid );
+        if (SceneManager::instance()->_metaOrphans.end() != mo)
+        {
+            std::set< std::string >::iterator oit;
+            for (oit = mo->second.begin(); mo->second.end() != oit; ++oit)
+            {
+                osg::ref_ptr< CvrState > orphan = StateManager::instance()->StateFromUuid( *oit );
+                orphan->ShoutAt( sceneObject );
+            }
+
+            SceneManager::instance()->_metaOrphans.erase( mo );
+        }
+    }
+
+    return sceneObject;
+}
+
+SceneObject* FileHandler::loadFileDriver(std::string file)
 {
     std::string filext;
     // get file ext
@@ -55,27 +140,29 @@ bool FileHandler::loadFile(std::string file)
 
     std::transform(filext.begin(),filext.end(),filext.begin(),::tolower);
 
-    if(_extMap.find(filext) != _extMap.end())
+    SceneObject* sceneObject = NULL;
+
+    std::map< std::string, FileLoadCallback* >::iterator emit = _extMap.find(filext);    
+    if(_extMap.end() != emit)
+        sceneObject = emit->second->loadFile(file);
+    if (NULL == sceneObject) // if all else fails
     {
-        if(_extMap[filext]->loadFile(file))
+        osg::ref_ptr < osg::Node > loadedModel = osgDB::readNodeFile(file);
+
+        if(!loadedModel)
         {
-            return true;
+            std::cerr << "Unable to load file " << file << std::endl;
+            return NULL;
         }
+
+        sceneObject = new SceneObject(file, true, false, false, true, false);
+        sceneObject->addMoveMenuItem();
+        sceneObject->addNavigationMenuItem();
+        sceneObject->addChild( loadedModel );
+        PluginHelper::registerSceneObject(sceneObject, "FileHandler-OSG");
     }
 
-    // if all else fails
-
-    osg::ref_ptr < osg::Node > loadedModel = osgDB::readNodeFile(file);
-
-    if(loadedModel)
-    {
-        SceneManager::instance()->getObjectsRoot()->addChild(loadedModel);
-        return true;
-    }
-
-    std::cerr << "Unable to load file " << file << std::endl;
-
-    return false;
+    return sceneObject;
 }
 
 void FileHandler::registerExt(std::string ext, FileLoadCallback * flc)

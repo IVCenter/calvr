@@ -4,7 +4,7 @@
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/NodeMask.h>
-#include <cvrKernel/ScreenBase.h>
+#include <cvrKernel/Screens/ScreenBase.h>
 #include <cvrKernel/CVRCullVisitor.h>
 #include <cvrKernel/CVRStatsHandler.h>
 #include <cvrConfig/ConfigManager.h>
