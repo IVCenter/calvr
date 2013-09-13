@@ -1,10 +1,14 @@
 #include <cvrKernel/SceneObject.h>
 #include <cvrKernel/PluginHelper.h>
-#include <cvrKernel/States/SpatialState.h>
 #include <cvrUtil/LocalToWorldVisitor.h>
 #include <cvrUtil/ComputeBoundingBoxVisitor.h>
 #include <cvrMenu/MenuCheckbox.h>
 #include <cvrMenu/MenuRangeValue.h>
+
+#include <cvrKernel/StateManager.h>
+#include <cvrKernel/States/CollaborationState.h>
+#include <cvrKernel/States/MetadataState.h>
+#include <cvrKernel/States/SpatialState.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/PolygonMode>
@@ -43,6 +47,7 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
     _moveMenuItem = NULL;
     _navMenuItem = NULL;
     _scaleMenuItem = NULL;
+    _collabMenuItem = NULL;
 
     _root = new osg::MatrixTransform();
     _clipRoot = new osg::ClipNode();
@@ -67,15 +72,23 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
 
     _activeHand = -2;
 
-    // TODO - register as a Listener<CvrState> with StateManager
-    SpatialState* spatial = getOrCreateSpatialState();
-    setTransform(osg::Matrix::identity());
-    setNavigationOn(navigation);
-    // TODO - Register this spatial state - or alertlisteners and then do it
+    StateManager::instance()->Register(this);
+    setNavigationOn(navigation); // Will create & shout a SpatialState
+    CollaborationState* collab = getOrCreateCollaborationState();
+    collab->Shout();
 }
 
 SceneObject::~SceneObject()
 {
+    std::set< CvrState* > cvr_states;
+    std::map< std::string, std::set< CvrState* > >::iterator mit;
+    for (mit = _cvrStates.begin(); _cvrStates.end() != mit; ++mit)
+        cvr_states.insert(mit->second.begin(), mit->second.end());
+
+    std::set< CvrState* >::iterator sit;
+    for (sit = cvr_states.begin(); cvr_states.end() != sit; ++sit)
+        removeCvrState( *sit );
+
     if(_attached)
     {
         detachFromScene();
@@ -109,6 +122,12 @@ SceneObject::~SceneObject()
         _scaleMenuItem = NULL;
     }
 
+    if(_collabMenuItem)
+    {
+        delete _collabMenuItem;
+        _collabMenuItem = NULL;
+    }
+
     if(_myMenu)
     {
         delete _myMenu;
@@ -130,38 +149,16 @@ bool SceneObject::getNavigationOn()
 
 void SceneObject::setNavigationOn(bool nav)
 {
-    if(nav == getOrCreateSpatialState()->Navigation())
-    {
+    if (_parent)
         return;
-    }
 
-    if(_attached)
-    {
-        if(nav)
-        {
-            SceneManager::instance()->getScene()->removeChild(_root);
-            SceneManager::instance()->getObjectsRoot()->addChild(_root);
-            _root->setMatrix(
-                    _root->getMatrix()
-                            * PluginHelper::getWorldToObjectTransform());
-        }
-        else
-        {
-            SceneManager::instance()->getObjectsRoot()->removeChild(_root);
-            SceneManager::instance()->getScene()->addChild(_root);
-            _root->setMatrix(
-                    _root->getMatrix()
-                            * PluginHelper::getObjectToWorldTransform());
-        }
-        splitMatrix();
-    }
+    SpatialState* spatial = getOrCreateSpatialState();
 
-    getOrCreateSpatialState()->Navigation(nav);
+    if (nav == spatial->Navigation())
+        return;
 
-    if(_navMenuItem)
-    {
-        _navMenuItem->setValue(nav);
-    }
+    spatial->Navigation(nav);
+    spatial->Shout();
 }
 
 void SceneObject::setMovable(bool mov)
@@ -185,6 +182,43 @@ void SceneObject::setMovable(bool mov)
     if(_moveMenuItem)
     {
         _moveMenuItem->setValue(_movable);
+    }
+}
+
+bool SceneObject::getCollaborate()
+{
+    if(!_parent)
+    {
+        return getOrCreateCollaborationState()->Collaboration();
+    }
+    else
+    {
+        return _parent->getCollaborate();
+    }
+}
+
+void SceneObject::setCollaborate(bool collab)
+{
+    CollaborationState* collaboration = getOrCreateCollaborationState();
+
+    if (collaboration->Collaboration() == collab)
+        return;
+
+    collaboration->Collaboration(collab);
+
+    collaboration->Shout();
+
+    if (collab)
+    {
+        std::map< std::string, std::set< CvrState* > >::iterator mit;
+        std::set< CvrState* >::iterator sit;
+        for (mit = _cvrStates.begin(); _cvrStates.end() != mit; ++mit)
+        {
+            for (sit = mit->second.begin(); mit->second.end() != sit; ++sit)
+            {
+                (*sit)->Shout();
+            }
+        }
     }
 }
 
@@ -242,8 +276,9 @@ osg::Vec3 SceneObject::getPosition()
 
 void SceneObject::setPosition(osg::Vec3 pos)
 {
-    getOrCreateSpatialState()->Position(pos);
-    updateMatrices();
+    SpatialState* spatial = getOrCreateSpatialState();
+    spatial->Position(pos);
+    spatial->Shout();
 }
 
 osg::Quat SceneObject::getRotation()
@@ -253,8 +288,9 @@ osg::Quat SceneObject::getRotation()
 
 void SceneObject::setRotation(osg::Quat rot)
 {
-    getOrCreateSpatialState()->Rotation(rot);
-    updateMatrices();
+    SpatialState* spatial = getOrCreateSpatialState();
+    spatial->Rotation(rot);
+    spatial->Shout();
 }
 
 osg::Matrix SceneObject::getTransform()
@@ -275,12 +311,10 @@ float SceneObject::getScale()
 
 void SceneObject::setScale(float scale)
 {
-    getOrCreateSpatialState()->Scale( osg::Vec3(scale,scale,scale) );
-    updateMatrices();
-    if(_scaleMenuItem)
-    {
-        _scaleMenuItem->setValue(scale);
-    }
+    SpatialState* spatial = getOrCreateSpatialState();
+    spatial->Scale( osg::Vec3(scale,scale,scale) );
+
+    spatial->Shout();
 }
 
 void SceneObject::attachToScene()
@@ -529,6 +563,27 @@ void SceneObject::removeNavigationMenuItem()
     }
 }
 
+void SceneObject::addCollaborateMenuItem(std::string label)
+{
+    if (_myMenu)
+    {
+        if (!_collabMenuItem)
+        {
+            _collabMenuItem = new MenuCheckbox(label,getCollaborate());
+            _collabMenuItem->setCallback(this);
+        }
+        _collabMenuItem->setValue(getCollaborate());
+        _myMenu->removeMenuItem(_collabMenuItem);
+        _myMenu->addMenuItem(_collabMenuItem);
+    }
+}
+
+void SceneObject::removeCollaborateMenuItem()
+{
+    if (_myMenu && _collabMenuItem)
+        _myMenu->removeMenuItem(_collabMenuItem);
+}
+
 void SceneObject::addScaleMenuItem(std::string label, float min, float max,
         float value)
 {
@@ -764,6 +819,10 @@ void SceneObject::menuCallback(MenuItem * item)
     {
         setNavigationOn(_navMenuItem->getValue());
     }
+    else if(item == _collabMenuItem)
+    {
+        setCollaborate(_collabMenuItem->getValue());
+    }
     else if(item == _scaleMenuItem)
     {
         setScale(_scaleMenuItem->getValue());
@@ -853,6 +912,9 @@ void SceneObject::setRegistered(bool reg)
         detachFromScene();
     }
     _registered = reg;
+
+    //TODO: clean up this hack of reshouting
+    getOrCreateSpatialState()->ShoutAt(this);
 }
 
 void SceneObject::processMove(osg::Matrix & mat)
@@ -1254,6 +1316,9 @@ void SceneObject::updateMatrices()
     float scale = getScale();
     scale_mat.makeScale( osg::Vec3(scale,scale,scale) );
 
+    if(_scaleMenuItem)
+        _scaleMenuItem->setValue(scale);
+
     trans_mat = osg::Matrix::rotate( getRotation() ) *
                 osg::Matrix::translate( getPosition() );
 
@@ -1290,7 +1355,7 @@ void SceneObject::splitMatrix()
     spatial->Scale(scale);
     spatial->Rotation(rot);
 
-    updateMatrices();
+    spatial->Shout();
 }
 
 void SceneObject::interactionCountInc()
@@ -1316,6 +1381,8 @@ void SceneObject::interactionCountDec()
 void SceneObject::addCvrState( CvrState* const state )
 {
     _cvrStates[ state->Type() ].insert( state );
+    StateManager::instance()->Register(state);
+    state->AddListener(this);
 }
 
 void SceneObject::removeCvrState( CvrState* const state )
@@ -1342,33 +1409,171 @@ void SceneObject::Hear(CvrState* cvrstate)
 {
     std::string type = cvrstate->Type();
 
-    if (SpatialState::TYPE != type)
-        return;
+    if (SpatialState::TYPE == type)
+    {
+        SpatialState* spatial = static_cast<SpatialState*>(cvrstate);
+        MetadataState* metadata = getMetadataState();
+        SpatialState* my_spatial = getOrCreateSpatialState();
 
-    SpatialState* spatial = static_cast<SpatialState*>(cvrstate);
+        if (my_spatial->Uuid() != spatial->Uuid()
+            && (!metadata || metadata->Uuid() != spatial->Metadata()))
+            return;
 
-    SpatialState* my_spatial = getOrCreateSpatialState();
+        if (_registered)
+        {
+            if (spatial->Valid())
+                attachToScene();
+            else
+                detachFromScene(); 
+        }
 
-    if (my_spatial->Uuid() != spatial->Uuid())
-        return;
+        // Caution: Handle Navigation specially: checkAndUpdate will put the
+        // root in the correct scenegraph. Then, update all the variables of
+        // the spatial state. Finally, update the matrices.
+        my_spatial->Navigation( spatial->Navigation() );
+        checkAndUpdateNavigation();
 
-    setNavigationOn( spatial->Navigation() );
-    my_spatial->Variables( spatial->Variables() );
-    updateMatrices();
+        if (my_spatial->Navigation())
+            my_spatial->Variables( spatial->Variables() );
+        updateMatrices();
+    }
+    else if (CollaborationState::TYPE == type)
+    {
+        CollaborationState* collab = static_cast<CollaborationState*>(cvrstate);
+        CollaborationState* my_collab = getOrCreateCollaborationState();
+        MetadataState* metadata = getMetadataState();
+
+        if (my_collab->Uuid() != collab->Uuid()
+            && (!metadata || metadata->Uuid() != collab->Metadata()))
+            return;
+
+        my_collab->Variables( collab->Variables() );
+        checkAndUpdateCollaboration();
+    }
+}
+
+MetadataState* SceneObject::getMetadataState(void)
+{
+    std::set< CvrState* > metadata = getCvrStatesByType( MetadataState::TYPE );
+
+    if (!metadata.empty())
+        return dynamic_cast< MetadataState* >( *metadata.begin() );
+    return NULL;
+}
+
+SpatialState* SceneObject::getSpatialState(void)
+{
+    std::set< CvrState* > spatial = getCvrStatesByType( SpatialState::TYPE );
+
+    if (!spatial.empty())
+        return dynamic_cast< SpatialState* >( *spatial.begin() );
+    return NULL;
+}
+
+CollaborationState* SceneObject::getCollaborationState(void)
+{
+    std::set< CvrState* > collaboration = getCvrStatesByType( CollaborationState::TYPE );
+
+    if (!collaboration.empty())
+        return dynamic_cast< CollaborationState* >( *collaboration.begin() );
+    return NULL;
 }
 
 SpatialState* SceneObject::getOrCreateSpatialState(void)
 {
-    std::set< CvrState* > spatials = getCvrStatesByType( SpatialState::TYPE );
+    SpatialState* spatial = getSpatialState();
 
-    if (!spatials.empty())
-        return static_cast< SpatialState* >( *spatials.begin() );
+    if (spatial)
+        return spatial;
 
-    SpatialState* spatial = new SpatialState();
+    spatial = new SpatialState();
     addCvrState(spatial);
-    spatial->AddListener(this);
-    // register spatial state with state manager
+
+    setTransform(osg::Matrix::identity());
 
     return spatial;
+}
+
+CollaborationState* SceneObject::getOrCreateCollaborationState(void)
+{
+    CollaborationState* collab = getCollaborationState();
+
+    if (collab)
+        return collab;
+
+    collab = new CollaborationState();
+    addCvrState(collab);
+
+    // TODO: set default collaboration state
+
+    return collab;
+}
+
+void SceneObject::checkAndUpdateNavigation()
+{
+    if (!_attached)
+        return;
+
+    if (_parent)
+        return;
+
+    bool nav = getNavigationOn();
+
+    // Expectation: nav == true IFF _root is a under getObjectsRoot
+    // (nav EQUALS _root under getScene) IMPLIES inconsistency
+    bool under_scene = SceneManager::instance()->getScene()->getChildIndex(_root) != SceneManager::instance()->getScene()->getNumChildren();
+
+    if (nav != under_scene)
+        return;
+
+    if(nav)
+    {
+        SceneManager::instance()->getScene()->removeChild(_root);
+        SceneManager::instance()->getObjectsRoot()->addChild(_root);
+        _root->setMatrix(
+                _root->getMatrix()
+                * PluginHelper::getWorldToObjectTransform());
+    }
+    else
+    {
+        SceneManager::instance()->getObjectsRoot()->removeChild(_root);
+        SceneManager::instance()->getScene()->addChild(_root);
+        _root->setMatrix(
+                _root->getMatrix()
+                * PluginHelper::getObjectToWorldTransform());
+    }
+
+    if(_navMenuItem)
+        _navMenuItem->setValue(nav);
+
+    splitMatrix();
+}
+
+void SceneObject::checkAndUpdateCollaboration()
+{
+    bool collab = getCollaborate();
+
+    if (_collabMenuItem && _collaborated == collab)
+        return;
+
+    _collaborated = collab;
+
+    std::map< std::string, std::set< CvrState* > >::iterator mit;
+    std::set< CvrState* >::iterator sit;
+    for (mit = _cvrStates.begin(); _cvrStates.end() != mit; ++mit)
+    {
+        for (sit = mit->second.begin(); mit->second.end() != sit; ++sit)
+        {
+            StateManager::instance()->CollaborateState((*sit)->Uuid(), collab);
+        }
+    }
+
+    if (getOrCreateCollaborationState()->Valid())
+        addCollaborateMenuItem();
+    else
+        removeCollaborateMenuItem();
+
+    if (_collabMenuItem)
+        _collabMenuItem->setValue(collab);
 }
 

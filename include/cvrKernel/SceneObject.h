@@ -26,7 +26,9 @@ namespace cvr
 
 class MenuCheckbox;
 class MenuRangeValue;
+class MetadataState;
 class SpatialState;
+class CollaborationState;
 
 /**
  * @addtogroup kernel
@@ -98,6 +100,17 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
          * @brief Set if this object is movable with the wand
          */
         void setMovable(bool mov);
+
+
+        /**
+         * @brief Get if this object shoudl be collaborated.
+         */
+        bool getCollaborate();
+
+        /**
+         * @brief Set if this object shoudl be collaborated.
+         */
+        void setCollaborate(bool collab);
 
         /**
          * @brief Get if this object is clippable
@@ -276,6 +289,18 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
         void removeNavigationMenuItem();
 
         /**
+         * @brief Add a MenuCheckbox to this object's context menu that toggles
+         * if this object is collaborative
+         * @param label Label to use for the MenuItem
+         */
+        void addCollaborateMenuItem(std::string label = "Collaborate");
+
+        /**
+         * @brief Remove collaborate MenuCheckbox if it has been added to the context menu
+         */
+        void removeCollaborateMenuItem();
+
+        /**
          * @brief Add a MenuRangeValue to this object's context menu that controls the scale
          * of the object
          * @param label MenuRangeValue label
@@ -404,6 +429,10 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
 
         std::set< CvrState* > getCvrStatesByType( std::string type );
 
+        MetadataState* getMetadataState(void);
+        SpatialState* getSpatialState(void);
+        CollaborationState* getCollaborationState(void);
+
     protected:
         bool getRegistered()
         {
@@ -436,6 +465,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
         void updateBoundsGeometry();
         void updateMatrices();
         void splitMatrix();
+        void checkAndUpdateNavigation();
+        void checkAndUpdateCollaboration();
 
         /**
          * @brief If it hears it's own SpatialState, it overrides all spatial
@@ -444,6 +475,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
         void Hear(CvrState* cvrstate);
 
         SpatialState* getOrCreateSpatialState(void);
+        CollaborationState* getOrCreateCollaborationState(void);
 
         void interactionCountInc();
         void interactionCountDec();
@@ -460,6 +492,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
         PopupMenu * _myMenu;
         MenuCheckbox * _moveMenuItem;
         MenuCheckbox * _navMenuItem;
+        MenuCheckbox * _collabMenuItem;
         MenuRangeValue * _scaleMenuItem;
 
         std::string _name;
@@ -470,6 +503,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback, public Listener<CvrSta
         bool _registered;
         bool _attached;
         bool _eventActive;
+        bool _collaborated;
 
         int _moveButton;
         int _menuButton;
