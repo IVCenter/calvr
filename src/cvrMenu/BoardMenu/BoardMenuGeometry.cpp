@@ -158,18 +158,8 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-
-    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
-    colorIndexArray = new osg::TemplateIndexArray<unsigned int,
-            osg::Array::UIntArrayType,4,4>;
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-
     geo->setColorArray(colors);
-    geo->setColorIndices(colorIndexArray);
-    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
     osg::Vec2Array* texcoords = new osg::Vec2Array;
     texcoords->push_back(osg::Vec2(0,0));
@@ -200,16 +190,8 @@ osg::Geometry * BoardMenuGeometry::makeLine(osg::Vec3 p1, osg::Vec3 p2,
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
-
-    osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
-    colorIndexArray = new osg::TemplateIndexArray<unsigned int,
-            osg::Array::UIntArrayType,4,4>;
-    colorIndexArray->push_back(0);
-    colorIndexArray->push_back(0);
-
     geo->setColorArray(colors);
-    geo->setColorIndices(colorIndexArray);
-    geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
     return geo;
 }

@@ -12,6 +12,10 @@
 
 #include <list>
 
+struct FrameStartCallbackOperation;
+struct PreDrawCallbackOperation;
+struct PostFinishCallbackOperation;
+
 namespace cvr
 {
 
@@ -184,14 +188,17 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         }
 
         void addPerContextFrameStartCallback(PerContextCallback * pcc);
+        void removePerContextFrameStartCallback(PerContextCallback * pcc);
         int getNumPerContextFrameStartCallbacks();
         PerContextCallback * getPerContextFrameStartCallback(int callback);
 
         void addPerContextPreDrawCallback(PerContextCallback * pcc);
+        void removePerContextPreDrawCallback(PerContextCallback * pcc);
         int getNumPerContextPreDrawCallbacks();
         PerContextCallback * getPerContextPreDrawCallback(int callback);
 
         void addPerContextPostFinishCallback(PerContextCallback * pcc);
+        void removePerContextPostFinishCallback(PerContextCallback * pcc);
         int getNumPerContextPostFinishCallbacks();
         PerContextCallback * getPerContextPostFinishCallback(int callback);
     protected:
@@ -273,8 +280,10 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         std::vector<PerContextCallback*> _addFrameStartCallbacks;
         std::vector<PerContextCallback*> _preDrawCallbacks;
         std::vector<PerContextCallback*> _addPreDrawCallbacks;
-
         std::vector<PerContextCallback*> _postFinishCallbacks;
+        std::vector<FrameStartCallbackOperation*> _frameStartOps;
+        std::vector<PreDrawCallbackOperation*> _preDrawOps;
+        std::vector<PostFinishCallbackOperation*> _postFinishOps;
 };
 
 /**

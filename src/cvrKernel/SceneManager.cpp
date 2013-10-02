@@ -725,18 +725,8 @@ void SceneManager::initPointers()
 
 		osg::Vec4Array* colors = new osg::Vec4Array;
 		colors->push_back(color);
-
-		osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
-		colorIndexArray = new osg::TemplateIndexArray<unsigned int,
-				osg::Array::UIntArrayType,4,4>;
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
-
 		geo->setColorArray(colors);
-		geo->setColorIndices(colorIndexArray);
-		geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+		geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 		osg::Geode * geode = new osg::Geode();
                 geode->addDrawable(geo);

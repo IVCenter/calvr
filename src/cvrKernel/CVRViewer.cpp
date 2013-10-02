@@ -98,12 +98,15 @@ struct FrameStartCallbackOperation : public osg::Operation
 
 	virtual void operator ()(osg::Object* object)
 	{
+	    lock.lock();
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextFrameStartCallbacks(); i++)
 	    {
 		CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(_context,PerContextCallback::PCC_FRAME_START);
 	    }
+	    lock.unlock();
 	}
 
+	OpenThreads::Mutex lock;
     protected:
 	int _context;
 };
@@ -117,12 +120,15 @@ struct PreDrawCallbackOperation : public osg::Operation
 
 	virtual void operator ()(osg::Object* object)
 	{
+	    lock.lock();
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPreDrawCallbacks(); i++)
 	    {
 		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context,PerContextCallback::PCC_PRE_DRAW);
 	    }
+	    lock.unlock();
 	}
 
+	OpenThreads::Mutex lock;
     protected:
 	int _context;
 };
@@ -136,12 +142,15 @@ struct PostFinishCallbackOperation : public osg::Operation
 
 	virtual void operator ()(osg::Object* object)
 	{
+	    lock.lock();
 	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPostFinishCallbacks(); i++)
 	    {
 		CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(_context,PerContextCallback::PCC_POST_FINISH);
 	    }
+	    lock.unlock();
 	}
 
+	OpenThreads::Mutex lock;
     protected:
 	int _context;
 };
@@ -603,7 +612,10 @@ void CVRViewer::eventTraversal()
                         {
                             if(event->getEventType()
                                     != osgGA::GUIEventAdapter::DRAG
-                                    || !getCameraWithFocus())
+#if (OPENSCENEGRAPH_MAJOR_VERSION < 3) || ((OPENSCENEGRAPH_MAJOR_VERSION == 3) && (OPENSCENEGRAPH_MINOR_VERSION < 2))
+                                    || !getCameraWithFocus()
+#endif
+				    )
                             {
                                 osg::GraphicsContext::Cameras& cameras =
                                         gw->getCameras();
@@ -1625,7 +1637,9 @@ void CVRViewer::startThreading()
 	if(_frameStartBarrier.valid())
             gc->getGraphicsThread()->add(_frameStartBarrier.get());
 
-	gc->getGraphicsThread()->add(new FrameStartCallbackOperation(gc->getState()->getContextID()));
+	FrameStartCallbackOperation * fsco = new FrameStartCallbackOperation(gc->getState()->getContextID());
+	gc->getGraphicsThread()->add(fsco);
+	_frameStartOps.push_back(fsco);
 
         // add the startRenderingBarrier
         if((_threadingModel == CullDrawThreadPerContext || _threadingModel == DrawThreadPerContext)
@@ -1642,7 +1656,9 @@ void CVRViewer::startThreading()
             }
         }*/
 
-	gc->getGraphicsThread()->add(new PreDrawCallbackOperation(gc->getState()->getContextID()));
+	PreDrawCallbackOperation * pdco = new PreDrawCallbackOperation(gc->getState()->getContextID());
+	gc->getGraphicsThread()->add(pdco);
+	_preDrawOps.push_back(pdco);
 
 	gc->getGraphicsThread()->add(new StatsBeginOperation("Operations begin time"));
 
@@ -1661,7 +1677,9 @@ void CVRViewer::startThreading()
 
 	gc->getGraphicsThread()->add(new StatsEndOperation("Finish begin time","Finish end time","Finish time taken"));
 
-	gc->getGraphicsThread()->add(new PostFinishCallbackOperation(gc->getState()->getContextID()));
+	PostFinishCallbackOperation * pfco = new PostFinishCallbackOperation(gc->getState()->getContextID());
+	gc->getGraphicsThread()->add(pfco);
+	_postFinishOps.push_back(pfco);
 
         if((_threadingModel == CullDrawThreadPerContext
                 || _threadingModel == CullThreadPerCameraDrawThreadPerContext
@@ -1928,6 +1946,33 @@ void CVRViewer::addPerContextFrameStartCallback(PerContextCallback * pcc)
     }
 }
 
+void CVRViewer::removePerContextFrameStartCallback(PerContextCallback * pcc)
+{
+    // lock all threaded callbacks
+    for(int i = 0; i < _frameStartOps.size(); ++i)
+    {
+	_frameStartOps[i]->lock.lock();
+    }
+
+    for(std::vector<PerContextCallback*>::iterator it = _frameStartCallbacks.begin(); it != _frameStartCallbacks.end();)
+    {
+	if((*it) == pcc)
+	{
+	    it = _frameStartCallbacks.erase(it);
+	}
+	else
+	{
+	    ++it;
+	}
+    }
+
+    // unlock all threaded callbacks
+    for(int i = 0; i < _frameStartOps.size(); ++i)
+    {
+	_frameStartOps[i]->lock.unlock();
+    }
+}
+
 int CVRViewer::getNumPerContextFrameStartCallbacks()
 {
     return _frameStartCallbacks.size();
@@ -1951,6 +1996,33 @@ void CVRViewer::addPerContextPreDrawCallback(PerContextCallback * pcc)
     }
 }
 
+void CVRViewer::removePerContextPreDrawCallback(PerContextCallback * pcc)
+{
+    // lock all threaded callbacks
+    for(int i = 0; i < _preDrawOps.size(); ++i)
+    {
+	_preDrawOps[i]->lock.lock();
+    }
+
+    for(std::vector<PerContextCallback*>::iterator it = _preDrawCallbacks.begin(); it != _preDrawCallbacks.end();)
+    {
+	if((*it) == pcc)
+	{
+	    it = _preDrawCallbacks.erase(it);
+	}
+	else
+	{
+	    ++it;
+	}
+    }
+
+    // unlock all threaded callbacks
+    for(int i = 0; i < _preDrawOps.size(); ++i)
+    {
+	_preDrawOps[i]->lock.unlock();
+    }
+}
+
 int CVRViewer::getNumPerContextPreDrawCallbacks()
 {
     return _preDrawCallbacks.size();
@@ -1970,6 +2042,33 @@ void CVRViewer::addPerContextPostFinishCallback(PerContextCallback * pcc)
     if(pcc)
     {
 	_postFinishCallbacks.push_back(pcc);
+    }
+}
+
+void CVRViewer::removePerContextPostFinishCallback(PerContextCallback * pcc)
+{
+    // lock all threaded callbacks
+    for(int i = 0; i < _postFinishOps.size(); ++i)
+    {
+	_postFinishOps[i]->lock.lock();
+    }
+
+    for(std::vector<PerContextCallback*>::iterator it = _postFinishCallbacks.begin(); it != _postFinishCallbacks.end();)
+    {
+	if((*it) == pcc)
+	{
+	    it = _postFinishCallbacks.erase(it);
+	}
+	else
+	{
+	    ++it;
+	}
+    }
+
+    // unlock all threaded callbacks
+    for(int i = 0; i < _postFinishOps.size(); ++i)
+    {
+	_postFinishOps[i]->lock.unlock();
     }
 }
 

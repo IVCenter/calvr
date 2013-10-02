@@ -257,6 +257,21 @@ int ScreenConfig::getCudaDevice(int context)
     return 0;
 }
 
+int ScreenConfig::getNumContexts(int cudaDevice)
+{
+    int contexts = 0;
+
+    for(int i = 0; i < _windowInfoList.size(); i++)
+    {
+	if(_windowInfoList[i]->cudaDevice == cudaDevice)
+	{
+	    contexts++;
+	}
+    }
+
+    return contexts;
+}
+
 bool ScreenConfig::readPipes()
 {
     // find out how many pipes are specifed

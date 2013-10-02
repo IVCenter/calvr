@@ -184,6 +184,7 @@ class CVRKERNEL_EXPORT ScreenConfig
         float getEyeSeparationMultiplier();
 
         int getCudaDevice(int context);
+        int getNumContexts(int cudaDevice);
 
     protected:
         virtual ~ScreenConfig();
