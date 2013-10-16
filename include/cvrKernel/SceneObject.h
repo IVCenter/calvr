@@ -237,6 +237,11 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         SceneObject * getChildObject(int obj);
 
+        SceneObject * getParentObject()
+        {
+            return _parent;
+        }
+
         /**
          * @brief Add a menu item to this object's context menu
          */
