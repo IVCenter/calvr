@@ -446,7 +446,7 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 		    }
 		    case MenuList::CONTINUOUS:
 		    {
-			const float coeff = (35.0f) / (range * range * range);
+			const float coeff = (100.0f) / (range * range * range);
 			_change += coeff * (newDistance - _lastDistance) * (newDistance - _lastDistance) * (newDistance - _lastDistance) * _listItem->getSensitivity() * CVRViewer::instance()->getLastFrameDuration();
 
 			if(fabs(_change) > 1.0)
