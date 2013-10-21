@@ -68,12 +68,24 @@ class CVRMENU_EXPORT MenuRangeValue : public MenuItem
          * @brief Get the maximum range value
          */
         float getMax();
+
+        enum CallbackType
+        {
+            ON_CHANGE=0,
+            ON_RELEASE
+        };
+
+        void setCallbackType(const CallbackType type);
+
+        const CallbackType getCallbackType();
+
     protected:
         std::string _label; ///< text label
         float _min; ///< minimum value
         float _max; ///< maximum value
         float _value; ///< current value
         float _stepSize;
+        CallbackType _callbackType;
 };
 
 /**

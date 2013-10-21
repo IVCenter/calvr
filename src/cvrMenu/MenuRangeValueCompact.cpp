@@ -13,6 +13,7 @@ MenuRangeValueCompact::MenuRangeValueCompact(std::string label, float min, float
     _max = max;
     _log = log;
     _logBase = base;
+    _callbackType = ON_CHANGE;
 
     if(_min > _max)
     {
@@ -78,4 +79,14 @@ bool MenuRangeValueCompact::getIsLog()
 float MenuRangeValueCompact::getLogBase()
 {
     return _logBase;
+}
+
+void MenuRangeValueCompact::setCallbackType(const CallbackType type)
+{
+    _callbackType = type;
+}
+
+const MenuRangeValueCompact::CallbackType MenuRangeValueCompact::getCallbackType()
+{
+    return _callbackType;
 }

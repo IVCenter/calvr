@@ -80,6 +80,17 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
          * @brief Get base of log scale
          */
         float getLogBase();
+
+        enum CallbackType
+        {
+            ON_CHANGE=0,
+            ON_RELEASE
+        };
+
+        void setCallbackType(const CallbackType type);
+
+        const CallbackType getCallbackType();
+
     protected:
         std::string _label; ///< text label
         float _min; ///< minimum value
@@ -87,6 +98,7 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
         float _value; ///< current value
         bool _log; ///< is scale logarithmic
         float _logBase; ///< log scale base
+        CallbackType _callbackType;
 };
 
 /**

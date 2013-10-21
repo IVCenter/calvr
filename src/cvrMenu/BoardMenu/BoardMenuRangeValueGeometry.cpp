@@ -274,11 +274,21 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-                if(mrv->getCallback())
-                {
-                    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-                }
+		if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE || event->getInteraction() == BUTTON_UP)
+		{
+		    if(mrv->getCallback())
+		    {
+			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		    }
+		}
             }
+	    else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE && event->getInteraction() == BUTTON_UP)
+	    {
+		if(mrv->getCallback())
+		{
+		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		}
+	    }
 
             _lastMouseY = y;
             _lastMouseX = x;
@@ -357,11 +367,21 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-                if(mrv->getCallback())
-                {
-                    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-                }
+		if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE || event->getInteraction() == BUTTON_UP)
+		{
+		    if(mrv->getCallback())
+		    {
+			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		    }
+		}
             }
+	    else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE && event->getInteraction() == BUTTON_UP)
+	    {
+		if(mrv->getCallback())
+		{
+		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		}
+	    }
 
             _lastDistance = newDistance;
 

@@ -9,6 +9,7 @@ MenuRangeValue::MenuRangeValue(std::string label, float min, float max,
     _label = label;
     _min = min;
     _max = max;
+    _callbackType = ON_CHANGE;
 
     if(_min > _max)
     {
@@ -76,4 +77,14 @@ float MenuRangeValue::getMin()
 float MenuRangeValue::getMax()
 {
     return _max;
+}
+
+void MenuRangeValue::setCallbackType(const CallbackType type)
+{
+    _callbackType = type;
+}
+
+const MenuRangeValue::CallbackType MenuRangeValue::getCallbackType()
+{
+    return _callbackType;
 }

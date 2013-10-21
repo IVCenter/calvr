@@ -341,6 +341,13 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 
                 _lastMouseY = y;
             }
+	    else if(_listItem->getCallbackType() == MenuList::ON_RELEASE && event->getInteraction() == BUTTON_UP)
+	    {
+		if(_listItem->getCallback())
+		{
+		    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		}
+	    }
 
             return;
         }
@@ -522,6 +529,13 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 
                 _lastDistance = newDistance;
             }
+	    else if(_listItem->getCallbackType() == MenuList::ON_RELEASE && event->getInteraction() == BUTTON_UP)
+	    {
+		if(_listItem->getCallback())
+		{
+		    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		}
+	    }
 
             return;
         }
