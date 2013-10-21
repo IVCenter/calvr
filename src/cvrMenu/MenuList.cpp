@@ -9,7 +9,9 @@ MenuList::MenuList() :
 {
     _index = 0;
     _focusMargin = 2;
-    _sensitivity = -1;
+    _sensitivity = 1.0;
+    _scrollingHint = LINEAR;
+    _callbackType = ON_CHANGE;
 }
 
 MenuList::~MenuList()
@@ -118,8 +120,25 @@ void MenuList::setSensitivity(const float sensitivity)
 
 const float MenuList::getSensitivity()
 {
-    if(_sensitivity < 0)
-        return (float)getListSize();
-    else
-        return _sensitivity;
+    return _sensitivity;
+}
+
+void MenuList::setScrollingHint(const ScrollingHint hint)
+{
+    _scrollingHint = hint;
+}
+
+const MenuList::ScrollingHint MenuList::getScrollingHint()
+{
+    return _scrollingHint;
+}
+
+void MenuList::setCallbackType(const CallbackType type)
+{
+    _callbackType = type;
+}
+
+const MenuList::CallbackType MenuList::getCallbackType()
+{
+    return _callbackType;
 }

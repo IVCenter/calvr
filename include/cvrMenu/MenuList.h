@@ -111,11 +111,34 @@ class CVRMENU_EXPORT MenuList : public MenuItem
          */
         const float getSensitivity();
 
+        enum ScrollingHint
+        {
+            LINEAR=0,
+            CONTINUOUS,
+            ONE_TO_ONE
+        };
+
+        void setScrollingHint(const ScrollingHint hint);
+
+        const ScrollingHint getScrollingHint();
+
+        enum CallbackType
+        {
+            ON_CHANGE=0,
+            ON_RELEASE
+        };
+
+        void setCallbackType(const CallbackType type);
+
+        const CallbackType getCallbackType();
+
     protected:
         std::vector<std::string> _values; ///< values stored in the list
         int _index; ///< current chosen index (defaults to first item in the list)
         unsigned int _focusMargin; ///<  how many values above/below the current index to return from getValues()
         float _sensitivity; ///< how sensitive the menu is to scrolling through options
+        ScrollingHint _scrollingHint;
+        CallbackType _callbackType;
 };
 
 /**

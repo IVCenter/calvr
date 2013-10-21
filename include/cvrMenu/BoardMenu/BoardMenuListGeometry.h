@@ -38,6 +38,7 @@ class BoardMenuListGeometry : public BoardMenuGeometry
         int _lastMouseY;
         osg::Vec3 _point;
         float _lastDistance;
+        float _change;
 
         osg::ref_ptr<osg::Group> _group;
         osg::ref_ptr<osg::Group> _groupSelected;

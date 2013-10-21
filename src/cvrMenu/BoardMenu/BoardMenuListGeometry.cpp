@@ -2,6 +2,9 @@
 #include <cvrMenu/MenuList.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrKernel/CVRViewer.h>
+#include <cvrUtil/LocalToWorldVisitor.h>
+#include <cvrUtil/OsgMath.h>
 
 #include <osg/Geometry>
 
@@ -192,15 +195,39 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         MouseInteractionEvent * mie = event->asMouseEvent();
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
-        {
-            int y = mie->getY();
+	{
+	    int y = mie->getY();
 
-            _lastMouseY = y;
+	    _lastMouseY = y;
 
-            _clicked = true;
-            _listItem->setDirty(true);
-            return;
-        }
+	    _clicked = true;
+	    _listItem->setDirty(true);
+	    _change = 0.0;
+
+	    if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
+	    {
+		osg::Matrix mat = getLocalToWorldMatrix(_node);
+		osg::Vec3 point, normal(0,-1,0);
+		point = point * mat;
+		normal = normal * mat;
+		normal = normal - point;
+		normal.normalize();
+
+		osg::Vec3 point1,point2(0,1,0);
+		point1 = point1 * mie->getTransform();
+		point2 = point2 * mie->getTransform();
+
+		osg::Vec3 intersect;
+		float w;
+
+		if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
+		{
+		    _lastDistance = intersect.z();
+		}
+	    }
+
+	    return;
+	}
 
         if(event->getInteraction() == BUTTON_DRAG
                 || event->getInteraction() == BUTTON_UP)
@@ -213,27 +240,104 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             int index = _listItem->getIndex();
             if(y != _lastMouseY)
             {
-                int change = (int)((y - _lastMouseY)
-                        * _listItem->getSensitivity() / pixelRange);
-                if(change)
-                {
-                    index -= change;
-                    if(index > valueMax)
-                        index = valueMax;
-                    else if(index < 0)
-                        index = 0;
+		int lastIndex = index;
+		switch(_listItem->getScrollingHint())
+		{
+		    case MenuList::LINEAR:
+		    {
+			_change += ((y - _lastMouseY)
+			    * _listItem->getSensitivity() / pixelRange) * valueMax;
+			
+			if(fabs(_change) > 1.0)
+			{
 
-                    _listItem->setIndex(index);
-                    valueUpdated = true;
-                }
+			    int offset = (int)_change;
+			    index -= offset;
+
+			    _change -= ((float)offset);
+			}    
+			break;
+		    }
+		    case MenuList::CONTINUOUS:
+		    {
+			const float coeff = (35.0f) / (pixelRange * pixelRange * pixelRange);
+			_change += coeff * (y - _lastMouseY) * (y - _lastMouseY) * (y - _lastMouseY) * _listItem->getSensitivity() * CVRViewer::instance()->getLastFrameDuration();
+
+			if(fabs(_change) > 1.0)
+			{
+			    int offset = (int)_change;
+			    index -= offset;
+
+			    _change -= ((float)offset);
+			}
+
+			y = _lastMouseY;
+			break;
+		    }
+		    case MenuList::ONE_TO_ONE:
+		    {
+			osg::Matrix mat = getLocalToWorldMatrix(_node);
+			osg::Vec3 point, normal(0,-1,0);
+			point = point * mat;
+			normal = normal * mat;
+			normal = normal - point;
+			normal.normalize();
+
+			osg::Vec3 distVec(0,0,_iconHeight+_border);
+			distVec = distVec * mat;
+			distVec = distVec - point;
+			float lineDist = distVec.length();
+
+			osg::Vec3 point1,point2(0,1,0);
+			point1 = point1 * mie->getTransform();
+			point2 = point2 * mie->getTransform();
+
+			osg::Vec3 intersect;
+			float w;
+
+			if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
+			{
+			    _change += ((intersect.z() - _lastDistance) / lineDist);
+
+			    if(fabs(_change) > 1.0)
+			    {
+				int lastIndex = index;
+				int offset = (int)_change;
+				index -= offset;
+
+				_change -= ((float)offset);
+			    }
+
+			    _lastDistance = intersect.z();
+			}
+
+			break;
+		    }
+		    default:
+			break;
+		}
+
+		if(index > valueMax)
+		    index = valueMax;
+		else if(index < 0)
+		    index = 0;
+
+		if(lastIndex != index)
+		{
+		    _listItem->setIndex(index);
+		    valueUpdated = true;
+		}
             }
 
             if(valueUpdated)
             {
-                if(_listItem->getCallback())
-                {
-                    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-                }
+		if(_listItem->getCallbackType() != MenuList::ON_RELEASE || event->getInteraction() == BUTTON_UP)
+		{
+		    if(_listItem->getCallback())
+		    {
+			_listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		    }
+		}
 
                 _lastMouseY = y;
             }
@@ -255,10 +359,37 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
 	    {
 		_point = tie->getTransform().getTrans();
 	    }
-            _lastDistance = 0.0;
 
             _clicked = true;
             _listItem->setDirty(true);
+	    _change = 0.0;
+
+	    if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
+	    {
+		osg::Matrix mat = getLocalToWorldMatrix(_node);
+		osg::Vec3 point, normal(0,-1,0);
+		point = point * mat;
+		normal = normal * mat;
+		normal = normal - point;
+		normal.normalize();
+
+		osg::Vec3 point1,point2(0,1,0);
+		point1 = point1 * tie->getTransform();
+		point2 = point2 * tie->getTransform();
+
+		osg::Vec3 intersect;
+		float w;
+
+		if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
+		{
+		    _lastDistance = intersect.z();
+		}
+	    }
+	    else
+	    {
+		_lastDistance = 0.0;
+	    }
+
             return;
         }
 
@@ -290,27 +421,104 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             int index = _listItem->getIndex();
             if(newDistance != _lastDistance)
             {
-                int change = (int)((newDistance - _lastDistance)
-                        * _listItem->getSensitivity() / range);
-                if(change)
-                {
-                    index -= change;
-                    if(index > valueMax)
-                        index = valueMax;
-                    else if(index < 0)
-                        index = 0;
+		int lastIndex = index;
+		switch(_listItem->getScrollingHint())
+		{
+		    case MenuList::LINEAR:
+		    {
+			_change += ((newDistance - _lastDistance)
+				* _listItem->getSensitivity() / range) * valueMax;
+			if(fabs(_change) > 1.0)
+			{
+			    int offset = (int)_change;
+			    index -= offset;
 
-                    _listItem->setIndex(index);
-                    valueUpdated = true;
-                }
+			    _change -= ((float)offset);
+			}
+			break;
+		    }
+		    case MenuList::CONTINUOUS:
+		    {
+			const float coeff = (35.0f) / (range * range * range);
+			_change += coeff * (newDistance - _lastDistance) * (newDistance - _lastDistance) * (newDistance - _lastDistance) * _listItem->getSensitivity() * CVRViewer::instance()->getLastFrameDuration();
+
+			if(fabs(_change) > 1.0)
+			{
+			    int offset = (int)_change;
+			    index -= offset;
+
+			    _change -= ((float)offset);
+			}
+
+			newDistance = _lastDistance;
+			break;
+		    }
+		    case MenuList::ONE_TO_ONE:
+		    {
+			osg::Matrix mat = getLocalToWorldMatrix(_node);
+			osg::Vec3 point, normal(0,-1,0);
+			point = point * mat;
+			normal = normal * mat;
+			normal = normal - point;
+			normal.normalize();
+
+			osg::Vec3 distVec(0,0,_iconHeight+_border);
+			distVec = distVec * mat;
+			distVec = distVec - point;
+			float lineDist = distVec.length();
+
+			osg::Vec3 point1,point2(0,1,0);
+			point1 = point1 * tie->getTransform();
+			point2 = point2 * tie->getTransform();
+
+			osg::Vec3 intersect;
+			float w;
+
+			if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
+			{
+			    _change += ((intersect.z() - _lastDistance) / lineDist);
+
+			    if(fabs(_change) > 1.0)
+			    {
+				int lastIndex = index;
+				int offset = (int)_change;
+				index -= offset;
+
+				_change -= ((float)offset);
+			    }
+
+			    _lastDistance = intersect.z();
+			    newDistance = _lastDistance;
+			}
+
+			break;
+		    }
+		    default:
+			break;
+
+		}
+
+		if(index > valueMax)
+		    index = valueMax;
+		else if(index < 0)
+		    index = 0;
+
+		if(lastIndex != index)
+		{
+		    _listItem->setIndex(index);
+		    valueUpdated = true;
+		}
             }
 
             if(valueUpdated)
             {
-                if(_listItem->getCallback())
-                {
-                    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-                }
+		if(_listItem->getCallbackType() != MenuList::ON_RELEASE || event->getInteraction() == BUTTON_UP)
+		{
+		    if(_listItem->getCallback())
+		    {
+			_listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+		    }
+		}
 
                 _lastDistance = newDistance;
             }
