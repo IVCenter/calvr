@@ -29,12 +29,13 @@ InteractionManager::InteractionManager()
     _mouseX = 0;
     _mouseY = 0;
 
-    _mouseWheelTimeout = ConfigManager::getDouble("value","Input.MouseWheelTimeout",0.05);
+    _mouseWheelTimeout = ConfigManager::getDouble("value",
+            "Input.MouseWheelTimeout",0.05);
     _mouseWheelTime = 0;
     _mouseWheel = 0;
 
     _dragEventTime = 0;
-    
+
     _eventDebug = ConfigManager::getBool("value","EventDebug",false,NULL);
 }
 
@@ -69,22 +70,32 @@ void InteractionManager::update()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStats"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     handleEvents();
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction begin time", startTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction end time", endTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Interaction time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Interaction begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Interaction end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Interaction time taken",endTime - startTime);
     }
 }
 
@@ -112,14 +123,14 @@ void InteractionManager::handleEvent(InteractionEvent * event)
 {
     if(!event)
     {
-	return;
+        return;
     }
 
     if(_eventDebug)
     {
-	std::cerr << std::endl;
-	std::cerr << "Event: " << event->getEventName() << std::endl;
-	event->printValues();
+        std::cerr << std::endl;
+        std::cerr << "Event: " << event->getEventName() << std::endl;
+        event->printValues();
     }
 
     if(MenuManager::instance()->processEvent(event))
@@ -311,50 +322,50 @@ void InteractionManager::createMouseDragEvents(bool single)
 
     if(single)
     {
-	numEvents = 1;
-	_dragEventTime = 0;
+        numEvents = 1;
+        _dragEventTime = 0;
     }
     else
     {
-	static const double slice = 1.0 / 60.0;
-	_dragEventTime += CVRViewer::instance()->getLastFrameDuration();
-	numEvents = (int)(_dragEventTime / slice);
-	_dragEventTime -= slice * ((double)numEvents);
+        static const double slice = 1.0 / 60.0;
+        _dragEventTime += CVRViewer::instance()->getLastFrameDuration();
+        numEvents = (int)(_dragEventTime / slice);
+        _dragEventTime -= slice * ((double)numEvents);
     }
 
     for(int j = 0; j < numEvents; j++)
     {
-	unsigned int bit = 1;
-	for(int i = 0; i < 10; i++)
-	{
-	    if((_mouseButtonMask & bit))
-	    {
-		MouseInteractionEvent * dEvent = new MouseInteractionEvent();
-		dEvent->setInteraction(BUTTON_DRAG);
-		//TODO: make config file flag
-		// makes the right click button 1
-		if(i == 1)
-		{
-		    dEvent->setButton(2);
-		}
-		else if(i == 2)
-		{
-		    dEvent->setButton(1);
-		}
-		else
-		{
-		    dEvent->setButton(i);
-		}
-		dEvent->setX(_mouseX);
-		dEvent->setY(_mouseY);
-		dEvent->setTransform(_mouseMat);
-		dEvent->setHand(-1);
-		dEvent->setMasterScreenNum(
-			CVRViewer::instance()->getActiveMasterScreen());
-		_mouseQueue.push(dEvent);
-	    }
-	    bit = bit << 1;
-	}
+        unsigned int bit = 1;
+        for(int i = 0; i < 10; i++)
+        {
+            if((_mouseButtonMask & bit))
+            {
+                MouseInteractionEvent * dEvent = new MouseInteractionEvent();
+                dEvent->setInteraction(BUTTON_DRAG);
+                //TODO: make config file flag
+                // makes the right click button 1
+                if(i == 1)
+                {
+                    dEvent->setButton(2);
+                }
+                else if(i == 2)
+                {
+                    dEvent->setButton(1);
+                }
+                else
+                {
+                    dEvent->setButton(i);
+                }
+                dEvent->setX(_mouseX);
+                dEvent->setY(_mouseY);
+                dEvent->setTransform(_mouseMat);
+                dEvent->setHand(-1);
+                dEvent->setMasterScreenNum(
+                        CVRViewer::instance()->getActiveMasterScreen());
+                _mouseQueue.push(dEvent);
+            }
+            bit = bit << 1;
+        }
     }
 }
 
@@ -406,18 +417,18 @@ void InteractionManager::checkWheelTimeout()
 {
     if(_mouseWheel == 0)
     {
-	return;
+        return;
     }
 
     double timeintv = CVRViewer::instance()->getLastFrameDuration();
     if(timeintv >= _mouseWheelTimeout)
     {
-	timeintv = _mouseWheelTimeout - 0.0001;
+        timeintv = _mouseWheelTimeout - 0.0001;
     }
     _mouseWheelTime += timeintv;
     if(_mouseWheelTime > _mouseWheelTimeout)
     {
-	_mouseWheel = 0;
-	_mouseWheelTime = 0;
+        _mouseWheel = 0;
+        _mouseWheelTime = 0;
     }
 }

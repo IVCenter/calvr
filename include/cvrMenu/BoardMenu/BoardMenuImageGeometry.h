@@ -28,7 +28,9 @@ class BoardMenuImageGeometry : public BoardMenuGeometry
         BoardMenuImageGeometry();
         virtual ~BoardMenuImageGeometry();
 
-        virtual void selectItem(bool) {}
+        virtual void selectItem(bool)
+        {
+        }
         virtual void createGeometry(MenuItem * item);
         virtual void processEvent(InteractionEvent * event);
         virtual void updateGeometry();

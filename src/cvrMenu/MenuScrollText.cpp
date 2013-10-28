@@ -2,7 +2,8 @@
 
 using namespace cvr;
 
-MenuScrollText::MenuScrollText(std::string text, float width, int rows, float sizeScale, bool indent, bool followEnd) :
+MenuScrollText::MenuScrollText(std::string text, float width, int rows,
+        float sizeScale, bool indent, bool followEnd) :
         MenuItem()
 {
     _text = text;
@@ -39,12 +40,12 @@ void MenuScrollText::clear()
     _appendText.clear();
     if(_text.length())
     {
-	_text.clear();
-	setDirty(true);
+        _text.clear();
+        setDirty(true);
     }
     else
     {
-	setDirty(false);
+        setDirty(false);
     }
 }
 

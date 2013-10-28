@@ -87,14 +87,14 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
                     ray = _currentPoint[tie->getHand()]
                             - tie->getTransform().getTrans();
 
-		    if(!tie->asPointerEvent())
-		    {
-			_moveDistance = ray.length();
-		    }
-		    else
-		    {
-			_moveDistance = ray.y();
-		    }
+                    if(!tie->asPointerEvent())
+                    {
+                        _moveDistance = ray.length();
+                    }
+                    else
+                    {
+                        _moveDistance = ray.y();
+                    }
                     _menuPoint = _currentPoint[tie->getHand()]
                             * osg::Matrix::inverse(_menuRoot->getMatrix());
                     updateMovement(tie);
@@ -110,7 +110,7 @@ bool BoardPopupMenu::processEvent(InteractionEvent * event)
                         openMenu(smg);
                     }
                 }
-		_clickActive = true;
+                _clickActive = true;
                 _activeItem->processEvent(event);
                 return true;
             }
@@ -194,8 +194,8 @@ void BoardPopupMenu::setVisible(bool v)
     }
     else
     {
-	BoardMenu::close();
-	_clickActive = false;
+        BoardMenu::close();
+        _clickActive = false;
     }
 
     _menuActive = v;

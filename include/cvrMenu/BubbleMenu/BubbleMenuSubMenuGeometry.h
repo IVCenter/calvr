@@ -5,7 +5,7 @@
 
 namespace cvr
 {
-    
+
 class BubbleMenuSubMenuGeometry : public BubbleMenuGeometry
 {
     public:

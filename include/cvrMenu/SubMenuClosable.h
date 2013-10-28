@@ -29,7 +29,7 @@ class CVRMENU_EXPORT SubMenuClosable : public SubMenu
          * title value is set to name if empty
          */
         SubMenuClosable(std::string name, std::string title = "") :
-            SubMenu(name,title)
+                SubMenu(name,title)
         {
         }
 

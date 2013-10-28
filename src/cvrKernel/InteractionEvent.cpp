@@ -7,26 +7,26 @@ const char * interactionToName(Interaction i)
 {
     switch(i)
     {
-	case NO_INTERACTION:
-	    return "No Interaction";
-	case BUTTON_DOWN:
-	    return "Button Down";
-	case BUTTON_UP:
-	    return "Button Up";
-	case BUTTON_DRAG:
-	    return "Button Drag";
-	case BUTTON_DOUBLE_CLICK:
-	    return "Double Click";
-	case VALUATOR:
-	    return "Valuator";
-	case KEY_UP:
-	    return "Key Up";
-	case KEY_DOWN:
-	    return "Key Down";
-	case MOVE:
-	    return "Move";
-	default:
-	    return "Unknown";
+        case NO_INTERACTION:
+            return "No Interaction";
+        case BUTTON_DOWN:
+            return "Button Down";
+        case BUTTON_UP:
+            return "Button Up";
+        case BUTTON_DRAG:
+            return "Button Drag";
+        case BUTTON_DOUBLE_CLICK:
+            return "Double Click";
+        case VALUATOR:
+            return "Valuator";
+        case KEY_UP:
+            return "Key Up";
+        case KEY_DOWN:
+            return "Key Down";
+        case MOVE:
+            return "Move";
+        default:
+            return "Unknown";
     }
 }
 
@@ -48,7 +48,7 @@ InteractionEvent * loadEventWithType(InteractionEvent * event,
             *mie = *((MouseInteractionEvent*)event);
             return mie;
         }
-	case POINTER_INTER_EVENT:
+        case POINTER_INTER_EVENT:
         {
             PointerInteractionEvent * pie = new PointerInteractionEvent();
             *pie = *((PointerInteractionEvent*)event);
@@ -66,13 +66,13 @@ InteractionEvent * loadEventWithType(InteractionEvent * event,
             *kie = *((KeyboardInteractionEvent*)event);
             return kie;
         }
-	case POSITION_INTER_EVENT:
-	{
-	    PositionInteractionEvent * pie = new PositionInteractionEvent();
-	    *pie = *((PositionInteractionEvent*)event);
-	    return pie;
-	}
-	case HAND_INTER_EVENT:
+        case POSITION_INTER_EVENT:
+        {
+            PositionInteractionEvent * pie = new PositionInteractionEvent();
+            *pie = *((PositionInteractionEvent*)event);
+            return pie;
+        }
+        case HAND_INTER_EVENT:
         {
             HandInteractionEvent * hie = new HandInteractionEvent();
             *hie = *((HandInteractionEvent*)event);
@@ -100,7 +100,7 @@ void storeEvent(InteractionEvent * event, void * des)
         case MOUSE_INTER_EVENT:
             *((MouseInteractionEvent*)des) = *event->asMouseEvent();
             break;
-	case POINTER_INTER_EVENT:
+        case POINTER_INTER_EVENT:
             *((PointerInteractionEvent*)des) = *event->asPointerEvent();
             break;
         case VALUATOR_INTER_EVENT:
@@ -109,11 +109,11 @@ void storeEvent(InteractionEvent * event, void * des)
         case KEYBOARD_INTER_EVENT:
             *((KeyboardInteractionEvent*)des) = *event->asKeyboardEvent();
             break;
-	case POSITION_INTER_EVENT:
+        case POSITION_INTER_EVENT:
             *((PositionInteractionEvent*)des) = *event->asPositionEvent();
             break;
-	case HAND_INTER_EVENT:
-	    *((HandInteractionEvent*)des) = *event->asHandEvent();
+        case HAND_INTER_EVENT:
+            *((HandInteractionEvent*)des) = *event->asHandEvent();
             break;
         case INTER_EVENT:
             *((InteractionEvent*)des) = *event;
@@ -133,16 +133,16 @@ int getEventSize(InteractionEventType type)
             return sizeof(TrackedButtonInteractionEvent);
         case MOUSE_INTER_EVENT:
             return sizeof(MouseInteractionEvent);
-	case POINTER_INTER_EVENT:
+        case POINTER_INTER_EVENT:
             return sizeof(PointerInteractionEvent);
         case VALUATOR_INTER_EVENT:
             return sizeof(ValuatorInteractionEvent);
         case KEYBOARD_INTER_EVENT:
             return sizeof(KeyboardInteractionEvent);
-	case POSITION_INTER_EVENT:
-	    return sizeof(PositionInteractionEvent);
-	case HAND_INTER_EVENT:
-	    return sizeof(HandInteractionEvent);
+        case POSITION_INTER_EVENT:
+            return sizeof(PositionInteractionEvent);
+        case HAND_INTER_EVENT:
+            return sizeof(HandInteractionEvent);
         case INTER_EVENT:
             return sizeof(InteractionEvent);
         default:

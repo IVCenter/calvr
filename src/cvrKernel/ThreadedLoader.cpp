@@ -355,24 +355,34 @@ void ThreadedLoader::update()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStatsAdvanced"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     if(!_jobs.size())
     {
-	if(stats)
-	{
-	    endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader begin time", startTime);
-	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader end time", endTime);
-	    stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader time taken", endTime-startTime);
-	}
-	return;
+        if(stats)
+        {
+            endTime = osg::Timer::instance()->delta_s(
+                    CVRViewer::instance()->getStartTick(),
+                    osg::Timer::instance()->tick());
+            stats->setAttribute(
+                    CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                    "TLoader begin time",startTime);
+            stats->setAttribute(
+                    CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                    "TLoader end time",endTime);
+            stats->setAttribute(
+                    CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                    "TLoader time taken",endTime - startTime);
+        }
+        return;
     }
 
     char * status = new char[_jobs.size()];
@@ -469,10 +479,18 @@ void ThreadedLoader::update()
 
     if(stats)
     {
-	endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader begin time", startTime);
-	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader end time", endTime);
-	stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "TLoader time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "TLoader begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "TLoader end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "TLoader time taken",endTime - startTime);
     }
 }
 

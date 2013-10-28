@@ -117,7 +117,10 @@ class CVRKERNEL_EXPORT InteractionManager
          *
          * Valid values are -1, 0, 1
          */
-        int getMouseWheel() { return _mouseWheel; }
+        int getMouseWheel()
+        {
+            return _mouseWheel;
+        }
 
     protected:
         InteractionManager();

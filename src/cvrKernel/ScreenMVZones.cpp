@@ -81,7 +81,7 @@ void ScreenMVZones::init(int mode)
     _zoneRows = 1;
     _zoneColumns = 1;
     _maxZoneColumns = ConfigManager::getInt("maxColumns","Zones",
-            MAX_ZONES_DEFAULT);
+    MAX_ZONES_DEFAULT);
     _maxZoneRows = ConfigManager::getInt("maxRows","Zones",4);
     _orientation3d = ConfigManager::getBool("Orientation3d",true);
     _autoAdjust = ConfigManager::getBool("autoAdjust","FrameRate",true);
@@ -319,7 +319,7 @@ void ScreenMVZones::createCameras()
     // make new cameras as necessary
     for(int i = 0; i < quantity; i++)
     {
-        osg::ref_ptr < osg::Camera > cam = new osg::Camera();
+        osg::ref_ptr<osg::Camera> cam = new osg::Camera();
         //osg::DisplaySettings * ds = new osg::DisplaySettings();
         //cam->setDisplaySettings(ds);
         _camera.push_back(cam);
@@ -495,8 +495,7 @@ void ScreenMVZones::setupCameras()
             int c = i % _zoneColumns;
 
             // "extra" calculation handles float->int rounding
-            _camera[i]->setViewport(
-                    (int)(left + c * zoneWidth),
+            _camera[i]->setViewport((int)(left + c * zoneWidth),
                     (int)(bottom + r * zoneHeight),
                     (int)(left + (c + 1) * zoneWidth)
                             - (int)(left + c * zoneWidth),
@@ -552,7 +551,7 @@ void ScreenMVZones::setEyeLocations(std::vector<osg::Vec3> &eyeLeft,
 
     // auto-set contribution variable if needed (minimum of 90 degrees)
     if(_autoContributionVar)
-        setContributionVar(MAX(M_PI/2,acos(o0*o1)));
+        setContributionVar(MAX(M_PI/2,acos(o0 * o1)));
 
     // compute contributions and set eye locations
     for(int i = 0; i < _zones; i++)
@@ -605,8 +604,8 @@ void linear(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         contribution1 = 1 - angle / var;
     }
 
-    contribution0 = MAX(0.001, contribution0);
-    contribution1 = MAX(0.001, contribution1);
+    contribution0 = MAX(0.001,contribution0);
+    contribution1 = MAX(0.001,contribution1);
 
     float cTotal = contribution0 + contribution1;
 
@@ -636,8 +635,8 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         contribution1 = cos(angle * M_PI / 2 / var);
     }
 
-    contribution0 = MAX(0.001, contribution0);
-    contribution1 = MAX(0.001, contribution1);
+    contribution0 = MAX(0.001,contribution0);
+    contribution1 = MAX(0.001,contribution1);
 
     float cTotal = contribution0 + contribution1;
 
@@ -699,8 +698,8 @@ void gaussian(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
         contribution1 = cdfGaussian(angle / sigma);
     }
 
-    contribution0 = MAX(0.001, contribution0);
-    contribution1 = MAX(0.001, contribution1);
+    contribution0 = MAX(0.001,contribution0);
+    contribution1 = MAX(0.001,contribution1);
 
     float cTotal = contribution0 + contribution1;
 

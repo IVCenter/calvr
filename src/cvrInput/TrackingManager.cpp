@@ -89,7 +89,9 @@ TrackingManager * TrackingManager::instance()
 
 bool TrackingManager::init()
 {
-    _debugOutput = ComController::instance()->isMaster() ? ConfigManager::getBool("Input.TrackingDebug",false) : false;
+    _debugOutput =
+            ComController::instance()->isMaster() ?
+                    ConfigManager::getBool("Input.TrackingDebug",false) : false;
     _updateHeadTracking = !ConfigManager::getBool("Freeze",false);
 
     int system = 0;
@@ -156,17 +158,17 @@ bool TrackingManager::init()
                 tracker = new TrackerShmem();
             }
 #ifdef WITH_OMICRON
-	    else if(systemName == "OMICRON")
-	    {
-		tracker = new TrackerOmicron();
-	    }
+            else if(systemName == "OMICRON")
+            {
+                tracker = new TrackerOmicron();
+            }
 #endif
 #ifdef WITH_VRPN
             else if(systemName == "VRPN")
             {
                 tracker = new TrackerVRPN();
             }
-	    else if(systemName == "GYROMOUSE")
+            else if(systemName == "GYROMOUSE")
             {
                 tracker = new TrackerGyroMouse();
             }
@@ -175,7 +177,7 @@ bool TrackingManager::init()
             {
                 tracker = new TrackerMouse();
             }
-	    else if(systemName == "PLUGIN")
+            else if(systemName == "PLUGIN")
             {
                 tracker = new TrackerPlugin();
             }
@@ -288,7 +290,8 @@ bool TrackingManager::init()
         _handMatList.push_back(osg::Matrix());
         _handButtonMask.push_back(0);
         _lastHandButtonMask.push_back(0);
-	_handToHeadMap.push_back(ConfigManager::getInt("value",handss.str() + ".Head",0));
+        _handToHeadMap.push_back(
+                ConfigManager::getInt("value",handss.str() + ".Head",0));
 
         _genHandDefaultButtonEvents.push_back(std::vector<bool>());
         _handStationFilterMask.push_back(std::vector<unsigned int>());
@@ -306,115 +309,122 @@ bool TrackingManager::init()
             _handStationFilterMask[i].push_back((unsigned int)imask);
         }
 
-	bool valFound = false;
-	SceneManager::PointerGraphicType pgt = SceneManager::NONE;
-	std::string pgtstr = ConfigManager::getEntry("value",handss.str() + ".PointerType","NONE",&valFound);
-	if(valFound)
-	{
-	    if(pgtstr == "CONE")
-	    {
-		pgt = SceneManager::CONE;
-	    }
-	}
-	else
-	{
-	    if(_handAddress[i].first >= 0
-		    && _handAddress[i].first < _systemInfo.size())
-	    {
-		if(_handAddress[i].second >= 0
-			&& _handAddress[i].second
-			< _systemInfo[_handAddress[i].first]->numBodies)
-		{
-		    pgt = _systemInfo[_handAddress[i].first]->defaultPointerType;
-		}
-	    }
-	}
-	_handGraphicType.push_back(pgt);
-
-	valFound = false;
-	Navigation::NavImplementation ni = Navigation::NONE_NAV;
-	std::string nistr = ConfigManager::getEntry("value",handss.str() + ".NavType","NONE",&valFound);
-	if(valFound)
-	{
-	    if(nistr == "MOUSE")
-	    {
-		ni = Navigation::MOUSE_NAV;
-	    }
-	    else if(nistr == "MOUSEKEYBOARD")
-	    {
-		ni = Navigation::MOUSEKEYBOARD_NAV;
-	    }
-	    else if(nistr == "TRACKER")
-	    {
-		ni = Navigation::TRACKER_NAV;
-	    }
-	    else if(nistr == "VALUATOR")
-	    {
-		ni = Navigation::VALUATOR_NAV;
-	    }
-	}
-	else
-	{
-	    if(_handAddress[i].first < 0
-		    || _handAddress[i].first >= _systemInfo.size()
-		    || _handAddress[i].second < 0
-		    || _handAddress[i].second
-		    >= _systemInfo[_handAddress[i].first]->numBodies)
-	    {
-		ni = Navigation::NONE_NAV;
-	    }
-
-            if(_handAddress[i].first >= 0 && _handAddress[i].first < _systemInfo.size() && _systemInfo[_handAddress[i].first])
+        bool valFound = false;
+        SceneManager::PointerGraphicType pgt = SceneManager::NONE;
+        std::string pgtstr = ConfigManager::getEntry("value",
+                handss.str() + ".PointerType","NONE",&valFound);
+        if(valFound)
+        {
+            if(pgtstr == "CONE")
             {
-	        ni = _systemInfo[_handAddress[i].first]->navImp;
+                pgt = SceneManager::CONE;
+            }
+        }
+        else
+        {
+            if(_handAddress[i].first >= 0
+                    && _handAddress[i].first < _systemInfo.size())
+            {
+                if(_handAddress[i].second >= 0
+                        && _handAddress[i].second
+                                < _systemInfo[_handAddress[i].first]->numBodies)
+                {
+                    pgt =
+                            _systemInfo[_handAddress[i].first]->defaultPointerType;
+                }
+            }
+        }
+        _handGraphicType.push_back(pgt);
+
+        valFound = false;
+        Navigation::NavImplementation ni = Navigation::NONE_NAV;
+        std::string nistr = ConfigManager::getEntry("value",
+                handss.str() + ".NavType","NONE",&valFound);
+        if(valFound)
+        {
+            if(nistr == "MOUSE")
+            {
+                ni = Navigation::MOUSE_NAV;
+            }
+            else if(nistr == "MOUSEKEYBOARD")
+            {
+                ni = Navigation::MOUSEKEYBOARD_NAV;
+            }
+            else if(nistr == "TRACKER")
+            {
+                ni = Navigation::TRACKER_NAV;
+            }
+            else if(nistr == "VALUATOR")
+            {
+                ni = Navigation::VALUATOR_NAV;
+            }
+        }
+        else
+        {
+            if(_handAddress[i].first < 0
+                    || _handAddress[i].first >= _systemInfo.size()
+                    || _handAddress[i].second < 0
+                    || _handAddress[i].second
+                            >= _systemInfo[_handAddress[i].first]->numBodies)
+            {
+                ni = Navigation::NONE_NAV;
+            }
+
+            if(_handAddress[i].first >= 0
+                    && _handAddress[i].first < _systemInfo.size()
+                    && _systemInfo[_handAddress[i].first])
+            {
+                ni = _systemInfo[_handAddress[i].first]->navImp;
             }
             else
             {
                 ni = Navigation::NONE_NAV;
             }
-	}
-	_handNavImplementation.push_back(ni);
+        }
+        _handNavImplementation.push_back(ni);
 
-	_handGenPositionEvents.push_back(ConfigManager::getBool("value",handss.str() + ".GenPositionEvents",false));
+        _handGenPositionEvents.push_back(
+                ConfigManager::getBool("value",
+                        handss.str() + ".GenPositionEvents",false));
 
-	_eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
+        _eventValuatorAddress.push_back(std::vector<std::pair<int,int> >());
         _eventValuatorType.push_back(std::vector<ValuatorType>());
         _eventValuators.push_back(std::vector<float>());
-	_eventValuatorTime.push_back(std::vector<double>());
+        _eventValuatorTime.push_back(std::vector<double>());
         _lastEventValuators.push_back(std::map<int,float>());
-	_numEventValuators.push_back(0);
+        _numEventValuators.push_back(0);
 
-	valFound = false;
+        valFound = false;
 
-	do
-	{
-	    std::stringstream valss;
+        do
+        {
+            std::stringstream valss;
             valss << handss.str() << ".Valuator" << _numEventValuators[i];
             int system, number;
             system = ConfigManager::getInt("system",valss.str(),0,&valFound);
 
-	    if(valFound)
-	    {
-		_numEventValuators[i]++;
-		number = ConfigManager::getInt("number",valss.str(),0);
-		_eventValuatorAddress[i].push_back(
-			std::pair<int,int>(system,number));
-		std::string type = ConfigManager::getEntry("type",valss.str(),
-			"NON_ZERO");
-		if(type == "CHANGE")
-		{
-		    _eventValuatorType[i].push_back(CHANGE);
-		}
-		else
-		{
-		    _eventValuatorType[i].push_back(NON_ZERO);
-		}
+            if(valFound)
+            {
+                _numEventValuators[i]++;
+                number = ConfigManager::getInt("number",valss.str(),0);
+                _eventValuatorAddress[i].push_back(
+                        std::pair<int,int>(system,number));
+                std::string type = ConfigManager::getEntry("type",valss.str(),
+                        "NON_ZERO");
+                if(type == "CHANGE")
+                {
+                    _eventValuatorType[i].push_back(CHANGE);
+                }
+                else
+                {
+                    _eventValuatorType[i].push_back(NON_ZERO);
+                }
 
-		_eventValuators[i].push_back(0.0);
-		_eventValuatorTime[i].push_back(0.0);
-	    }
-	}
-	while(valFound);
+                _eventValuators[i].push_back(0.0);
+                _eventValuatorTime[i].push_back(0.0);
+            }
+        }
+        while(valFound);
     }
 
     setGenHandDefaultButtonEvents();
@@ -431,28 +441,28 @@ bool TrackingManager::init()
         //_threadHeadMatList.push_back(osg::Matrix());
         _headMatList.push_back(osg::Matrix());
         _lastUpdatedHeadMatList.push_back(osg::Matrix());
-	_headToHandsMap.push_back(std::vector<int>());
-	for(int j = 0; j < _handToHeadMap.size(); j++)
-	{
-	    if(i == _handToHeadMap[j])
-	    {
-		_headToHandsMap[i].push_back(j);
-	    }
-	}
+        _headToHandsMap.push_back(std::vector<int>());
+        for(int j = 0; j < _handToHeadMap.size(); j++)
+        {
+            if(i == _handToHeadMap[j])
+            {
+                _headToHandsMap[i].push_back(j);
+            }
+        }
     }
 
     if(!_numHeads)
     {
         _headMatList.push_back(osg::Matrix());
         _lastUpdatedHeadMatList.push_back(osg::Matrix());
-	_headToHandsMap.push_back(std::vector<int>());
-	for(int j = 0; j < _handToHeadMap.size(); j++)
-	{
-	    if(!_handToHeadMap[j])
-	    {
-		_headToHandsMap[0].push_back(j);
-	    }
-	}
+        _headToHandsMap.push_back(std::vector<int>());
+        for(int j = 0; j < _handToHeadMap.size(); j++)
+        {
+            if(!_handToHeadMap[j])
+            {
+                _headToHandsMap[0].push_back(j);
+            }
+        }
     }
 
     _totalBodies = 0;
@@ -529,7 +539,7 @@ bool TrackingManager::init()
 
     if(_debugOutput)
     {
-	printInitDebug();
+        printInitDebug();
     }
 
     return true;
@@ -541,19 +551,21 @@ void TrackingManager::update()
     {
         return;
     }
-    
+
     double startTime, endTime;
 
     osg::Stats * stats;
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStats"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     _updateLock.lock();
@@ -777,10 +789,18 @@ void TrackingManager::update()
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking begin time", startTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking end time", endTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Tracking time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Tracking begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Tracking end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Tracking time taken",endTime - startTime);
     }
 }
 
@@ -809,7 +829,7 @@ void TrackingManager::run()
         updateThreadHandMask();
         generateThreadButtonEvents();
         generateThreadValuatorEvents();
-	generateThreadPositionEvents();
+        generateThreadPositionEvents();
 
         _updateLock.unlock();
 
@@ -869,7 +889,7 @@ SceneManager::PointerGraphicType TrackingManager::getPointerGraphicType(
 {
     if(hand >= 0 && hand < _handGraphicType.size())
     {
-	return _handGraphicType[hand];
+        return _handGraphicType[hand];
     }
 
     return SceneManager::NONE;
@@ -929,7 +949,7 @@ int TrackingManager::getHeadForHand(int hand)
 {
     if(hand >= 0 && hand < _handToHeadMap.size())
     {
-	return _handToHeadMap[hand];
+        return _handToHeadMap[hand];
     }
 
     return 0;
@@ -941,7 +961,7 @@ const std::vector<int> & TrackingManager::getHandsForHead(int head)
 
     if(head >= 0 && head < _headToHandsMap.size())
     {
-	return _headToHandsMap[head];
+        return _headToHandsMap[head];
     }
 
     return dummyReturn;
@@ -956,7 +976,7 @@ TrackerBase * TrackingManager::getTrackingSystem(int system)
 {
     if(system < 0 || system >= _systems.size())
     {
-	return NULL;
+        return NULL;
     }
 
     return _systems[system];
@@ -966,12 +986,12 @@ void TrackingManager::getHandAddress(int hand, int & system, int & body)
 {
     if(hand < 0 || hand >= getNumHands())
     {
-	system = body = -1;
+        system = body = -1;
     }
     else
     {
-	system = _handAddress[hand].first;
-	body = _handAddress[hand].second;
+        system = _handAddress[hand].first;
+        body = _handAddress[hand].second;
     }
 }
 
@@ -979,12 +999,12 @@ void TrackingManager::getHeadAddress(int head, int & system, int & body)
 {
     if(head < 0 || head >= getNumHeads())
     {
-	system = body = -1;
+        system = body = -1;
     }
     else
     {
-	system = _headAddress[head].first;
-	body = _headAddress[head].second;
+        system = _headAddress[head].first;
+        body = _headAddress[head].second;
     }
 }
 
@@ -1006,7 +1026,7 @@ Navigation::NavImplementation TrackingManager::getHandNavType(int hand)
 {
     if(hand >= 0 && hand < _handNavImplementation.size())
     {
-	return _handNavImplementation[hand];
+        return _handNavImplementation[hand];
     }
 
     return Navigation::NONE_NAV;
@@ -1050,9 +1070,10 @@ unsigned int TrackingManager::getHandButtonMask(int hand)
 
 unsigned int TrackingManager::getButtonFilter(int hand, int system)
 {
-    if(hand >= 0 && hand < _handStationFilterMask.size() && system >= 0 && system < _handStationFilterMask[hand].size())
+    if(hand >= 0 && hand < _handStationFilterMask.size() && system >= 0
+            && system < _handStationFilterMask[hand].size())
     {
-	return _handStationFilterMask[hand][system];
+        return _handStationFilterMask[hand][system];
     }
     return 0;
 }
@@ -1086,59 +1107,65 @@ bool TrackingManager::getUpdateHeadTracking()
     return _updateHeadTracking;
 }
 
-osg::Matrix TrackingManager::getHandTransformFromTrackedBody(int hand, TrackerBase::TrackedBody * body)
+osg::Matrix TrackingManager::getHandTransformFromTrackedBody(int hand,
+        TrackerBase::TrackedBody * body)
 {
     if(hand < 0 || hand >= getNumHands() || !body)
     {
-	return osg::Matrix();
+        return osg::Matrix();
     }
 
     osg::Vec3 pos(body->x,body->y,body->z);
     osg::Matrix rot;
     rot.makeRotate(osg::Quat(body->qx,body->qy,body->qz,body->qw));
     osg::Matrix transform =
-	_systemInfo[_handAddress[hand].first]->bodyRotations[_handAddress[hand].second]
-	* rot * osg::Matrix::translate(pos)
-	* _systemInfo[_handAddress[hand].first]->systemTransform
-	* osg::Matrix::translate(
-		_systemInfo[_handAddress[hand].first]->bodyTranslations[_handAddress[hand].second]);
+            _systemInfo[_handAddress[hand].first]->bodyRotations[_handAddress[hand].second]
+                    * rot * osg::Matrix::translate(pos)
+                    * _systemInfo[_handAddress[hand].first]->systemTransform
+                    * osg::Matrix::translate(
+                            _systemInfo[_handAddress[hand].first]->bodyTranslations[_handAddress[hand].second]);
 
     return transform;
 }
 
-osg::Matrix TrackingManager::getHeadTransformFromTrackedBody(int head, TrackerBase::TrackedBody * body)
+osg::Matrix TrackingManager::getHeadTransformFromTrackedBody(int head,
+        TrackerBase::TrackedBody * body)
 {
     if(head < 0 || head >= getNumHeads() || !body)
     {
-	return osg::Matrix();
+        return osg::Matrix();
     }
 
     osg::Vec3 pos(body->x,body->y,body->z);
     osg::Matrix rot;
     rot.makeRotate(osg::Quat(body->qx,body->qy,body->qz,body->qw));
     osg::Matrix transform =
-	_systemInfo[_headAddress[head].first]->bodyRotations[_headAddress[head].second]
-	* rot * osg::Matrix::translate(pos)
-	* _systemInfo[_headAddress[head].first]->systemTransform
-	* osg::Matrix::translate(
-		_systemInfo[_headAddress[head].first]->bodyTranslations[_headAddress[head].second]);
+            _systemInfo[_headAddress[head].first]->bodyRotations[_headAddress[head].second]
+                    * rot * osg::Matrix::translate(pos)
+                    * _systemInfo[_headAddress[head].first]->systemTransform
+                    * osg::Matrix::translate(
+                            _systemInfo[_headAddress[head].first]->bodyTranslations[_headAddress[head].second]);
 
     return transform;
 }
 
-void TrackingManager::getHandButtonFromSystemButton(int system, int systemButton, int & hand, int & handButton)
+void TrackingManager::getHandButtonFromSystemButton(int system,
+        int systemButton, int & hand, int & handButton)
 {
-    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it = _handButtonAddressMap.begin(); it != _handButtonAddressMap.end(); it++)
+    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it =
+            _handButtonAddressMap.begin(); it != _handButtonAddressMap.end();
+            it++)
     {
-	for(int i = 0; i < it->second.size(); i++)
-	{
-	    if(it->second[i].first == system && it->second[i].second == systemButton)
-	    {
-		hand = it->first;
-		handButton = _handButtonMapping[it->first][i];
-		return;
-	    }
-	}
+        for(int i = 0; i < it->second.size(); i++)
+        {
+            if(it->second[i].first == system
+                    && it->second[i].second == systemButton)
+            {
+                hand = it->first;
+                handButton = _handButtonMapping[it->first][i];
+                return;
+            }
+        }
     }
     hand = -1;
     handButton = -1;
@@ -1243,21 +1270,22 @@ void TrackingManager::generateButtonEvents()
                 {
                     //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
 
-		    int system, body;
-		    system = _handAddress[j].first;
-		    body = _handAddress[j].second;
+                    int system, body;
+                    system = _handAddress[j].first;
+                    body = _handAddress[j].second;
 
-		    TrackedButtonInteractionEvent * buttonEvent = NULL;
+                    TrackedButtonInteractionEvent * buttonEvent = NULL;
 
-		    if(system >= 0 && system < _systems.size() && _systems[system])
-		    {
-			buttonEvent = _systems[system]->getNewBaseEvent(body);
-		    }
+                    if(system >= 0 && system < _systems.size()
+                            && _systems[system])
+                    {
+                        buttonEvent = _systems[system]->getNewBaseEvent(body);
+                    }
 
-		    if(!buttonEvent)
-		    {
-			buttonEvent = new TrackedButtonInteractionEvent();
-		    }
+                    if(!buttonEvent)
+                    {
+                        buttonEvent = new TrackedButtonInteractionEvent();
+                    }
 
                     if((_lastHandButtonMask[j] & bit) && (newMask & bit))
                     {
@@ -1275,7 +1303,8 @@ void TrackingManager::generateButtonEvents()
                     // set current pointer info
                     buttonEvent->setTransform(_handMatList[j]);
                     buttonEvent->setHand(j);
-		    _eventMap[buttonEvent->getEventType()].push_back(buttonEvent);
+                    _eventMap[buttonEvent->getEventType()].push_back(
+                            buttonEvent);
                 }
                 bit = bit << 1;
             }
@@ -1301,79 +1330,79 @@ void TrackingManager::generateThreadButtonEvents()
             }
             //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << " bit: " << bit << " " << (newMask & bit) << " " << (_lastButtonMask & bit) << std::endl;
             if((_threadLastHandButtonMask[j] & bit) != (newMask & bit))
-	    {
-		buttonEvent = NULL;
+            {
+                buttonEvent = NULL;
 
-		int system, body;
-		system = _handAddress[j].first;
-		body = _handAddress[j].second;
+                int system, body;
+                system = _handAddress[j].first;
+                body = _handAddress[j].second;
 
-		if(system >= 0 && system < _systems.size() && _systems[system])
-		{
-		    buttonEvent = _systems[system]->getNewBaseEvent(body);
-		}
+                if(system >= 0 && system < _systems.size() && _systems[system])
+                {
+                    buttonEvent = _systems[system]->getNewBaseEvent(body);
+                }
 
-		if(!buttonEvent)
-		{
-		    buttonEvent = new TrackedButtonInteractionEvent();
-		}
+                if(!buttonEvent)
+                {
+                    buttonEvent = new TrackedButtonInteractionEvent();
+                }
 
-		//std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
-		if(_threadLastHandButtonMask[j] & bit)
-		{
-		    buttonEvent->setInteraction(BUTTON_UP);
-		}
-		else
-		{
-		    buttonEvent->setInteraction(BUTTON_DOWN);
-		}
-		buttonEvent->setButton(_handButtonMapping[j][i]);
-		// set current pointer info
-		if(getIsHandThreaded(j))
-		{
-		    buttonEvent->setTransform(_threadHandMatList[j]);
-		}
-		else
-		{
-		    buttonEvent->setTransform(_handMatList[j]);
-		}
-		buttonEvent->setHand(j);
-		//_threadEvents.push((InteractionEvent*)buttonEvent);
-		genComTrackEvents->processEvent(buttonEvent);
-	    }
+                //std::cerr << "last mask " << _lastButtonMask << " new mask " << newMask << std::endl;
+                if(_threadLastHandButtonMask[j] & bit)
+                {
+                    buttonEvent->setInteraction(BUTTON_UP);
+                }
+                else
+                {
+                    buttonEvent->setInteraction(BUTTON_DOWN);
+                }
+                buttonEvent->setButton(_handButtonMapping[j][i]);
+                // set current pointer info
+                if(getIsHandThreaded(j))
+                {
+                    buttonEvent->setTransform(_threadHandMatList[j]);
+                }
+                else
+                {
+                    buttonEvent->setTransform(_handMatList[j]);
+                }
+                buttonEvent->setHand(j);
+                //_threadEvents.push((InteractionEvent*)buttonEvent);
+                genComTrackEvents->processEvent(buttonEvent);
+            }
             else if((_threadLastHandButtonMask[j] & bit) && (newMask & bit))
-	    {
-		buttonEvent = NULL;
+            {
+                buttonEvent = NULL;
 
-		int system, body;
-		system = _handAddress[j].first;
-		body = _handAddress[j].second;
+                int system, body;
+                system = _handAddress[j].first;
+                body = _handAddress[j].second;
 
-		if(system >= 0 && system < _systems.size() && _systems[system])
-		{
-		    buttonEvent = _systems[system]->getNewBaseEvent(body);
-		}
+                if(system >= 0 && system < _systems.size() && _systems[system])
+                {
+                    buttonEvent = _systems[system]->getNewBaseEvent(body);
+                }
 
-		if(!buttonEvent)
-		{
-		    buttonEvent = new TrackedButtonInteractionEvent();
-		}
+                if(!buttonEvent)
+                {
+                    buttonEvent = new TrackedButtonInteractionEvent();
+                }
 
-		buttonEvent->setInteraction(BUTTON_DRAG);
-		buttonEvent->setButton(_handButtonMapping[j][i]);
-		// set current pointer info
-		if(getIsHandThreaded(j))
-		{
-		    buttonEvent->setTransform(_threadHandMatList[j]);
-		}
-		else
-		{
-		    buttonEvent->setTransform(_handMatList[j]);
-		}
-		buttonEvent->setHand(j);
-		//_threadEvents.push((InteractionEvent*)buttonEvent);
-		genComTrackEvents->processEvent(buttonEvent);
-	    }
+                buttonEvent->setInteraction(BUTTON_DRAG);
+                buttonEvent->setButton(_handButtonMapping[j][i]);
+                // set current pointer info
+                if(getIsHandThreaded(j))
+                {
+                    buttonEvent->setTransform(_threadHandMatList[j]);
+                }
+                else
+                {
+                    buttonEvent->setTransform(_handMatList[j]);
+                }
+                buttonEvent->setHand(j);
+                //_threadEvents.push((InteractionEvent*)buttonEvent);
+                genComTrackEvents->processEvent(buttonEvent);
+            }
             bit = bit << 1;
         }
         _threadLastHandButtonMask[j] = newMask;
@@ -1418,27 +1447,28 @@ void TrackingManager::generateValuatorEvents()
             {
                 if(fabs(_eventValuators[j][i]) > 0.05)
                 {
-		    // attempt to output 60 events per second to be consistent with the threaded version
-		    static double timeSlice = 1.0 / 60.0;
-		    _eventValuatorTime[j][i] += CVRViewer::instance()->getLastFrameDuration();
+                    // attempt to output 60 events per second to be consistent with the threaded version
+                    static double timeSlice = 1.0 / 60.0;
+                    _eventValuatorTime[j][i] +=
+                            CVRViewer::instance()->getLastFrameDuration();
 
-		    while(_eventValuatorTime[j][i] > timeSlice)
-		    {
-			ValuatorInteractionEvent * vie =
-			    new ValuatorInteractionEvent();
-			vie->setInteraction(VALUATOR);
-			vie->setValuator(i);
-			vie->setHand(j);
-			vie->setValue(_eventValuators[j][i]);
-			InteractionManager::instance()->addEvent(
-				(InteractionEvent*)vie);
-			_eventValuatorTime[j][i] -= timeSlice;
-		    }
+                    while(_eventValuatorTime[j][i] > timeSlice)
+                    {
+                        ValuatorInteractionEvent * vie =
+                                new ValuatorInteractionEvent();
+                        vie->setInteraction(VALUATOR);
+                        vie->setValuator(i);
+                        vie->setHand(j);
+                        vie->setValue(_eventValuators[j][i]);
+                        InteractionManager::instance()->addEvent(
+                                (InteractionEvent*)vie);
+                        _eventValuatorTime[j][i] -= timeSlice;
+                    }
                 }
-		else
-		{
-		    _eventValuatorTime[j][i] = 0.0;
-		}
+                else
+                {
+                    _eventValuatorTime[j][i] = 0.0;
+                }
             }
             else if(_eventValuatorType[j][i] == CHANGE)
             {
@@ -1451,7 +1481,7 @@ void TrackingManager::generateValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
-		    vie->setInteraction(VALUATOR);
+                    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1513,7 +1543,7 @@ void TrackingManager::generateThreadValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
-		    vie->setInteraction(VALUATOR);
+                    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1531,7 +1561,7 @@ void TrackingManager::generateThreadValuatorEvents()
                 {
                     ValuatorInteractionEvent * vie =
                             new ValuatorInteractionEvent();
-		    vie->setInteraction(VALUATOR);
+                    vie->setInteraction(VALUATOR);
                     vie->setValuator(i);
                     vie->setHand(j);
                     vie->setValue(_eventValuators[j][i]);
@@ -1546,35 +1576,35 @@ void TrackingManager::generateThreadValuatorEvents()
 
 void TrackingManager::generatePositionEvents()
 {
-    
+
 }
 
 void TrackingManager::generateThreadPositionEvents()
 {
     for(int i = 0; i < _numHands; i++)
     {
-	if(!_handGenPositionEvents[i])
-	{
-	    continue;
-	}
-	if(_handAddress[i].first >= 0
-		&& _handAddress[i].first < _systems.size())
-	{
-	    if(!_systemInfo[_handAddress[i].first]->thread)
-	    {
-		continue;
-	    }
-	}
-	else
-	{
-	    continue;
-	}
+        if(!_handGenPositionEvents[i])
+        {
+            continue;
+        }
+        if(_handAddress[i].first >= 0
+                && _handAddress[i].first < _systems.size())
+        {
+            if(!_systemInfo[_handAddress[i].first]->thread)
+            {
+                continue;
+            }
+        }
+        else
+        {
+            continue;
+        }
 
-	PositionInteractionEvent * pie = new PositionInteractionEvent();
-	pie->setInteraction(cvr::MOVE);
-	pie->setPosition(_threadHandMatList[i].getTrans());
-	pie->setHand(i);
-	_eventMap[pie->getEventType()].push_back(pie);
+        PositionInteractionEvent * pie = new PositionInteractionEvent();
+        pie->setInteraction(cvr::MOVE);
+        pie->setPosition(_threadHandMatList[i].getTrans());
+        pie->setHand(i);
+        _eventMap[pie->getEventType()].push_back(pie);
     }
 }
 
@@ -1751,70 +1781,78 @@ void TrackingManager::setHandButtonMaps()
 {
     for(int i = 0; i < _systemInfo.size(); i++)
     {
-	 unsigned int mask = 1;
-	 for(int j = 0; j < _systemInfo[i]->numButtons; j++)
-	 {
-	     for(int k = 0; k < _numHands; k++)
-	     {
-		 if(_handStationFilterMask[k][i] & mask)
-		 {
-		     _handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
-		     break;
-		 }
-	     }
-	     mask = mask << 1;
-	 }
+        unsigned int mask = 1;
+        for(int j = 0; j < _systemInfo[i]->numButtons; j++)
+        {
+            for(int k = 0; k < _numHands; k++)
+            {
+                if(_handStationFilterMask[k][i] & mask)
+                {
+                    _handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
+                    break;
+                }
+            }
+            mask = mask << 1;
+        }
     }
 
     for(int i = 0; i < _numHands; i++)
     {
-	_handButtonMapping.push_back(std::map<int,int>());
+        _handButtonMapping.push_back(std::map<int,int>());
     }
 
-    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it = _handButtonAddressMap.begin(); it != _handButtonAddressMap.end(); it++)
+    for(std::map<int,std::vector<std::pair<int,int> > >::iterator it =
+            _handButtonAddressMap.begin(); it != _handButtonAddressMap.end();
+            it++)
     {
-	for(int i = 0; i < it->second.size(); i++)
-	{
-	    _handButtonMapping[it->first][i] = i;
-	}
+        for(int i = 0; i < it->second.size(); i++)
+        {
+            _handButtonMapping[it->first][i] = i;
+        }
     }
 
     for(int i = 0; i < _numHands; i++)
     {
-	bool orderFound = false;
-	std::stringstream ss;
-	ss << "Input.Hand" << i << ".ButtonMapping";
-	std::string order = ConfigManager::getEntry("value",ss.str(),"",&orderFound);
+        bool orderFound = false;
+        std::stringstream ss;
+        ss << "Input.Hand" << i << ".ButtonMapping";
+        std::string order = ConfigManager::getEntry("value",ss.str(),"",
+                &orderFound);
 
-	if(!orderFound)
-	{
-	    continue;
-	}
+        if(!orderFound)
+        {
+            continue;
+        }
 
-	if(_handButtonMapping[i].size())
-	{
-	    std::vector<int> orderList;
-	    size_t pos = order.find_first_not_of(',');
-	    while(pos != std::string::npos)
-	    {
-		size_t cpos = order.find_first_of(',',pos);
-		if(cpos == std::string::npos)
-		{
-		    orderList.push_back(atoi(order.substr(pos,order.length()-pos).c_str()));
-		    pos = cpos;
-		}
-		else
-		{
-		    orderList.push_back(atoi(order.substr(pos,cpos-pos).c_str()));
-		    pos = order.find_first_not_of(',',cpos);
-		}
-	    }
+        if(_handButtonMapping[i].size())
+        {
+            std::vector<int> orderList;
+            size_t pos = order.find_first_not_of(',');
+            while(pos != std::string::npos)
+            {
+                size_t cpos = order.find_first_of(',',pos);
+                if(cpos == std::string::npos)
+                {
+                    orderList.push_back(
+                            atoi(
+                                    order.substr(pos,order.length() - pos).c_str()));
+                    pos = cpos;
+                }
+                else
+                {
+                    orderList.push_back(
+                            atoi(order.substr(pos,cpos - pos).c_str()));
+                    pos = order.find_first_not_of(',',cpos);
+                }
+            }
 
-	    for(int j = 0; j < orderList.size() && j < _handButtonMapping[i].size(); j++)
-	    {
-		_handButtonMapping[i][j] = orderList[j];
-	    }
-	}
+            for(int j = 0;
+                    j < orderList.size() && j < _handButtonMapping[i].size();
+                    j++)
+            {
+                _handButtonMapping[i][j] = orderList[j];
+            }
+        }
     }
 }
 
@@ -1833,69 +1871,81 @@ void TrackingManager::printInitDebug()
     std::cerr << "-----Tracking Init Info-----" << std::endl;
 
     std::cerr << "Num Systems: " << _systems.size() << std::endl;
-    
+
     for(int i = 0; i < _systems.size(); i++)
     {
-	std::cerr << "System: " << i << std::endl;
-	if(_systems[i])
-	{
-	    std::cerr << "Num Bodies - config: " << _systemInfo[i]->numBodies << " system: " << _systems[i]->getNumBodies() << std::endl;
-	    std::cerr << "Num Buttons - config: " << _systemInfo[i]->numButtons << " system: " << _systems[i]->getNumButtons() << std::endl;
-	    std::cerr << "Num Valuators - config: " << _systemInfo[i]->numVal << " system: " << _systems[i]->getNumValuators() << std::endl;
-	}
-	else
-	{
-	    std::cerr << "System failed init." << std::endl;
-	}
-	std::cerr << std::endl;
+        std::cerr << "System: " << i << std::endl;
+        if(_systems[i])
+        {
+            std::cerr << "Num Bodies - config: " << _systemInfo[i]->numBodies
+                    << " system: " << _systems[i]->getNumBodies() << std::endl;
+            std::cerr << "Num Buttons - config: " << _systemInfo[i]->numButtons
+                    << " system: " << _systems[i]->getNumButtons() << std::endl;
+            std::cerr << "Num Valuators - config: " << _systemInfo[i]->numVal
+                    << " system: " << _systems[i]->getNumValuators()
+                    << std::endl;
+        }
+        else
+        {
+            std::cerr << "System failed init." << std::endl;
+        }
+        std::cerr << std::endl;
     }
 
     std::cerr << "Num Heads: " << _numHeads << std::endl;
 
     for(int i = 0; i < _numHeads; i++)
     {
-	std::cerr << "Head " << i << " Address: system: " << _headAddress[i].first << " body: " << _headAddress[i].second << std::endl;
+        std::cerr << "Head " << i << " Address: system: "
+                << _headAddress[i].first << " body: " << _headAddress[i].second
+                << std::endl;
     }
 
     std::map<int,std::vector<std::pair<int,int> > > handButtonAddressMap;
     for(int i = 0; i < _systemInfo.size(); i++)
     {
-	 unsigned int mask = 1;
-	 for(int j = 0; j < _systemInfo[i]->numButtons; j++)
-	 {
-	     for(int k = 0; k < _numHands; k++)
-	     {
-		 if(_handStationFilterMask[k][i] & mask)
-		 {
-		     handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
-		     break;
-		 }
-	     }
-	     mask = mask << 1;
-	 }
+        unsigned int mask = 1;
+        for(int j = 0; j < _systemInfo[i]->numButtons; j++)
+        {
+            for(int k = 0; k < _numHands; k++)
+            {
+                if(_handStationFilterMask[k][i] & mask)
+                {
+                    handButtonAddressMap[k].push_back(std::pair<int,int>(i,j));
+                    break;
+                }
+            }
+            mask = mask << 1;
+        }
     }
 
     std::cerr << std::endl << "Num Hands: " << _numHands << std::endl;
 
     for(int i = 0; i < _numHands; i++)
     {
-	std::cerr << "Hand " << i << std::endl;
-	std::cerr << "Address: system: " << _handAddress[i].first << " body: " << _handAddress[i].second << std::endl;
-	std::cerr << "Num Buttons:" << handButtonAddressMap[i].size() << std::endl;
+        std::cerr << "Hand " << i << std::endl;
+        std::cerr << "Address: system: " << _handAddress[i].first << " body: "
+                << _handAddress[i].second << std::endl;
+        std::cerr << "Num Buttons:" << handButtonAddressMap[i].size()
+                << std::endl;
 
-	for(int j = 0; j < handButtonAddressMap[i].size(); j++)
-	{
-	    std::cerr << "Button " << j << " - system: " << handButtonAddressMap[i][j].first << " button: " << handButtonAddressMap[i][j].second << std::endl;
-	}
+        for(int j = 0; j < handButtonAddressMap[i].size(); j++)
+        {
+            std::cerr << "Button " << j << " - system: "
+                    << handButtonAddressMap[i][j].first << " button: "
+                    << handButtonAddressMap[i][j].second << std::endl;
+        }
 
-	std::cerr << "Num Valuators: " << _eventValuators[i].size() << std::endl;
-	for(int j = 0; j < _eventValuators[i].size(); j++)
-	{
-	    std::cerr << "Valuator " << i << " system: " << _eventValuatorAddress[i][j].first << " index: " << _eventValuatorAddress[i][j].second << std::endl;
-	}
-	std::cerr << std::endl;
+        std::cerr << "Num Valuators: " << _eventValuators[i].size()
+                << std::endl;
+        for(int j = 0; j < _eventValuators[i].size(); j++)
+        {
+            std::cerr << "Valuator " << i << " system: "
+                    << _eventValuatorAddress[i][j].first << " index: "
+                    << _eventValuatorAddress[i][j].second << std::endl;
+        }
+        std::cerr << std::endl;
     }
-
 
     std::cerr << "-----End Tracking Init Info-----" << std::endl;
 }

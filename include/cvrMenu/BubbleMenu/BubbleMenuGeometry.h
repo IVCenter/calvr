@@ -46,7 +46,9 @@ class BubbleMenuGeometry
         /**
          * @brief Called each time the MenuItem is flaged as dirty
          */
-        virtual void updateGeometry() {}
+        virtual void updateGeometry()
+        {
+        }
 
         /**
          * @brief Process click and drag events
@@ -63,7 +65,9 @@ class BubbleMenuGeometry
          * @param pointerStart start point of pointer intersection test
          * @param pointerEnd end point of pointer intersection test
          */
-        virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd) {}
+        virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd)
+        {
+        }
 
         /**
          * @brief Get MenuItem for this geometry
@@ -90,22 +94,31 @@ class BubbleMenuGeometry
          */
         osg::MatrixTransform * getNode();
 
-        virtual void showHoverText() {}
-        virtual void hideHoverText() {}
+        virtual void showHoverText()
+        {
+        }
+        virtual void hideHoverText()
+        {
+        }
 
     protected:
-        static osg::Geometry * makeQuad(float width, float height, osg::Vec4 color,
-                                 osg::Vec3 pos = osg::Vec3(0,0,0));
-        static osg::Geometry * makeLine(osg::Vec3 p1, osg::Vec3 p2, osg::Vec4 color);
+        static osg::Geometry * makeQuad(float width, float height,
+                osg::Vec4 color, osg::Vec3 pos = osg::Vec3(0,0,0));
+        static osg::Geometry * makeLine(osg::Vec3 p1, osg::Vec3 p2,
+                osg::Vec4 color);
 
-        static osg::Geometry * makeSphere(osg::Vec3 point, float radius, osg::Vec4 color);
+        static osg::Geometry * makeSphere(osg::Vec3 point, float radius,
+                osg::Vec4 color);
 
         osg::Texture2D * loadIcon(std::string name);
-        osgText::Text * makeText(std::string text, float size, osg::Vec3 pos, osg::Vec4 color, 
-            osgText::Text::AlignmentType align = osgText::Text::CENTER_CENTER);
+        osgText::Text * makeText(std::string text, float size, osg::Vec3 pos,
+                osg::Vec4 color, osgText::Text::AlignmentType align =
+                        osgText::Text::CENTER_CENTER);
         static void calibrateTextSize(float textSize);
-        osgText::Text3D * make3DText(std::string text, float size, osg::Vec3 pos, osg::Vec4 color, 
-            osgText::Text::AlignmentType align = osgText::Text::CENTER_CENTER);
+        osgText::Text3D * make3DText(std::string text, float size,
+                osg::Vec3 pos, osg::Vec4 color,
+                osgText::Text::AlignmentType align =
+                        osgText::Text::CENTER_CENTER);
 
         float _width;
         float _height;
@@ -128,7 +141,8 @@ class BubbleMenuGeometry
         static std::map<std::string,osg::ref_ptr<osg::Texture2D> > _iconCache;
 };
 
-BubbleMenuGeometry * createBubbleMenuGeometry(MenuItem * item, bool head = false);
+BubbleMenuGeometry * createBubbleMenuGeometry(MenuItem * item,
+        bool head = false);
 
 }
 

@@ -1,5 +1,5 @@
 /**
- * @file TrackeriOmnicron.h
+ * @file TrackerOmicron.h
  */
 #ifndef CALVR_TRACKER_OMICRON_H
 #define CALVR_TRACKER_OMICRON_H
@@ -23,7 +23,8 @@ namespace cvr
 /**
  * @brief Tracker that runs on the slave nodes
  */
-class TrackerOmicron : public TrackerBase, public omicronConnector::IOmicronConnectorClientListener
+class TrackerOmicron : public TrackerBase,
+        public omicronConnector::IOmicronConnectorClientListener
 {
     public:
         TrackerOmicron();

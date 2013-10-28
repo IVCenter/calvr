@@ -17,7 +17,9 @@ class BubbleMenuImageGeometry : public BubbleMenuGeometry
         BubbleMenuImageGeometry();
         virtual ~BubbleMenuImageGeometry();
 
-        virtual void selectItem(bool) {}
+        virtual void selectItem(bool)
+        {
+        }
         virtual void createGeometry(MenuItem * item);
         virtual void processEvent(InteractionEvent * event);
         virtual void updateGeometry();

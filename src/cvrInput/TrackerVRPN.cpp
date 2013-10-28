@@ -28,7 +28,7 @@ struct cvr::TrackerVRPN::DeviceInfo
         vrpn_Analog_Remote *ana;
 };
 
-void VRPN_CALLBACK handleBodyInfo (void *userdata, const vrpn_TRACKERCB t)
+void VRPN_CALLBACK handleBodyInfo(void *userdata, const vrpn_TRACKERCB t)
 {
     /*t_user_callback	*t_data = (t_user_callback *)userdata;
 
@@ -48,7 +48,8 @@ void VRPN_CALLBACK handleBodyInfo (void *userdata, const vrpn_TRACKERCB t)
      t.quat[0], t.quat[1], t.quat[2], t.quat[3]);
      }*/
 
-    std::vector<TrackerBase::TrackedBody *> * tbList = (std::vector<TrackerBase::TrackedBody *> *) userdata;
+    std::vector<TrackerBase::TrackedBody *> * tbList = (std::vector<
+            TrackerBase::TrackedBody *> *)userdata;
 
     if(t.sensor >= tbList->size())
     {
@@ -68,11 +69,13 @@ void VRPN_CALLBACK handleBodyInfo (void *userdata, const vrpn_TRACKERCB t)
 
     if(bodyDebug && debugStation == t.sensor)
     {
-        std::cerr << "Tracker station " << t.sensor << ": x: " << tb->x << " y: " << tb->y << " z: " << tb->z << "Quat: " << tb->qx << " " << tb->qy << " " << tb->qz << " " << tb->qw << std::endl;
+        std::cerr << "Tracker station " << t.sensor << ": x: " << tb->x
+                << " y: " << tb->y << " z: " << tb->z << "Quat: " << tb->qx
+                << " " << tb->qy << " " << tb->qz << " " << tb->qw << std::endl;
     }
 }
 
-void VRPN_CALLBACK handleButton (void *userdata, const vrpn_BUTTONCB b)
+void VRPN_CALLBACK handleButton(void *userdata, const vrpn_BUTTONCB b)
 {
     //const char *name = (const char *)userdata;
 
@@ -99,7 +102,7 @@ void VRPN_CALLBACK handleButton (void *userdata, const vrpn_BUTTONCB b)
     }
 }
 
-void VRPN_CALLBACK handleAnalog (void *userdata, const vrpn_ANALOGCB a)
+void VRPN_CALLBACK handleAnalog(void *userdata, const vrpn_ANALOGCB a)
 {
     /*int i;
      const char *name = (const char *)userdata;
@@ -112,18 +115,19 @@ void VRPN_CALLBACK handleAnalog (void *userdata, const vrpn_ANALOGCB a)
 
     std::vector<float> * valList = (std::vector<float> *)userdata;
 #ifndef WIN32
-	int maxVal = std::min((size_t)a.num_channel, valList->size());
+    int maxVal = std::min((size_t)a.num_channel,valList->size());
 #else
-	int maxVal = min((size_t)a.num_channel, valList->size());
+    int maxVal = min((size_t)a.num_channel, valList->size());
 #endif
-    for (int i = 0; i < maxVal; i++)
+    for(int i = 0; i < maxVal; i++)
     {
         valList->at(i) = a.channel[i];
     }
 
     if(buttonDebug)
     {
-        std::cerr << "Valuator " << a.num_channel << ": " << a.channel[a.num_channel] << std::endl;
+        std::cerr << "Valuator " << a.num_channel << ": "
+                << a.channel[a.num_channel] << std::endl;
     }
 }
 
@@ -142,7 +146,7 @@ TrackerVRPN::TrackerVRPN()
         buttonDebug = ConfigManager::getBool("button","Input.TrackingDebug",
                 false,NULL);
         bodyDebug = ConfigManager::getBool("body","Input.TrackingDebug",false,
-                NULL);
+        NULL);
         if(bodyDebug)
         {
             debugStation = ConfigManager::getInt("station",
@@ -217,12 +221,12 @@ bool TrackerVRPN::init(std::string tag)
     for(int i = 0; i < _numBodies; i++)
     {
         TrackedBody * tb = new TrackedBody;
-	tb->x = tb->y = tb->z = 0.0;
-	osg::Quat q;
-	tb->qx = q.x();
-	tb->qy = q.y();
-	tb->qz = q.z();
-	tb->qw = q.w();
+        tb->x = tb->y = tb->z = 0.0;
+        osg::Quat q;
+        tb->qx = q.x();
+        tb->qy = q.y();
+        tb->qz = q.z();
+        tb->qw = q.w();
         _bodyList.push_back(tb);
     }
 

@@ -82,12 +82,12 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
             || (mrv->getMin() < 0 && mrv->getMax() < 0))
     {
         printstr = "%6f";
-	_sign = true;
+        _sign = true;
     }
     else
     {
         printstr = "% 6f";
-	_sign = false;
+        _sign = false;
     }
 
     _label = makeText(mrv->getLabel(),_textSize,
@@ -96,7 +96,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_label.get());
 
     char buffer[8];
-	memset(buffer,'\0',8);
+    memset(buffer,'\0',8);
     _widthLabel = _widthValue = _iconHeight + _border;
 
     snprintf(buffer,7,printstr,mrv->getValue());
@@ -122,7 +122,7 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
     _geodeSelected->removeDrawable(_currentValue.get());
 
     char buffer[8];
-	memset(buffer,'\0',8);
+    memset(buffer,'\0',8);
     const char * printstr;
     if(_sign)
     {
@@ -173,20 +173,20 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
 
             MenuRangeValueCompact * mrv = (MenuRangeValueCompact*)_item;
 
-	    float min,max,current;
+            float min, max, current;
 
-	    if(mrv->getIsLog())
-	    {
-		min = log(mrv->getMin()) / log(mrv->getLogBase());
-		max = log(mrv->getMax()) / log(mrv->getLogBase());
-		current = log(mrv->getValue()) / log(mrv->getLogBase());
-	    }
-	    else
-	    {
-		min = mrv->getMin();
-		max = mrv->getMax();
-		current = mrv->getValue();
-	    }
+            if(mrv->getIsLog())
+            {
+                min = log(mrv->getMin()) / log(mrv->getLogBase());
+                max = log(mrv->getMax()) / log(mrv->getLogBase());
+                current = log(mrv->getValue()) / log(mrv->getLogBase());
+            }
+            else
+            {
+                min = mrv->getMin();
+                max = mrv->getMax();
+                current = mrv->getValue();
+            }
 
             float pixelRange = 800;
 
@@ -195,21 +195,20 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
             {
                 if(mrv->getValue() != mrv->getMax())
                 {
-                    float change = (x - _lastMouseX)
-                            * (max - min) / pixelRange;
-			    
-		    float newValue;
+                    float change = (x - _lastMouseX) * (max - min) / pixelRange;
 
-		    if(mrv->getIsLog())
-		    {
-			newValue = pow(mrv->getLogBase(),current + change);
-			newValue = std::max(newValue, mrv->getMin());
-		    }
-		    else
-		    {
-			newValue = std::max(mrv->getValue() + change,
-                            mrv->getMin());
-		    }
+                    float newValue;
+
+                    if(mrv->getIsLog())
+                    {
+                        newValue = pow(mrv->getLogBase(),current + change);
+                        newValue = std::max(newValue,mrv->getMin());
+                    }
+                    else
+                    {
+                        newValue = std::max(mrv->getValue() + change,
+                                mrv->getMin());
+                    }
                     mrv->setValue(newValue);
                     valueUpdated = true;
                 }
@@ -218,20 +217,19 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
             {
                 if(mrv->getValue() != mrv->getMin())
                 {
-                    float change = (x - _lastMouseX)
-                            * (max - min) / pixelRange;
+                    float change = (x - _lastMouseX) * (max - min) / pixelRange;
                     float newValue;
-		    
-		    if(mrv->getIsLog())
-		    {
-			newValue = pow(mrv->getLogBase(),current + change);
-			newValue = std::min(newValue, mrv->getMax());
-		    }
-		    else
-		    {
-			newValue = std::min(mrv->getValue() + change,
-                            mrv->getMax());
-		    }
+
+                    if(mrv->getIsLog())
+                    {
+                        newValue = pow(mrv->getLogBase(),current + change);
+                        newValue = std::min(newValue,mrv->getMax());
+                    }
+                    else
+                    {
+                        newValue = std::min(mrv->getValue() + change,
+                                mrv->getMax());
+                    }
                     mrv->setValue(newValue);
                     valueUpdated = true;
                 }
@@ -239,21 +237,27 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-		if(mrv->getCallbackType() != MenuRangeValueCompact::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(mrv->getCallback())
-		    {
-			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(mrv->getCallbackType() != MenuRangeValueCompact::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(mrv->getCallback())
+                    {
+                        mrv->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
             }
-	    else if(mrv->getCallbackType() == MenuRangeValueCompact::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(mrv->getCallbackType() == MenuRangeValueCompact::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             _lastMouseY = y;
             _lastMouseX = x;
@@ -266,18 +270,19 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
         {
-	    if(event->asPointerEvent())
-	    {
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),_point);
-	    }
-	    else
-	    {
-		_point = tie->getTransform().getTrans();
-		osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
-		forward = forward - _point;
-		_normal = forward ^ osg::Vec3(0,0,1.0);
-		_normal.normalize();
-	    }
+            if(event->asPointerEvent())
+            {
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),_point);
+            }
+            else
+            {
+                _point = tie->getTransform().getTrans();
+                osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
+                forward = forward - _point;
+                _normal = forward ^ osg::Vec3(0,0,1.0);
+                _normal.normalize();
+            }
             _lastDistance = 0.0;
             return;
         }
@@ -286,58 +291,59 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
         {
             MenuRangeValueCompact * mrv = (MenuRangeValueCompact*)_item;
 
-	    float min,max,current;
+            float min, max, current;
 
-	    if(mrv->getIsLog())
-	    {
-		min = log(mrv->getMin()) / log(mrv->getLogBase());
-		max = log(mrv->getMax()) / log(mrv->getLogBase());
-		current = log(mrv->getValue()) / log(mrv->getLogBase());
-	    }
-	    else
-	    {
-		min = mrv->getMin();
-		max = mrv->getMax();
-		current = mrv->getValue();
-	    }
+            if(mrv->getIsLog())
+            {
+                min = log(mrv->getMin()) / log(mrv->getLogBase());
+                max = log(mrv->getMax()) / log(mrv->getLogBase());
+                current = log(mrv->getValue()) / log(mrv->getLogBase());
+            }
+            else
+            {
+                min = mrv->getMin();
+                max = mrv->getMax();
+                current = mrv->getValue();
+            }
 
-	    float newDistance;
-	    float range;
+            float newDistance;
+            float range;
 
-	    if(tie->asPointerEvent())
-	    {
-		osg::Vec3 newPoint;
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),newPoint);
-		newDistance = newPoint.z() - _point.z();
-		range = SceneManager::instance()->getTiledWallHeight() * 0.6;
-	    }
-	    else
-	    {
-		osg::Vec3 vec = tie->getTransform().getTrans();
-		vec = vec - _point;
-		newDistance = vec * _normal;
-		range = 1000;
-	    }
+            if(tie->asPointerEvent())
+            {
+                osg::Vec3 newPoint;
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),newPoint);
+                newDistance = newPoint.z() - _point.z();
+                range = SceneManager::instance()->getTiledWallHeight() * 0.6;
+            }
+            else
+            {
+                osg::Vec3 vec = tie->getTransform().getTrans();
+                vec = vec - _point;
+                newDistance = vec * _normal;
+                range = 1000;
+            }
 
             bool valueUpdated = false;
             if(newDistance < _lastDistance)
             {
                 if(mrv->getValue() != mrv->getMin())
                 {
-                    float change = (newDistance - _lastDistance)
-                            * (max - min) / range;
+                    float change = (newDistance - _lastDistance) * (max - min)
+                            / range;
                     float newValue;
-		    
-		    if(mrv->getIsLog())
-		    {
-			newValue = pow(mrv->getLogBase(),current + change);
-			newValue = std::max(newValue, mrv->getMin());
-		    }
-		    else
-		    {
-			newValue = std::max(mrv->getValue() + change,
-                            mrv->getMin());
-		    }
+
+                    if(mrv->getIsLog())
+                    {
+                        newValue = pow(mrv->getLogBase(),current + change);
+                        newValue = std::max(newValue,mrv->getMin());
+                    }
+                    else
+                    {
+                        newValue = std::max(mrv->getValue() + change,
+                                mrv->getMin());
+                    }
                     mrv->setValue(newValue);
                     valueUpdated = true;
                 }
@@ -346,20 +352,20 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
             {
                 if(mrv->getValue() != mrv->getMax())
                 {
-                    float change = (newDistance - _lastDistance)
-                            * (max - min) / range;
+                    float change = (newDistance - _lastDistance) * (max - min)
+                            / range;
                     float newValue;
-		    
-		    if(mrv->getIsLog())
-		    {
-			newValue = pow(mrv->getLogBase(),current + change);
-			newValue = std::min(newValue, mrv->getMax());
-		    }
-		    else
-		    {
-			newValue = std::min(mrv->getValue() + change,
-                            mrv->getMax());
-		    }
+
+                    if(mrv->getIsLog())
+                    {
+                        newValue = pow(mrv->getLogBase(),current + change);
+                        newValue = std::min(newValue,mrv->getMax());
+                    }
+                    else
+                    {
+                        newValue = std::min(mrv->getValue() + change,
+                                mrv->getMax());
+                    }
                     mrv->setValue(newValue);
                     valueUpdated = true;
                 }
@@ -367,21 +373,27 @@ void BoardMenuRangeValueCompactGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-		if(mrv->getCallbackType() != MenuRangeValueCompact::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(mrv->getCallback())
-		    {
-			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(mrv->getCallbackType() != MenuRangeValueCompact::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(mrv->getCallback())
+                    {
+                        mrv->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
             }
-	    else if(mrv->getCallbackType() == MenuRangeValueCompact::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(mrv->getCallbackType() == MenuRangeValueCompact::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             _lastDistance = newDistance;
 

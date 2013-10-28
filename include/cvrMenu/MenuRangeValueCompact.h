@@ -37,8 +37,8 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
          * @param log should the range scale be logarithmic
          * @param base log base
          */
-        MenuRangeValueCompact(std::string label, float min, float max, float current,
-                bool log = false, float base = 10);
+        MenuRangeValueCompact(std::string label, float min, float max,
+                float current, bool log = false, float base = 10);
         virtual ~MenuRangeValueCompact();
 
         /**
@@ -83,8 +83,7 @@ class CVRMENU_EXPORT MenuRangeValueCompact : public MenuItem
 
         enum CallbackType
         {
-            ON_CHANGE=0,
-            ON_RELEASE
+            ON_CHANGE = 0, ON_RELEASE
         };
 
         void setCallbackType(const CallbackType type);

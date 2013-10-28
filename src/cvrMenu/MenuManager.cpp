@@ -70,12 +70,14 @@ void MenuManager::update()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStatsAdvanced"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     // call update on all menus
@@ -147,10 +149,18 @@ void MenuManager::update()
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu begin time", startTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu end time", endTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Menu time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Menu begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Menu end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Menu time taken",endTime - startTime);
     }
 }
 
@@ -184,7 +194,7 @@ void MenuManager::removeMenuSystem(MenuSystemBase * ms)
 {
     if(_inDestructor)
     {
-	return;
+        return;
     }
 
     for(int i = 0; i < _handLastMenuSystem.size(); i++)

@@ -53,7 +53,9 @@ class BoardMenuGeometry
         /**
          * @brief Called each time the MenuItem is flaged as dirty
          */
-        virtual void updateGeometry() {}
+        virtual void updateGeometry()
+        {
+        }
 
         /**
          * @brief Process click and drag events
@@ -70,7 +72,9 @@ class BoardMenuGeometry
          * @param pointerStart start point of pointer intersection test
          * @param pointerEnd end point of pointer intersection test
          */
-        virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd) {}
+        virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd)
+        {
+        }
 
         /**
          * @brief Get MenuItem for this geometry
@@ -98,11 +102,14 @@ class BoardMenuGeometry
         osg::MatrixTransform * getNode();
 
     protected:
-        static osg::Geometry * makeQuad(float width, float height, osg::Vec4 color,
-                                 osg::Vec3 pos = osg::Vec3(0,0,0));
-        static osg::Geometry * makeLine(osg::Vec3 p1, osg::Vec3 p2, osg::Vec4 color);
+        static osg::Geometry * makeQuad(float width, float height,
+                osg::Vec4 color, osg::Vec3 pos = osg::Vec3(0,0,0));
+        static osg::Geometry * makeLine(osg::Vec3 p1, osg::Vec3 p2,
+                osg::Vec4 color);
         osg::Texture2D * loadIcon(std::string name);
-        osgText::Text * makeText(std::string text, float size, osg::Vec3 pos, osg::Vec4 color, osgText::Text::AlignmentType align = osgText::Text::LEFT_CENTER);
+        osgText::Text * makeText(std::string text, float size, osg::Vec3 pos,
+                osg::Vec4 color, osgText::Text::AlignmentType align =
+                        osgText::Text::LEFT_CENTER);
         static void calibrateTextSize(float textSize);
 
         float _width;

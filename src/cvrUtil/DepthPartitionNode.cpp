@@ -15,22 +15,22 @@ using namespace osg;
 struct PrintDebug : public osg::Camera::DrawCallback
 {
     public:
-	PrintDebug()
-	{
-	    _camNum = -1;
-	}
-	
-	void setCameraNumber(int i)
-	{
-	    _camNum = i;
-	}
+        PrintDebug()
+        {
+            _camNum = -1;
+        }
 
-	virtual void operator() (osg::RenderInfo & ri) const
-	{
-	    std::cerr << "Camera Number: " << _camNum << std::endl;
-	}
+        void setCameraNumber(int i)
+        {
+            _camNum = i;
+        }
+
+        virtual void operator()(osg::RenderInfo & ri) const
+        {
+            std::cerr << "Camera Number: " << _camNum << std::endl;
+        }
     protected:
-	int _camNum;
+        int _camNum;
 };
 
 DepthPartitionNode::DepthPartitionNode()
@@ -79,7 +79,7 @@ void DepthPartitionNode::setClearColorBuffer(bool clear)
         {
             if(clear)
                 it->second[0]->setClearMask(
-                        GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             else
                 it->second[0]->setClearMask(GL_DEPTH_BUFFER_BIT);
         }
@@ -194,7 +194,7 @@ void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
     {
         DistanceAccumulator::DistancePair currPair;
 
-	//std::cerr << "Frame." << std::endl;
+        //std::cerr << "Frame." << std::endl;
 
         for(i = 0; i < numCameras; i++)
         {
@@ -203,7 +203,7 @@ void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
             currCam = createOrReuseCamera(projection,currPair.first,
                     currPair.second,i,contextId,rootCam,numCameras);
 
-	    //std::cerr << "Distance pair first: " << currPair.first << " second: " << currPair.second << std::endl;
+            //std::cerr << "Distance pair first: " << currPair.first << " second: " << currPair.second << std::endl;
 
             // Set the modelview matrix and viewport of the camera
             currCam->setViewMatrix(modelview);
@@ -219,15 +219,15 @@ void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
     }
     else
     {
-	currCam = createOrReuseCamera(projection,20.0,
-                    10000,0,contextId,rootCam,1);
-	currCam->setViewMatrix(modelview);
-            currCam->setViewport(viewport);
+        currCam = createOrReuseCamera(projection,20.0,10000,0,contextId,rootCam,
+                1);
+        currCam->setViewMatrix(modelview);
+        currCam->setViewport(viewport);
 
-            // Redirect the CullVisitor to the current camera
-            currCam->accept(nv);
+        // Redirect the CullVisitor to the current camera
+        currCam->accept(nv);
 
-	_cameraList[contextId][0]->setClearColor(
+        _cameraList[contextId][0]->setClearColor(
                 cv->getRenderStage()->getClearColor());
     }
 }
@@ -257,7 +257,8 @@ bool DepthPartitionNode::insertChild(unsigned int index, osg::Node *child)
     return true;
 }
 
-bool DepthPartitionNode::removeChildren(unsigned int pos, unsigned int numRemove)
+bool DepthPartitionNode::removeChildren(unsigned int pos,
+        unsigned int numRemove)
 {
     if(!Group::removeChildren(pos,numRemove))
         return false; // Remove child
@@ -309,7 +310,8 @@ bool DepthPartitionNode::getForwardOtherTraversals()
 
 void DepthPartitionNode::removeNodesFromCameras()
 {
-    for(std::map<int,CameraList>::iterator it = _cameraList.begin(); it != _cameraList.end(); it++)
+    for(std::map<int,CameraList>::iterator it = _cameraList.begin();
+            it != _cameraList.end(); it++)
     {
         for(int i = 0; i < it->second.size(); i++)
         {
@@ -319,64 +321,69 @@ void DepthPartitionNode::removeNodesFromCameras()
 }
 
 osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
-        double znear, double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam, const int numCameras)
+        double znear, double zfar, const unsigned int &camNum, int context,
+        osg::Camera * rootCam, const int numCameras)
 {
     _lock.lock();
     if(_cameraList[context].size() <= camNum)
-	_cameraList[context].resize(camNum + 1);
+        _cameraList[context].resize(camNum + 1);
     osg::Camera *camera = _cameraList[context][camNum].get();
     _lock.unlock();
 
     if(!camera)
     {
-	camera = new osg::Camera;
-	camera->setCullingMode(osg::CullSettings::ENABLE_ALL_CULLING);
-	//camera->setPreDrawCallback(new PrintDebug());
+        camera = new osg::Camera;
+        camera->setCullingMode(osg::CullSettings::ENABLE_ALL_CULLING);
+        //camera->setPreDrawCallback(new PrintDebug());
     }
     if(rootCam)
     {
-	camera->setClearMask(rootCam->getClearMask());
-	camera->setClearColor(rootCam->getClearColor());
-	camera->setClearAccum(rootCam->getClearAccum());
-	camera->setClearDepth(rootCam->getClearDepth());
-	camera->setClearStencil(rootCam->getClearStencil());
-	camera->setColorMask(rootCam->getColorMask());
-	camera->setRenderTargetImplementation(rootCam->getRenderTargetImplementation());
-	camera->setDrawBuffer(rootCam->getDrawBuffer());
-	camera->setReadBuffer(rootCam->getReadBuffer());
-	camera->getBufferAttachmentMap().clear();
-	for(osg::Camera::BufferAttachmentMap::iterator it = rootCam->getBufferAttachmentMap().begin(); it != rootCam->getBufferAttachmentMap().end(); it++)
-	{
-	    camera->getBufferAttachmentMap()[it->first] = it->second;
-	}
+        camera->setClearMask(rootCam->getClearMask());
+        camera->setClearColor(rootCam->getClearColor());
+        camera->setClearAccum(rootCam->getClearAccum());
+        camera->setClearDepth(rootCam->getClearDepth());
+        camera->setClearStencil(rootCam->getClearStencil());
+        camera->setColorMask(rootCam->getColorMask());
+        camera->setRenderTargetImplementation(
+                rootCam->getRenderTargetImplementation());
+        camera->setDrawBuffer(rootCam->getDrawBuffer());
+        camera->setReadBuffer(rootCam->getReadBuffer());
+        camera->getBufferAttachmentMap().clear();
+        for(osg::Camera::BufferAttachmentMap::iterator it =
+                rootCam->getBufferAttachmentMap().begin();
+                it != rootCam->getBufferAttachmentMap().end(); it++)
+        {
+            camera->getBufferAttachmentMap()[it->first] = it->second;
+        }
 
-	cvr::SceneManager::CameraCallbacks * cc = cvr::SceneManager::instance()->getCameraCallbacks(rootCam);
+        cvr::SceneManager::CameraCallbacks * cc =
+                cvr::SceneManager::instance()->getCameraCallbacks(rootCam);
 
         camera->setInitialDrawCallback(NULL);
         camera->setPreDrawCallback(NULL);
         camera->setPostDrawCallback(NULL);
         camera->setFinalDrawCallback(NULL);
 
-	if(cc && camNum == 0)
-	{
-	    camera->setInitialDrawCallback(cc->initialDraw.get());
-	    camera->setPreDrawCallback(cc->preDraw.get());
-	}
-	if(cc && camNum == (numCameras-1))
-	{
-	    camera->setPostDrawCallback(cc->postDraw.get());
-	    camera->setFinalDrawCallback(cc->finalDraw.get());
-	}
+        if(cc && camNum == 0)
+        {
+            camera->setInitialDrawCallback(cc->initialDraw.get());
+            camera->setPreDrawCallback(cc->preDraw.get());
+        }
+        if(cc && camNum == (numCameras - 1))
+        {
+            camera->setPostDrawCallback(cc->postDraw.get());
+            camera->setFinalDrawCallback(cc->finalDraw.get());
+        }
     }
 
     /*if(camera->getPreDrawCallback())
-    {
-	PrintDebug * pd = dynamic_cast<PrintDebug*>(camera->getPreDrawCallback());
-	if(pd)
-	{
-	    pd->setCameraNumber(camNum);
-	}
-    }*/
+     {
+     PrintDebug * pd = dynamic_cast<PrintDebug*>(camera->getPreDrawCallback());
+     if(pd)
+     {
+     pd->setCameraNumber(camNum);
+     }
+     }*/
 
     camera->removeChildren(0,camera->getNumChildren());
     camera->setCullingActive(false);
@@ -384,23 +391,21 @@ osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 
     // We will compute the near/far planes ourselves
-    camera->setComputeNearFarMode(
-	    osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
+    camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
     if(camNum == 0 && _clearColorBuffer)
-	camera->setClearMask(camera->getClearMask() | GL_COLOR_BUFFER_BIT);
+        camera->setClearMask(camera->getClearMask() | GL_COLOR_BUFFER_BIT);
     else
-	camera->setClearMask(camera->getClearMask() & ~(GL_COLOR_BUFFER_BIT));
+        camera->setClearMask(camera->getClearMask() & ~(GL_COLOR_BUFFER_BIT));
 
     // Add our children to the new Camera's children
     unsigned int numChildren = _children.size();
     for(unsigned int i = 0; i < numChildren; i++)
     {
-	camera->addChild(_children[i].get());
+        camera->addChild(_children[i].get());
     }
 
     _cameraList[context][camNum] = camera;
-
 
     osg::Matrixd &projection = camera->getProjectionMatrix();
     projection = proj;
@@ -413,24 +418,24 @@ osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
     // Clamp the projection matrix z values to the range (near, far)
     double epsilon = 1.0e-6;
     if(fabs(projection(0,3)) < epsilon && fabs(projection(1,3)) < epsilon
-	    && fabs(projection(2,3)) < epsilon) // Projection is Orthographic
+            && fabs(projection(2,3)) < epsilon) // Projection is Orthographic
     {
-	epsilon = -1.0 / (zfar - znear); // Used as a temp variable
-	projection(2,2) = 2.0 * epsilon;
-	projection(3,2) = (zfar + znear) * epsilon;
+        epsilon = -1.0 / (zfar - znear); // Used as a temp variable
+        projection(2,2) = 2.0 * epsilon;
+        projection(3,2) = (zfar + znear) * epsilon;
     }
     else // Projection is Perspective
     {
-	double trans_near = (-znear * projection(2,2) + projection(3,2))
-	    / (-znear * projection(2,3) + projection(3,3));
-	double trans_far = (-zfar * projection(2,2) + projection(3,2))
-	    / (-zfar * projection(2,3) + projection(3,3));
-	double ratio = fabs(2.0 / (trans_near - trans_far));
-	double center = -0.5 * (trans_near + trans_far);
+        double trans_near = (-znear * projection(2,2) + projection(3,2))
+                / (-znear * projection(2,3) + projection(3,3));
+        double trans_far = (-zfar * projection(2,2) + projection(3,2))
+                / (-zfar * projection(2,3) + projection(3,3));
+        double ratio = fabs(2.0 / (trans_near - trans_far));
+        double center = -0.5 * (trans_near + trans_far);
 
-	projection.postMult(
-		osg::Matrixd(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,ratio,0.0,
-		    0.0,0.0,center * ratio,1.0));
+        projection.postMult(
+                osg::Matrixd(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,ratio,0.0,
+                        0.0,0.0,center * ratio,1.0));
     }
 
     return camera;

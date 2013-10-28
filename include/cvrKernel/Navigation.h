@@ -29,12 +29,7 @@ namespace cvr
  */
 enum NavMode
 {
-    NONE = 0,
-    WALK,
-    DRIVE,
-    FLY,
-    MOVE_WORLD,
-    SCALE
+    NONE = 0, WALK, DRIVE, FLY, MOVE_WORLD, SCALE
 };
 
 class NavImplementationBase;
@@ -124,7 +119,10 @@ class CVRKERNEL_EXPORT Navigation
         /**
          * @brief Get is there is currently active navigation
          */
-        bool getEventActive() { return _eventActive; }
+        bool getEventActive()
+        {
+            return _eventActive;
+        }
 
         /**
          * @brief Navigation Implementation types
@@ -152,7 +150,7 @@ class CVRKERNEL_EXPORT Navigation
         float _scale;           ///< nav movement scale
 
         std::map<int,NavImplementationBase*> _navImpMap; ///< map of hand id to navigation implementation
-        
+
         static Navigation * _myPtr;     ///< static self pointer
 
         std::map<int,NavMode> _buttonMap; ///< map of what navigation mode is set for each button
@@ -178,7 +176,9 @@ class NavDeviceBase
         /**
          * @brief Called once every frame, can be used navigate
          */
-        virtual void update() {}
+        virtual void update()
+        {
+        }
 };
 
 /**
@@ -186,7 +186,7 @@ class NavDeviceBase
  */
 class NavImplementationBase
 {
-    friend class Navigation;
+        friend class Navigation;
     public:
         virtual bool init(std::string tagBase)
         {
@@ -195,13 +195,17 @@ class NavImplementationBase
         /**
          * @brief Allows use of CalVR InteractionEvents for navigation
          */
-        virtual void processEvent(InteractionEvent * ie) {}
+        virtual void processEvent(InteractionEvent * ie)
+        {
+        }
 
         /**
          * @brief Called every frame if navigation is active and this hand is set
          *  as the active hand in Navigation
          */
-        virtual void update() {}
+        virtual void update()
+        {
+        }
 
     protected:
         int _hand; ///< hand id for this instance

@@ -63,7 +63,7 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             return mg;
             break;
         }
-	case SUBMENU_CLOSABLE:
+        case SUBMENU_CLOSABLE:
         {
             BoardMenuGeometry * mg = new BoardMenuSubMenuClosableGeometry(head);
             mg->createGeometry(item);
@@ -79,7 +79,7 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             return mg;
             break;
         }
-	case RANGEVALUECOMPACT:
+        case RANGEVALUECOMPACT:
         {
             BoardMenuGeometry * mg = new BoardMenuRangeValueCompactGeometry();
             mg->createGeometry(item);
@@ -103,14 +103,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             return mg;
             break;
         }
-	case TEXTSCROLL:
-	{
-	    BoardMenuGeometry * mg = new BoardMenuScrollTextGeometry();
+        case TEXTSCROLL:
+        {
+            BoardMenuGeometry * mg = new BoardMenuScrollTextGeometry();
             mg->createGeometry(item);
 
             return mg;
             break;
-	}
+        }
         case IMAGE:
         {
             BoardMenuGeometry * mg = new BoardMenuImageGeometry();
@@ -212,7 +212,7 @@ osg::Texture2D * BoardMenuGeometry::loadIcon(std::string name)
 
     std::string file = _iconDir + "/icons/" + name;
     //std::cerr << "Trying to load icon: " << file << std::endl;
-    osg::ref_ptr < osg::Image > image = osgDB::readImageFile(file);
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
     if(image)
     {
         osg::Texture2D* texture;
@@ -225,7 +225,7 @@ osg::Texture2D * BoardMenuGeometry::loadIcon(std::string name)
             _iconCache[name] = texture;
         }
 
-	texture->setResizeNonPowerOfTwoHint(false);
+        texture->setResizeNonPowerOfTwoHint(false);
 
         return texture;
     }

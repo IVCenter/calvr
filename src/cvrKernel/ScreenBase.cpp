@@ -76,36 +76,38 @@ osg::Matrix & ScreenBase::getCurrentHeadMatrix(int head)
 
     if(!_omniStereo)
     {
-	return TrackingManager::instance()->getHeadMat(head);
+        return TrackingManager::instance()->getHeadMat(head);
     }
     else
     {
-	osg::Vec3d headDir;
-	headDir = _myInfo->xyz - TrackingManager::instance()->getHeadMat(head).getTrans();
-	headDir.normalize();
+        osg::Vec3d headDir;
+        headDir = _myInfo->xyz
+                - TrackingManager::instance()->getHeadMat(head).getTrans();
+        headDir.normalize();
 
-	osg::Vec3d headingDir = headDir;
-	headingDir.z() = 0.0;
-	headingDir.normalize();
-	osg::Vec3d pitchDir = headDir;
-	pitchDir.x() = 0.0;
-	pitchDir.normalize();
+        osg::Vec3d headingDir = headDir;
+        headingDir.z() = 0.0;
+        headingDir.normalize();
+        osg::Vec3d pitchDir = headDir;
+        pitchDir.x() = 0.0;
+        pitchDir.normalize();
 
-	omniMat = osg::Matrix::identity();
-	// check if pitch is valid
-	if(pitchDir.length2() > 0.8)
-	{
-	    omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),pitchDir);
-	}
+        omniMat = osg::Matrix::identity();
+        // check if pitch is valid
+        if(pitchDir.length2() > 0.8)
+        {
+            omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),pitchDir);
+        }
 
-	if(headingDir.length2() > 0.8)
-	{
-	    omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),headingDir);
-	}
+        if(headingDir.length2() > 0.8)
+        {
+            omniMat *= osg::Matrix::rotate(osg::Vec3d(0,1.0,0),headingDir);
+        }
 
-	omniMat *= osg::Matrix::translate(TrackingManager::instance()->getHeadMat(head).getTrans());
+        omniMat *= osg::Matrix::translate(
+                TrackingManager::instance()->getHeadMat(head).getTrans());
 
-	return omniMat;
+        return omniMat;
     }
 }
 

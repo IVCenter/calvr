@@ -79,7 +79,7 @@ MenuItemType MenuImage::getType()
 
 void MenuImage::loadImageFromFile(std::string & file)
 {
-    osg::ref_ptr < osg::Image > image = osgDB::readImageFile(file);
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
     if(image.get())
     {
         _image = new osg::Texture2D;

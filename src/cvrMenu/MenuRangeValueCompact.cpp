@@ -4,8 +4,8 @@
 
 using namespace cvr;
 
-MenuRangeValueCompact::MenuRangeValueCompact(std::string label, float min, float max,
-        float current, bool log, float base) :
+MenuRangeValueCompact::MenuRangeValueCompact(std::string label, float min,
+        float max, float current, bool log, float base) :
         MenuItem()
 {
     _label = label;

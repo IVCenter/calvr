@@ -41,8 +41,7 @@ class BoardMenu : public MenuBase
          */
         enum MenuTrigger
         {
-            DOUBLECLICK,
-            UPCLICK
+            DOUBLECLICK, UPCLICK
         };
 
         /**

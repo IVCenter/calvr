@@ -59,8 +59,7 @@ struct BodyUpdate
  */
 enum CollabMode
 {
-    LOCKED,
-    UNLOCKED
+    LOCKED, UNLOCKED
 };
 
 /**

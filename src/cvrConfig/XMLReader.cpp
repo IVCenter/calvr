@@ -14,7 +14,8 @@
 
 using namespace cvr;
 
-XMLReader::XMLReader() : ConfigFileReader()
+XMLReader::XMLReader() :
+        ConfigFileReader()
 {
 }
 
@@ -37,7 +38,7 @@ bool XMLReader::loadFile(std::string file, bool givePriority)
 
     if(_debugOutput)
     {
-	std::cerr << "Loading config file: " << file << std::endl;
+        std::cerr << "Loading config file: " << file << std::endl;
     }
 
     fp = fopen(cfile.c_str(),"r");
@@ -168,8 +169,7 @@ bool XMLReader::loadFile(std::string file, bool givePriority)
     return true;
 }
 
-std::string XMLReader::getEntry(std::string path, std::string def,
-        bool * found)
+std::string XMLReader::getEntry(std::string path, std::string def, bool * found)
 {
     return getEntry("value",path,def,found);
 }
@@ -256,11 +256,11 @@ std::string XMLReader::getEntry(std::string attribute, std::string path,
                                 *found = true;
                             }
                             /*if(_debugOutput)
-                            {
-                                std::cerr << "Path: " << path << " Attr: "
-                                        << attribute << " value: " << attr
-                                        << std::endl;
-                            }*/
+                             {
+                             std::cerr << "Path: " << path << " Attr: "
+                             << attribute << " value: " << attr
+                             << std::endl;
+                             }*/
                             return attr;
                         }
                         else
@@ -308,15 +308,15 @@ std::string XMLReader::getEntry(std::string attribute, std::string path,
         *found = false;
     }
     /*if(_debugOutput)
-    {
-        std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-                << def << " (default)" << std::endl;
-    }*/
+     {
+     std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+     << def << " (default)" << std::endl;
+     }*/
     return def;
 }
 
 std::string XMLReader::getEntryConcat(std::string attribute, std::string path,
-                char separator, std::string def, bool * found)
+        char separator, std::string def, bool * found)
 {
     if(path.empty())
     {
@@ -395,15 +395,15 @@ std::string XMLReader::getEntryConcat(std::string attribute, std::string path,
                                 attribute.c_str());
                         if(attr)
                         {
-			    if(!wasFound)
-			    {
-				result = attr;
-				wasFound = true;
-			    }
-			    else
-			    {
-				result = result + separator + attr;
-			    }
+                            if(!wasFound)
+                            {
+                                result = attr;
+                                wasFound = true;
+                            }
+                            else
+                            {
+                                result = result + separator + attr;
+                            }
                         }
                         xmlNode = xmlNode->next;
                     }
@@ -450,21 +450,21 @@ std::string XMLReader::getEntryConcat(std::string attribute, std::string path,
 
     if(!wasFound)
     {
-	/*if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< def << " (default)" << std::endl;
-	}*/
-	return def;
+        /*if(_debugOutput)
+         {
+         std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+         << def << " (default)" << std::endl;
+         }*/
+        return def;
     }
     else
     {
-	/*if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< result << std::endl;
-	}*/
-	return result;
+        /*if(_debugOutput)
+         {
+         std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
+         << result << std::endl;
+         }*/
+        return result;
     }
 }
 
@@ -473,8 +473,8 @@ float XMLReader::getFloat(std::string path, float def, bool * found)
     return getFloat("value",path,def,found);
 }
 
-float XMLReader::getFloat(std::string attribute, std::string path,
-        float def, bool * found)
+float XMLReader::getFloat(std::string attribute, std::string path, float def,
+        bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
@@ -500,8 +500,8 @@ double XMLReader::getDouble(std::string path, double def, bool * found)
     return getDouble("value",path,def,found);
 }
 
-double XMLReader::getDouble(std::string attribute, std::string path,
-        double def, bool * found)
+double XMLReader::getDouble(std::string attribute, std::string path, double def,
+        bool * found)
 {
     bool hasEntry = false;
     std::stringstream ss;
@@ -660,15 +660,13 @@ osg::Vec4 XMLReader::getVec4(std::string attributeX, std::string attributeY,
     return result;
 }
 
-osg::Vec3d XMLReader::getVec3d(std::string path, osg::Vec3d def,
-        bool * found)
+osg::Vec3d XMLReader::getVec3d(std::string path, osg::Vec3d def, bool * found)
 {
     return getVec3d("x","y","z",path,def,found);
 }
 
-osg::Vec3d XMLReader::getVec3d(std::string attributeX,
-        std::string attributeY, std::string attributeZ, std::string path,
-        osg::Vec3d def, bool * found)
+osg::Vec3d XMLReader::getVec3d(std::string attributeX, std::string attributeY,
+        std::string attributeZ, std::string path, osg::Vec3d def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;
@@ -697,15 +695,14 @@ osg::Vec3d XMLReader::getVec3d(std::string attributeX,
     return result;
 }
 
-osg::Vec4d XMLReader::getVec4d(std::string path, osg::Vec4d def,
-        bool * found)
+osg::Vec4d XMLReader::getVec4d(std::string path, osg::Vec4d def, bool * found)
 {
     return getVec4d("x","y","z","w",path,def,found);
 }
 
-osg::Vec4d XMLReader::getVec4d(std::string attributeX,
-        std::string attributeY, std::string attributeZ, std::string attributeW,
-        std::string path, osg::Vec4d def, bool * found)
+osg::Vec4d XMLReader::getVec4d(std::string attributeX, std::string attributeY,
+        std::string attributeZ, std::string attributeW, std::string path,
+        osg::Vec4d def, bool * found)
 {
     bool hasEntry = false;
     bool isFound;

@@ -120,26 +120,27 @@ CalVR * CalVR::instance()
 bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
     _homeDir = home;
-    
+
     if(!setupDirectories())
     {
-	std::cerr << "Error: Failure to find needed directory paths." << std::endl;
-	return false;
+        std::cerr << "Error: Failure to find needed directory paths."
+                << std::endl;
+        return false;
     }
-    
+
     if(!args.read("--host-name",_hostName))
     {
-	char * chostname = getenv("CALVR_HOST_NAME");
-	if(chostname)
-	{
-	    _hostName = chostname;
-	}
-	else
-	{
-	    char hostname[512];
-	    gethostname(hostname,511);
-	    _hostName = hostname;
-	}
+        char * chostname = getenv("CALVR_HOST_NAME");
+        if(chostname)
+        {
+            _hostName = chostname;
+        }
+        else
+        {
+            char hostname[512];
+            gethostname(hostname,511);
+            _hostName = hostname;
+        }
     }
 
     std::cerr << "HostName: " << _hostName << std::endl;
@@ -206,24 +207,24 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_screens->init())
     {
         std::cerr << "Error setting up screens." << std::endl;
-	_initStatus = SCREEN_INIT_ERROR;
+        _initStatus = SCREEN_INIT_ERROR;
     }
 
     if(!syncClusterInitStatus())
     {
-	return false;
+        return false;
     }
 
     _scene = cvr::SceneManager::instance();
     if(!_scene->init())
     {
         std::cerr << "Error setting up scene." << std::endl;
-	_initStatus = SCENE_INIT_ERROR;
+        _initStatus = SCENE_INIT_ERROR;
     }
 
     if(!syncClusterInitStatus())
     {
-	return false;
+        return false;
     }
 
     _scene->setViewerScene(_viewer);
@@ -240,12 +241,12 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
     if(!_menu->init())
     {
         std::cerr << "Error setting up menu systems." << std::endl;
-	_initStatus = MENU_INIT_ERROR;
+        _initStatus = MENU_INIT_ERROR;
     }
 
     if(!syncClusterInitStatus())
     {
-	return false;
+        return false;
     }
 
     _file = cvr::FileHandler::instance();
@@ -311,35 +312,39 @@ bool CalVR::setupDirectories()
     env = getenv("CALVR_CONFIG_DIR");
     if(env)
     {
-	_configDir = env;
+        _configDir = env;
     }
     else
     {
-	// look for default config dir
-	struct stat sb;
-	std::string path = _homeDir + "/config";
-	std::string testFile = path + "/config.xml";
+        // look for default config dir
+        struct stat sb;
+        std::string path = _homeDir + "/config";
+        std::string testFile = path + "/config.xml";
 
-	if(stat(testFile.c_str(), &sb) == -1)
-	{
-	    path = _homeDir + "/share/calvr/config";
-	    testFile = path + "/config.xml";
+        if(stat(testFile.c_str(),&sb) == -1)
+        {
+            path = _homeDir + "/share/calvr/config";
+            testFile = path + "/config.xml";
 
-	    if(stat(testFile.c_str(), &sb) == -1)
-	    {
-		std::cerr << "Error: No valid config directory found.  Checked: " << _homeDir << "/config , " << _homeDir << "/share/calvr/config" << std::endl;
-		std::cerr << "Correct or manually set $CALVR_CONFIG_DIR." << std::endl;
-		return false;
-	    }
-	    else
-	    {
-		_configDir = path;
-	    }
-	}
-	else
-	{
-	    _configDir = path;
-	}
+            if(stat(testFile.c_str(),&sb) == -1)
+            {
+                std::cerr
+                        << "Error: No valid config directory found.  Checked: "
+                        << _homeDir << "/config , " << _homeDir
+                        << "/share/calvr/config" << std::endl;
+                std::cerr << "Correct or manually set $CALVR_CONFIG_DIR."
+                        << std::endl;
+                return false;
+            }
+            else
+            {
+                _configDir = path;
+            }
+        }
+        else
+        {
+            _configDir = path;
+        }
     }
 
     std::cerr << "Config Directory: " << _configDir << std::endl;
@@ -347,34 +352,37 @@ bool CalVR::setupDirectories()
     env = getenv("CALVR_RESOURCE_DIR");
     if(env)
     {
-	_resourceDir = env;
+        _resourceDir = env;
     }
     else
     {
-	struct stat sb;
-	std::string path = _homeDir;
-	std::string testFile = path + "/icons/arrow-left.rgb";
+        struct stat sb;
+        std::string path = _homeDir;
+        std::string testFile = path + "/icons/arrow-left.rgb";
 
-	if(stat(testFile.c_str(), &sb) == -1)
-	{
-	    path = _homeDir + "/share/calvr";
-	    testFile = path + "/icons/arrow-left.rgb";
+        if(stat(testFile.c_str(),&sb) == -1)
+        {
+            path = _homeDir + "/share/calvr";
+            testFile = path + "/icons/arrow-left.rgb";
 
-	    if(stat(testFile.c_str(), &sb) == -1)
-	    {
-		std::cerr << "Error: No calvr resource directory found. Checked: " << _homeDir << " , " << path << std::endl;
-		std::cerr << "Correct or manually set $CALVR_RESOURCE_DIR." << std::endl;
-		return false;
-	    }
-	    else
-	    {
-		_resourceDir = path;
-	    }
-	}
-	else
-	{
-	    _resourceDir = path;
-	}
+            if(stat(testFile.c_str(),&sb) == -1)
+            {
+                std::cerr
+                        << "Error: No calvr resource directory found. Checked: "
+                        << _homeDir << " , " << path << std::endl;
+                std::cerr << "Correct or manually set $CALVR_RESOURCE_DIR."
+                        << std::endl;
+                return false;
+            }
+            else
+            {
+                _resourceDir = path;
+            }
+        }
+        else
+        {
+            _resourceDir = path;
+        }
     }
 
     std::cerr << "Resource Directory: " << _resourceDir << std::endl;
@@ -382,11 +390,11 @@ bool CalVR::setupDirectories()
     env = getenv("CALVR_PLUGINS_HOME");
     if(env)
     {
-	_pluginsHomeDir = env;
+        _pluginsHomeDir = env;
     }
     else
     {
-	_pluginsHomeDir = _homeDir;
+        _pluginsHomeDir = _homeDir;
     }
 
     std::cerr << "Plugins Home Directory: " << _pluginsHomeDir << std::endl;
@@ -398,84 +406,88 @@ bool CalVR::syncClusterInitStatus()
 {
     if(_communication->getIsSyncError())
     {
-	return false;
+        return false;
     }
 
     if(!_communication->getNumSlaves())
     {
-	if(_initStatus == INIT_OK)
-	{
-	    return true;
-	}
-	else
-	{
-	    return false;
-	}
+        if(_initStatus == INIT_OK)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     bool initOK = (_initStatus == INIT_OK);
     if(_communication->isMaster())
     {
-	CVRInitStatus * is = new CVRInitStatus[_communication->getNumSlaves()];
-	if(_communication->readSlaves(is,sizeof(CVRInitStatus)))
-	{
-	    for(int i = 0; i < _communication->getNumSlaves(); ++i)
-	    {
-		std::stringstream nodeNamess;
-		nodeNamess << "Node " << i << ": ";
-		switch(is[i])
-		{
-		    case INIT_OK:
-		    {
-			break;
-		    }
-		    case SCREEN_INIT_ERROR:
-		    {
-			std::cerr << nodeNamess.str() << "Error setting up screens." << std::endl;
-			initOK = false;
-			break;
-		    }
-		    case SCENE_INIT_ERROR:
-		    {
-			std::cerr << nodeNamess.str() << "Error during scene init." << std::endl;
-			initOK = false;
-			break;
-		    }
-		    case MENU_INIT_ERROR:
-		    {
-			std::cerr << nodeNamess.str() << "Error setting up menu." << std::endl;
-			initOK = false;
-			break;
-		    }
-		    default:
-		    {
-			std::cerr << nodeNamess.str() << "Unknown init error." << std::endl;
-			initOK = false;
-			break;
-		    }
-		}
-	    }
-	}
-	else
-	{
-	    std::cerr << "Error reading cluster init status." << std::endl;
-	    return false;
-	}
-	_communication->sendSlaves(&initOK,sizeof(bool));
+        CVRInitStatus * is = new CVRInitStatus[_communication->getNumSlaves()];
+        if(_communication->readSlaves(is,sizeof(CVRInitStatus)))
+        {
+            for(int i = 0; i < _communication->getNumSlaves(); ++i)
+            {
+                std::stringstream nodeNamess;
+                nodeNamess << "Node " << i << ": ";
+                switch(is[i])
+                {
+                    case INIT_OK:
+                    {
+                        break;
+                    }
+                    case SCREEN_INIT_ERROR:
+                    {
+                        std::cerr << nodeNamess.str()
+                                << "Error setting up screens." << std::endl;
+                        initOK = false;
+                        break;
+                    }
+                    case SCENE_INIT_ERROR:
+                    {
+                        std::cerr << nodeNamess.str()
+                                << "Error during scene init." << std::endl;
+                        initOK = false;
+                        break;
+                    }
+                    case MENU_INIT_ERROR:
+                    {
+                        std::cerr << nodeNamess.str()
+                                << "Error setting up menu." << std::endl;
+                        initOK = false;
+                        break;
+                    }
+                    default:
+                    {
+                        std::cerr << nodeNamess.str() << "Unknown init error."
+                                << std::endl;
+                        initOK = false;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            std::cerr << "Error reading cluster init status." << std::endl;
+            return false;
+        }
+        _communication->sendSlaves(&initOK,sizeof(bool));
     }
     else
     {
-	if(!_communication->sendMaster(&_initStatus,sizeof(CVRInitStatus)))
-	{
-	    std::cerr << "Error sending init status to master." << std::endl;
-	    return false;
-	}
-	_communication->readMaster(&initOK,sizeof(bool));
+        if(!_communication->sendMaster(&_initStatus,sizeof(CVRInitStatus)))
+        {
+            std::cerr << "Error sending init status to master." << std::endl;
+            return false;
+        }
+        _communication->readMaster(&initOK,sizeof(bool));
     }
 
     if(!initOK)
     {
-	std::cerr << "Cluster startup failure." << std::endl;
+        std::cerr << "Cluster startup failure." << std::endl;
     }
 
     return initOK;

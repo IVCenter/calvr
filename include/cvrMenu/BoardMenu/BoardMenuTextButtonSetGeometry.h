@@ -44,12 +44,12 @@ class BoardMenuTextButtonSetGeometry : public BoardMenuGeometry
     protected:
         struct TextButtonGeometry
         {
-            osg::ref_ptr<osg::MatrixTransform> root;
-            osg::ref_ptr<osg::MatrixTransform> textTransform;
-            osg::ref_ptr<osg::Geode> quad;
-            osg::ref_ptr<osg::Geode> quadSelected;
-            osg::ref_ptr<osg::Geode> text;
-            osg::ref_ptr<osg::Geode> textSelected;
+                osg::ref_ptr<osg::MatrixTransform> root;
+                osg::ref_ptr<osg::MatrixTransform> textTransform;
+                osg::ref_ptr<osg::Geode> quad;
+                osg::ref_ptr<osg::Geode> quadSelected;
+                osg::ref_ptr<osg::Geode> text;
+                osg::ref_ptr<osg::Geode> textSelected;
         };
 
         TextButtonGeometry * createButtonGeometry(std::string text);

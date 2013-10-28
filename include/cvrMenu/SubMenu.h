@@ -62,6 +62,7 @@ class CVRMENU_EXPORT SubMenu : public MenuItem
         /**
          * @brief Add a MenuItem to this submenu at a given position
          * @param item MenuItem to add
+         * @param position location in submenu to add this item
          *
          * If the position is out of range, item is added to the end
          */

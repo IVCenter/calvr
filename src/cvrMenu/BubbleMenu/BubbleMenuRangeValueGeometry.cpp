@@ -70,20 +70,26 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _node->addChild(_group);
 
     // Unselected sphere
-    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius/2,0,0), _radius, osg::Vec4(0,1,0,1));
+    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius / 2,0,0),_radius,
+            osg::Vec4(0,1,0,1));
     osg::PolygonMode * polygonMode = new osg::PolygonMode();
-    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
-    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode, osg::StateAttribute::ON);
+    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK,
+            osg::PolygonMode::LINE);
+    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
 
     _geode->addDrawable(sphereGeom);
 
     // Selected sphere
-    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius/2,0,0), _radius, osg::Vec4(0,1,0,1));
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode, osg::StateAttribute::ON);
+    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius / 2,0,0),
+            _radius,osg::Vec4(0,1,0,1));
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
 
     osg::LineWidth * lineWidth = new osg::LineWidth();
     lineWidth->setWidth(3);
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth, osg::StateAttribute::ON);
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth,
+            osg::StateAttribute::ON);
 
     _geodeSelected->addDrawable(sphereSelectedGeom);
 
@@ -103,35 +109,31 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
         _sign = true;
     }
 
-    _label = make3DText(mrv->getLabel(),_textSize, osg::Vec3(0, 0, 0), 
-        _textColor);
+    _label = make3DText(mrv->getLabel(),_textSize,osg::Vec3(0,0,0),_textColor);
 
     osg::BoundingBox bbb = _label->getBound();
     float width = bbb.xMax() - bbb.xMin();
-    _label->setPosition(osg::Vec3(_radius/2, 0, 0));
+    _label->setPosition(osg::Vec3(_radius / 2,0,0));
 
     _geode->addDrawable(_label.get());
 
     // Current value on selected
     snprintf(buffer,7,printstr,mrv->getValue());
-    _currentValue = make3DText(buffer, _textSize,osg::Vec3(0,0,0), _textColor);
+    _currentValue = make3DText(buffer,_textSize,osg::Vec3(0,0,0),_textColor);
     bbb = _currentValue->getBound();
     width = bbb.xMax() - bbb.xMin();
-    _currentValue->setPosition(osg::Vec3(_radius/2, 0, 0));
+    _currentValue->setPosition(osg::Vec3(_radius / 2,0,0));
 
     _geodeSelected->addDrawable(_currentValue.get());
 
-
-
-
-    osg::Geometry * geo = makeQuad(_iconHeight, -_iconHeight,
-            osg::Vec4(1.0,1.0,1.0,1.0), osg::Vec3(0,-2,0));
+    osg::Geometry * geo = makeQuad(_iconHeight,-_iconHeight,
+            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     //_geodeIcon->addDrawable(geo);
     //
     //_geodeSelected->addDrawable(makeText(mrv->getLabel(),_textSize,
     //    osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColorSelected));
 
-        snprintf(buffer,7,"%6f",mrv->getMin());
+    snprintf(buffer,7,"%6f",mrv->getMin());
     _minValue = makeText(buffer,_textSize * 0.75,
             osg::Vec3(0,-2,-3.0 * _iconHeight / 2.0 - _border),_textColor);
 
@@ -158,7 +160,6 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
     }
 
     width2 += _iconHeight + _border;
-
 
     bbmin = _currentValue->getBound();
 
@@ -196,15 +197,16 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     // Hover text
     _textGeode = new osg::Geode();
-    osgText::Text * hoverTextNode = makeText(item->getHoverText(), _textSize,
+    osgText::Text * hoverTextNode = makeText(item->getHoverText(),_textSize,
 //        osg::Vec3(0,0,_radius), osg::Vec4(1,1,1,1), osgText::Text::LEFT_CENTER);
-       osg::Vec3(_radius/2,0,1.5*_radius), osg::Vec4(1,1,1,1), osgText::Text::CENTER_CENTER);
+            osg::Vec3(_radius / 2,0,1.5 * _radius),osg::Vec4(1,1,1,1),
+            osgText::Text::CENTER_CENTER);
 
     osg::StateSet * ss = _textGeode->getOrCreateStateSet();
-    ss->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    ss->setRenderBinDetails(11, "Render Bin");
+    ss->setRenderBinDetails(11,"Render Bin");
 
     hoverTextNode->setFont(_font);
     _textGeode->addDrawable(hoverTextNode);
@@ -240,7 +242,7 @@ void BubbleMenuRangeValueGeometry::updateGeometry()
     snprintf(buffer,7,printstr,mrv->getValue());
 
     _currentValue = make3DText(buffer,_textSize,osg::Vec3(0,0,0),_textColor);
-    _currentValue->setPosition(osg::Vec3(_radius/2, 0, 0));
+    _currentValue->setPosition(osg::Vec3(_radius / 2,0,0));
 
     //_geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
@@ -387,16 +389,16 @@ void BubbleMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 
 void BubbleMenuRangeValueGeometry::showHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->addChild(_textGeode);
+        _node->addChild(_textGeode);
     }
 }
 
 void BubbleMenuRangeValueGeometry::hideHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->removeChild(_textGeode);
+        _node->removeChild(_textGeode);
     }
 }

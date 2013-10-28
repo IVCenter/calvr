@@ -33,8 +33,7 @@ class CVRMulticastSocket
          */
         enum MCSocketType
         {
-            SEND = 0,
-            RECV
+            SEND = 0, RECV
         };
 
         /**

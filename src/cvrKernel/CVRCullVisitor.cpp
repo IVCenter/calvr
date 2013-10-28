@@ -11,6 +11,8 @@
 #include <osg/OccluderNode>
 #include <osg/Version>
 
+#include <cfloat>
+
 using namespace cvr;
 using namespace osgUtil;
 using namespace osg;
@@ -28,6 +30,8 @@ CVRCullVisitor::CVRCullVisitor(const CVRCullVisitor& cv) :
         CullVisitor(cv)
 {
     _cullingStatus = cv._cullingStatus;
+    _firstCullStatus = cv._firstCullStatus;
+    _skipCull = cv._skipCull;
 }
 
 // osgUtil::CullVisitor functions
@@ -44,7 +48,7 @@ inline CullVisitor::value_type distance(const osg::Vec3& coord,
                     * (CullVisitor::value_type)matrix(2,2) + matrix(3,2));
 }
 
-void CVRCullVisitor::apply(Node& node)
+void CVRCullVisitor::apply(osg::Node& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -76,7 +80,7 @@ void CVRCullVisitor::apply(Node& node)
     _cullingStatus = status;
 }
 
-void CVRCullVisitor::apply(Geode& node)
+void CVRCullVisitor::apply(osg::Geode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -179,7 +183,7 @@ void CVRCullVisitor::apply(Geode& node)
     _cullingStatus = status;
 }
 
-void CVRCullVisitor::apply(Billboard& node)
+void CVRCullVisitor::apply(osg::Billboard& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -267,7 +271,7 @@ void CVRCullVisitor::apply(Billboard& node)
     _cullingStatus = status;
 }
 
-void CVRCullVisitor::apply(LightSource& node)
+void CVRCullVisitor::apply(osg::LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -296,7 +300,7 @@ void CVRCullVisitor::apply(LightSource& node)
         popStateSet();
 }
 
-void CVRCullVisitor::apply(ClipNode& node)
+void CVRCullVisitor::apply(osg::ClipNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -326,7 +330,7 @@ void CVRCullVisitor::apply(ClipNode& node)
         popStateSet();
 }
 
-void CVRCullVisitor::apply(TexGenNode& node)
+void CVRCullVisitor::apply(osg::TexGenNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -351,7 +355,7 @@ void CVRCullVisitor::apply(TexGenNode& node)
         popStateSet();
 }
 
-void CVRCullVisitor::apply(Group& node)
+void CVRCullVisitor::apply(osg::Group& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -384,7 +388,7 @@ void CVRCullVisitor::apply(Group& node)
     _cullingStatus = status;
 }
 
-void CVRCullVisitor::apply(Transform& node)
+void CVRCullVisitor::apply(osg::Transform& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -404,7 +408,7 @@ void CVRCullVisitor::apply(Transform& node)
     if(node_state)
         pushStateSet(node_state);
 
-    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(*getModelViewMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(*getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get(),node.getReferenceFrame());
 
@@ -423,7 +427,7 @@ void CVRCullVisitor::apply(Transform& node)
     _cullingStatus = status;
 }
 
-void CVRCullVisitor::apply(Projection& node)
+void CVRCullVisitor::apply(osg::Projection& node)
 {
 
     // push the culling mode.
@@ -445,7 +449,7 @@ void CVRCullVisitor::apply(Projection& node)
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
-    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
 
     //OSG_NOTIFY(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
@@ -482,12 +486,12 @@ void CVRCullVisitor::apply(Projection& node)
     popCurrentMask();
 }
 
-void CVRCullVisitor::apply(Switch& node)
+void CVRCullVisitor::apply(osg::Switch& node)
 {
     apply((Group&)node);
 }
 
-void CVRCullVisitor::apply(LOD& node)
+void CVRCullVisitor::apply(osg::LOD& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -580,7 +584,7 @@ class RenderStageCache : public osg::Object
 
         OpenThreads::Mutex _mutex;
         RenderStageMap _renderStageMap;
-};
+    };
 
 }
 
@@ -710,12 +714,11 @@ void CVRCullVisitor::apply(osg::Camera& camera)
             camera.setRenderingCache(rsCache.get());
         }
 
-        osg::ref_ptr < osgUtil::RenderStage > rtts = rsCache->getRenderStage(
-                this);
+        osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);
         if(!rtts)
         {
-            OpenThreads::ScopedLock < OpenThreads::Mutex
-                    > lock(*(camera.getDataChangeMutex()));
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(
+                    *(camera.getDataChangeMutex()));
 
             rtts = new osgUtil::RenderStage;
             rsCache->setRenderStage(this,rtts.get());
@@ -956,7 +959,7 @@ CVRCullVisitor::PreCullVisitor::PreCullVisitor() :
     _setMask = false;
 }
 
-void CVRCullVisitor::PreCullVisitor::apply(Node& node)
+void CVRCullVisitor::PreCullVisitor::apply(osg::Node& node)
 {
     if(node.getNodeMask() & FIRST_CULL_STATUS)
     {
@@ -964,7 +967,7 @@ void CVRCullVisitor::PreCullVisitor::apply(Node& node)
     }
 }
 
-void CVRCullVisitor::PreCullVisitor::apply(Group& group)
+void CVRCullVisitor::PreCullVisitor::apply(osg::Group& group)
 {
     bool setMask = false;
     for(int i = 0; i < group.getNumChildren(); i++)
@@ -996,12 +999,12 @@ CVRCullVisitor::PostCullVisitor::PostCullVisitor() :
     setTraversalMask(DISABLE_FIRST_CULL);
 }
 
-void CVRCullVisitor::PostCullVisitor::apply(Node& node)
+void CVRCullVisitor::PostCullVisitor::apply(osg::Node& node)
 {
     node.setNodeMask(node.getNodeMask() & ~(FIRST_CULL_STATUS));
 }
 
-void CVRCullVisitor::PostCullVisitor::apply(Group& group)
+void CVRCullVisitor::PostCullVisitor::apply(osg::Group& group)
 {
     group.setNodeMask(group.getNodeMask() & ~(FIRST_CULL_STATUS));
     traverse(group);

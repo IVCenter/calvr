@@ -76,30 +76,31 @@ bool ScreenConfig::init()
 
     if(displayptr)
     {
-	displayenv = displayptr;
+        displayenv = displayptr;
     }
 
     _displayServer = 0;
     _displayPipe = 0;
     if(!displayenv.empty())
     {
-	size_t pos = displayenv.find_last_of(':');
-	if(pos != std::string::npos)
-	{
-	    char * deptr = &displayenv[pos];
-	    int ret;
-	    if((ret = sscanf(deptr,":%d.%d",&_displayServer,&_displayScreen)) != 2)
-	    {
-		std::cerr << "Warning: Unable to parse DISPLAY variable." << std::endl;
-		_displayServer = _displayScreen = 0;
-	    }
-	    else
-	    {
-		//std::cerr << "Display server: " << _displayServer << " screen: " << _displayScreen << std::endl;
-	    }
-	}
+        size_t pos = displayenv.find_last_of(':');
+        if(pos != std::string::npos)
+        {
+            char * deptr = &displayenv[pos];
+            int ret;
+            if((ret = sscanf(deptr,":%d.%d",&_displayServer,&_displayScreen))
+                    != 2)
+            {
+                std::cerr << "Warning: Unable to parse DISPLAY variable."
+                        << std::endl;
+                _displayServer = _displayScreen = 0;
+            }
+            else
+            {
+                //std::cerr << "Display server: " << _displayServer << " screen: " << _displayScreen << std::endl;
+            }
+        }
     }
-    
 
     if(!readPipes() || !readWindows() || !readChannels() || !readScreens())
     {
@@ -110,7 +111,8 @@ bool ScreenConfig::init()
     ScreenBase::_far = ConfigManager::getFloat("Far",10000000);
     ScreenBase::_separation = ConfigManager::getFloat("separation","Stereo",
             64.0);
-    ScreenBase::_omniStereo = ConfigManager::getBool("omniStereo","Stereo",false,NULL);
+    ScreenBase::_omniStereo = ConfigManager::getBool("omniStereo","Stereo",
+            false,NULL);
 
     if(!makeWindows() || !makeScreens())
     {
@@ -245,13 +247,13 @@ int ScreenConfig::getCudaDevice(int context)
 {
     for(int i = 0; i < _windowInfoList.size(); i++)
     {
-	if(_windowInfoList[i]->gc)
-	{
-	    if(_windowInfoList[i]->gc->getState()->getContextID() == context)
-	    {
-		return _windowInfoList[i]->cudaDevice;
-	    }
-	}
+        if(_windowInfoList[i]->gc)
+        {
+            if(_windowInfoList[i]->gc->getState()->getContextID() == context)
+            {
+                return _windowInfoList[i]->cudaDevice;
+            }
+        }
     }
 
     return 0;
@@ -263,10 +265,10 @@ int ScreenConfig::getNumContexts(int cudaDevice)
 
     for(int i = 0; i < _windowInfoList.size(); i++)
     {
-	if(_windowInfoList[i]->cudaDevice == cudaDevice)
-	{
-	    contexts++;
-	}
+        if(_windowInfoList[i]->cudaDevice == cudaDevice)
+        {
+            contexts++;
+        }
     }
 
     return contexts;
@@ -305,22 +307,23 @@ bool ScreenConfig::readPipes()
     bool displayPipeFound = false;
     for(int i = 0; i < _pipeInfoList.size(); i++)
     {
-	if(_pipeInfoList[i]->server == _displayServer && _pipeInfoList[i]->screen == _displayScreen)
-	{
-	    displayPipeFound = true;
-	    _displayPipe = i;
-	    break;
-	}
+        if(_pipeInfoList[i]->server == _displayServer
+                && _pipeInfoList[i]->screen == _displayScreen)
+        {
+            displayPipeFound = true;
+            _displayPipe = i;
+            break;
+        }
     }
 
     if(!displayPipeFound)
     {
-	std::cerr << "Adding DISPLAY pipe" << std::endl;
-	PipeInfo * pi = new PipeInfo;
-	pi->server = _displayServer;
-	pi->screen = _displayScreen;
-	_pipeInfoList.push_back(pi);
-	_displayPipe = _pipeInfoList.size() - 1;
+        std::cerr << "Adding DISPLAY pipe" << std::endl;
+        PipeInfo * pi = new PipeInfo;
+        pi->server = _displayServer;
+        pi->screen = _displayScreen;
+        _pipeInfoList.push_back(pi);
+        _displayPipe = _pipeInfoList.size() - 1;
     }
 
     std::cerr << "Found " << _pipeInfoList.size() << " pipe(s)." << std::endl;
@@ -357,17 +360,17 @@ bool ScreenConfig::readWindows()
             windowPtr->quadBuffer = ConfigManager::getBool("quadBuffer",
                     ss.str(),false);
 
-	    int pipeIndex;
-	    std::string pipe = ConfigManager::getEntry("pipeIndex",ss.str(),"");
-	    std::transform(pipe.begin(),pipe.end(),pipe.begin(),::tolower);
-	    if(pipe == "display")
-	    {
-		pipeIndex = _displayPipe;
-	    }
-	    else
-	    {
-		pipeIndex = ConfigManager::getInt("pipeIndex",ss.str(),0);
-	    }
+            int pipeIndex;
+            std::string pipe = ConfigManager::getEntry("pipeIndex",ss.str(),"");
+            std::transform(pipe.begin(),pipe.end(),pipe.begin(),::tolower);
+            if(pipe == "display")
+            {
+                pipeIndex = _displayPipe;
+            }
+            else
+            {
+                pipeIndex = ConfigManager::getInt("pipeIndex",ss.str(),0);
+            }
 
             if(pipeIndex < _pipeInfoList.size())
             {
@@ -381,8 +384,10 @@ bool ScreenConfig::readWindows()
                 delete windowPtr;
                 break;
             }
-	    windowPtr->contextGroup = ConfigManager::getInt("contextGroup",ss.str(),-1);
-	    windowPtr->cudaDevice = ConfigManager::getInt("cudaDevice",ss.str(),0);
+            windowPtr->contextGroup = ConfigManager::getInt("contextGroup",
+                    ss.str(),-1);
+            windowPtr->cudaDevice = ConfigManager::getInt("cudaDevice",ss.str(),
+                    0);
             _windowInfoList.push_back(windowPtr);
         }
     }
@@ -554,34 +559,36 @@ bool ScreenConfig::makeWindows()
             traits->sampleBuffers = 1;
         }
 
-	if(_windowInfoList[i]->contextGroup >= 0)
-	{
-	    /*if(!contextMap[_windowInfoList[i]->contextGroup])
-	    {
-		contextMap[_windowInfoList[i]->contextGroup] = osg::GraphicsContext::createGraphicsContext(traits);
-	    }
-	    traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
-		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
-		    traits);*/
-	    if(contextMap[_windowInfoList[i]->contextGroup])
-	    {
-		traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
-		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
-		    traits);
-	    }
-	    else
-	    {
-		traits->sharedContext = NULL;
-		_windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
-		    traits);
-		contextMap[_windowInfoList[i]->contextGroup] = _windowInfoList[i]->gc;
-	    }
-	}
-	else
-	{
-	    _windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
-		    traits);
-	}
+        if(_windowInfoList[i]->contextGroup >= 0)
+        {
+            /*if(!contextMap[_windowInfoList[i]->contextGroup])
+             {
+             contextMap[_windowInfoList[i]->contextGroup] = osg::GraphicsContext::createGraphicsContext(traits);
+             }
+             traits->sharedContext = contextMap[_windowInfoList[i]->contextGroup];
+             _windowInfoList[i]->gc = osg::GraphicsContext::createGraphicsContext(
+             traits);*/
+            if(contextMap[_windowInfoList[i]->contextGroup])
+            {
+                traits->sharedContext =
+                        contextMap[_windowInfoList[i]->contextGroup];
+                _windowInfoList[i]->gc =
+                        osg::GraphicsContext::createGraphicsContext(traits);
+            }
+            else
+            {
+                traits->sharedContext = NULL;
+                _windowInfoList[i]->gc =
+                        osg::GraphicsContext::createGraphicsContext(traits);
+                contextMap[_windowInfoList[i]->contextGroup] =
+                        _windowInfoList[i]->gc;
+            }
+        }
+        else
+        {
+            _windowInfoList[i]->gc =
+                    osg::GraphicsContext::createGraphicsContext(traits);
+        }
 
         if(!_windowInfoList[i]->gc)
         {
@@ -706,19 +713,22 @@ bool ScreenConfig::makeScreens()
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
-        else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_LEFT")
+        else if(_screenInfoList[i]->myChannel->stereoMode
+                == "MULTI_VIEWER_AP_LEFT")
         {
             screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::LEFT_EYE);
         }
-        else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_RIGHT")
+        else if(_screenInfoList[i]->myChannel->stereoMode
+                == "MULTI_VIEWER_AP_RIGHT")
         {
             screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
             screen->init(osg::DisplaySettings::RIGHT_EYE);
         }
-        else if(_screenInfoList[i]->myChannel->stereoMode == "MULTI_VIEWER_AP_HORIZONTAL_INTERLACE")
+        else if(_screenInfoList[i]->myChannel->stereoMode
+                == "MULTI_VIEWER_AP_HORIZONTAL_INTERLACE")
         {
             screen = new ScreenMVShader();
             screen->_myInfo = _screenInfoList[i];
@@ -845,58 +855,65 @@ void ScreenConfig::syncMasterScreens()
 {
     if(ComController::instance()->isMaster())
     {
-	//first sync values with created screens
-	for(int i = 0; i < _windowInfoList.size(); i++)
-	{
-	    if(_windowInfoList[i]->gc)
-	    {
-		const osg::GraphicsContext::Traits * traits = _windowInfoList[i]->gc->getTraits();
-		//std::cerr << "Window width: " << traits->width << " height: " << traits->height << std::endl;
-		_windowInfoList[i]->width = traits->width;
-		_windowInfoList[i]->height = traits->height;
-	    }
-	}
+        //first sync values with created screens
+        for(int i = 0; i < _windowInfoList.size(); i++)
+        {
+            if(_windowInfoList[i]->gc)
+            {
+                const osg::GraphicsContext::Traits * traits =
+                        _windowInfoList[i]->gc->getTraits();
+                //std::cerr << "Window width: " << traits->width << " height: " << traits->height << std::endl;
+                _windowInfoList[i]->width = traits->width;
+                _windowInfoList[i]->height = traits->height;
+            }
+        }
 
-	for(int i = 0; i < _screenInfoList.size(); i++)
-	{
-	    bool resized = false;
-	    float cwidth = 1024, cheight = 1024;
-	    if(_screenInfoList[i]->myChannel->myWindow->gc)
-	    {
-		const osg::GraphicsContext::Traits * traits = _screenInfoList[i]->myChannel->myWindow->gc->getTraits();
-		if(traits)
-		{
-		    cwidth = traits->width;
-		    cheight = traits->height;
-		}
-	    }
+        for(int i = 0; i < _screenInfoList.size(); i++)
+        {
+            bool resized = false;
+            float cwidth = 1024, cheight = 1024;
+            if(_screenInfoList[i]->myChannel->myWindow->gc)
+            {
+                const osg::GraphicsContext::Traits * traits =
+                        _screenInfoList[i]->myChannel->myWindow->gc->getTraits();
+                if(traits)
+                {
+                    cwidth = traits->width;
+                    cheight = traits->height;
+                }
+            }
 
-	    if(_screenInfoList[i]->myChannel->bottom + _screenInfoList[i]->myChannel->height > cheight)
-	    {
-		cheight = cheight - _screenInfoList[i]->myChannel->bottom;
-		resized = true;
-	    }
-	    else
-	    {
-		cheight = _screenInfoList[i]->myChannel->height;
-	    }
+            if(_screenInfoList[i]->myChannel->bottom
+                    + _screenInfoList[i]->myChannel->height > cheight)
+            {
+                cheight = cheight - _screenInfoList[i]->myChannel->bottom;
+                resized = true;
+            }
+            else
+            {
+                cheight = _screenInfoList[i]->myChannel->height;
+            }
 
-	    if(_screenInfoList[i]->myChannel->left + _screenInfoList[i]->myChannel->width > cwidth)
-	    {
-		cwidth = cwidth - _screenInfoList[i]->myChannel->left;
-		resized = true;
-	    }
-	    else
-	    {
-		cwidth = _screenInfoList[i]->myChannel->width;
-	    }
+            if(_screenInfoList[i]->myChannel->left
+                    + _screenInfoList[i]->myChannel->width > cwidth)
+            {
+                cwidth = cwidth - _screenInfoList[i]->myChannel->left;
+                resized = true;
+            }
+            else
+            {
+                cwidth = _screenInfoList[i]->myChannel->width;
+            }
 
-	    if(resized)
-	    {
-		_screenList[i]->viewportResized((int)_screenInfoList[i]->myChannel->left,(int)_screenInfoList[i]->myChannel->bottom,(int)cwidth,(int)cheight);
-		//std::cerr << "Screen width: " << _screenInfoList[i]->myChannel->width << " height: " << _screenInfoList[i]->myChannel->height << std::endl;
-	    }
-	}
+            if(resized)
+            {
+                _screenList[i]->viewportResized(
+                        (int)_screenInfoList[i]->myChannel->left,
+                        (int)_screenInfoList[i]->myChannel->bottom,(int)cwidth,
+                        (int)cheight);
+                //std::cerr << "Screen width: " << _screenInfoList[i]->myChannel->width << " height: " << _screenInfoList[i]->myChannel->height << std::endl;
+            }
+        }
 
         int num = _pipeInfoList.size();
         ComController::instance()->sendSlaves(&num,sizeof(int));

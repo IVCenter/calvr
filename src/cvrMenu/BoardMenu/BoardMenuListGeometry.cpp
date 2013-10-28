@@ -59,7 +59,7 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
             osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(_iconGeometry.get());
 
-    osg::ref_ptr < osg::Texture2D > iconTexture = loadIcon("brackets.rgb");
+    osg::ref_ptr<osg::Texture2D> iconTexture = loadIcon("brackets.rgb");
     if(iconTexture.get() != NULL)
     {
         _geodeIcon->getOrCreateStateSet()->setTextureAttributeAndModes(0,
@@ -195,39 +195,40 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         MouseInteractionEvent * mie = event->asMouseEvent();
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
-	{
-	    int y = mie->getY();
+        {
+            int y = mie->getY();
 
-	    _lastMouseY = y;
+            _lastMouseY = y;
 
-	    _clicked = true;
-	    _listItem->setDirty(true);
-	    _change = 0.0;
+            _clicked = true;
+            _listItem->setDirty(true);
+            _change = 0.0;
 
-	    if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
-	    {
-		osg::Matrix mat = getLocalToWorldMatrix(_node);
-		osg::Vec3 point, normal(0,-1,0);
-		point = point * mat;
-		normal = normal * mat;
-		normal = normal - point;
-		normal.normalize();
+            if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
+            {
+                osg::Matrix mat = getLocalToWorldMatrix(_node);
+                osg::Vec3 point, normal(0,-1,0);
+                point = point * mat;
+                normal = normal * mat;
+                normal = normal - point;
+                normal.normalize();
 
-		osg::Vec3 point1,point2(0,1,0);
-		point1 = point1 * mie->getTransform();
-		point2 = point2 * mie->getTransform();
+                osg::Vec3 point1, point2(0,1,0);
+                point1 = point1 * mie->getTransform();
+                point2 = point2 * mie->getTransform();
 
-		osg::Vec3 intersect;
-		float w;
+                osg::Vec3 intersect;
+                float w;
 
-		if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
-		{
-		    _lastDistance = intersect.z();
-		}
-	    }
+                if(linePlaneIntersectionRef(point1,point2,point,normal,
+                        intersect,w))
+                {
+                    _lastDistance = intersect.z();
+                }
+            }
 
-	    return;
-	}
+            return;
+        }
 
         if(event->getInteraction() == BUTTON_DRAG
                 || event->getInteraction() == BUTTON_UP)
@@ -240,114 +241,127 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
             int index = _listItem->getIndex();
             if(y != _lastMouseY)
             {
-		int lastIndex = index;
-		switch(_listItem->getScrollingHint())
-		{
-		    case MenuList::LINEAR:
-		    {
-			_change += ((y - _lastMouseY)
-			    * _listItem->getSensitivity() / pixelRange) * valueMax;
-			
-			if(fabs(_change) > 1.0)
-			{
+                int lastIndex = index;
+                switch(_listItem->getScrollingHint())
+                {
+                    case MenuList::LINEAR:
+                    {
+                        _change += ((y - _lastMouseY)
+                                * _listItem->getSensitivity() / pixelRange)
+                                * valueMax;
 
-			    int offset = (int)_change;
-			    index -= offset;
+                        if(fabs(_change) > 1.0)
+                        {
 
-			    _change -= ((float)offset);
-			}    
-			break;
-		    }
-		    case MenuList::CONTINUOUS:
-		    {
-			const float coeff = (35.0f) / (pixelRange * pixelRange * pixelRange);
-			_change += coeff * (y - _lastMouseY) * (y - _lastMouseY) * (y - _lastMouseY) * _listItem->getSensitivity() * CVRViewer::instance()->getLastFrameDuration();
+                            int offset = (int)_change;
+                            index -= offset;
 
-			if(fabs(_change) > 1.0)
-			{
-			    int offset = (int)_change;
-			    index -= offset;
+                            _change -= ((float)offset);
+                        }
+                        break;
+                    }
+                    case MenuList::CONTINUOUS:
+                    {
+                        const float coeff = (35.0f)
+                                / (pixelRange * pixelRange * pixelRange);
+                        _change += coeff * (y - _lastMouseY) * (y - _lastMouseY)
+                                * (y - _lastMouseY)
+                                * _listItem->getSensitivity()
+                                * CVRViewer::instance()->getLastFrameDuration();
 
-			    _change -= ((float)offset);
-			}
+                        if(fabs(_change) > 1.0)
+                        {
+                            int offset = (int)_change;
+                            index -= offset;
 
-			y = _lastMouseY;
-			break;
-		    }
-		    case MenuList::ONE_TO_ONE:
-		    {
-			osg::Matrix mat = getLocalToWorldMatrix(_node);
-			osg::Vec3 point, normal(0,-1,0);
-			point = point * mat;
-			normal = normal * mat;
-			normal = normal - point;
-			normal.normalize();
+                            _change -= ((float)offset);
+                        }
 
-			osg::Vec3 distVec(0,0,_iconHeight+_border);
-			distVec = distVec * mat;
-			distVec = distVec - point;
-			float lineDist = distVec.length();
+                        y = _lastMouseY;
+                        break;
+                    }
+                    case MenuList::ONE_TO_ONE:
+                    {
+                        osg::Matrix mat = getLocalToWorldMatrix(_node);
+                        osg::Vec3 point, normal(0,-1,0);
+                        point = point * mat;
+                        normal = normal * mat;
+                        normal = normal - point;
+                        normal.normalize();
 
-			osg::Vec3 point1,point2(0,1,0);
-			point1 = point1 * mie->getTransform();
-			point2 = point2 * mie->getTransform();
+                        osg::Vec3 distVec(0,0,_iconHeight + _border);
+                        distVec = distVec * mat;
+                        distVec = distVec - point;
+                        float lineDist = distVec.length();
 
-			osg::Vec3 intersect;
-			float w;
+                        osg::Vec3 point1, point2(0,1,0);
+                        point1 = point1 * mie->getTransform();
+                        point2 = point2 * mie->getTransform();
 
-			if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
-			{
-			    _change += ((intersect.z() - _lastDistance) / lineDist);
+                        osg::Vec3 intersect;
+                        float w;
 
-			    if(fabs(_change) > 1.0)
-			    {
-				int lastIndex = index;
-				int offset = (int)_change;
-				index -= offset;
+                        if(linePlaneIntersectionRef(point1,point2,point,normal,
+                                intersect,w))
+                        {
+                            _change += ((intersect.z() - _lastDistance)
+                                    / lineDist);
 
-				_change -= ((float)offset);
-			    }
+                            if(fabs(_change) > 1.0)
+                            {
+                                int lastIndex = index;
+                                int offset = (int)_change;
+                                index -= offset;
 
-			    _lastDistance = intersect.z();
-			}
+                                _change -= ((float)offset);
+                            }
 
-			break;
-		    }
-		    default:
-			break;
-		}
+                            _lastDistance = intersect.z();
+                        }
 
-		if(index > valueMax)
-		    index = valueMax;
-		else if(index < 0)
-		    index = 0;
+                        break;
+                    }
+                    default:
+                        break;
+                }
 
-		if(lastIndex != index)
-		{
-		    _listItem->setIndex(index);
-		    valueUpdated = true;
-		}
+                if(index > valueMax)
+                    index = valueMax;
+                else if(index < 0)
+                    index = 0;
+
+                if(lastIndex != index)
+                {
+                    _listItem->setIndex(index);
+                    valueUpdated = true;
+                }
             }
 
             if(valueUpdated)
             {
-		if(_listItem->getCallbackType() != MenuList::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(_listItem->getCallback())
-		    {
-			_listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(_listItem->getCallbackType() != MenuList::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(_listItem->getCallback())
+                    {
+                        _listItem->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
 
                 _lastMouseY = y;
             }
-	    else if(_listItem->getCallbackType() == MenuList::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(_listItem->getCallback())
-		{
-		    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(_listItem->getCallbackType() == MenuList::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(_listItem->getCallback())
+                {
+                    _listItem->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             return;
         }
@@ -358,44 +372,46 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
         {
-	    if(event->asPointerEvent())
-	    {
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),_point);
-	    }
-	    else
-	    {
-		_point = tie->getTransform().getTrans();
-	    }
+            if(event->asPointerEvent())
+            {
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),_point);
+            }
+            else
+            {
+                _point = tie->getTransform().getTrans();
+            }
 
             _clicked = true;
             _listItem->setDirty(true);
-	    _change = 0.0;
+            _change = 0.0;
 
-	    if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
-	    {
-		osg::Matrix mat = getLocalToWorldMatrix(_node);
-		osg::Vec3 point, normal(0,-1,0);
-		point = point * mat;
-		normal = normal * mat;
-		normal = normal - point;
-		normal.normalize();
+            if(_listItem->getScrollingHint() == MenuList::ONE_TO_ONE)
+            {
+                osg::Matrix mat = getLocalToWorldMatrix(_node);
+                osg::Vec3 point, normal(0,-1,0);
+                point = point * mat;
+                normal = normal * mat;
+                normal = normal - point;
+                normal.normalize();
 
-		osg::Vec3 point1,point2(0,1,0);
-		point1 = point1 * tie->getTransform();
-		point2 = point2 * tie->getTransform();
+                osg::Vec3 point1, point2(0,1,0);
+                point1 = point1 * tie->getTransform();
+                point2 = point2 * tie->getTransform();
 
-		osg::Vec3 intersect;
-		float w;
+                osg::Vec3 intersect;
+                float w;
 
-		if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
-		{
-		    _lastDistance = intersect.z();
-		}
-	    }
-	    else
-	    {
-		_lastDistance = 0.0;
-	    }
+                if(linePlaneIntersectionRef(point1,point2,point,normal,
+                        intersect,w))
+                {
+                    _lastDistance = intersect.z();
+                }
+            }
+            else
+            {
+                _lastDistance = 0.0;
+            }
 
             return;
         }
@@ -405,137 +421,151 @@ void BoardMenuListGeometry::processEvent(InteractionEvent * event)
         {
             MenuList * _listItem = (MenuList*)_item;
 
-	    float newDistance;
-	    float range;
+            float newDistance;
+            float range;
 
-	    if(event->asPointerEvent())
-	    {
-		osg::Vec3 newPoint;
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),newPoint);
-		newDistance = newPoint.z() - _point.z();
-		range = SceneManager::instance()->getTiledWallHeight() * 0.6;
-	    }
-	    else
-	    {
-		osg::Vec3 vec = tie->getTransform().getTrans();
-		vec = vec - _point;
-		newDistance = vec.z();
-		range = 400;
-	    }
+            if(event->asPointerEvent())
+            {
+                osg::Vec3 newPoint;
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),newPoint);
+                newDistance = newPoint.z() - _point.z();
+                range = SceneManager::instance()->getTiledWallHeight() * 0.6;
+            }
+            else
+            {
+                osg::Vec3 vec = tie->getTransform().getTrans();
+                vec = vec - _point;
+                newDistance = vec.z();
+                range = 400;
+            }
 
             bool valueUpdated = false;
             int valueMax = _listItem->getListSize();
             int index = _listItem->getIndex();
             if(newDistance != _lastDistance)
             {
-		int lastIndex = index;
-		switch(_listItem->getScrollingHint())
-		{
-		    case MenuList::LINEAR:
-		    {
-			_change += ((newDistance - _lastDistance)
-				* _listItem->getSensitivity() / range) * valueMax;
-			if(fabs(_change) > 1.0)
-			{
-			    int offset = (int)_change;
-			    index -= offset;
+                int lastIndex = index;
+                switch(_listItem->getScrollingHint())
+                {
+                    case MenuList::LINEAR:
+                    {
+                        _change += ((newDistance - _lastDistance)
+                                * _listItem->getSensitivity() / range)
+                                * valueMax;
+                        if(fabs(_change) > 1.0)
+                        {
+                            int offset = (int)_change;
+                            index -= offset;
 
-			    _change -= ((float)offset);
-			}
-			break;
-		    }
-		    case MenuList::CONTINUOUS:
-		    {
-			const float coeff = (100.0f) / (range * range * range);
-			_change += coeff * (newDistance - _lastDistance) * (newDistance - _lastDistance) * (newDistance - _lastDistance) * _listItem->getSensitivity() * CVRViewer::instance()->getLastFrameDuration();
+                            _change -= ((float)offset);
+                        }
+                        break;
+                    }
+                    case MenuList::CONTINUOUS:
+                    {
+                        const float coeff = (100.0f) / (range * range * range);
+                        _change += coeff * (newDistance - _lastDistance)
+                                * (newDistance - _lastDistance)
+                                * (newDistance - _lastDistance)
+                                * _listItem->getSensitivity()
+                                * CVRViewer::instance()->getLastFrameDuration();
 
-			if(fabs(_change) > 1.0)
-			{
-			    int offset = (int)_change;
-			    index -= offset;
+                        if(fabs(_change) > 1.0)
+                        {
+                            int offset = (int)_change;
+                            index -= offset;
 
-			    _change -= ((float)offset);
-			}
+                            _change -= ((float)offset);
+                        }
 
-			newDistance = _lastDistance;
-			break;
-		    }
-		    case MenuList::ONE_TO_ONE:
-		    {
-			osg::Matrix mat = getLocalToWorldMatrix(_node);
-			osg::Vec3 point, normal(0,-1,0);
-			point = point * mat;
-			normal = normal * mat;
-			normal = normal - point;
-			normal.normalize();
+                        newDistance = _lastDistance;
+                        break;
+                    }
+                    case MenuList::ONE_TO_ONE:
+                    {
+                        osg::Matrix mat = getLocalToWorldMatrix(_node);
+                        osg::Vec3 point, normal(0,-1,0);
+                        point = point * mat;
+                        normal = normal * mat;
+                        normal = normal - point;
+                        normal.normalize();
 
-			osg::Vec3 distVec(0,0,_iconHeight+_border);
-			distVec = distVec * mat;
-			distVec = distVec - point;
-			float lineDist = distVec.length();
+                        osg::Vec3 distVec(0,0,_iconHeight + _border);
+                        distVec = distVec * mat;
+                        distVec = distVec - point;
+                        float lineDist = distVec.length();
 
-			osg::Vec3 point1,point2(0,1,0);
-			point1 = point1 * tie->getTransform();
-			point2 = point2 * tie->getTransform();
+                        osg::Vec3 point1, point2(0,1,0);
+                        point1 = point1 * tie->getTransform();
+                        point2 = point2 * tie->getTransform();
 
-			osg::Vec3 intersect;
-			float w;
+                        osg::Vec3 intersect;
+                        float w;
 
-			if(linePlaneIntersectionRef(point1,point2,point,normal,intersect,w))
-			{
-			    _change += ((intersect.z() - _lastDistance) / lineDist);
+                        if(linePlaneIntersectionRef(point1,point2,point,normal,
+                                intersect,w))
+                        {
+                            _change += ((intersect.z() - _lastDistance)
+                                    / lineDist);
 
-			    if(fabs(_change) > 1.0)
-			    {
-				int lastIndex = index;
-				int offset = (int)_change;
-				index -= offset;
+                            if(fabs(_change) > 1.0)
+                            {
+                                int lastIndex = index;
+                                int offset = (int)_change;
+                                index -= offset;
 
-				_change -= ((float)offset);
-			    }
+                                _change -= ((float)offset);
+                            }
 
-			    _lastDistance = intersect.z();
-			    newDistance = _lastDistance;
-			}
+                            _lastDistance = intersect.z();
+                            newDistance = _lastDistance;
+                        }
 
-			break;
-		    }
-		    default:
-			break;
+                        break;
+                    }
+                    default:
+                        break;
 
-		}
+                }
 
-		if(index > valueMax)
-		    index = valueMax;
-		else if(index < 0)
-		    index = 0;
+                if(index > valueMax)
+                    index = valueMax;
+                else if(index < 0)
+                    index = 0;
 
-		if(lastIndex != index)
-		{
-		    _listItem->setIndex(index);
-		    valueUpdated = true;
-		}
+                if(lastIndex != index)
+                {
+                    _listItem->setIndex(index);
+                    valueUpdated = true;
+                }
             }
 
             if(valueUpdated)
             {
-		if(_listItem->getCallbackType() != MenuList::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(_listItem->getCallback())
-		    {
-			_listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(_listItem->getCallbackType() != MenuList::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(_listItem->getCallback())
+                    {
+                        _listItem->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
 
                 _lastDistance = newDistance;
             }
-	    else if(_listItem->getCallbackType() == MenuList::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(_listItem->getCallback())
-		{
-		    _listItem->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(_listItem->getCallbackType() == MenuList::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(_listItem->getCallback())
+                {
+                    _listItem->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             return;
         }

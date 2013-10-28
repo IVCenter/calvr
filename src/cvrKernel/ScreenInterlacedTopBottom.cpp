@@ -314,8 +314,9 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator()(
     //std::cerr << "Callback." << std::endl;
     if(!_initMap[context])
     {
-        OpenThreads::ScopedLock < OpenThreads::Mutex > lock(_initLock);
-        std::string shaderdir = CalVR::instance()->getResourceDir() + "/shaders/";
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_initLock);
+        std::string shaderdir = CalVR::instance()->getResourceDir()
+                + "/shaders/";
 
         osg::Shader * vert, *frag;
         if(odd)

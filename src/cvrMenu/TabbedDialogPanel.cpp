@@ -297,8 +297,8 @@ void TabbedDialogPanel::menuCallback(MenuItem * item)
             _activeTab = _textButtonSet->getButton(atab);
             addMenuItem(_menuItemMap[_activeTab]);
         }
-	return;
+        return;
     }
     PopupMenu::menuCallback(item);
-    
+
 }

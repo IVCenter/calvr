@@ -65,7 +65,7 @@ bool FileHandler::loadFile(std::string file)
 
     // if all else fails
 
-    osg::ref_ptr < osg::Node > loadedModel = osgDB::readNodeFile(file);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(file);
 
     if(loadedModel)
     {

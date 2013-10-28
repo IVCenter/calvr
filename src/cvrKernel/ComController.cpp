@@ -464,8 +464,8 @@ bool ComController::setupConnections()
             it != _startupMap.end(); it++)
     {
         std::stringstream ss;
-        ss << "CalVR --node-number " << it->first << " --master-interface " << _masterInterface << " --master-port "
-                << baseport;
+        ss << "CalVR --node-number " << it->first << " --master-interface "
+                << _masterInterface << " --master-port " << baseport;
         size_t location = it->second.find("CalVR");
         if(location != std::string::npos)
         {

@@ -31,203 +31,236 @@ struct PreSwapOperation : public osg::Operation
 
         virtual void operator ()(osg::Object* object)
         {
-	    switch(CVRViewer::instance()->getPreSwapOperation())
-	    {
-		case CVRViewer::PSO_FINISH:
-		    glFinish();
-		    break;
-		case CVRViewer::PSO_FLUSH:
-		    glFlush();
-		    break;
-		case CVRViewer::PSO_NONE:
-		default:
-		    break;
-	    }
+            switch(CVRViewer::instance()->getPreSwapOperation())
+            {
+                case CVRViewer::PSO_FINISH:
+                    glFinish();
+                    break;
+                case CVRViewer::PSO_FLUSH:
+                    glFlush();
+                    break;
+                case CVRViewer::PSO_NONE:
+                default:
+                    break;
+            }
         }
 };
 
 /*struct OpenGLQueryInitOperation : public osg::Operation
-{
-	OpenGLQueryInitOperation(int context) : osg::Operation("OpenGLQueryInitOperation",false)
-	{
-	    _context = context;
+ {
+ OpenGLQueryInitOperation(int context) : osg::Operation("OpenGLQueryInitOperation",false)
+ {
+ _context = context;
 
-	    if(!_contextLockMap[_context])
-	    {
-		_contextLockMap[_context] = new OpenThreads::Mutex();
-	    }
-	}
+ if(!_contextLockMap[_context])
+ {
+ _contextLockMap[_context] = new OpenThreads::Mutex();
+ }
+ }
 
-	virtual void operator ()(osg::Object* object)
-	{
-	    _contextLockMap[_context]->lock();
+ virtual void operator ()(osg::Object* object)
+ {
+ _contextLockMap[_context]->lock();
 
-	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
-	    if(gc)
-	    {
-		osg::GraphicsContext::Cameras cams = gc->getCameras();
-		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
-		{
-		    if((*it)->getRenderer())
-		    {
-			osgViewer::Renderer * rend = dynamic_cast<osgViewer::Renderer*>((*it)->getRenderer());
-			if(rend)
-			{
-			    rend->initialize(rend->getSceneView(0)->getState());
-			}
-		    }
-		}
-	    }
+ osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
+ if(gc)
+ {
+ osg::GraphicsContext::Cameras cams = gc->getCameras();
+ for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
+ {
+ if((*it)->getRenderer())
+ {
+ osgViewer::Renderer * rend = dynamic_cast<osgViewer::Renderer*>((*it)->getRenderer());
+ if(rend)
+ {
+ rend->initialize(rend->getSceneView(0)->getState());
+ }
+ }
+ }
+ }
 
-	    _contextLockMap[_context]->unlock();
-	}
-    protected:
-	int _context;
-	static std::map<int,OpenThreads::Mutex*> _contextLockMap;
-	
-};*/
+ _contextLockMap[_context]->unlock();
+ }
+ protected:
+ int _context;
+ static std::map<int,OpenThreads::Mutex*> _contextLockMap;
+
+ };*/
 
 //std::map<int,OpenThreads::Mutex*> OpenGLQueryInitOperation::_contextLockMap;
-
 struct FrameStartCallbackOperation : public osg::Operation
 {
-	FrameStartCallbackOperation(int context) : osg::Operation("FrameStartCallbackOperation",true)
-	{
-	    _context = context;
-	}
+        FrameStartCallbackOperation(int context) :
+                osg::Operation("FrameStartCallbackOperation",true)
+        {
+            _context = context;
+        }
 
-	virtual void operator ()(osg::Object* object)
-	{
-	    lock.lock();
-	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextFrameStartCallbacks(); i++)
-	    {
-		CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(_context,PerContextCallback::PCC_FRAME_START);
-	    }
-	    lock.unlock();
-	}
+        virtual void operator ()(osg::Object* object)
+        {
+            lock.lock();
+            for(int i = 0;
+                    i
+                            < CVRViewer::instance()->getNumPerContextFrameStartCallbacks();
+                    i++)
+            {
+                CVRViewer::instance()->getPerContextFrameStartCallback(i)->perContextCallback(
+                        _context,PerContextCallback::PCC_FRAME_START);
+            }
+            lock.unlock();
+        }
 
-	OpenThreads::Mutex lock;
+        OpenThreads::Mutex lock;
     protected:
-	int _context;
+        int _context;
 };
 
 struct PreDrawCallbackOperation : public osg::Operation
 {
-	PreDrawCallbackOperation(int context) : osg::Operation("PreDrawCallbackOperation",true)
-	{
-	    _context = context;
-	}
+        PreDrawCallbackOperation(int context) :
+                osg::Operation("PreDrawCallbackOperation",true)
+        {
+            _context = context;
+        }
 
-	virtual void operator ()(osg::Object* object)
-	{
-	    lock.lock();
-	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPreDrawCallbacks(); i++)
-	    {
-		CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(_context,PerContextCallback::PCC_PRE_DRAW);
-	    }
-	    lock.unlock();
-	}
+        virtual void operator ()(osg::Object* object)
+        {
+            lock.lock();
+            for(int i = 0;
+                    i
+                            < CVRViewer::instance()->getNumPerContextPreDrawCallbacks();
+                    i++)
+            {
+                CVRViewer::instance()->getPerContextPreDrawCallback(i)->perContextCallback(
+                        _context,PerContextCallback::PCC_PRE_DRAW);
+            }
+            lock.unlock();
+        }
 
-	OpenThreads::Mutex lock;
+        OpenThreads::Mutex lock;
     protected:
-	int _context;
+        int _context;
 };
 
 struct PostFinishCallbackOperation : public osg::Operation
 {
-	PostFinishCallbackOperation(int context) : osg::Operation("PostFinishCallbackOperation",true)
-	{
-	    _context = context;
-	}
+        PostFinishCallbackOperation(int context) :
+                osg::Operation("PostFinishCallbackOperation",true)
+        {
+            _context = context;
+        }
 
-	virtual void operator ()(osg::Object* object)
-	{
-	    lock.lock();
-	    for(int i = 0; i < CVRViewer::instance()->getNumPerContextPostFinishCallbacks(); i++)
-	    {
-		CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(_context,PerContextCallback::PCC_POST_FINISH);
-	    }
-	    lock.unlock();
-	}
+        virtual void operator ()(osg::Object* object)
+        {
+            lock.lock();
+            for(int i = 0;
+                    i
+                            < CVRViewer::instance()->getNumPerContextPostFinishCallbacks();
+                    i++)
+            {
+                CVRViewer::instance()->getPerContextPostFinishCallback(i)->perContextCallback(
+                        _context,PerContextCallback::PCC_POST_FINISH);
+            }
+            lock.unlock();
+        }
 
-	OpenThreads::Mutex lock;
+        OpenThreads::Mutex lock;
     protected:
-	int _context;
+        int _context;
 };
 
 struct StatsBeginOperation : public osg::Operation
 {
-	StatsBeginOperation(std::string begin) : osg::Operation("StatsBeginOperation",true)
-	{
-	    _beginName = begin;
-	}
-
-	virtual void operator ()(osg::Object* object)
+        StatsBeginOperation(std::string begin) :
+                osg::Operation("StatsBeginOperation",true)
         {
-	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
-	    if(gc)
-	    {
-		osg::GraphicsContext::Cameras cams = gc->getCameras();
-		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
-		{
-		    osg::Stats * stats = (*it)->getStats();
-		    if(stats)
-		    {
-			if(!stats->collectStats("CalVRRenderingAdvanced"))
-			{
-			    return;
-			}
-			double now = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _beginName, now);
-		    }
-		}
-	    }
-	}
+            _beginName = begin;
+        }
+
+        virtual void operator ()(osg::Object* object)
+        {
+            osg::GraphicsContext * gc =
+                    dynamic_cast<osg::GraphicsContext*>(object);
+            if(gc)
+            {
+                osg::GraphicsContext::Cameras cams = gc->getCameras();
+                for(osg::GraphicsContext::Cameras::iterator it = cams.begin();
+                        it != cams.end(); it++)
+                {
+                    osg::Stats * stats = (*it)->getStats();
+                    if(stats)
+                    {
+                        if(!stats->collectStats("CalVRRenderingAdvanced"))
+                        {
+                            return;
+                        }
+                        double now = osg::Timer::instance()->delta_s(
+                                CVRViewer::instance()->getStartTick(),
+                                osg::Timer::instance()->tick());
+                        stats->setAttribute(
+                                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                                _beginName,now);
+                    }
+                }
+            }
+        }
 
     protected:
-	std::string _beginName;
+        std::string _beginName;
 };
 
 struct StatsEndOperation : public osg::Operation
 {
-	StatsEndOperation(std::string begin, std::string end, std::string duration) : osg::Operation("StatsEndOperation",true)
-	{
-	    _beginName = begin;
-	    _endName = end;
-	    _durationName = duration;
-	}
-
-	virtual void operator ()(osg::Object* object)
+        StatsEndOperation(std::string begin, std::string end,
+                std::string duration) :
+                osg::Operation("StatsEndOperation",true)
         {
-	    osg::GraphicsContext * gc = dynamic_cast<osg::GraphicsContext*>(object);
-	    if(gc)
-	    {
-		osg::GraphicsContext::Cameras cams = gc->getCameras();
-		for(osg::GraphicsContext::Cameras::iterator it = cams.begin(); it != cams.end(); it++)
-		{
-		    osg::Stats * stats = (*it)->getStats();
-		    if(stats)
-		    {
-			if(!stats->collectStats("CalVRRenderingAdvanced"))
-			{
-			    return;
-			}
+            _beginName = begin;
+            _endName = end;
+            _durationName = duration;
+        }
 
-			double now = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _endName, now);
+        virtual void operator ()(osg::Object* object)
+        {
+            osg::GraphicsContext * gc =
+                    dynamic_cast<osg::GraphicsContext*>(object);
+            if(gc)
+            {
+                osg::GraphicsContext::Cameras cams = gc->getCameras();
+                for(osg::GraphicsContext::Cameras::iterator it = cams.begin();
+                        it != cams.end(); it++)
+                {
+                    osg::Stats * stats = (*it)->getStats();
+                    if(stats)
+                    {
+                        if(!stats->collectStats("CalVRRenderingAdvanced"))
+                        {
+                            return;
+                        }
 
-			double begin;
-			stats->getAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _beginName, begin);
-			stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), _durationName, now-begin);
-		    }
-		}
-	    }
-	}
+                        double now = osg::Timer::instance()->delta_s(
+                                CVRViewer::instance()->getStartTick(),
+                                osg::Timer::instance()->tick());
+                        stats->setAttribute(
+                                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                                _endName,now);
+
+                        double begin;
+                        stats->getAttribute(
+                                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                                _beginName,begin);
+                        stats->setAttribute(
+                                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                                _durationName,now - begin);
+                    }
+                }
+            }
+        }
 
     protected:
-	std::string _beginName;
-	std::string _endName;
-	std::string _durationName;
+        std::string _beginName;
+        std::string _endName;
+        std::string _durationName;
 };
 
 struct syncOperation : public osg::Operation
@@ -286,54 +319,55 @@ CVRViewer::CVRViewer() :
         osgViewer::Viewer()
 {
     std::string threadModel = ConfigManager::getEntry("value","MultiThreaded",
-	    "SingleThreaded");
+            "SingleThreaded");
     if(threadModel == "CullThreadPerCameraDrawThreadPerContext")
     {
-	osg::Referenced::setThreadSafeReferenceCounting(true);
-	setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
+        osg::Referenced::setThreadSafeReferenceCounting(true);
+        setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
     }
     else if(threadModel == "CullDrawThreadPerContext")
     {
-	osg::Referenced::setThreadSafeReferenceCounting(true);
-	setThreadingModel(CullDrawThreadPerContext);
+        osg::Referenced::setThreadSafeReferenceCounting(true);
+        setThreadingModel(CullDrawThreadPerContext);
     }
     else if(threadModel == "DrawThreadPerContext")
     {
-	osg::Referenced::setThreadSafeReferenceCounting(true);
-	setThreadingModel(DrawThreadPerContext);
+        osg::Referenced::setThreadSafeReferenceCounting(true);
+        setThreadingModel(DrawThreadPerContext);
     }
     else
     {
-	setThreadingModel(SingleThreaded);
+        setThreadingModel(SingleThreaded);
     }
 
     _renderOnMaster = ConfigManager::getBool("RenderOnMaster",true);
 
     if(ComController::instance()->isMaster())
     {
-	_programStartTime = osg::Timer::instance()->tick();
-	ComController::instance()->sendSlaves(&_programStartTime,
-		sizeof(osg::Timer_t));
+        _programStartTime = osg::Timer::instance()->tick();
+        ComController::instance()->sendSlaves(&_programStartTime,
+                sizeof(osg::Timer_t));
     }
     else
     {
-	ComController::instance()->readMaster(&_programStartTime,
-		sizeof(osg::Timer_t));
+        ComController::instance()->readMaster(&_programStartTime,
+                sizeof(osg::Timer_t));
     }
 
     std::string cmode = ConfigManager::getEntry("value","CullingMode","CALVR");
     if(cmode == "CALVR")
     {
-	_cullMode = CALVR;
+        _cullMode = CALVR;
     }
     else
     {
-	_cullMode = DEFAULT;
+        _cullMode = DEFAULT;
     }
 
     _frameStartTime = _lastFrameStartTime = _programStartTime;
 
-    _doubleClickTimeout = ConfigManager::getFloat("value","MouseDoubleClickTimeout",0.4);
+    _doubleClickTimeout = ConfigManager::getFloat("value",
+            "MouseDoubleClickTimeout",0.4);
 
     _updateList.push_back(new DefaultUpdate);
 
@@ -347,18 +381,19 @@ CVRViewer::CVRViewer() :
     _statsHandler->setKeyEventPrintsOutStats((int)'P');
     addEventHandler(_statsHandler);
 
-    std::string op = ConfigManager::getEntry("value","PreSwapOperation","FINISH",NULL);
+    std::string op = ConfigManager::getEntry("value","PreSwapOperation",
+            "FINISH",NULL);
     if(op == "FINISH")
     {
-	_preSwapOp = PSO_FINISH;
+        _preSwapOp = PSO_FINISH;
     }
     else if(op == "FLUSH")
     {
-	_preSwapOp = PSO_FLUSH;
+        _preSwapOp = PSO_FLUSH;
     }
     else
     {
-	_preSwapOp = PSO_NONE;
+        _preSwapOp = PSO_NONE;
     }
 }
 
@@ -546,19 +581,19 @@ void CVRViewer::defaultUpdateTraversal()
      updateSlaves();*/
 
     /*if(getViewerStats() && getViewerStats()->collectStats("update"))
-    {
-        double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
-                osg::Timer::instance()->tick());
+     {
+     double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
+     osg::Timer::instance()->tick());
 
-        // update current frames stats
-        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
-                "Update traversal begin time",beginUpdateTraversal);
-        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
-                "Update traversal end time",endUpdateTraversal);
-        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
-                "Update traversal time taken",
-                endUpdateTraversal - beginUpdateTraversal);
-    }*/
+     // update current frames stats
+     getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+     "Update traversal begin time",beginUpdateTraversal);
+     getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+     "Update traversal end time",endUpdateTraversal);
+     getViewerStats()->setAttribute(_frameStamp->getFrameNumber(),
+     "Update traversal time taken",
+     endUpdateTraversal - beginUpdateTraversal);
+     }*/
 }
 
 void CVRViewer::eventTraversal()
@@ -615,7 +650,7 @@ void CVRViewer::eventTraversal()
 #if (OPENSCENEGRAPH_MAJOR_VERSION < 3) || ((OPENSCENEGRAPH_MAJOR_VERSION == 3) && (OPENSCENEGRAPH_MINOR_VERSION < 2))
                                     || !getCameraWithFocus()
 #endif
-				    )
+                                    )
                             {
                                 osg::GraphicsContext::Cameras& cameras =
                                         gw->getCameras();
@@ -682,7 +717,7 @@ void CVRViewer::eventTraversal()
 
                     evnt.eventType = event->getEventType();
 
-		    //std::cerr << "Event time: " << event->getTime() << std::endl;
+                    //std::cerr << "Event time: " << event->getTime() << std::endl;
                     switch(event->getEventType())
                     {
                         case (osgGA::GUIEventAdapter::PUSH):
@@ -705,14 +740,14 @@ void CVRViewer::eventTraversal()
                             {
                                 break;
                             }
-			    /*if(event->getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
-			    {
-				std::cerr << "Y increase up" << std::endl;
-			    }
-			    else
-			    {
-				std::cerr << "Y increase down" << std::endl;
-			    }*/
+                            /*if(event->getMouseYOrientation() == osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS)
+                             {
+                             std::cerr << "Y increase up" << std::endl;
+                             }
+                             else
+                             {
+                             std::cerr << "Y increase down" << std::endl;
+                             }*/
                             evnt.param1 = (int)(event->getX()
                                     - si->myChannel->left);
                             evnt.param2 = (int)(event->getY());
@@ -723,7 +758,8 @@ void CVRViewer::eventTraversal()
                                         + (int)si->myChannel->myWindow->height;
                             }
 
-			    evnt.param2 = evnt.param2 - ((int)si->myChannel->bottom);
+                            evnt.param2 = evnt.param2
+                                    - ((int)si->myChannel->bottom);
 
                             if(ScreenConfig::instance()->getScreen(
                                     _activeMasterScreen))
@@ -741,46 +777,49 @@ void CVRViewer::eventTraversal()
                             evnt.param2 = event->getModKeyMask();
                             eventList.push_back(evnt);
                             break;
-			case  (osgGA::GUIEventAdapter::SCROLL):
-			{
-                            if(event->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_2D)
+                        case (osgGA::GUIEventAdapter::SCROLL):
+                        {
+                            if(event->getScrollingMotion()
+                                    == osgGA::GUIEventAdapter::SCROLL_2D)
                             {
                                 if(event->getScrollingDeltaY() >= 0.0)
                                 {
-                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_UP;
+                                    evnt.param1 =
+                                            osgGA::GUIEventAdapter::SCROLL_UP;
                                 }
                                 else
                                 {
-                                    evnt.param1 = osgGA::GUIEventAdapter::SCROLL_DOWN;
+                                    evnt.param1 =
+                                            osgGA::GUIEventAdapter::SCROLL_DOWN;
                                 }
                             }
                             else
                             {
-			        evnt.param1 = event->getScrollingMotion();
+                                evnt.param1 = event->getScrollingMotion();
                             }
-			    /*switch(event->getScrollingMotion())
-			    {
-				case (osgGA::GUIEventAdapter::SCROLL_UP) :
-				{
-				    std::cerr << "Scroll up." << std::endl;
-				    break;
-				}
-				case (osgGA::GUIEventAdapter::SCROLL_DOWN) :
-				{
-				    std::cerr << "Scroll down." << std::endl;
-				    break;
-				}
-                                case (osgGA::GUIEventAdapter::SCROLL_2D) :
-                                {
-                                    std::cerr << "2D Scroll x: " << event->getScrollingDeltaX() << " y: " << event->getScrollingDeltaY() << std::endl;
-                                    break;
-                                }
-				default:
-				    break;
-			    }*/
-			    eventList.push_back(evnt);
-			    break;
-			}
+                            /*switch(event->getScrollingMotion())
+                             {
+                             case (osgGA::GUIEventAdapter::SCROLL_UP) :
+                             {
+                             std::cerr << "Scroll up." << std::endl;
+                             break;
+                             }
+                             case (osgGA::GUIEventAdapter::SCROLL_DOWN) :
+                             {
+                             std::cerr << "Scroll down." << std::endl;
+                             break;
+                             }
+                             case (osgGA::GUIEventAdapter::SCROLL_2D) :
+                             {
+                             std::cerr << "2D Scroll x: " << event->getScrollingDeltaX() << " y: " << event->getScrollingDeltaY() << std::endl;
+                             break;
+                             }
+                             default:
+                             break;
+                             }*/
+                            eventList.push_back(evnt);
+                            break;
+                        }
                         case (osgGA::GUIEventAdapter::QUIT_APPLICATION):
                         case (osgGA::GUIEventAdapter::CLOSE_WINDOW):
                             eventList.push_back(evnt);
@@ -810,43 +849,63 @@ void CVRViewer::eventTraversal()
                                                         camera);
                                         if(screenNum != -1)
                                         {
-					    if(ScreenConfig::instance()->getScreen(screenNum))
-					    {
-						ScreenConfig::instance()->getScreen(screenNum)->viewportResized((int)viewport->x(),(int)viewport->y(),(int)viewport->width(),(int)viewport->height());
-						//std::cerr << "Viewport x: " << viewport->x() << " y: " << viewport->y() << " width: " << viewport->width() << " height: " << viewport->height() << std::endl;
-						ScreenInfo * si = ScreenConfig::instance()->getScreenInfo(screenNum);
-						if(si)
-						{
-						    struct event vpevent;
-						    vpevent.eventType = UPDATE_VIEWPORT;
-						    vpevent.param1 = screenNum;
-						    eventList.push_back(vpevent);
+                                            if(ScreenConfig::instance()->getScreen(
+                                                    screenNum))
+                                            {
+                                                ScreenConfig::instance()->getScreen(
+                                                        screenNum)->viewportResized(
+                                                        (int)viewport->x(),
+                                                        (int)viewport->y(),
+                                                        (int)viewport->width(),
+                                                        (int)viewport->height());
+                                                //std::cerr << "Viewport x: " << viewport->x() << " y: " << viewport->y() << " width: " << viewport->width() << " height: " << viewport->height() << std::endl;
+                                                ScreenInfo * si =
+                                                        ScreenConfig::instance()->getScreenInfo(
+                                                                screenNum);
+                                                if(si)
+                                                {
+                                                    struct event vpevent;
+                                                    vpevent.eventType =
+                                                            UPDATE_VIEWPORT;
+                                                    vpevent.param1 = screenNum;
+                                                    eventList.push_back(
+                                                            vpevent);
 
-						    if(si->myChannel->myWindow->gc)
-						    {
-							const osg::GraphicsContext::Traits * traits = si->myChannel->myWindow->gc->getTraits();
-							if(traits)
-							{
-							    si->myChannel->myWindow->width = traits->width;
-							    si->myChannel->myWindow->height = traits->height;
-							}
-						    }
+                                                    if(si->myChannel->myWindow->gc)
+                                                    {
+                                                        const osg::GraphicsContext::Traits * traits =
+                                                                si->myChannel->myWindow->gc->getTraits();
+                                                        if(traits)
+                                                        {
+                                                            si->myChannel->myWindow->width =
+                                                                    traits->width;
+                                                            si->myChannel->myWindow->height =
+                                                                    traits->height;
+                                                        }
+                                                    }
 
-						    vpevent.param1 = (int)si->myChannel->myWindow->width;
-						    vpevent.param2 = (int)si->myChannel->myWindow->height;
-						    eventList.push_back(vpevent);
+                                                    vpevent.param1 =
+                                                            (int)si->myChannel->myWindow->width;
+                                                    vpevent.param2 =
+                                                            (int)si->myChannel->myWindow->height;
+                                                    eventList.push_back(
+                                                            vpevent);
 
-						    vpevent.param1 = (int)si->myChannel->left;
-						    vpevent.param2 = (int)si->myChannel->bottom;
-						    eventList.push_back(vpevent);
+                                                    vpevent.param1 =
+                                                            (int)si->myChannel->left;
+                                                    vpevent.param2 =
+                                                            (int)si->myChannel->bottom;
+                                                    eventList.push_back(
+                                                            vpevent);
 
-						    vpevent.param1 =
-							(int)si->myChannel->width;
-						    vpevent.param2 =
-							(int)si->myChannel->height;
-						    eventList.push_back(vpevent);
-						}
-					    }
+                                                    vpevent.param1 =
+                                                            (int)si->myChannel->width;
+                                                    vpevent.param2 =
+                                                            (int)si->myChannel->height;
+                                                    eventList.push_back(
+                                                            vpevent);
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -889,9 +948,11 @@ void CVRViewer::eventTraversal()
 #if OPENSCENEGRAPH_MAJOR_VERSION < 3
     _eventQueue->frame(getFrameStamp()->getReferenceTime());
 #else
-    double cutOffTime = (_runFrameScheme==ON_DEMAND) ? DBL_MAX : _frameStamp->getReferenceTime();
+    double cutOffTime =
+            (_runFrameScheme == ON_DEMAND) ?
+                    DBL_MAX : _frameStamp->getReferenceTime();
     osgGA::EventQueue::Events queueEvents;
-    _eventQueue->takeEvents(queueEvents, cutOffTime);
+    _eventQueue->takeEvents(queueEvents,cutOffTime);
 #endif
 
     if((_keyEventSetsDone != 0) || _quitEventSetsDone)
@@ -978,18 +1039,18 @@ void CVRViewer::eventTraversal()
                 InteractionManager::instance()->addEvent(kie);
                 break;
             }
-	    case  (osgGA::GUIEventAdapter::SCROLL):
-	    {
-		if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_UP)
-		{
-		    InteractionManager::instance()->setMouseWheel(1);
-		}
-		else if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_DOWN)
-		{
-		    InteractionManager::instance()->setMouseWheel(-1);
-		}
-		break;
-	    }
+            case (osgGA::GUIEventAdapter::SCROLL):
+            {
+                if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_UP)
+                {
+                    InteractionManager::instance()->setMouseWheel(1);
+                }
+                else if(events[i].param1 == osgGA::GUIEventAdapter::SCROLL_DOWN)
+                {
+                    InteractionManager::instance()->setMouseWheel(-1);
+                }
+                break;
+            }
             case (UPDATE_ACTIVE_SCREEN):
                 _activeMasterScreen = events[i].param1;
                 break;
@@ -998,7 +1059,7 @@ void CVRViewer::eventTraversal()
                 struct ScreenInfo * si =
                         ScreenConfig::instance()->getMasterScreenInfo(
                                 events[i].param1);
-		i++;
+                i++;
                 if(i >= ei.numEvents)
                 {
                     break;
@@ -1142,9 +1203,7 @@ void CVRViewer::renderingTraversals()
                         static_cast<double>(statsVisitor._drawableSet.size()));
                 stats->setAttribute(frameNumber,"Number of unique Geometry",
                         static_cast<double>(statsVisitor._geometrySet.size()));
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of unique Vertices",
+                stats->setAttribute(frameNumber,"Number of unique Vertices",
                         static_cast<double>(statsVisitor._uniqueStats._vertexCount));
                 stats->setAttribute(frameNumber,"Number of unique Primitives",
                         static_cast<double>(unique_primitives));
@@ -1158,15 +1217,11 @@ void CVRViewer::renderingTraversals()
                     instanced_primitives += pcmitr->second;
                 }
 
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of instanced Stateset",
+                stats->setAttribute(frameNumber,"Number of instanced Stateset",
                         static_cast<double>(statsVisitor._numInstancedStateSet));
                 stats->setAttribute(frameNumber,"Number of instanced Group",
                         static_cast<double>(statsVisitor._numInstancedGroup));
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of instanced Transform",
+                stats->setAttribute(frameNumber,"Number of instanced Transform",
                         static_cast<double>(statsVisitor._numInstancedTransform));
                 stats->setAttribute(frameNumber,"Number of instanced LOD",
                         static_cast<double>(statsVisitor._numInstancedLOD));
@@ -1174,17 +1229,11 @@ void CVRViewer::renderingTraversals()
                         static_cast<double>(statsVisitor._numInstancedSwitch));
                 stats->setAttribute(frameNumber,"Number of instanced Geode",
                         static_cast<double>(statsVisitor._numInstancedGeode));
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of instanced Drawable",
+                stats->setAttribute(frameNumber,"Number of instanced Drawable",
                         static_cast<double>(statsVisitor._numInstancedDrawable));
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of instanced Geometry",
+                stats->setAttribute(frameNumber,"Number of instanced Geometry",
                         static_cast<double>(statsVisitor._numInstancedGeometry));
-                stats->setAttribute(
-                        frameNumber,
-                        "Number of instanced Vertices",
+                stats->setAttribute(frameNumber,"Number of instanced Vertices",
                         static_cast<double>(statsVisitor._instancedStats._vertexCount));
                 stats->setAttribute(frameNumber,
                         "Number of instanced Primitives",
@@ -1231,7 +1280,6 @@ void CVRViewer::renderingTraversals()
         _endDynamicDrawBlock->reset();
     }
 
-
     if(_cullMode == CALVR)
     {
         CVRCullVisitor::PreCullVisitor precv;
@@ -1247,20 +1295,22 @@ void CVRViewer::renderingTraversals()
     // do per context callback for single threaded
     if(_threadingModel == SingleThreaded && _preDrawCallbacks.size())
     {
-	Contexts contexts;
-	getContexts(contexts);
-	Contexts::iterator itr;
-	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
-	{
-	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
-	    {
-		makeCurrent(*itr);
-		for(int i = 0; i < _preDrawCallbacks.size(); i++)
-		{
-		    _preDrawCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_PRE_DRAW);
-		}
-	    }
-	}
+        Contexts contexts;
+        getContexts(contexts);
+        Contexts::iterator itr;
+        for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+        {
+            if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+            {
+                makeCurrent(*itr);
+                for(int i = 0; i < _preDrawCallbacks.size(); i++)
+                {
+                    _preDrawCallbacks[i]->perContextCallback(
+                            (*itr)->getState()->getContextID(),
+                            PerContextCallback::PCC_PRE_DRAW);
+                }
+            }
+        }
     }
 
     // reset any double buffer graphics objects
@@ -1285,46 +1335,48 @@ void CVRViewer::renderingTraversals()
 
     for(itr = contexts.begin(); itr != contexts.end(); ++itr)
     {
-	if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
-	{
-	    doneMakeCurrentInThisThread = true;
-	    makeCurrent(*itr);
-	    if(!ComController::instance()->isMaster() || _renderOnMaster)
-	    {
-		(*itr)->runOperations();
-	    }
-	    switch(_preSwapOp)
-	    {
-		case PSO_FINISH:
-		    glFinish();
-		    break;
-		case PSO_FLUSH:
-		    glFlush();
-		    break;
-		case PSO_NONE:
-		default:
-		    break;
-	    }
-	}
+        if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+        {
+            doneMakeCurrentInThisThread = true;
+            makeCurrent(*itr);
+            if(!ComController::instance()->isMaster() || _renderOnMaster)
+            {
+                (*itr)->runOperations();
+            }
+            switch(_preSwapOp)
+            {
+                case PSO_FINISH:
+                    glFinish();
+                    break;
+                case PSO_FLUSH:
+                    glFlush();
+                    break;
+                case PSO_NONE:
+                default:
+                    break;
+            }
+        }
     }
 
     // do per context callback for single threaded
     if(_threadingModel == SingleThreaded && _postFinishCallbacks.size())
     {
-	Contexts contexts;
-	getContexts(contexts);
-	Contexts::iterator itr;
-	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
-	{
-	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
-	    {
-		makeCurrent(*itr);
-		for(int i = 0; i < _postFinishCallbacks.size(); i++)
-		{
-		    _postFinishCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_POST_FINISH);
-		}
-	    }
-	}
+        Contexts contexts;
+        getContexts(contexts);
+        Contexts::iterator itr;
+        for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+        {
+            if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+            {
+                makeCurrent(*itr);
+                for(int i = 0; i < _postFinishCallbacks.size(); i++)
+                {
+                    _postFinishCallbacks[i]->perContextCallback(
+                            (*itr)->getState()->getContextID(),
+                            PerContextCallback::PCC_POST_FINISH);
+                }
+            }
+        }
     }
 
     if(_endRenderingDispatchBarrier.valid())
@@ -1336,50 +1388,56 @@ void CVRViewer::renderingTraversals()
     stats = getViewerStats();
     if(stats && !stats->collectStats("CalVRStats"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     ComController::instance()->sync();
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync begin time", startTime);
-        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync end time", endTime);
-        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(), "Cluster Sync time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(),
+                "Cluster Sync begin time",startTime);
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(),
+                "Cluster Sync end time",endTime);
+        stats->setAttribute(getViewerFrameStamp()->getFrameNumber(),
+                "Cluster Sync time taken",endTime - startTime);
     }
 
     // put callbacks in the list here, since we know all threads are drawing right now
     for(int i = 0; i < _addFrameStartCallbacks.size(); i++)
     {
-	_frameStartCallbacks.push_back(_addFrameStartCallbacks[i]);
+        _frameStartCallbacks.push_back(_addFrameStartCallbacks[i]);
     }
     _addFrameStartCallbacks.clear();
 
     for(int i = 0; i < _addPreDrawCallbacks.size(); i++)
     {
-	_preDrawCallbacks.push_back(_addPreDrawCallbacks[i]);
+        _preDrawCallbacks.push_back(_addPreDrawCallbacks[i]);
     }
     _addPreDrawCallbacks.clear();
 
     if(_swapReadyBarrier.valid())
     {
-	if(_done)
-	{
-	    while(_swapReadyBarrier->numThreadsCurrentlyBlocked() != contexts.size())
-	    {
-		// wait for render threads to catch up, then let them hang here where it is safe
-	    }
-	}
-	else
-	{
-	    _swapReadyBarrier->block();
-	}
+        if(_done)
+        {
+            while(_swapReadyBarrier->numThreadsCurrentlyBlocked()
+                    != contexts.size())
+            {
+                // wait for render threads to catch up, then let them hang here where it is safe
+            }
+        }
+        else
+        {
+            _swapReadyBarrier->block();
+        }
     }
 
     for(itr = contexts.begin(); itr != contexts.end(); ++itr)
@@ -1458,22 +1516,23 @@ void CVRViewer::startThreading()
         case (SingleThreaded):
             numThreadsOnStartBarrier = 1;
             numThreadsOnEndBarrier = 1;
-	    numThreadsOnFrameStartBarrier = 1;
+            numThreadsOnFrameStartBarrier = 1;
             return;
         case (CullDrawThreadPerContext):
             numThreadsOnStartBarrier = contexts.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
-	    numThreadsOnFrameStartBarrier = contexts.size() + 1;
+            numThreadsOnFrameStartBarrier = contexts.size() + 1;
             break;
         case (DrawThreadPerContext):
             numThreadsOnStartBarrier = contexts.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
-	    numThreadsOnFrameStartBarrier = contexts.size() + 1;
+            numThreadsOnFrameStartBarrier = contexts.size() + 1;
             break;
         case (CullThreadPerCameraDrawThreadPerContext):
             numThreadsOnStartBarrier = cameras.size() + 1;
             numThreadsOnEndBarrier = contexts.size() + 1;
-	    numThreadsOnFrameStartBarrier = contexts.size() + cameras.size() + 1;
+            numThreadsOnFrameStartBarrier = contexts.size() + cameras.size()
+                    + 1;
             break;
         default:
             //OSG_NOTIFY(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
@@ -1547,9 +1606,9 @@ void CVRViewer::startThreading()
 
 #ifndef OSGUTIL_RENDERBACKEND_USE_REF_PTR
         if(!osg::Referenced::getDeleteHandler())
-            osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
+        osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
         else
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
+        osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
 #endif
     }
 
@@ -1569,13 +1628,13 @@ void CVRViewer::startThreading()
 
     if(numThreadsOnFrameStartBarrier > 1)
     {
-	_frameStartBarrier = new osg::BarrierOperation(
-                    numThreadsOnFrameStartBarrier,
-                    osg::BarrierOperation::NO_OPERATION);
+        _frameStartBarrier = new osg::BarrierOperation(
+                numThreadsOnFrameStartBarrier,
+                osg::BarrierOperation::NO_OPERATION);
     }
     else
     {
-	_frameStartBarrier = 0;
+        _frameStartBarrier = 0;
     }
 
     if(numThreadsOnEndBarrier > 1)
@@ -1590,7 +1649,7 @@ void CVRViewer::startThreading()
                     new osg::BarrierOperation(contexts.size() + 1,
                             osg::BarrierOperation::NO_OPERATION);
 
-    osg::ref_ptr < osg::SwapBuffersOperation > swapOp =
+    osg::ref_ptr<osg::SwapBuffersOperation> swapOp =
             new osg::SwapBuffersOperation();
 
     typedef std::map<OpenThreads::Thread*,int> ThreadAffinityMap;
@@ -1632,35 +1691,39 @@ void CVRViewer::startThreading()
 
         //std::cerr << "Thread Affinity: " << processNum % numProcessors << std::endl;
 
-	//gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
+        //gc->getGraphicsThread()->add(new OpenGLQueryInitOperation(gc->getState()->getContextID()));
 
-	if(_frameStartBarrier.valid())
+        if(_frameStartBarrier.valid())
             gc->getGraphicsThread()->add(_frameStartBarrier.get());
 
-	FrameStartCallbackOperation * fsco = new FrameStartCallbackOperation(gc->getState()->getContextID());
-	gc->getGraphicsThread()->add(fsco);
-	_frameStartOps.push_back(fsco);
+        FrameStartCallbackOperation * fsco = new FrameStartCallbackOperation(
+                gc->getState()->getContextID());
+        gc->getGraphicsThread()->add(fsco);
+        _frameStartOps.push_back(fsco);
 
         // add the startRenderingBarrier
-        if((_threadingModel == CullDrawThreadPerContext || _threadingModel == DrawThreadPerContext)
+        if((_threadingModel == CullDrawThreadPerContext
+                || _threadingModel == DrawThreadPerContext)
                 && _startRenderingBarrier.valid())
             gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
         /*if(_threadingModel == CullThreadPerCameraDrawThreadPerContext)
-        {
-	    contextCullBarrierMap[gc] = new osg::BarrierOperation(gc->getCameras().size()+1,
-                osg::BarrierOperation::NO_OPERATION);
-            if(!ComController::instance()->isMaster() || _renderOnMaster)
-            {
-                gc->getGraphicsThread()->add(contextCullBarrierMap[gc].get());
-            }
-        }*/
+         {
+         contextCullBarrierMap[gc] = new osg::BarrierOperation(gc->getCameras().size()+1,
+         osg::BarrierOperation::NO_OPERATION);
+         if(!ComController::instance()->isMaster() || _renderOnMaster)
+         {
+         gc->getGraphicsThread()->add(contextCullBarrierMap[gc].get());
+         }
+         }*/
 
-	PreDrawCallbackOperation * pdco = new PreDrawCallbackOperation(gc->getState()->getContextID());
-	gc->getGraphicsThread()->add(pdco);
-	_preDrawOps.push_back(pdco);
+        PreDrawCallbackOperation * pdco = new PreDrawCallbackOperation(
+                gc->getState()->getContextID());
+        gc->getGraphicsThread()->add(pdco);
+        _preDrawOps.push_back(pdco);
 
-	gc->getGraphicsThread()->add(new StatsBeginOperation("Operations begin time"));
+        gc->getGraphicsThread()->add(
+                new StatsBeginOperation("Operations begin time"));
 
         // add the rendering operation itself.
         if(!ComController::instance()->isMaster() || _renderOnMaster)
@@ -1668,28 +1731,37 @@ void CVRViewer::startThreading()
             gc->getGraphicsThread()->add(new osg::RunOperations());
         }
 
-	gc->getGraphicsThread()->add(new StatsEndOperation("Operations begin time","Operations end time","Operations time taken"));
+        gc->getGraphicsThread()->add(
+                new StatsEndOperation("Operations begin time",
+                        "Operations end time","Operations time taken"));
 
-	gc->getGraphicsThread()->add(new StatsBeginOperation("Finish begin time"));
+        gc->getGraphicsThread()->add(
+                new StatsBeginOperation("Finish begin time"));
 
         // IVL
         gc->getGraphicsThread()->add(new PreSwapOperation());
 
-	gc->getGraphicsThread()->add(new StatsEndOperation("Finish begin time","Finish end time","Finish time taken"));
+        gc->getGraphicsThread()->add(
+                new StatsEndOperation("Finish begin time","Finish end time",
+                        "Finish time taken"));
 
-	PostFinishCallbackOperation * pfco = new PostFinishCallbackOperation(gc->getState()->getContextID());
-	gc->getGraphicsThread()->add(pfco);
-	_postFinishOps.push_back(pfco);
+        PostFinishCallbackOperation * pfco = new PostFinishCallbackOperation(
+                gc->getState()->getContextID());
+        gc->getGraphicsThread()->add(pfco);
+        _postFinishOps.push_back(pfco);
 
         if((_threadingModel == CullDrawThreadPerContext
                 || _threadingModel == CullThreadPerCameraDrawThreadPerContext
                 || _threadingModel == DrawThreadPerContext)
                 && _endRenderingDispatchBarrier.valid())
         {
-	    gc->getGraphicsThread()->add(new StatsBeginOperation("End Barrier begin time"));
+            gc->getGraphicsThread()->add(
+                    new StatsBeginOperation("End Barrier begin time"));
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
-	    gc->getGraphicsThread()->add(new StatsEndOperation("End Barrier begin time","End Barrier end time","End Barrier time taken"));
+            gc->getGraphicsThread()->add(
+                    new StatsEndOperation("End Barrier begin time",
+                            "End Barrier end time","End Barrier time taken"));
         }
 
         if(_swapReadyBarrier.valid())
@@ -1698,7 +1770,6 @@ void CVRViewer::startThreading()
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
 
-	
     }
 
     if(_threadingModel == CullThreadPerCameraDrawThreadPerContext
@@ -1713,16 +1784,16 @@ void CVRViewer::startThreading()
             camera->createCameraThread();
 
             if(affinity)
-	    {
+            {
                 camera->getCameraThread()->setProcessorAffinity(
                         processNum % numProcessors);
-	    }
+            }
             threadAffinityMap[camera->getCameraThread()] = processNum
                     % numProcessors;
 
             osg::GraphicsContext* gc = camera->getGraphicsContext();
 
-	    if(_frameStartBarrier.valid())
+            if(_frameStartBarrier.valid())
                 camera->getCameraThread()->add(_frameStartBarrier.get());
 
             // add the startRenderingBarrier
@@ -1735,16 +1806,16 @@ void CVRViewer::startThreading()
             camera->getCameraThread()->add(renderer);
         }
 
-	/*for(citr = contexts.begin(); citr != contexts.end(); ++citr)
-	{
-	    for(std::list<osg::Camera*>::iterator it = (*citr)->getCameras().begin(); it != (*citr)->getCameras().end(); ++it)
-	    {
-		if(!ComController::instance()->isMaster() || _renderOnMaster)
-		{
-		    (*it)->getCameraThread()->add(contextCullBarrierMap[(*citr)].get());
-		}
-	    }
-	}*/
+        /*for(citr = contexts.begin(); citr != contexts.end(); ++citr)
+         {
+         for(std::list<osg::Camera*>::iterator it = (*citr)->getCameras().begin(); it != (*citr)->getCameras().end(); ++it)
+         {
+         if(!ComController::instance()->isMaster() || _renderOnMaster)
+         {
+         (*it)->getCameraThread()->add(contextCullBarrierMap[(*citr)].get());
+         }
+         }
+         }*/
 
         for(camItr = cameras.begin(); camItr != cameras.end(); ++camItr)
         {
@@ -1831,26 +1902,28 @@ void CVRViewer::frameStart()
 
     if(_frameStartBarrier.valid())
     {
-	_frameStartBarrier->block();
+        _frameStartBarrier->block();
     }
 
     // do per context callback for single threaded
     if(_threadingModel == SingleThreaded && _frameStartCallbacks.size())
     {
-	Contexts contexts;
-	getContexts(contexts);
-	Contexts::iterator itr;
-	for(itr = contexts.begin(); itr != contexts.end(); ++itr)
-	{
-	    if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
-	    {
-		makeCurrent(*itr);
-		for(int i = 0; i < _frameStartCallbacks.size(); i++)
-		{
-		    _frameStartCallbacks[i]->perContextCallback((*itr)->getState()->getContextID(),PerContextCallback::PCC_FRAME_START);
-		}
-	    }
-	}
+        Contexts contexts;
+        getContexts(contexts);
+        Contexts::iterator itr;
+        for(itr = contexts.begin(); itr != contexts.end(); ++itr)
+        {
+            if(!((*itr)->getGraphicsThread()) && (*itr)->valid())
+            {
+                makeCurrent(*itr);
+                for(int i = 0; i < _frameStartCallbacks.size(); i++)
+                {
+                    _frameStartCallbacks[i]->perContextCallback(
+                            (*itr)->getState()->getContextID(),
+                            PerContextCallback::PCC_FRAME_START);
+                }
+            }
+        }
     }
 }
 
@@ -1942,7 +2015,7 @@ void CVRViewer::addPerContextFrameStartCallback(PerContextCallback * pcc)
 {
     if(pcc)
     {
-	_addFrameStartCallbacks.push_back(pcc);
+        _addFrameStartCallbacks.push_back(pcc);
     }
 }
 
@@ -1951,25 +2024,26 @@ void CVRViewer::removePerContextFrameStartCallback(PerContextCallback * pcc)
     // lock all threaded callbacks
     for(int i = 0; i < _frameStartOps.size(); ++i)
     {
-	_frameStartOps[i]->lock.lock();
+        _frameStartOps[i]->lock.lock();
     }
 
-    for(std::vector<PerContextCallback*>::iterator it = _frameStartCallbacks.begin(); it != _frameStartCallbacks.end();)
+    for(std::vector<PerContextCallback*>::iterator it =
+            _frameStartCallbacks.begin(); it != _frameStartCallbacks.end();)
     {
-	if((*it) == pcc)
-	{
-	    it = _frameStartCallbacks.erase(it);
-	}
-	else
-	{
-	    ++it;
-	}
+        if((*it) == pcc)
+        {
+            it = _frameStartCallbacks.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
 
     // unlock all threaded callbacks
     for(int i = 0; i < _frameStartOps.size(); ++i)
     {
-	_frameStartOps[i]->lock.unlock();
+        _frameStartOps[i]->lock.unlock();
     }
 }
 
@@ -1982,17 +2056,16 @@ PerContextCallback * CVRViewer::getPerContextFrameStartCallback(int callback)
 {
     if(callback >= 0 && callback < _frameStartCallbacks.size())
     {
-	return _frameStartCallbacks[callback];
+        return _frameStartCallbacks[callback];
     }
-	return NULL;
+    return NULL;
 }
-
 
 void CVRViewer::addPerContextPreDrawCallback(PerContextCallback * pcc)
 {
     if(pcc)
     {
-	_addPreDrawCallbacks.push_back(pcc);
+        _addPreDrawCallbacks.push_back(pcc);
     }
 }
 
@@ -2001,25 +2074,26 @@ void CVRViewer::removePerContextPreDrawCallback(PerContextCallback * pcc)
     // lock all threaded callbacks
     for(int i = 0; i < _preDrawOps.size(); ++i)
     {
-	_preDrawOps[i]->lock.lock();
+        _preDrawOps[i]->lock.lock();
     }
 
-    for(std::vector<PerContextCallback*>::iterator it = _preDrawCallbacks.begin(); it != _preDrawCallbacks.end();)
+    for(std::vector<PerContextCallback*>::iterator it =
+            _preDrawCallbacks.begin(); it != _preDrawCallbacks.end();)
     {
-	if((*it) == pcc)
-	{
-	    it = _preDrawCallbacks.erase(it);
-	}
-	else
-	{
-	    ++it;
-	}
+        if((*it) == pcc)
+        {
+            it = _preDrawCallbacks.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
 
     // unlock all threaded callbacks
     for(int i = 0; i < _preDrawOps.size(); ++i)
     {
-	_preDrawOps[i]->lock.unlock();
+        _preDrawOps[i]->lock.unlock();
     }
 }
 
@@ -2032,16 +2106,16 @@ PerContextCallback * CVRViewer::getPerContextPreDrawCallback(int callback)
 {
     if(callback >= 0 && callback < _preDrawCallbacks.size())
     {
-	return _preDrawCallbacks[callback];
+        return _preDrawCallbacks[callback];
     }
-	return NULL;
+    return NULL;
 }
 
 void CVRViewer::addPerContextPostFinishCallback(PerContextCallback * pcc)
 {
     if(pcc)
     {
-	_postFinishCallbacks.push_back(pcc);
+        _postFinishCallbacks.push_back(pcc);
     }
 }
 
@@ -2050,25 +2124,26 @@ void CVRViewer::removePerContextPostFinishCallback(PerContextCallback * pcc)
     // lock all threaded callbacks
     for(int i = 0; i < _postFinishOps.size(); ++i)
     {
-	_postFinishOps[i]->lock.lock();
+        _postFinishOps[i]->lock.lock();
     }
 
-    for(std::vector<PerContextCallback*>::iterator it = _postFinishCallbacks.begin(); it != _postFinishCallbacks.end();)
+    for(std::vector<PerContextCallback*>::iterator it =
+            _postFinishCallbacks.begin(); it != _postFinishCallbacks.end();)
     {
-	if((*it) == pcc)
-	{
-	    it = _postFinishCallbacks.erase(it);
-	}
-	else
-	{
-	    ++it;
-	}
+        if((*it) == pcc)
+        {
+            it = _postFinishCallbacks.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
 
     // unlock all threaded callbacks
     for(int i = 0; i < _postFinishOps.size(); ++i)
     {
-	_postFinishOps[i]->lock.unlock();
+        _postFinishOps[i]->lock.unlock();
     }
 }
 
@@ -2081,7 +2156,7 @@ PerContextCallback * CVRViewer::getPerContextPostFinishCallback(int callback)
 {
     if(callback >= 0 && callback < _postFinishCallbacks.size())
     {
-	return _postFinishCallbacks[callback];
+        return _postFinishCallbacks[callback];
     }
-	return NULL;
+    return NULL;
 }

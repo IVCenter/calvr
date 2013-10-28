@@ -29,7 +29,7 @@ class ConfigManager;
  */
 class CVRCONFIG_EXPORT ConfigFileReader
 {
-    friend class ConfigManager;
+        friend class ConfigManager;
     public:
         ConfigFileReader()
         {
@@ -95,8 +95,9 @@ class CVRCONFIG_EXPORT ConfigFileReader
          * @param found If valid, *found is set to true if the tag existed and false
          *              if the default value was returned
          */
-        virtual std::string getEntryConcat(std::string attribute, std::string path,
-                char separator, std::string def = "", bool * found = NULL) = 0;
+        virtual std::string getEntryConcat(std::string attribute,
+                std::string path, char separator, std::string def = "",
+                bool * found = NULL) = 0;
 
         /**
          * @brief Looks for a float config file value in tag path with the default attribute
@@ -108,7 +109,7 @@ class CVRCONFIG_EXPORT ConfigFileReader
          *              if the default value was returned
          */
         virtual float getFloat(std::string path, float def = 0.0, bool * found =
-                NULL) = 0;
+        NULL) = 0;
 
         /**
          * @brief Looks for a float config file value in tag path with the specified attribute
@@ -155,7 +156,8 @@ class CVRCONFIG_EXPORT ConfigFileReader
          * @param found If valid, *found is set to true if the tag existed and false
          *              if the default value was returned
          */
-        virtual int getInt(std::string path, int def = 0, bool * found = NULL) = 0;
+        virtual int getInt(std::string path, int def = 0,
+                bool * found = NULL) = 0;
 
         /**
          * @brief Looks for a integer config file value in tag path with the specified attribute
@@ -179,7 +181,7 @@ class CVRCONFIG_EXPORT ConfigFileReader
          *              if the default value was returned
          */
         virtual bool getBool(std::string path, bool def = false, bool * found =
-                NULL) = 0;
+        NULL) = 0;
 
         /**
          * @brief Looks for a boolean config file value in tag path with the specified attribute
@@ -216,9 +218,10 @@ class CVRCONFIG_EXPORT ConfigFileReader
          * @param found If valid, *found is set to true if the tag existed and false
          *              if the default value was returned
          */
-        virtual osg::Vec3 getVec3(std::string attributeX, std::string attributeY,
-                std::string attributeZ, std::string path, osg::Vec3 def =
-                        osg::Vec3(0,0,0), bool * found = NULL) = 0;
+        virtual osg::Vec3 getVec3(std::string attributeX,
+                std::string attributeY, std::string attributeZ,
+                std::string path, osg::Vec3 def = osg::Vec3(0,0,0),
+                bool * found = NULL) = 0;
 
         /**
          * @brief Looks for a vector of floats in the tag path with default attributes "x","y","z","w"
@@ -244,10 +247,10 @@ class CVRCONFIG_EXPORT ConfigFileReader
          * @param found If valid, *found is set to true if the tag existed and false
          *              if the default value was returned
          */
-        virtual osg::Vec4 getVec4(std::string attributeX, std::string attributeY,
-                std::string attributeZ, std::string attributeW,
-                std::string path, osg::Vec4 def = osg::Vec4(0,0,0,1),
-                bool * found = NULL) = 0;
+        virtual osg::Vec4 getVec4(std::string attributeX,
+                std::string attributeY, std::string attributeZ,
+                std::string attributeW, std::string path, osg::Vec4 def =
+                        osg::Vec4(0,0,0,1), bool * found = NULL) = 0;
 
         /**
          * @brief Looks for a vector of doubles in the tag path with default attributes "x","y","z"

@@ -6,7 +6,6 @@
 #include <osg/Geometry>
 #include <osg/PolygonMode>
 
-
 using namespace cvr;
 
 BubbleMenuListGeometry::BubbleMenuListGeometry() :
@@ -58,7 +57,7 @@ void BubbleMenuListGeometry::createGeometry(MenuItem * item)
             osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
     _geodeIcon->addDrawable(_iconGeometry.get());
 
-    osg::ref_ptr < osg::Texture2D > iconTexture = loadIcon("list.rgb");
+    osg::ref_ptr<osg::Texture2D> iconTexture = loadIcon("list.rgb");
     if(iconTexture.get() != NULL)
     {
         _geodeIcon->getOrCreateStateSet()->setTextureAttributeAndModes(0,
@@ -98,10 +97,13 @@ void BubbleMenuListGeometry::createGeometry(MenuItem * item)
 
     _geodeSelected->addDrawable(_valuesSelected[margin]);
 
-    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(50,0,0), 100, osg::Vec4(0,1,0,1));
+    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(50,0,0),100,
+            osg::Vec4(0,1,0,1));
     osg::PolygonMode * polygonMode = new osg::PolygonMode();
-    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
-    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode, osg::StateAttribute::ON);
+    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK,
+            osg::PolygonMode::LINE);
+    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
 
     _geode->addDrawable(sphereGeom);
 
@@ -113,15 +115,16 @@ void BubbleMenuListGeometry::createGeometry(MenuItem * item)
 
     // Hover text
     _textGeode = new osg::Geode();
-    osgText::Text * hoverTextNode = makeText(item->getHoverText(), _textSize,
+    osgText::Text * hoverTextNode = makeText(item->getHoverText(),_textSize,
 //        osg::Vec3(0,0,_radius), osg::Vec4(1,1,1,1), osgText::Text::LEFT_CENTER);
-       osg::Vec3(_radius/2,0,1.5*_radius), osg::Vec4(1,1,1,1), osgText::Text::CENTER_CENTER);
+            osg::Vec3(_radius / 2,0,1.5 * _radius),osg::Vec4(1,1,1,1),
+            osgText::Text::CENTER_CENTER);
 
     osg::StateSet * ss = _textGeode->getOrCreateStateSet();
-    ss->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    ss->setRenderBinDetails(11, "Render Bin");
+    ss->setRenderBinDetails(11,"Render Bin");
 
     hoverTextNode->setFont(_font);
     _textGeode->addDrawable(hoverTextNode);
@@ -337,16 +340,16 @@ osg::Geometry * BubbleMenuListGeometry::makeBackboard()
 
 void BubbleMenuListGeometry::showHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->addChild(_textGeode);
+        _node->addChild(_textGeode);
     }
 }
 
 void BubbleMenuListGeometry::hideHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->removeChild(_textGeode);
+        _node->removeChild(_textGeode);
     }
 }

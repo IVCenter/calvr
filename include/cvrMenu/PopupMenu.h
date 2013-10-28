@@ -40,7 +40,8 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
          *
          * Looks for attibutes x,y,z,h,p,r,scale in configTag
          */
-        PopupMenu(std::string title, std::string configTag = "", bool closable = true);
+        PopupMenu(std::string title, std::string configTag = "", bool closable =
+                true);
         virtual ~PopupMenu();
 
         /**

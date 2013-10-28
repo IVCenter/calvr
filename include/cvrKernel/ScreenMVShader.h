@@ -62,8 +62,7 @@ class ScreenMVShader : public ScreenMVSimulator
         {
                 enum IndexState
                 {
-                    FIXED = 0,
-                    TOGGLE
+                    FIXED = 0, TOGGLE
                 };
 
                 virtual void operator()(osg::RenderInfo & ri) const;

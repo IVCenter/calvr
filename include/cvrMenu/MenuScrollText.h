@@ -35,7 +35,9 @@ class CVRMENU_EXPORT MenuScrollText : public MenuItem
          * @param indent if the text should be indented to align with checkboxes, etc
          * @param followEnd should the window scroll with new text when it is added
          */
-        MenuScrollText(std::string text, float width, int rows, float sizeScale = 1.0, bool indent = false, bool followEnd = false);
+        MenuScrollText(std::string text, float width, int rows,
+                float sizeScale = 1.0, bool indent = false, bool followEnd =
+                        false);
         virtual ~MenuScrollText();
 
         /**
@@ -69,7 +71,10 @@ class CVRMENU_EXPORT MenuScrollText : public MenuItem
         /**
          * @brief Get the current length of the text string
          */
-        int getLength() { return _text.length(); }
+        int getLength()
+        {
+            return _text.length();
+        }
 
         /**
          * @brief Get if the text should be indented to align with checkboxes, etc

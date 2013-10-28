@@ -77,16 +77,16 @@ bool TrackerShmem::init(std::string tag)
     {
         _numBodies = _tracker->count;
         for(int i = 0; i < _numBodies; i++)
-	{
-	    TrackedBody * tb = new TrackedBody;
-	    tb->x = tb->y = tb->z = 0.0;
-	    osg::Quat q;
-	    tb->qx = q.x();
-	    tb->qy = q.y();
-	    tb->qz = q.z();
-	    tb->qw = q.w();
-	    _bodyList.push_back(tb);
-	}
+        {
+            TrackedBody * tb = new TrackedBody;
+            tb->x = tb->y = tb->z = 0.0;
+            osg::Quat q;
+            tb->qx = q.x();
+            tb->qy = q.y();
+            tb->qz = q.z();
+            tb->qw = q.w();
+            _bodyList.push_back(tb);
+        }
     }
 
     shmKey = ConfigManager::getInt(tag + ".SHMEM.ControllerID",4127);

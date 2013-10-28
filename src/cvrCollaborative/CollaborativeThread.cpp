@@ -64,7 +64,7 @@ void CollaborativeThread::run()
             }
 
             if(!_socket->send(_myTrackedBodies,sizeof(BodyUpdate) * _numBodies,
-                    MSG_NOSIGNAL))
+            MSG_NOSIGNAL))
             {
                 return;
             }
@@ -115,8 +115,7 @@ void CollaborativeThread::run()
                         new CollaborativeMessageHeader[_serverUpdate->numMes];
                 _messageDataUpdate = new char*[_serverUpdate->numMes];
 
-                if(!_socket->recv(
-                        _messageHeaderUpdate,
+                if(!_socket->recv(_messageHeaderUpdate,
                         sizeof(struct CollaborativeMessageHeader)
                                 * _serverUpdate->numMes))
                 {
@@ -180,8 +179,7 @@ void CollaborativeThread::run()
             {
                 _clientUpdate = new struct ClientUpdate[_serverUpdate->numUsers
                         - 1];
-                if(!_socket->recv(
-                        _clientUpdate,
+                if(!_socket->recv(_clientUpdate,
                         sizeof(struct ClientUpdate)
                                 * (_serverUpdate->numUsers - 1)))
                 {

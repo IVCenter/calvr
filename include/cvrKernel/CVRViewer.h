@@ -57,11 +57,9 @@ class CVRKERNEL_EXPORT CVRViewer : public osgViewer::Viewer
         };
 
         enum PreSwapOp
-	{
-	    PSO_FINISH = 0,
-	    PSO_FLUSH,
-	    PSO_NONE
-	};
+        {
+            PSO_FINISH = 0, PSO_FLUSH, PSO_NONE
+        };
 
         /**
          * @brief Get pointer to static instance of class
@@ -302,10 +300,7 @@ struct CVRKERNEL_EXPORT PerContextCallback
     public:
         enum PCCType
         {
-            PCC_UNKNOWN=0,
-            PCC_FRAME_START,
-            PCC_PRE_DRAW,
-            PCC_POST_FINISH
+            PCC_UNKNOWN = 0, PCC_FRAME_START, PCC_PRE_DRAW, PCC_POST_FINISH
         };
         virtual void perContextCallback(int contextid, PCCType type) const
         {

@@ -47,8 +47,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         enum BoundsCalcMode
         {
-            MANUAL = 1,
-            AUTO
+            MANUAL = 1, AUTO
         };
 
         /**
@@ -302,7 +301,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         osg::Matrix getWorldToObjectMatrix();
 
-        virtual bool processEvent(InteractionEvent * ie, VectorWithPosition<SceneObject*> & nodeList);
+        virtual bool processEvent(InteractionEvent * ie,
+                VectorWithPosition<SceneObject*> & nodeList);
 
         /**
          * @brief Process an InteractionEvent from the event pipeline

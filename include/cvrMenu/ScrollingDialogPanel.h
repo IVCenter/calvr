@@ -33,8 +33,8 @@ class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
          * @param title title for the PopupMenu
          * @param configTag location in config file for initial position/rotation/scale
          */
-        ScrollingDialogPanel(float textWidth, int textRows, float textScale, bool followEnd, std::string title, std::string configTag =
-                "");
+        ScrollingDialogPanel(float textWidth, int textRows, float textScale,
+                bool followEnd, std::string title, std::string configTag = "");
         virtual ~ScrollingDialogPanel();
 
         /**
@@ -45,7 +45,10 @@ class CVRMENU_EXPORT ScrollingDialogPanel : public PopupMenu
         /**
          * @brief Get the current menu text
          */
-        const std::string & getText() { return _text; }
+        const std::string & getText()
+        {
+            return _text;
+        }
 
         /**
          * @brief Clear the menu text

@@ -6,7 +6,7 @@ std::vector<IsectInfo> getObjectIntersection(osg::Node *root,
 {
     // Compute intersections of viewing ray with objects:
     osgUtil::IntersectVisitor iv;
-    osg::ref_ptr < osg::LineSegment > testSegment = new osg::LineSegment();
+    osg::ref_ptr<osg::LineSegment> testSegment = new osg::LineSegment();
     testSegment->set(wPointerStart,wPointerEnd);
     iv.addLineSegment(testSegment.get());
     iv.setTraversalMask(cvr::INTERSECT_MASK);

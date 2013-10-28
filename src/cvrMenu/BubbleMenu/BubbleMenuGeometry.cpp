@@ -75,7 +75,8 @@ BubbleMenuGeometry * cvr::createBubbleMenuGeometry(MenuItem * item, bool head)
         }
         case SUBMENU_CLOSABLE:
         {
-            BubbleMenuGeometry * mg = new BubbleMenuSubMenuClosableGeometry(head);
+            BubbleMenuGeometry * mg = new BubbleMenuSubMenuClosableGeometry(
+                    head);
             mg->createGeometry(item);
 
             return mg;
@@ -198,22 +199,23 @@ osg::Geometry * BubbleMenuGeometry::makeLine(osg::Vec3 p1, osg::Vec3 p2,
     return geo;
 }
 
-osg::Geometry * BubbleMenuGeometry::makeSphere(osg::Vec3 point, float radius, 
-    osg::Vec4 color)
+osg::Geometry * BubbleMenuGeometry::makeSphere(osg::Vec3 point, float radius,
+        osg::Vec4 color)
 {
-    osg::Vec3Array * _verts      = new osg::Vec3Array(0);
-    osg::Vec4Array * _colors     = new osg::Vec4Array(1);
-    osg::Vec3Array * _normals    = new osg::Vec3Array(0);
-    osg::DrawArrays * _primitive = new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, 0);
-    osg::Geometry * _geometry    = new osg::Geometry();
-   
+    osg::Vec3Array * _verts = new osg::Vec3Array(0);
+    osg::Vec4Array * _colors = new osg::Vec4Array(1);
+    osg::Vec3Array * _normals = new osg::Vec3Array(0);
+    osg::DrawArrays * _primitive = new osg::DrawArrays(osg::PrimitiveSet::QUADS,
+            0,0);
+    osg::Geometry * _geometry = new osg::Geometry();
+
 //    (*_colors)[0] = color;
     (*_colors)[0] = _sphereColor;
     int _count = 0;
 
-    float theta, cost, sint, thetaNext, costn, sintn, 
-          gamma, sing, cosg, gammaNext, singn, cosgn, interval,
-          x = point[0], y = point[1], z = point[2];
+    float theta, cost, sint, thetaNext, costn, sintn, gamma, sing, cosg,
+            gammaNext, singn, cosgn, interval, x = point[0], y = point[1], z =
+                    point[2];
 
     _tessellations += _tessellations % 2; // force to be even for nice tessellating
 
@@ -222,9 +224,9 @@ osg::Geometry * BubbleMenuGeometry::makeSphere(osg::Vec3 point, float radius,
     _verts->clear();
     _normals->clear();
 
-    for (int i = 0; i <  _tessellations+1; ++i)
+    for(int i = 0; i < _tessellations + 1; ++i)
     {
-        for (int j = 0; j <  _tessellations+1; ++j)
+        for(int j = 0; j < _tessellations + 1; ++j)
         {
             theta = i * interval;
             gamma = j * interval;
@@ -244,18 +246,14 @@ osg::Geometry * BubbleMenuGeometry::makeSphere(osg::Vec3 point, float radius,
             cosgn = cos(gammaNext);
             singn = sin(gammaNext);
 
-            osg::Vec3 topLeft     = osg::Vec3(x + radius * sint * cosg, 
-                                              y + radius * sint * sing,
-                                              z + radius * cost);
-            osg::Vec3 topRight    = osg::Vec3(x + radius * sint * cosgn, 
-                                              y + radius * sint * singn,
-                                              z + radius * cost);
-            osg::Vec3 bottomRight = osg::Vec3(x + radius * sintn * cosgn, 
-                                              y + radius * sintn * singn,
-                                              z + radius * costn);
-            osg::Vec3 bottomLeft  = osg::Vec3(x + radius * sintn * cosg, 
-                                              y + radius * sintn * sing,
-                                              z + radius * costn);
+            osg::Vec3 topLeft = osg::Vec3(x + radius * sint * cosg,
+                    y + radius * sint * sing,z + radius * cost);
+            osg::Vec3 topRight = osg::Vec3(x + radius * sint * cosgn,
+                    y + radius * sint * singn,z + radius * cost);
+            osg::Vec3 bottomRight = osg::Vec3(x + radius * sintn * cosgn,
+                    y + radius * sintn * singn,z + radius * costn);
+            osg::Vec3 bottomLeft = osg::Vec3(x + radius * sintn * cosg,
+                    y + radius * sintn * sing,z + radius * costn);
 
             _verts->push_back(topLeft);
             _normals->push_back(topLeft);
@@ -301,7 +299,7 @@ osg::Texture2D * BubbleMenuGeometry::loadIcon(std::string name)
 
     std::string file = _iconDir + "/icons/" + name;
     //std::cerr << "Trying to load icon: " << file << std::endl;
-    osg::ref_ptr < osg::Image > image = osgDB::readImageFile(file);
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
     if(image)
     {
         osg::Texture2D* texture;
@@ -350,8 +348,10 @@ osgText::Text3D * BubbleMenuGeometry::make3DText(std::string text, float size,
     textNode->setCharacterSize(size);
 
     textNode->setCharacterDepth(15);
-    textNode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::OPAQUE_BIN);
-    textNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    textNode->getOrCreateStateSet()->setRenderingHint(
+            osg::StateSet::OPAQUE_BIN);
+    textNode->getOrCreateStateSet()->setMode(GL_LIGHTING,
+            osg::StateAttribute::ON);
     textNode->setDrawMode(osgText::Text3D::TEXT);
     textNode->setAlignment(align);
     textNode->setPosition(pos);
@@ -416,11 +416,13 @@ MenuItem * BubbleMenuGeometry::getMenuItem()
 void BubbleMenuGeometry::resetIntersect(float width)
 {
     _intersect->removeDrawables(0,_intersect->getNumDrawables());
-/*    _intersect->addDrawable(
-            makeQuad(width + 2.0 * _border,-(_height + _border),
-                    osg::Vec4(0,.2,0,0),osg::Vec3(-_border,0,_border / 2.0)));*/
-    _intersect->addDrawable(makeSphere(osg::Vec3(_radius/2,0,0), _radius, osg::Vec4(0,0,0,0)));
-    _intersect->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    /*    _intersect->addDrawable(
+     makeQuad(width + 2.0 * _border,-(_height + _border),
+     osg::Vec4(0,.2,0,0),osg::Vec3(-_border,0,_border / 2.0)));*/
+    _intersect->addDrawable(
+            makeSphere(osg::Vec3(_radius / 2,0,0),_radius,osg::Vec4(0,0,0,0)));
+    _intersect->getOrCreateStateSet()->setRenderingHint(
+            osg::StateSet::TRANSPARENT_BIN);
 }
 
 osg::Geode * BubbleMenuGeometry::getIntersect()

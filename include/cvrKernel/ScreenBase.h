@@ -92,7 +92,8 @@ class CVRKERNEL_EXPORT ScreenBase
          * @param width new viewport width value
          * @param height new viewport height value
          */
-        virtual void viewportResized(int left, int bottom, int width, int height)
+        virtual void viewportResized(int left, int bottom, int width,
+                int height)
         {
             _myInfo->myChannel->left = (float)left;
             _myInfo->myChannel->bottom = (float)bottom;

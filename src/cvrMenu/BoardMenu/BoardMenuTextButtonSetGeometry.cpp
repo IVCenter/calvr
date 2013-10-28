@@ -118,7 +118,9 @@ void BoardMenuTextButtonSetGeometry::processEvent(InteractionEvent * event)
 
             if(_item->getCallback())
             {
-                _item->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
+                _item->getCallback()->menuCallback(_item,
+                        event->asHandEvent() ?
+                                event->asHandEvent()->getHand() : 0);
             }
             break;
         }

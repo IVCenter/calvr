@@ -8,9 +8,9 @@
 class Lerp
 {
     public:
-        Lerp(osg::Vec3 startP, osg::Vec3 endP, float t, float d = 0, 
-            bool hideOnFinish = false, bool hideOnDelay = false);
-        ~Lerp();       
+        Lerp(osg::Vec3 startP, osg::Vec3 endP, float t, float d = 0,
+                bool hideOnFinish = false, bool hideOnDelay = false);
+        ~Lerp();
         bool isDone();
         bool isDelayed();
         bool isHideOnFinish();
@@ -18,7 +18,7 @@ class Lerp
         osg::Vec3 getPosition();
         osg::Vec3 getEnd();
 
-   protected:
+    protected:
         osg::Vec3 start, end;
         float seconds, delay;
         timeval startTime;

@@ -84,7 +84,8 @@ class ScreenMVCullVisitor : public osgUtil::CullVisitor
                 _cullingStatus = false;
                 return false;
             }
-            else if(_firstCullStatus && node.getNodeMask() & DISABLE_FIRST_CULL)
+            else if(_firstCullStatus
+                    && (node.getNodeMask() & DISABLE_FIRST_CULL))
             {
                 if(node.getNodeMask() & FIRST_CULL_STATUS)
                 {

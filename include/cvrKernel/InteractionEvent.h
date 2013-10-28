@@ -115,7 +115,8 @@ class InteractionEvent
 
         virtual void printValues()
         {
-            std::cerr << "Interaction: " << interactionToName(_interaction) << std::endl;
+            std::cerr << "Interaction: " << interactionToName(_interaction)
+                    << std::endl;
         }
 
         /**
@@ -187,7 +188,8 @@ class InteractionEvent
 class HandInteractionEvent : public InteractionEvent
 {
     public:
-        HandInteractionEvent() : InteractionEvent(), _hand(0)
+        HandInteractionEvent() :
+                InteractionEvent(), _hand(0)
         {
         }
 
@@ -415,7 +417,8 @@ class PointerInteractionEvent : public TrackedButtonInteractionEvent
         };
 
         PointerInteractionEvent() :
-                TrackedButtonInteractionEvent(), _x(0.0f), _y(0.0f), _pointerType(UNKNOWN_POINTER)
+                TrackedButtonInteractionEvent(), _x(0.0f), _y(0.0f), _pointerType(
+                        UNKNOWN_POINTER)
         {
         }
 
@@ -483,8 +486,8 @@ class PointerInteractionEvent : public TrackedButtonInteractionEvent
 class ValuatorInteractionEvent : public HandInteractionEvent
 {
     public:
-        ValuatorInteractionEvent() : HandInteractionEvent(),
-                _value(0.0), _valuator(0)
+        ValuatorInteractionEvent() :
+                HandInteractionEvent(), _value(0.0), _valuator(0)
         {
         }
 
@@ -665,7 +668,8 @@ class PositionInteractionEvent : public HandInteractionEvent
         virtual void printValues()
         {
             HandInteractionEvent::printValues();
-            std::cerr << "x: " << _position.x() << " y: " << _position.y() << " z: " << _position.z() << std::endl;
+            std::cerr << "x: " << _position.x() << " y: " << _position.y()
+                    << " z: " << _position.z() << std::endl;
         }
 
         virtual PositionInteractionEvent * asPositionEvent()

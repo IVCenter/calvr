@@ -29,9 +29,7 @@ class ScreenMono : public ScreenBase
          */
         enum monoType
         {
-            CENTER = 0,
-            LEFT,
-            RIGHT
+            CENTER = 0, LEFT, RIGHT
         };
 
         /**
@@ -60,7 +58,8 @@ class ScreenMono : public ScreenBase
          */
         virtual ScreenInfo * findScreenInfo(osg::Camera * c);
 
-        virtual void viewportResized(int left, int bottom, int width, int height);
+        virtual void viewportResized(int left, int bottom, int width,
+                int height);
     protected:
         monoType _type;                     ///< defines eye location
         osg::ref_ptr<osg::Camera> _camera;  ///< camera created for screen

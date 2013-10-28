@@ -3,7 +3,6 @@
  */
 //#ifndef CALVR_TRACKER_SHMEM_H
 //#define CALVR_TRACKER_SHMEM_H
-
 #include <cvrInput/TrackerBase.h>
 
 #include <vector>
@@ -37,7 +36,7 @@ class TrackerPlugin : public TrackerBase
         virtual void setButtonMask(int buttonMask);
         virtual void setButton(int buttonNum, bool state);
         virtual float getValuator(int index);
-        virtual void setValuator(int index,float val);
+        virtual void setValuator(int index, float val);
 
         virtual int getNumBodies();
         virtual int getNumValuators();
@@ -50,7 +49,6 @@ class TrackerPlugin : public TrackerBase
         virtual void update(
                 std::map<int,std::list<InteractionEvent*> > & eventMap);
     protected:
-
 
         struct sensor
         {

@@ -27,13 +27,13 @@ bool ScreenMVSimulator::isSimulatedHeadMatrix(int head)
     return headMat.find(head) != headMat.end();
 }
 
-osg::Matrix ScreenMVSimulator::getCurrentHeadMatrix(int head)
+osg::Matrix & ScreenMVSimulator::getCurrentHeadMatrix(int head)
 {
     return isSimulatedHeadMatrix(head) ?
             *headMat[head] : ScreenBase::getCurrentHeadMatrix(head);
 }
 
-osg::Vec3 ScreenMVSimulator::defaultLeftEye(int head)
+osg::Vec3d ScreenMVSimulator::defaultLeftEye(int head)
 {
     return isSimulatedHeadMatrix(head) ?
             osg::Vec3d(-_separation * _eyeSepMult / 2.0,0.0,0.0)
@@ -41,7 +41,7 @@ osg::Vec3 ScreenMVSimulator::defaultLeftEye(int head)
             ScreenBase::defaultLeftEye(head);
 }
 
-osg::Vec3 ScreenMVSimulator::defaultRightEye(int head)
+osg::Vec3d ScreenMVSimulator::defaultRightEye(int head)
 {
     return isSimulatedHeadMatrix(head) ?
             osg::Vec3d(_separation * _eyeSepMult / 2.0,0.0,0.0)

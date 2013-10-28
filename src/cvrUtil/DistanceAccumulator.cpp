@@ -37,7 +37,7 @@ double distanceDA(const osg::Vec3 &coord, const osg::Matrix& matrix)
 
 DistanceAccumulator::DistanceAccumulator() :
         osg::NodeVisitor(TRAVERSE_ALL_CHILDREN), _nearFarRatio(0.0005), _maxDepth(
-                UINT_MAX)
+        UINT_MAX)
 {
     setMatrices(osg::Matrix::identity(),osg::Matrix::identity());
     reset();

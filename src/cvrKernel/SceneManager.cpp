@@ -31,8 +31,8 @@ using namespace cvr;
 
 struct PrioritySort
 {
-        bool operator()(const std::pair<float,SceneObject*>& first
-                , const std::pair<float,SceneObject*>& second)
+        bool operator()(const std::pair<float,SceneObject*>& first,
+                const std::pair<float,SceneObject*>& second)
         {
             return first.first > second.first;
         }
@@ -44,6 +44,17 @@ SceneManager::SceneManager()
 {
     _wallValid = false;
     _uniqueMapInUse = false;
+    _wallType = WT_PLANAR;
+    _wallHeight = 1000.0f;
+    _wallWidth = 1000.0f;
+    _hidePointer = false;
+    _showAxis = false;
+    _scale = 1.0;
+    _menuOpenObject = NULL;
+    _menuDefaultOpenButton = 1;
+    _menuMaxDistance = 1500.0;
+    _menuMinDistance = 750.0;
+    _menuScale = 1.0;
 }
 
 SceneManager::~SceneManager()
@@ -110,36 +121,36 @@ bool SceneManager::init()
     _menuDefaultOpenButton = ConfigManager::getInt("value",
             "ContextMenus.DefaultOpenButton",1);
 
-
     _wallWidth = _wallHeight = 2000.0;
 
-    std::string typestr = ConfigManager::getEntry("value","TiledWall.Type","PLANAR");
+    std::string typestr = ConfigManager::getEntry("value","TiledWall.Type",
+            "PLANAR");
     if(typestr == "PLANAR")
     {
-	_wallType = WT_PLANAR;
+        _wallType = WT_PLANAR;
     }
     else
     {
-	_wallType = WT_UNKNOWN;
+        _wallType = WT_UNKNOWN;
     }
 
     switch(_wallType)
     {
-	case WT_PLANAR:
-	{
-	    if(ConfigManager::getBool("autoDetect","TiledWall.Type",true))
-	    {
-		detectWallBounds();
-	    }
-	    else
-	    {
-		//TODO: manual wall description
-	    }
-	    _wallValid = true;
-	}
-	    break;
-	default:
-	    break;
+        case WT_PLANAR:
+        {
+            if(ConfigManager::getBool("autoDetect","TiledWall.Type",true))
+            {
+                detectWallBounds();
+            }
+            else
+            {
+                //TODO: manual wall description
+            }
+            _wallValid = true;
+        }
+            break;
+        default:
+            break;
     }
     //std::cerr << "WallWidth: " << _wallWidth << " WallHeight: " << _wallHeight << std::endl;
 
@@ -171,35 +182,38 @@ void SceneManager::update()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStatsAdvanced"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
-	switch(TrackingManager::instance()->getPointerGraphicType(i))
+        switch(TrackingManager::instance()->getPointerGraphicType(i))
         {
-	    case POINTER:
-	    {
-		osg::Vec3 intersect;
-		if(getPointOnTiledWall(TrackingManager::instance()->getHandMat(i),intersect))
-		{
-		    //TODO add wall rotation to pointer
-		    osg::Matrix m;
-		    m.makeTranslate(intersect);
-		    _handTransforms[i]->setMatrix(m);
-		}
-		break;
-	    }
-	    default:
-		_handTransforms[i]->setMatrix(
-			TrackingManager::instance()->getHandMat(i));
-		break;
-	}
+            case POINTER:
+            {
+                osg::Vec3 intersect;
+                if(getPointOnTiledWall(
+                        TrackingManager::instance()->getHandMat(i),intersect))
+                {
+                    //TODO add wall rotation to pointer
+                    osg::Matrix m;
+                    m.makeTranslate(intersect);
+                    _handTransforms[i]->setMatrix(m);
+                }
+                break;
+            }
+            default:
+                _handTransforms[i]->setMatrix(
+                        TrackingManager::instance()->getHandMat(i));
+                break;
+        }
     }
 
     if(_showAxis)
@@ -215,10 +229,18 @@ void SceneManager::update()
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene begin time", startTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene end time", endTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Scene time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Scene begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Scene end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Scene time taken",endTime - startTime);
     }
 }
 
@@ -235,13 +257,13 @@ void SceneManager::postEventUpdate()
         if(it->second)
         {
             it->second->moveCleanup();
-	    SceneObject * object = it->second;
-	    while(object)
-	    {
-		object->updateCallback(it->first,
-			TrackingManager::instance()->getHandMat(it->first));
-		object = object->_parent;
-	    }
+            SceneObject * object = it->second;
+            while(object)
+            {
+                object->updateCallback(it->first,
+                        TrackingManager::instance()->getHandMat(it->first));
+                object = object->_parent;
+            }
         }
     }
 }
@@ -261,7 +283,7 @@ const osg::MatrixTransform * SceneManager::getObjectTransform()
     return _objectTransform.get();
 }
 
-void SceneManager::setObjectMatrix(osg::Matrix & mat)
+void SceneManager::setObjectMatrix(osg::Matrixd & mat)
 {
     _objectTransform->setMatrix(mat);
 
@@ -408,38 +430,42 @@ bool SceneManager::processEvent(InteractionEvent * ie)
     }
     else
     {
-	_uniqueMapInUse = true;
-	for(std::map<SceneObject*,int>::iterator it =
-		_uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end();
-		it++)
-	{
-	    if(_uniqueBlacklistMap.find(it->first) != _uniqueBlacklistMap.end())
-	    {
-		continue;
-	    }
+        _uniqueMapInUse = true;
+        for(std::map<SceneObject*,int>::iterator it =
+                _uniqueActiveObjects.begin(); it != _uniqueActiveObjects.end();
+                it++)
+        {
+            if(_uniqueBlacklistMap.find(it->first) != _uniqueBlacklistMap.end())
+            {
+                continue;
+            }
 
-	    if(it->first->processEvent(ie))
-	    {
-		_uniqueMapInUse = false;
+            if(it->first->processEvent(ie))
+            {
+                _uniqueMapInUse = false;
 
-		for(std::map<SceneObject*,bool>::iterator it = _uniqueBlacklistMap.begin(); it != _uniqueBlacklistMap.end(); it++)
-		{
-		    _uniqueActiveObjects.erase(it->first);
-		}
-		_uniqueBlacklistMap.clear();
+                for(std::map<SceneObject*,bool>::iterator it =
+                        _uniqueBlacklistMap.begin();
+                        it != _uniqueBlacklistMap.end(); it++)
+                {
+                    _uniqueActiveObjects.erase(it->first);
+                }
+                _uniqueBlacklistMap.clear();
 
-		return true;
-	    }
-	}
+                return true;
+            }
+        }
 
-	for(std::map<SceneObject*,bool>::iterator it = _uniqueBlacklistMap.begin(); it != _uniqueBlacklistMap.end(); it++)
-	{
-	    _uniqueActiveObjects.erase(it->first);
-	}
-	_uniqueBlacklistMap.clear();
+        for(std::map<SceneObject*,bool>::iterator it =
+                _uniqueBlacklistMap.begin(); it != _uniqueBlacklistMap.end();
+                it++)
+        {
+            _uniqueActiveObjects.erase(it->first);
+        }
+        _uniqueBlacklistMap.clear();
 
-	_uniqueMapInUse = false;
-	return false;
+        _uniqueMapInUse = false;
+        return false;
     }
 
     if(hand == -2)
@@ -449,8 +475,9 @@ bool SceneManager::processEvent(InteractionEvent * ie)
 
     if(_activeObjects[hand] && _activeObjectNodeLists[hand].size())
     {
-	_activeObjectNodeLists[hand].setPosition(0);
-        return _activeObjectNodeLists[hand][0]->processEvent(ie,_activeObjectNodeLists[hand]);
+        _activeObjectNodeLists[hand].setPosition(0);
+        return _activeObjectNodeLists[hand][0]->processEvent(ie,
+                _activeObjectNodeLists[hand]);
     }
     else if(_menuOpenObject)
     {
@@ -498,40 +525,40 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
                         _activeObjects.begin(); aobjit != _activeObjects.end();
                         aobjit++)
                 {
-		    SceneObject * aoRoot = aobjit->second;
-		    while(aoRoot && aoRoot->_parent)
-		    {
-			aoRoot = aoRoot->_parent;
-		    }
+                    SceneObject * aoRoot = aobjit->second;
+                    while(aoRoot && aoRoot->_parent)
+                    {
+                        aoRoot = aoRoot->_parent;
+                    }
 
                     if(aoRoot == object)
                     {
                         aobjit->second = NULL;
-			_activeObjectNodeLists[aobjit->first].clear();
+                        _activeObjectNodeLists[aobjit->first].clear();
                     }
                 }
 
-		// close menu if needed
-		SceneObject * menuSORoot = _menuOpenObject;
-		while(menuSORoot && menuSORoot->_parent)
-		{
-		    menuSORoot = menuSORoot->_parent;
-		}
+                // close menu if needed
+                SceneObject * menuSORoot = _menuOpenObject;
+                while(menuSORoot && menuSORoot->_parent)
+                {
+                    menuSORoot = menuSORoot->_parent;
+                }
 
-		if(menuSORoot == object)
-		{
-		    closeOpenObjectMenu();
-		}
+                if(menuSORoot == object)
+                {
+                    closeOpenObjectMenu();
+                }
 
-		// if this happened during the SceneManager's processEvent, don't invalidate iterator
-		if(!_uniqueMapInUse)
-		{
-		    _uniqueActiveObjects.erase(object);
-		}
-		else
-		{
-		    _uniqueBlacklistMap[object] = true;
-		}
+                // if this happened during the SceneManager's processEvent, don't invalidate iterator
+                if(!_uniqueMapInUse)
+                {
+                    _uniqueActiveObjects.erase(object);
+                }
+                else
+                {
+                    _uniqueBlacklistMap[object] = true;
+                }
 
                 object->setRegistered(false);
                 return;
@@ -540,16 +567,15 @@ void SceneManager::unregisterSceneObject(SceneObject * object)
     }
 }
 
-std::vector< SceneObject* >
-SceneManager::getSceneObjects(void)
+std::vector<SceneObject*> SceneManager::getSceneObjects(void)
 {
-    std::vector< SceneObject* > scene_objects;
+    std::vector<SceneObject*> scene_objects;
 
-    for (std::map< std::string, std::vector< SceneObject* > >::iterator it = _pluginObjectMap.begin();
-        _pluginObjectMap.end() != it;
-        ++it)
+    for(std::map<std::string,std::vector<SceneObject*> >::iterator it =
+            _pluginObjectMap.begin(); _pluginObjectMap.end() != it; ++it)
     {
-        scene_objects.insert( scene_objects.end(), it->second.begin(), it->second.end() );
+        scene_objects.insert(scene_objects.end(),it->second.begin(),
+                it->second.end());
     }
 
     return scene_objects;
@@ -580,28 +606,31 @@ void SceneManager::closeOpenObjectMenu()
     }
 }
 
-SceneManager::CameraCallbacks * SceneManager::getCameraCallbacks(osg::Camera * cam)
+SceneManager::CameraCallbacks * SceneManager::getCameraCallbacks(
+        osg::Camera * cam)
 {
     if(_callbackMap.find(cam) != _callbackMap.end())
     {
-	return &_callbackMap[cam];
+        return &_callbackMap[cam];
     }
     else
     {
-	return NULL;
+        return NULL;
     }
 }
 
-bool SceneManager::getPointOnTiledWall(const osg::Matrix & mat, osg::Vec3 & wallPoint)
+bool SceneManager::getPointOnTiledWall(const osg::Matrix & mat,
+        osg::Vec3 & wallPoint)
 {
     osg::Vec3 linePoint1(0,0,0), linePoint2(0,1,0);
     linePoint1 = linePoint1 * mat;
     linePoint2 = linePoint2 * mat;
-    osg::Vec3 planePoint(0,0,0),planeNormal(0,-1,0);
+    osg::Vec3 planePoint(0,0,0), planeNormal(0,-1,0);
     planePoint = planePoint * _wallTransform;
     planeNormal = planeNormal * _wallTransform;
     float w;
-    return linePlaneIntersectionRef(linePoint1,linePoint2,planePoint,planeNormal,wallPoint,w);
+    return linePlaneIntersectionRef(linePoint1,linePoint2,planePoint,
+            planeNormal,wallPoint,w);
 }
 
 void SceneManager::initPointers()
@@ -627,120 +656,120 @@ void SceneManager::initPointers()
                 _handTransforms[i]->addChild(geode);
                 break;
             }
-	    case POINTER:
-	    {
-		/*float width = 150.0;
-		float height = -150.0;
-		osg::Vec4 color(1.0,1.0,1.0,1.0);
-		osg::Vec3 pos(0,0,0);
+            case POINTER:
+            {
+                /*float width = 150.0;
+                 float height = -150.0;
+                 osg::Vec4 color(1.0,1.0,1.0,1.0);
+                 osg::Vec3 pos(0,0,0);
 
-		osg::Geometry * geo = new osg::Geometry();
-		osg::Vec3Array* verts = new osg::Vec3Array();
-		verts->push_back(pos);
-		verts->push_back(pos + osg::Vec3(width,0,0));
-		verts->push_back(pos + osg::Vec3(width,0,height));
-		verts->push_back(pos + osg::Vec3(0,0,height));
+                 osg::Geometry * geo = new osg::Geometry();
+                 osg::Vec3Array* verts = new osg::Vec3Array();
+                 verts->push_back(pos);
+                 verts->push_back(pos + osg::Vec3(width,0,0));
+                 verts->push_back(pos + osg::Vec3(width,0,height));
+                 verts->push_back(pos + osg::Vec3(0,0,height));
 
-		geo->setVertexArray(verts);
+                 geo->setVertexArray(verts);
 
-		osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
-			osg::PrimitiveSet::QUADS,0);
+                 osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
+                 osg::PrimitiveSet::QUADS,0);
 
-		ele->push_back(0);
-		ele->push_back(1);
-		ele->push_back(2);
-		ele->push_back(3);
-		geo->addPrimitiveSet(ele);
+                 ele->push_back(0);
+                 ele->push_back(1);
+                 ele->push_back(2);
+                 ele->push_back(3);
+                 geo->addPrimitiveSet(ele);
 
-		osg::Vec4Array* colors = new osg::Vec4Array;
-		colors->push_back(color);
+                 osg::Vec4Array* colors = new osg::Vec4Array;
+                 colors->push_back(color);
 
-		osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
-		colorIndexArray = new osg::TemplateIndexArray<unsigned int,
-				osg::Array::UIntArrayType,4,4>;
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
-		colorIndexArray->push_back(0);
+                 osg::TemplateIndexArray<unsigned int,osg::Array::UIntArrayType,4,4> *colorIndexArray;
+                 colorIndexArray = new osg::TemplateIndexArray<unsigned int,
+                 osg::Array::UIntArrayType,4,4>;
+                 colorIndexArray->push_back(0);
+                 colorIndexArray->push_back(0);
+                 colorIndexArray->push_back(0);
+                 colorIndexArray->push_back(0);
 
-		geo->setColorArray(colors);
-		geo->setColorIndices(colorIndexArray);
-		geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                 geo->setColorArray(colors);
+                 geo->setColorIndices(colorIndexArray);
+                 geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
-		osg::Vec2Array* texcoords = new osg::Vec2Array;
-		texcoords->push_back(osg::Vec2(0,1));
-		texcoords->push_back(osg::Vec2(1,1));
-		texcoords->push_back(osg::Vec2(1,0));
-		texcoords->push_back(osg::Vec2(0,0));
-		geo->setTexCoordArray(0,texcoords);
+                 osg::Vec2Array* texcoords = new osg::Vec2Array;
+                 texcoords->push_back(osg::Vec2(0,1));
+                 texcoords->push_back(osg::Vec2(1,1));
+                 texcoords->push_back(osg::Vec2(1,0));
+                 texcoords->push_back(osg::Vec2(0,0));
+                 geo->setTexCoordArray(0,texcoords);
 
-		osg::Geode * geode = new osg::Geode();
+                 osg::Geode * geode = new osg::Geode();
+                 geode->addDrawable(geo);
+                 geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
+                 _handTransforms[i]->addChild(geode);
+
+                 osg::StateSet * stateset = geode->getOrCreateStateSet();
+                 stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+                 stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+                 stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+                 stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+                 osg::Image * image = osgDB::readImageFile(CalVR::instance()->getResourceDir() + "/icons/mousePointer.png");
+                 if(image)
+                 {
+                 osg::Texture2D* texture;
+                 texture = new osg::Texture2D;
+                 texture->setImage(image);
+
+                 texture->setResizeNonPowerOfTwoHint(false);
+
+                 stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+                 }*/
+
+                float minDem = std::min(_wallWidth,_wallHeight);
+                float size = minDem * 0.05;
+                size = std::min(size,200.0f);
+
+                float scaleX = size;
+                float scaleZ = size;
+                osg::Vec4 color(0.0,1.0,0.0,0.75);
+
+                osg::Geometry * geo = new osg::Geometry();
+                osg::Vec3Array* verts = new osg::Vec3Array();
+                verts->push_back(osg::Vec3(0.7 * scaleX,0,-0.5 * scaleZ));
+                verts->push_back(osg::Vec3(0.0 * scaleX,0,0.0 * scaleZ));
+                verts->push_back(osg::Vec3(0.4 * scaleX,0,-0.5 * scaleZ));
+                verts->push_back(osg::Vec3(0.25 * scaleX,0,-0.75 * scaleZ));
+
+                geo->setVertexArray(verts);
+
+                osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
+                        osg::PrimitiveSet::TRIANGLE_STRIP,0);
+
+                ele->push_back(0);
+                ele->push_back(1);
+                ele->push_back(2);
+                ele->push_back(3);
+                geo->addPrimitiveSet(ele);
+
+                osg::Vec4Array* colors = new osg::Vec4Array;
+                colors->push_back(color);
+                geo->setColorArray(colors);
+                geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+                osg::Geode * geode = new osg::Geode();
                 geode->addDrawable(geo);
                 geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
                 _handTransforms[i]->addChild(geode);
 
-		osg::StateSet * stateset = geode->getOrCreateStateSet();
-		stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-		stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-		stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-		stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                osg::StateSet * stateset = geode->getOrCreateStateSet();
+                stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+                stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+                stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
-		osg::Image * image = osgDB::readImageFile(CalVR::instance()->getResourceDir() + "/icons/mousePointer.png");
-		if(image)
-		{
-		    osg::Texture2D* texture;
-		    texture = new osg::Texture2D;
-		    texture->setImage(image);
-
-		    texture->setResizeNonPowerOfTwoHint(false);
-
-		    stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-		}*/
-
-		float minDem = std::min(_wallWidth,_wallHeight);
-		float size = minDem * 0.05;
-		size = std::min(size,200.0f);
-
-		float scaleX = size;
-		float scaleZ = size;
-		osg::Vec4 color(0.0,1.0,0.0,0.75);
-
-		osg::Geometry * geo = new osg::Geometry();
-		osg::Vec3Array* verts = new osg::Vec3Array();
-		verts->push_back(osg::Vec3(0.7*scaleX,0,-0.5*scaleZ));
-		verts->push_back(osg::Vec3(0.0*scaleX,0,0.0*scaleZ));
-		verts->push_back(osg::Vec3(0.4*scaleX,0,-0.5*scaleZ));
-		verts->push_back(osg::Vec3(0.25*scaleX,0,-0.75*scaleZ));
-
-		geo->setVertexArray(verts);
-
-		osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
-			osg::PrimitiveSet::TRIANGLE_STRIP,0);
-
-		ele->push_back(0);
-		ele->push_back(1);
-		ele->push_back(2);
-		ele->push_back(3);
-		geo->addPrimitiveSet(ele);
-
-		osg::Vec4Array* colors = new osg::Vec4Array;
-		colors->push_back(color);
-		geo->setColorArray(colors);
-		geo->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-		osg::Geode * geode = new osg::Geode();
-                geode->addDrawable(geo);
-                geode->setNodeMask(geode->getNodeMask() & ~INTERSECT_MASK);
-                _handTransforms[i]->addChild(geode);
-
-		osg::StateSet * stateset = geode->getOrCreateStateSet();
-		stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-		stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-		stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-		stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-
-		break;
-	    }
+                break;
+            }
             case NONE:
                 break;
             default:
@@ -920,89 +949,90 @@ void SceneManager::detectWallBounds()
     unsigned int const FLOATS_FOR_CORNERS = 12;
     osg::Vec3 final_tl, final_bl, final_tr, final_br;
 
-    if (ComController::instance()->getNumSlaves() > 0)
+    if(ComController::instance()->getNumSlaves() > 0)
     {
-	// NOTE:  we are assuming master node IS head node
-	// NODES -> MASTER passing 4 world corners of screen
-	if (ComController::instance()->isMaster())
-	{
-	    int num_slaves = ComController::instance()->getNumSlaves();
+        // NOTE:  we are assuming master node IS head node
+        // NODES -> MASTER passing 4 world corners of screen
+        if(ComController::instance()->isMaster())
+        {
+            int num_slaves = ComController::instance()->getNumSlaves();
 
-	    unsigned int num_corners = num_slaves * FLOATS_FOR_CORNERS;
-	    float* msgs_back = new float[num_corners];
-	    if(!cvr::ComController::instance()->readSlaves(msgs_back, sizeof(float) *
-			FLOATS_FOR_CORNERS) )
-	    {
-		delete[] msgs_back;
-		return;
-	    }
-	    std::vector<float> corners(msgs_back, msgs_back + num_corners);
-	    updateToExtremeCorners(corners);
-	    delete[] msgs_back;
+            unsigned int num_corners = num_slaves * FLOATS_FOR_CORNERS;
+            float* msgs_back = new float[num_corners];
+            if(!cvr::ComController::instance()->readSlaves(msgs_back,
+                    sizeof(float) * FLOATS_FOR_CORNERS))
+            {
+                delete[] msgs_back;
+                return;
+            }
+            std::vector<float> corners(msgs_back,msgs_back + num_corners);
+            updateToExtremeCorners(corners);
+            delete[] msgs_back;
 
-	    if(!cvr::ComController::instance()->sendSlaves(corners.data(),
-			sizeof(float)*corners.size()) )
-	    {
-		return;
-	    }
+            if(!cvr::ComController::instance()->sendSlaves(corners.data(),
+                    sizeof(float) * corners.size()))
+            {
+                return;
+            }
 
-	    final_bl = osg::Vec3(corners[ 0], corners[ 1], corners[ 2]);
-	    final_br = osg::Vec3(corners[ 3], corners[ 4], corners[ 5]);
-	    final_tr = osg::Vec3(corners[ 6], corners[ 7], corners[ 8]);
-	    final_tl = osg::Vec3(corners[ 9], corners[10], corners[11]);
-	}
-	else // Send to master
-	{
-	    osg::Vec3 world_tl, world_bl, world_tr, world_br;
+            final_bl = osg::Vec3(corners[0],corners[1],corners[2]);
+            final_br = osg::Vec3(corners[3],corners[4],corners[5]);
+            final_tr = osg::Vec3(corners[6],corners[7],corners[8]);
+            final_tl = osg::Vec3(corners[9],corners[10],corners[11]);
+        }
+        else // Send to master
+        {
+            osg::Vec3 world_tl, world_bl, world_tr, world_br;
 
-	    std::vector<float> corners;
+            std::vector<float> corners;
 
-	    getNodeWorldCorners(corners);
+            getNodeWorldCorners(corners);
 
-	    if(!cvr::ComController::instance()->sendMaster(corners.data(),
-			sizeof(float)*corners.size()) )
-	    {
-		return;
-	    }
+            if(!cvr::ComController::instance()->sendMaster(corners.data(),
+                    sizeof(float) * corners.size()))
+            {
+                return;
+            }
 
-	    // Receive final extremes from master
-	    float msgs_back[FLOATS_FOR_CORNERS];
-	    if(!cvr::ComController::instance()->readMaster(msgs_back,
-			sizeof(float) * FLOATS_FOR_CORNERS) )
-	    {
-		return;
-	    }
+            // Receive final extremes from master
+            float msgs_back[FLOATS_FOR_CORNERS];
+            if(!cvr::ComController::instance()->readMaster(msgs_back,
+                    sizeof(float) * FLOATS_FOR_CORNERS))
+            {
+                return;
+            }
 
-	    final_bl = osg::Vec3(msgs_back[ 0], msgs_back[ 1], msgs_back[ 2]);
-	    final_br = osg::Vec3(msgs_back[ 3], msgs_back[ 4], msgs_back[ 5]);
-	    final_tr = osg::Vec3(msgs_back[ 6], msgs_back[ 7], msgs_back[ 8]);
-	    final_tl = osg::Vec3(msgs_back[ 9], msgs_back[10], msgs_back[11]);
+            final_bl = osg::Vec3(msgs_back[0],msgs_back[1],msgs_back[2]);
+            final_br = osg::Vec3(msgs_back[3],msgs_back[4],msgs_back[5]);
+            final_tr = osg::Vec3(msgs_back[6],msgs_back[7],msgs_back[8]);
+            final_tl = osg::Vec3(msgs_back[9],msgs_back[10],msgs_back[11]);
 
-	    unsigned int j = 0;
-	}
+            unsigned int j = 0;
+        }
     }
     else // Make wall bounds the size of the window
     {
-	std::vector<float> corners;
+        std::vector<float> corners;
 
-	getNodeWorldCorners(corners);
+        getNodeWorldCorners(corners);
 
-	final_bl = osg::Vec3(corners[ 0], corners[ 1], corners[ 2]);
-	final_br = osg::Vec3(corners[ 3], corners[ 4], corners[ 5]);
-	final_tr = osg::Vec3(corners[ 6], corners[ 7], corners[ 8]);
-	final_tl = osg::Vec3(corners[ 9], corners[10], corners[11]);
+        final_bl = osg::Vec3(corners[0],corners[1],corners[2]);
+        final_br = osg::Vec3(corners[3],corners[4],corners[5]);
+        final_tr = osg::Vec3(corners[6],corners[7],corners[8]);
+        final_tl = osg::Vec3(corners[9],corners[10],corners[11]);
     }
 
-    osg::Vec3 wallCenter((final_bl.x()+final_tr.x())/2.0,final_tr.y(),(final_bl.z()+final_tr.z())/2.0);
+    osg::Vec3 wallCenter((final_bl.x() + final_tr.x()) / 2.0,final_tr.y(),
+            (final_bl.z() + final_tr.z()) / 2.0);
     _wallTransform.makeTranslate(wallCenter);
 
     /*mWorldBounds.worldXMin = final_bl.x();
-    mWorldBounds.worldXMax = final_tr.x();
-    mWorldBounds.worldZMin = final_bl.z();
-    mWorldBounds.worldZMax = final_tr.z();
-    mWorldBounds.worldY  = final_tr.y();*/
+     mWorldBounds.worldXMax = final_tr.x();
+     mWorldBounds.worldZMin = final_bl.z();
+     mWorldBounds.worldZMax = final_tr.z();
+     mWorldBounds.worldY  = final_tr.y();*/
 
-    _wallWidth  = (final_tr.x() - final_bl.x());
+    _wallWidth = (final_tr.x() - final_bl.x());
     _wallHeight = (final_tr.z() - final_bl.z());
 }
 
@@ -1010,37 +1040,33 @@ void SceneManager::updateToExtremeCorners(std::vector<float>& corners)
 {
     unsigned int const FLOATS_FOR_CORNERS = 12;
     unsigned int num_corners = corners.size();
-    assert( num_corners % FLOATS_FOR_CORNERS == 0 );
+    assert(num_corners % FLOATS_FOR_CORNERS == 0);
 
     osg::Vec3 bl, br, tr, tl;
 
-    for (unsigned int i = 0; i < num_corners; i += FLOATS_FOR_CORNERS)
+    for(unsigned int i = 0; i < num_corners; i += FLOATS_FOR_CORNERS)
     {
-	if (0 == i)
-	{
-	    bl = osg::Vec3(corners[i + 0], corners[i +  1], corners[i +  2]);
-	    br = osg::Vec3(corners[i + 3], corners[i +  4], corners[i +  5]);
-	    tr = osg::Vec3(corners[i + 6], corners[i +  7], corners[i +  8]);
-	    tl = osg::Vec3(corners[i + 9], corners[i + 10], corners[i + 11]);
-	}
-	else // check for extremes
-	{
-	    if (corners[i + 0] < bl.x() || corners[i +  2] < bl.z())
-		bl = osg::Vec3(corners[i + 0], corners[i +  1],
-			corners[i +  2]);
+        if(0 == i)
+        {
+            bl = osg::Vec3(corners[i + 0],corners[i + 1],corners[i + 2]);
+            br = osg::Vec3(corners[i + 3],corners[i + 4],corners[i + 5]);
+            tr = osg::Vec3(corners[i + 6],corners[i + 7],corners[i + 8]);
+            tl = osg::Vec3(corners[i + 9],corners[i + 10],corners[i + 11]);
+        }
+        else // check for extremes
+        {
+            if(corners[i + 0] < bl.x() || corners[i + 2] < bl.z())
+                bl = osg::Vec3(corners[i + 0],corners[i + 1],corners[i + 2]);
 
-	    if (corners[i + 3] > br.x() || corners[i + 5] < br.z())
-		br = osg::Vec3(corners[i + 3], corners[i +  4],
-			corners[i +  5]);
+            if(corners[i + 3] > br.x() || corners[i + 5] < br.z())
+                br = osg::Vec3(corners[i + 3],corners[i + 4],corners[i + 5]);
 
-	    if (corners[i + 6] > tr.x() || corners[i + 8] > tr.z())
-		tr = osg::Vec3(corners[i + 6], corners[i +  7],
-			corners[i +  8]);
+            if(corners[i + 6] > tr.x() || corners[i + 8] > tr.z())
+                tr = osg::Vec3(corners[i + 6],corners[i + 7],corners[i + 8]);
 
-	    if (corners[i + 9] < tl.x() || corners[i + 11] > tl.z())
-		tl = osg::Vec3(corners[i + 9], corners[i + 10],
-			corners[i + 11]);
-	}
+            if(corners[i + 9] < tl.x() || corners[i + 11] > tl.z())
+                tl = osg::Vec3(corners[i + 9],corners[i + 10],corners[i + 11]);
+        }
     }
 
     corners.clear();
@@ -1062,34 +1088,34 @@ void SceneManager::updateToExtremeCorners(std::vector<float>& corners)
 void SceneManager::getNodeWorldCorners(std::vector<float>& corners)
 {
     int num_screens = ScreenConfig::instance()->getNumScreens();
-    for (int i = 0; i < num_screens; ++i)
+    for(int i = 0; i < num_screens; ++i)
     {
-	//        osg::Vec3 center = cvr::PluginHelper::getScreenInfo(i)->xyz;
-	float width  = ScreenConfig::instance()->getScreenInfo(i)->width;
-	float height = ScreenConfig::instance()->getScreenInfo(i)->height;
-	osg::Matrix screen_to_world_xfrm =
-	    ScreenConfig::instance()->getScreenInfo(i)->transform;
+        //        osg::Vec3 center = cvr::PluginHelper::getScreenInfo(i)->xyz;
+        float width = ScreenConfig::instance()->getScreenInfo(i)->width;
+        float height = ScreenConfig::instance()->getScreenInfo(i)->height;
+        osg::Matrix screen_to_world_xfrm =
+                ScreenConfig::instance()->getScreenInfo(i)->transform;
 
-	//        std::cerr << "WxH = " << width << " x " << height << std::endl;
+        //        std::cerr << "WxH = " << width << " x " << height << std::endl;
 
-	osg::Vec3 tl, bl, tr, br;
-	bl = osg::Vec3( -width/2.f,  0.f, -height/2.f ) * screen_to_world_xfrm;
-	br = osg::Vec3(  width/2.f,  0.f, -height/2.f ) * screen_to_world_xfrm;
-	tr = osg::Vec3(  width/2.f,  0.f,  height/2.f ) * screen_to_world_xfrm;
-	tl = osg::Vec3( -width/2.f,  0.f,  height/2.f ) * screen_to_world_xfrm;
+        osg::Vec3 tl, bl, tr, br;
+        bl = osg::Vec3(-width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm;
+        br = osg::Vec3(width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm;
+        tr = osg::Vec3(width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm;
+        tl = osg::Vec3(-width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm;
 
-	corners.push_back(bl.x());
-	corners.push_back(bl.y());
-	corners.push_back(bl.z());
-	corners.push_back(br.x());
-	corners.push_back(br.y());
-	corners.push_back(br.z());
-	corners.push_back(tr.x());
-	corners.push_back(tr.y());
-	corners.push_back(tr.z());
-	corners.push_back(tl.x());
-	corners.push_back(tl.y());
-	corners.push_back(tl.z());
+        corners.push_back(bl.x());
+        corners.push_back(bl.y());
+        corners.push_back(bl.z());
+        corners.push_back(br.x());
+        corners.push_back(br.y());
+        corners.push_back(br.z());
+        corners.push_back(tr.x());
+        corners.push_back(tr.y());
+        corners.push_back(tr.z());
+        corners.push_back(tl.x());
+        corners.push_back(tl.y());
+        corners.push_back(tl.z());
     }
 
     updateToExtremeCorners(corners);
@@ -1158,8 +1184,8 @@ void SceneManager::updateActiveObject()
 
         osg::Vec3 isec1, isec2;
         bool neg1, neg2;
-        std::priority_queue<std::pair<float,SceneObject*>
-                , std::vector<std::pair<float,SceneObject*> >, PrioritySort> sortQueue;
+        std::priority_queue<std::pair<float,SceneObject*>,
+                std::vector<std::pair<float,SceneObject*> >,PrioritySort> sortQueue;
 
         // find points of bounding box intersection
         for(std::list<SceneObject*>::iterator objit = hitList.begin();
@@ -1216,61 +1242,66 @@ void SceneManager::updateActiveObject()
             sortQueue.pop();
         }
 
-	_activeObjectNodeLists[hand].clear();
+        _activeObjectNodeLists[hand].clear();
 
         if(currentObject)
         {
-	    _activeObjectNodeLists[hand].push_back(currentObject);
-            currentObject = findChildActiveObject(currentObject,start,end,_activeObjectNodeLists[hand]);
+            _activeObjectNodeLists[hand].push_back(currentObject);
+            currentObject = findChildActiveObject(currentObject,start,end,
+                    _activeObjectNodeLists[hand]);
             if(_activeObjects[hand] != currentObject)
             {
-		std::list<SceneObject*> lastObjList;
-		std::list<SceneObject*> currentObjList;
-		SceneObject * object = _activeObjects[hand];
-		while(object)
-		{
-		    lastObjList.push_front(object);
-		    object = object->_parent;
-		}
-		object = currentObject;
-		while(object)
-		{
-		    currentObjList.push_front(object);
-		    object = object->_parent;
-		}
+                std::list<SceneObject*> lastObjList;
+                std::list<SceneObject*> currentObjList;
+                SceneObject * object = _activeObjects[hand];
+                while(object)
+                {
+                    lastObjList.push_front(object);
+                    object = object->_parent;
+                }
+                object = currentObject;
+                while(object)
+                {
+                    currentObjList.push_front(object);
+                    object = object->_parent;
+                }
 
-		std::list<SceneObject*>::iterator lastIt = lastObjList.begin();
-		std::list<SceneObject*>::iterator curIt = currentObjList.begin();
-		while(lastIt != lastObjList.end() && curIt != currentObjList.end())
-		{
-		    if(*lastIt != *curIt)
-		    {
-			break;
-		    }
-		    
-		    lastIt++;
-		    curIt++;    
-		}
+                std::list<SceneObject*>::iterator lastIt = lastObjList.begin();
+                std::list<SceneObject*>::iterator curIt =
+                        currentObjList.begin();
+                while(lastIt != lastObjList.end()
+                        && curIt != currentObjList.end())
+                {
+                    if(*lastIt != *curIt)
+                    {
+                        break;
+                    }
 
-		if(lastIt != lastObjList.end())
-		{
-		    for(std::list<SceneObject*>::reverse_iterator it = lastObjList.rbegin(); ; it++)
-		    {
-			(*it)->leaveCallback(hand);
-			if(*it == *lastIt)
-			{
-			    break;
-			}
-		    }
-		}
+                    lastIt++;
+                    curIt++;
+                }
 
-		if(curIt != currentObjList.end())
-		{
-		    for(std::list<SceneObject*>::iterator it = curIt; it != currentObjList.end() ; it++)
-		    {
-			(*it)->enterCallback(hand,handMatrix);
-		    }
-		}
+                if(lastIt != lastObjList.end())
+                {
+                    for(std::list<SceneObject*>::reverse_iterator it =
+                            lastObjList.rbegin();; it++)
+                    {
+                        (*it)->leaveCallback(hand);
+                        if(*it == *lastIt)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if(curIt != currentObjList.end())
+                {
+                    for(std::list<SceneObject*>::iterator it = curIt;
+                            it != currentObjList.end(); it++)
+                    {
+                        (*it)->enterCallback(hand,handMatrix);
+                    }
+                }
 
                 if(_activeObjects[hand])
                 {
@@ -1283,12 +1314,12 @@ void SceneManager::updateActiveObject()
         else if(_activeObjects[hand])
         {
             _activeObjects[hand]->interactionCountDec();
-	    SceneObject * object = _activeObjects[hand];
-	    while(object)
-	    {
-		object->leaveCallback(hand);
-		object = object->_parent;
-	    }
+            SceneObject * object = _activeObjects[hand];
+            while(object)
+            {
+                object->leaveCallback(hand);
+                object = object->_parent;
+            }
             _activeObjects[hand] = NULL;
         }
     }
@@ -1305,7 +1336,8 @@ void SceneManager::updateActiveObject()
 }
 
 SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
-        osg::Vec3 & start, osg::Vec3 & end, VectorWithPosition<SceneObject*> & nodeList)
+        osg::Vec3 & start, osg::Vec3 & end,
+        VectorWithPosition<SceneObject*> & nodeList)
 {
     std::list<SceneObject*> hitList;
 
@@ -1321,8 +1353,8 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
 
     osg::Vec3 isec1, isec2;
     bool neg1, neg2;
-    std::priority_queue<std::pair<float,SceneObject*>
-            , std::vector<std::pair<float,SceneObject*> >, PrioritySort> sortQueue;
+    std::priority_queue<std::pair<float,SceneObject*>,
+            std::vector<std::pair<float,SceneObject*> >,PrioritySort> sortQueue;
 
     // find points of bounding box intersection
     for(std::list<SceneObject*>::iterator objit = hitList.begin();
@@ -1373,7 +1405,7 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
 
     if(currentObject)
     {
-	nodeList.push_back(currentObject);
+        nodeList.push_back(currentObject);
         return findChildActiveObject(currentObject,start,end,nodeList);
     }
 
@@ -1382,67 +1414,70 @@ SceneObject * SceneManager::findChildActiveObject(SceneObject * object,
 
 void SceneManager::removeNestedObject(SceneObject * object)
 {
-    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin(); it != _activeObjects.end(); ++it)
+    for(std::map<int,SceneObject*>::iterator it = _activeObjects.begin();
+            it != _activeObjects.end(); ++it)
     {
-	VectorWithPosition<SceneObject*>::iterator listit = _activeObjectNodeLists[it->first].begin();
-	if(_activeObjectNodeLists[it->first].size())
-	{
-	    listit += _activeObjectNodeLists[it->first].size() - 1;
-	}
-	SceneObject * so = it->second;
-	while(so)
-	{
-	    if(so == object)
-	    {
-		// leave objects
-		SceneObject * tempso = it->second;
-		while(tempso)
-		{
-		    tempso->leaveCallback(it->first);
-		    if(tempso == object)
-		    {
-			break;
-		    }
-		    else
-		    {
-			tempso = tempso->_parent;
-		    }
-		}
+        VectorWithPosition<SceneObject*>::iterator listit =
+                _activeObjectNodeLists[it->first].begin();
+        if(_activeObjectNodeLists[it->first].size())
+        {
+            listit += _activeObjectNodeLists[it->first].size() - 1;
+        }
+        SceneObject * so = it->second;
+        while(so)
+        {
+            if(so == object)
+            {
+                // leave objects
+                SceneObject * tempso = it->second;
+                while(tempso)
+                {
+                    tempso->leaveCallback(it->first);
+                    if(tempso == object)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        tempso = tempso->_parent;
+                    }
+                }
 
-		it->second = so->_parent;
-		_activeObjectNodeLists[it->first].erase(listit,_activeObjectNodeLists[it->first].end());
-		break;
-	    }
-	    so = so->_parent;
-	    if(so)
-	    {
-		--listit;
-	    }
-	}
+                it->second = so->_parent;
+                _activeObjectNodeLists[it->first].erase(listit,
+                        _activeObjectNodeLists[it->first].end());
+                break;
+            }
+            so = so->_parent;
+            if(so)
+            {
+                --listit;
+            }
+        }
     }
 
     if(_uniqueActiveObjects.find(object) != _uniqueActiveObjects.end())
     {
-	if(!_uniqueMapInUse)
-	{
-	    _uniqueActiveObjects.erase(object);
-	}
-	else
-	{
-	    _uniqueBlacklistMap[object] = true;
-	}
+        if(!_uniqueMapInUse)
+        {
+            _uniqueActiveObjects.erase(object);
+        }
+        else
+        {
+            _uniqueBlacklistMap[object] = true;
+        }
     }
 
     // close menu if this node is in its path
     SceneObject * menuSO = _menuOpenObject;
     while(menuSO)
     {
-	if(menuSO == object)
-	{
-	    closeOpenObjectMenu();
-	}
+        if(menuSO == object)
+        {
+            closeOpenObjectMenu();
+        }
 
-	menuSO = menuSO->_parent;
+        menuSO = menuSO->_parent;
     }
 }
 
@@ -1451,7 +1486,7 @@ void SceneManager::removePluginObjects(CVRPlugin * plugin)
     std::string pluginName = PluginManager::instance()->getPluginName(plugin);
     if(pluginName.empty())
     {
-	return;
+        return;
     }
 
     // TODO: finish this when I have a use case
@@ -1461,20 +1496,23 @@ void SceneManager::preDraw()
 {
     if(getDepthPartitionActive())
     {
-	osgViewer::Viewer::Cameras camList;
-	CVRViewer::instance()->getCameras(camList);
-	for(int i = 0; i < camList.size(); i++)
-	{
-	    _callbackMap[camList[i]].initialDraw = camList[i]->getInitialDrawCallback();
-	    _callbackMap[camList[i]].preDraw = camList[i]->getPreDrawCallback();
-	    _callbackMap[camList[i]].postDraw = camList[i]->getPostDrawCallback();
-	    _callbackMap[camList[i]].finalDraw = camList[i]->getFinalDrawCallback();
+        osgViewer::Viewer::Cameras camList;
+        CVRViewer::instance()->getCameras(camList);
+        for(int i = 0; i < camList.size(); i++)
+        {
+            _callbackMap[camList[i]].initialDraw =
+                    camList[i]->getInitialDrawCallback();
+            _callbackMap[camList[i]].preDraw = camList[i]->getPreDrawCallback();
+            _callbackMap[camList[i]].postDraw =
+                    camList[i]->getPostDrawCallback();
+            _callbackMap[camList[i]].finalDraw =
+                    camList[i]->getFinalDrawCallback();
 
-	    camList[i]->setInitialDrawCallback(NULL);
-	    camList[i]->setPreDrawCallback(NULL);
-	    camList[i]->setPostDrawCallback(NULL);
-	    camList[i]->setFinalDrawCallback(NULL);
-	}
+            camList[i]->setInitialDrawCallback(NULL);
+            camList[i]->setPreDrawCallback(NULL);
+            camList[i]->setPostDrawCallback(NULL);
+            camList[i]->setFinalDrawCallback(NULL);
+        }
     }
 }
 
@@ -1482,14 +1520,15 @@ void SceneManager::postDraw()
 {
     if(getDepthPartitionActive())
     {
-	for(std::map<osg::Camera*,CameraCallbacks>::iterator it = _callbackMap.begin(); it != _callbackMap.end(); it++)
-	{
-	    it->first->setInitialDrawCallback(it->second.initialDraw);
-	    it->first->setPreDrawCallback(it->second.preDraw);
-	    it->first->setPostDrawCallback(it->second.postDraw);
-	    it->first->setFinalDrawCallback(it->second.finalDraw);
-	}
-	_callbackMap.clear();
+        for(std::map<osg::Camera*,CameraCallbacks>::iterator it =
+                _callbackMap.begin(); it != _callbackMap.end(); it++)
+        {
+            it->first->setInitialDrawCallback(it->second.initialDraw);
+            it->first->setPreDrawCallback(it->second.preDraw);
+            it->first->setPostDrawCallback(it->second.postDraw);
+            it->first->setFinalDrawCallback(it->second.finalDraw);
+        }
+        _callbackMap.clear();
         _depthPartitionLeft->removeNodesFromCameras();
         _depthPartitionRight->removeNodesFromCameras();
     }

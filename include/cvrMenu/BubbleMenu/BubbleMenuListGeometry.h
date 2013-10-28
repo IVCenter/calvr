@@ -38,7 +38,7 @@ class BubbleMenuListGeometry : public BubbleMenuGeometry
         osg::ref_ptr<osg::Geode> _geodeIcon;
 
         osg::ref_ptr<osgText::Text> _value;
-        std::vector< osg::ref_ptr<osgText::Text> > _valuesSelected;
+        std::vector<osg::ref_ptr<osgText::Text> > _valuesSelected;
         osg::ref_ptr<osg::Geometry> _backboard;
         osg::ref_ptr<osg::Texture2D> _bbAll;
         osg::ref_ptr<osg::Texture2D> _bbTop;

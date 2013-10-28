@@ -25,6 +25,9 @@ using namespace cvr;
 BubbleMenu::BubbleMenu()
 {
     _myMenu = NULL;
+    _foundItem = false;
+    _showFavMenu = false;
+    _prevEvent = NULL;
 
     _border = 10.0;
 
@@ -43,30 +46,31 @@ BubbleMenu::BubbleMenu()
     _distance = ConfigManager::getFloat("distance",
             "MenuSystem.BubbleMenu.Position",2000.0);
     _height = ConfigManager::getFloat("height","MenuSystem.BubbleMenu.Position",
-        500.0);
+            500.0);
 
-    _radius = ConfigManager::getFloat("radius", 
-        "MenuSystem.BubbleMenu.Spheres", 100.0);
-    _tessellations = ConfigManager::getInt("tessellations", 
-        "MenuSystem.BubbleMenu.Spheres", 12);
-    _subradius = ConfigManager::getFloat("subradius", 
-        "MenuSystem.BubbleMenu.Spheres", 500.0);
-    _speed = ConfigManager::getFloat("value", 
-        "MenuSystem.BubbleMenu.AnimationSpeed", 1.0);
-    _textSize = ConfigManager::getFloat("value", 
-        "MenuSystem.BubbleMenu.TextSize", 50.0);
+    _radius = ConfigManager::getFloat("radius","MenuSystem.BubbleMenu.Spheres",
+            100.0);
+    _tessellations = ConfigManager::getInt("tessellations",
+            "MenuSystem.BubbleMenu.Spheres",12);
+    _subradius = ConfigManager::getFloat("subradius",
+            "MenuSystem.BubbleMenu.Spheres",500.0);
+    _speed = ConfigManager::getFloat("value",
+            "MenuSystem.BubbleMenu.AnimationSpeed",1.0);
+    _textSize = ConfigManager::getFloat("value",
+            "MenuSystem.BubbleMenu.TextSize",50.0);
 
-    float r = ConfigManager::getFloat("r","MenuSystem.BubbleMenu.SphereColor",0.0),
-          g = ConfigManager::getFloat("g","MenuSystem.BubbleMenu.SphereColor",1.0),
-          b = ConfigManager::getFloat("b","MenuSystem.BubbleMenu.SphereColor",0.0),
-          a = ConfigManager::getFloat("a","MenuSystem.BubbleMenu.SphereColor",1.0);
+    float r = ConfigManager::getFloat("r","MenuSystem.BubbleMenu.SphereColor",
+            0.0), g = ConfigManager::getFloat("g",
+            "MenuSystem.BubbleMenu.SphereColor",1.0), b =
+            ConfigManager::getFloat("b","MenuSystem.BubbleMenu.SphereColor",
+                    0.0), a = ConfigManager::getFloat("a",
+            "MenuSystem.BubbleMenu.SphereColor",1.0);
     _sphereColor = osg::Vec4(r,g,b,a);
 
-    std::string sound = ConfigManager::getEntry("value", "MenuSystem.BubbleMenu.Sound", "off");
+    std::string sound = ConfigManager::getEntry("value",
+            "MenuSystem.BubbleMenu.Sound","off");
 
-    _soundEnabled = (sound == "on"); 
-
-
+    _soundEnabled = (sound == "on");
 
     s = ConfigManager::getEntry("value","MenuSystem.BubbleMenu.Trigger",
             "DOUBLECLICK");
@@ -99,7 +103,6 @@ BubbleMenu::BubbleMenu()
     _menuScale->setMatrix(scale);
 
     _menuRoot->addChild(_menuScale);
-    
 
     // Favorites menu
     _favMenuRoot = new osg::MatrixTransform();
@@ -109,8 +112,8 @@ BubbleMenu::BubbleMenu()
     _favMenuScale->setMatrix(favScale);
 
     _favMenuRoot->addChild(_favMenuScale);
-    
-    _favMenu = new SubMenu("Favorites", "Favorites");
+
+    _favMenu = new SubMenu("Favorites","Favorites");
 
     osg::StateSet * favStateset = _favMenuRoot->getOrCreateStateSet();
     favStateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
@@ -125,7 +128,7 @@ BubbleMenu::BubbleMenu()
     _clickActive = false;
 
     // TODO: read values from config file
-    BubbleMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0);//osg::Vec4(1.0,1.0,1.0,1.0);
+    BubbleMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0); //osg::Vec4(1.0,1.0,1.0,1.0);
     BubbleMenuGeometry::_wireframeColor = osg::Vec4(0.0,1.0,0.0,1.0);
     BubbleMenuGeometry::_textColorSelected = osg::Vec4(0.0,1.0,0.0,1.0);
     BubbleMenuGeometry::_backgroundColor = osg::Vec4(0.0,0.0,0.0,1.0);
@@ -156,46 +159,44 @@ BubbleMenu::BubbleMenu()
     }
     BubbleMenuGeometry::calibrateTextSize(65.0);
 
+    /*
+     std::string server = ConfigManager::getEntry("value", "MenuSystem.BubbleMenu.Sound.Server", "");
+     int port = ConfigManager::getInt("value","MenuSystem.BubbleMenu.Sound.Port", 0);
 
 
-/*
-    std::string server = ConfigManager::getEntry("value", "MenuSystem.BubbleMenu.Sound.Server", "");
-    int port = ConfigManager::getInt("value","MenuSystem.BubbleMenu.Sound.Port", 0);
-            
-
-    if (!oasclient::OASClientInterface::initialize(server, port))
-    {
-        std::cerr << "Could not set up connection to sound server!\n";
-        _soundEnabled = false;
-    }
+     if (!oasclient::OASClientInterface::initialize(server, port))
+     {
+     std::cerr << "Could not set up connection to sound server!\n";
+     _soundEnabled = false;
+     }
 
 
-    std::string path, file;
-    path = ConfigManager::getEntry("path", "MenuSystem.BubbleMenu.Sound.ClickSound", "");
-    file = ConfigManager::getEntry("file", "MenuSystem.BubbleMenu.Sound.ClickSound", "");
+     std::string path, file;
+     path = ConfigManager::getEntry("path", "MenuSystem.BubbleMenu.Sound.ClickSound", "");
+     file = ConfigManager::getEntry("file", "MenuSystem.BubbleMenu.Sound.ClickSound", "");
 
-    // Set up click sound
-    click = new oasclient::OASSound(path, file);
-    if (!click->isValid())
-    {
-        std::cerr << "Could not create click sound!\n";
-        _soundEnabled = false;
-    }
+     // Set up click sound
+     click = new oasclient::OASSound(path, file);
+     if (!click->isValid())
+     {
+     std::cerr << "Could not create click sound!\n";
+     _soundEnabled = false;
+     }
 
-    click->setGain(1.5);
+     click->setGain(1.5);
 
-    path = ConfigManager::getEntry("path", "MenuSystem.BubbleMenu.Sound.MenuSound", "");
-    file = ConfigManager::getEntry("file", "MenuSystem.BubbleMenu.Sound.MenuSound", "");
+     path = ConfigManager::getEntry("path", "MenuSystem.BubbleMenu.Sound.MenuSound", "");
+     file = ConfigManager::getEntry("file", "MenuSystem.BubbleMenu.Sound.MenuSound", "");
 
-    // Set up whoosh sound
-    whoosh = new oasclient::OASSound(path, file);
-    if (!whoosh->isValid())
-    {
-        std::cerr << "Could not create whoosh sound!\n";
-        _soundEnabled = false;
-    }
+     // Set up whoosh sound
+     whoosh = new oasclient::OASSound(path, file);
+     if (!whoosh->isValid())
+     {
+     std::cerr << "Could not create whoosh sound!\n";
+     _soundEnabled = false;
+     }
 
-    */
+     */
 }
 
 BubbleMenu::~BubbleMenu()
@@ -275,15 +276,17 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
             {
                 if(tie->getButton() == _secondaryButton)
                 {
-                    SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
+                    SceneManager::instance()->getMenuRoot()->addChild(
+                            _menuRoot);
 
-                    if (!_showFavMenu)
+                    if(!_showFavMenu)
                     {
-                        SceneManager::instance()->getMenuRoot()->addChild(_favMenuRoot);
+                        SceneManager::instance()->getMenuRoot()->addChild(
+                                _favMenuRoot);
                     }
 
-                    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
-                    osg::Vec3 menuStartPos = osg::Vec3(0, _distance, _height);
+                    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
+                    osg::Vec3 menuStartPos = osg::Vec3(0,_distance,_height);
                     menuPoint = menuStartPos;
 
                     if(event->asMouseEvent())
@@ -321,7 +324,7 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
         }
     }
 
-    else if (!_menuActive && _showFavMenu)
+    else if(!_menuActive && _showFavMenu)
     {
         if(_trigger == DOUBLECLICK)
         {
@@ -329,15 +332,17 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
             {
                 if(tie->getButton() == _secondaryButton)
                 {
-                    SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
+                    SceneManager::instance()->getMenuRoot()->addChild(
+                            _menuRoot);
 
-                    if (!_showFavMenu)
+                    if(!_showFavMenu)
                     {
-                        SceneManager::instance()->getMenuRoot()->addChild(_favMenuRoot);
+                        SceneManager::instance()->getMenuRoot()->addChild(
+                                _favMenuRoot);
                     }
 
-                    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
-                    osg::Vec3 menuStartPos = osg::Vec3(0, _distance, _height);
+                    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
+                    osg::Vec3 menuStartPos = osg::Vec3(0,_distance,_height);
                     menuPoint = menuStartPos;
 
                     if(event->asMouseEvent())
@@ -371,13 +376,13 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
         }
 
         if(tie->getButton() == _primaryButton
-                    && (tie->getInteraction() == BUTTON_UP))
+                && (tie->getInteraction() == BUTTON_UP))
         {
             _timeLastButtonUp = PluginHelper::getProgramDuration();
             _clickActive = false;
         }
 
-        if(0)//_clickActive)
+        if(0) //_clickActive)
         {
             if(tie->getHand() == _activeHand)
             {
@@ -395,7 +400,7 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
         }
         else if(tie->getHand() == _activeHand)
         {
-            if (tie->getButton() == _primaryButton
+            if(tie->getButton() == _primaryButton
                     && (tie->getInteraction() == BUTTON_DOWN))
             {
                 _timeLastButtonUp = PluginHelper::getProgramDuration();
@@ -412,33 +417,33 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 // do click
                 //std::cout << "Double click" << std::endl;
                 _prevEvent = NULL;
-                
+
                 MenuItem * item = _activeItem->getMenuItem();
 
-                if (_favMenu->getItemPosition(item) < 0)
+                if(_favMenu->getItemPosition(item) < 0)
                 {
                     _favMenu->addItem(item);
                 }
                 else
                 {
                     _favMenu->removeItem(item);
-                    
-                    osg::MatrixTransform * mat = _favMaskMap[_favGeometryMap[item]];
-            
+
+                    osg::MatrixTransform * mat =
+                            _favMaskMap[_favGeometryMap[item]];
+
                     osg::Matrix m = _favMenuRoot->getMatrix();
 
-                    _lerpMap[mat] = new Lerp(mat->getMatrix().getTrans(), 
-                        - m.getTrans() - osg::Vec3(0, -m.getTrans()[1], 0) 
-                        + osg::Vec3(0, 0, _height) 
-                        + _rootPositionMap[_favGeometryMap[item]],
-                        _speed, 0, true, true);
+                    _lerpMap[mat] = new Lerp(mat->getMatrix().getTrans(),
+                            -m.getTrans() - osg::Vec3(0,-m.getTrans()[1],0)
+                                    + osg::Vec3(0,0,_height)
+                                    + _rootPositionMap[_favGeometryMap[item]],
+                            _speed,0,true,true);
                 }
 
                 return true;
             }
             return false;
         }
-
 
         if(tie->getButton() == _secondaryButton
                 && tie->getInteraction() == BUTTON_DOWN)
@@ -448,27 +453,28 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 selectItem(NULL);
             }
             SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
-            
-            if (!_showFavMenu)
+
+            if(!_showFavMenu)
             {
-                SceneManager::instance()->getMenuRoot()->removeChild(_favMenuRoot);
+                SceneManager::instance()->getMenuRoot()->removeChild(
+                        _favMenuRoot);
             }
-           
+
             _menuActive = false;
             return true;
         }
     }
-    
+
     else
     {
         if(tie->getButton() == _primaryButton
-                    && (tie->getInteraction() == BUTTON_UP))
+                && (tie->getInteraction() == BUTTON_UP))
         {
             _timeLastButtonUp = PluginHelper::getProgramDuration();
             _clickActive = false;
         }
 
-        if(0)//_clickActive)
+        if(0)                //_clickActive)
         {
             if(tie->getHand() == _activeHand)
             {
@@ -486,7 +492,7 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
         }
         else if(tie->getHand() == _activeHand)
         {
-            if (tie->getButton() == _primaryButton
+            if(tie->getButton() == _primaryButton
                     && (tie->getInteraction() == BUTTON_DOWN))
             {
                 _timeLastButtonUp = PluginHelper::getProgramDuration();
@@ -494,8 +500,8 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 _prevEvent->setInteraction(event->getInteraction());
                 _prevActiveItem = _activeItem;
                 _clickActive = true;
-                
-                if (_soundEnabled)
+
+                if(_soundEnabled)
                 {
 //                    click->play();
                 }
@@ -509,10 +515,10 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 // do click
                 //std::cout << "Double click" << std::endl;
                 _prevEvent = NULL;
-                
+
                 MenuItem * item = _activeItem->getMenuItem();
 
-                if (_favMenu->getItemPosition(item) < 0)
+                if(_favMenu->getItemPosition(item) < 0)
                 {
                     _favMenu->addItem(item);
                 }
@@ -520,53 +526,56 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 {
                     _favMenu->removeItem(item);
 
-                    osg::MatrixTransform * mat = _favMaskMap[_favGeometryMap[item]];
-            
-                    /*
-                    _lerpMap[mat] = new Lerp(mat->getMatrix().getTrans(), 
-                        -_favMenuRoot->getMatrix().getTrans() + 
-                        _rootPositionMap[_favGeometryMap[item]] + osg::Vec3(0,0,_radius),
-                        _speed, 0, true, true);
-                     */
-                     
-                    if (mat)
-                    {
-                     osg::Matrix m = _favMenuRoot->getMatrix();
+                    osg::MatrixTransform * mat =
+                            _favMaskMap[_favGeometryMap[item]];
 
-                     _lerpMap[mat] = new Lerp(mat->getMatrix().getTrans(), 
-                        - m.getTrans() - osg::Vec3(0, -m.getTrans()[1], 0) 
-                        + osg::Vec3(0, 0, _height) 
-                        + _rootPositionMap[_favGeometryMap[item]],
-                        _speed, 0, true, true);
+                    /*
+                     _lerpMap[mat] = new Lerp(mat->getMatrix().getTrans(),
+                     -_favMenuRoot->getMatrix().getTrans() +
+                     _rootPositionMap[_favGeometryMap[item]] + osg::Vec3(0,0,_radius),
+                     _speed, 0, true, true);
+                     */
+
+                    if(mat)
+                    {
+                        osg::Matrix m = _favMenuRoot->getMatrix();
+
+                        _lerpMap[mat] =
+                                new Lerp(mat->getMatrix().getTrans(),
+                                        -m.getTrans()
+                                                - osg::Vec3(0,-m.getTrans()[1],
+                                                        0)
+                                                + osg::Vec3(0,0,_height)
+                                                + _rootPositionMap[_favGeometryMap[item]],
+                                        _speed,0,true,true);
                     }
-                    
+
                 }
 
                 /*
-                if(_activeItem)
-                {
-                    BubbleMenuSubMenuGeometry * smg =
-                            dynamic_cast<BubbleMenuSubMenuGeometry *>(_activeItem);
-                    if(smg && !smg->isMenuHead())
-                    {
-                        if(smg->isMenuOpen())
-                        {
-                            closeMenu((SubMenu*)smg->getMenuItem());
-                        }
-                        else
-                        {
-                            openMenu(smg);
-                        }
-                    }
-                    _activeItem->processEvent(event);
-                    _clickActive = true;
-                    return true;
-                }*/
+                 if(_activeItem)
+                 {
+                 BubbleMenuSubMenuGeometry * smg =
+                 dynamic_cast<BubbleMenuSubMenuGeometry *>(_activeItem);
+                 if(smg && !smg->isMenuHead())
+                 {
+                 if(smg->isMenuOpen())
+                 {
+                 closeMenu((SubMenu*)smg->getMenuItem());
+                 }
+                 else
+                 {
+                 openMenu(smg);
+                 }
+                 }
+                 _activeItem->processEvent(event);
+                 _clickActive = true;
+                 return true;
+                 }*/
                 return true;
             }
             return false;
         }
-
 
         if(tie->getButton() == _secondaryButton
                 && tie->getInteraction() == BUTTON_DOWN)
@@ -576,12 +585,13 @@ bool BubbleMenu::processEvent(InteractionEvent * event)
                 selectItem(NULL);
             }
             SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
-            
-            if (!_showFavMenu)
+
+            if(!_showFavMenu)
             {
-                SceneManager::instance()->getMenuRoot()->removeChild(_favMenuRoot);
+                SceneManager::instance()->getMenuRoot()->removeChild(
+                        _favMenuRoot);
             }
-           
+
             _menuActive = false;
             return true;
         }
@@ -760,25 +770,25 @@ void BubbleMenu::updateMenus()
     {
         return;
     }
-    
+
     // hide hover text on non-hover items
-    for (std::map<MenuItem *,BubbleMenuGeometry *>::iterator it = 
-        _geometryMap.begin(); it != _geometryMap.end(); ++it)
+    for(std::map<MenuItem *,BubbleMenuGeometry *>::iterator it =
+            _geometryMap.begin(); it != _geometryMap.end(); ++it)
     {
-        if (it->second)
+        if(it->second)
             it->second->hideHoverText();
     }
 
-    for (std::map<SubMenu*,std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> >::iterator
-        it = _menuGeometryMap.begin(); it != _menuGeometryMap.end(); ++it)
+    for(std::map<SubMenu*,std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> >::iterator it =
+            _menuGeometryMap.begin(); it != _menuGeometryMap.end(); ++it)
     {
-        if (it->second.second)
+        if(it->second.second)
             it->second.second->hideHoverText();
     }
 
     // process saved event if double click cutoff time has passed
-    if (((PluginHelper::getProgramDuration() - _timeLastButtonUp) >
-         _doubleClickCutoff) && _prevEvent && !_clickActive)
+    if(((PluginHelper::getProgramDuration() - _timeLastButtonUp)
+            > _doubleClickCutoff) && _prevEvent && !_clickActive)
     {
         if(_prevActiveItem)
         {
@@ -799,18 +809,18 @@ void BubbleMenu::updateMenus()
         }
         _prevEvent = NULL;
     }
-   
+
     // Update sphere animations
     for(std::map<osg::ref_ptr<osg::MatrixTransform>,Lerp*>::iterator it =
-        _lerpMap.begin(); it != _lerpMap.end(); it++)
+            _lerpMap.begin(); it != _lerpMap.end(); it++)
     {
         osg::ref_ptr<osg::MatrixTransform> node = it->first;
-        if (it->second->isDone())
+        if(it->second->isDone())
         {
             osg::Matrix m = node->getMatrix();
             m.setTrans(it->second->getEnd());
             node->setMatrix(m);
-            if (it->second->isHideOnFinish())
+            if(it->second->isHideOnFinish())
             {
                 node->setNodeMask(0x0);
             }
@@ -822,13 +832,13 @@ void BubbleMenu::updateMenus()
             delete it->second;
             _lerpMap.erase(it);
         }
-        else if (it->second->isDelayed())
+        else if(it->second->isDelayed())
         {
-            if (it->second->isHideOnDelay())
+            if(it->second->isHideOnDelay())
             {
                 node->setNodeMask(0x0);
             }
-            else 
+            else
             {
                 node->setNodeMask(0xFFFFFF);
             }
@@ -885,24 +895,25 @@ void BubbleMenu::updateMenus()
         {
             _menuMap[foundList[i]] = new osg::MatrixTransform();
         }
-        
+
         // remove all children
         _menuMap[foundList[i]]->removeChildren(0,
                 _menuMap[foundList[i]]->getNumChildren());
-        
+
         // create uncreated submenu geometry (?)
         if(_menuGeometryMap.find(foundList[i]) == _menuGeometryMap.end())
         {
             _menuGeometryMap[foundList[i]] = std::pair<BubbleMenuGeometry*,
-               BubbleMenuGeometry*>(createBubbleMenuGeometry(foundList[i],true),
-               createBubbleMenuGeometry(foundList[i]));
+                    BubbleMenuGeometry*>(
+                    createBubbleMenuGeometry(foundList[i],true),
+                    createBubbleMenuGeometry(foundList[i]));
         }
-        
+
         if(_menuGeometryMap[foundList[i]].first)
         {
             geoList.push_back(_menuGeometryMap[foundList[i]].first);
         }
-        
+
         // create children
         for(std::vector<MenuItem*>::iterator it =
                 foundList[i]->getChildren().begin();
@@ -963,7 +974,7 @@ void BubbleMenu::updateMenus()
         // add invisible intersection test drawable
         for(int j = 0; j < geoList.size(); j++)
         {
-            geoList[j]->resetIntersect(2*_radius);
+            geoList[j]->resetIntersect(2 * _radius);
         }
 
         // add line under menu title
@@ -974,29 +985,30 @@ void BubbleMenu::updateMenus()
             if(smg)
             {
                 // show the menu title only for the first menu
-                if (i != 0)
+                if(i != 0)
                     smg->getNode()->setNodeMask(0x0);
             }
         }
 
         float offset = _border;
         float interval = (M_PI * 2) / (geoList.size() - 1);
-        float theta; 
+        float theta;
         osg::Vec3 center;
 
-        if (i == 0)
+        if(i == 0)
         {
-            center = osg::Vec3(0, 0, 0);
-            offset = -width/2;
-            
+            center = osg::Vec3(0,0,0);
+            offset = -width / 2;
+
             osg::Matrix m;
-            m.makeTranslate(osg::Vec3(offset, _distance, _height - _radius - padding));
+            m.makeTranslate(
+                    osg::Vec3(offset,_distance,_height - _radius - padding));
             _favMenuRoot->setMatrix(m);
         }
         else
         {
             // possibly make this height configurable
-            center = osg::Vec3(0, 0, -_subradius * 1.5);
+            center = osg::Vec3(0,0,-_subradius * 1.5);
         }
         for(int j = 0; j < geoList.size(); j++)
         {
@@ -1005,32 +1017,34 @@ void BubbleMenu::updateMenus()
             osg::MatrixTransform * mat = new osg::MatrixTransform();
 
             // main menu - horizontal
-            if (i == 0)
+            if(i == 0)
             {
                 m.makeTranslate(center + osg::Vec3(offset,0,0));
                 mat->setMatrix(m);
 
-                offset += 2*_radius + padding;
+                offset += 2 * _radius + padding;
                 _rootPositionMap[geoList[j]] = m.getTrans();
             }
             // submenus - circular
             else
             {
-                if (j == 0)
+                if(j == 0)
                 {
                     m.makeTranslate(center);
                 }
                 else
                 {
-                    theta = j * interval; 
-                    m.makeTranslate(center + 
-                        osg::Vec3(_subradius * cos(theta), 0, _subradius * sin(theta)));
+                    theta = j * interval;
+                    m.makeTranslate(
+                            center
+                                    + osg::Vec3(_subradius * cos(theta),0,
+                                            _subradius * sin(theta)));
 
                 }
                 mat->setMatrix(m);
 
-                _rootPositionMap[geoList[j]] = 
-                    _rootPositionMap[_menuGeometryMap[foundList[i]].second];
+                _rootPositionMap[geoList[j]] =
+                        _rootPositionMap[_menuGeometryMap[foundList[i]].second];
             }
 
             _positionMap[geoList[j]] = m.getTrans();
@@ -1047,88 +1061,87 @@ void BubbleMenu::updateMenus()
     float padding = _radius / 3;
     float offset = 0;
 
-/*
-    std::stack<SubMenu*> revMenuStack;
-    while(_openMenus.size())
-    {
-        bool found = false;
-        for(int i = 0; i < foundList.size(); i++)
-        {
-            if(foundList[i] == _openMenus.top())
-            {
-                revMenuStack.push(_openMenus.top());
-                found = true;
-            }
-        }
+    /*
+     std::stack<SubMenu*> revMenuStack;
+     while(_openMenus.size())
+     {
+     bool found = false;
+     for(int i = 0; i < foundList.size(); i++)
+     {
+     if(foundList[i] == _openMenus.top())
+     {
+     revMenuStack.push(_openMenus.top());
+     found = true;
+     }
+     }
 
-        if(!found)
-        {
-            closeMenu(_openMenus.top());
-            //std::cerr << "Removing open menu." << std::endl;
-        }
-        else
-        {
-            //std::cerr << "Not removing open menu." << std::endl;
-        }
+     if(!found)
+     {
+     closeMenu(_openMenus.top());
+     //std::cerr << "Removing open menu." << std::endl;
+     }
+     else
+     {
+     //std::cerr << "Not removing open menu." << std::endl;
+     }
 
-        _openMenus.pop();
-    }
+     _openMenus.pop();
+     }
 
 
-    osg::Matrix m;
-    m.makeTranslate(osg::Vec3(-offset,0,0));
+     osg::Matrix m;
+     m.makeTranslate(osg::Vec3(-offset,0,0));
 
-    if(revMenuStack.size())
-    {
-        _menuMap[revMenuStack.top()]->setMatrix(m);
-        _openMenus.push(revMenuStack.top());
-        revMenuStack.pop();
-    }
+     if(revMenuStack.size())
+     {
+     _menuMap[revMenuStack.top()]->setMatrix(m);
+     _openMenus.push(revMenuStack.top());
+     revMenuStack.pop();
+     }
 
-    int count = revMenuStack.size();
-    int max = revMenuStack.size();
-    offset += 2*_radius + padding;
+     int count = revMenuStack.size();
+     int max = revMenuStack.size();
+     offset += 2*_radius + padding;
 
-    while(revMenuStack.size())
-    {
-        m.makeTranslate(osg::Vec3(0,0,0));
+     while(revMenuStack.size())
+     {
+     m.makeTranslate(osg::Vec3(0,0,0));
 
-        if (count == 1)
-        {
-            offset += 2*_radius + padding;
-        }
-        else
-        {
-        }
+     if (count == 1)
+     {
+     offset += 2*_radius + padding;
+     }
+     else
+     {
+     }
 
-        _openMenus.push(revMenuStack.top());
-        revMenuStack.pop();
-        count--;
-    }
-*/
-
+     _openMenus.push(revMenuStack.top());
+     revMenuStack.pop();
+     count--;
+     }
+     */
 
     // favorites menu
     offset = _radius + padding;
-    _favMenuRoot->removeChild(0, _favMenuRoot->getNumChildren());
-    
+    _favMenuRoot->removeChild(0,_favMenuRoot->getNumChildren());
+
     // find and remove menu items that still have geometry, but are not menu children
-    for (std::map<MenuItem*, BubbleMenuGeometry*>::iterator it =
-         _favGeometryMap.begin(); it != _favGeometryMap.end(); ++it)
+    for(std::map<MenuItem*,BubbleMenuGeometry*>::iterator it =
+            _favGeometryMap.begin(); it != _favGeometryMap.end(); ++it)
     {
         // moving out of menu
-        if (_favMenu->getItemPosition(it->first) < 0)
+        if(_favMenu->getItemPosition(it->first) < 0)
         {
-            if (_lerpMap.find(_favMaskMap[it->second]) != _lerpMap.end())
+            if(_lerpMap.find(_favMaskMap[it->second]) != _lerpMap.end())
             {
                 BubbleMenuGeometry * mg = it->second;
                 osg::ref_ptr<osg::MatrixTransform> mat;
 
                 mat = _favMaskMap[mg];
 
-                mg->resetIntersect(2*_radius);
+                mg->resetIntersect(2 * _radius);
                 _intersectMap[mg->getIntersect()] = mg;
-               
+
                 mat->addChild(mg->getNode());
                 _favMenuRoot->addChild(mat);
             }
@@ -1139,9 +1152,8 @@ void BubbleMenu::updateMenus()
         }
     }
 
-    for(std::vector<MenuItem*>::iterator it =
-        _favMenu->getChildren().begin();
-        it != _favMenu->getChildren().end(); it++)
+    for(std::vector<MenuItem*>::iterator it = _favMenu->getChildren().begin();
+            it != _favMenu->getChildren().end(); it++)
 
     {
         osg::Matrix m;
@@ -1149,42 +1161,44 @@ void BubbleMenu::updateMenus()
         BubbleMenuGeometry * mg;
         osg::ref_ptr<osg::MatrixTransform> mat;
 
-        if (_geometryMap.find(*it) == _geometryMap.end() &&
-            _menuGeometryMap.find((SubMenu*)*it) == _menuGeometryMap.end())
+        if(_geometryMap.find(*it) == _geometryMap.end()
+                && _menuGeometryMap.find((SubMenu*)*it)
+                        == _menuGeometryMap.end())
         {
             continue;
         }
-        
-        if ((*it)->isSubMenu())
+
+        if((*it)->isSubMenu())
         {
-            std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair = 
-                _menuGeometryMap[(SubMenu*)(*it)]; 
+            std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair =
+                    _menuGeometryMap[(SubMenu*)(*it)];
             mg = bmgpair.second;
         }
         else
         {
             mg = _geometryMap[*it];
         }
-        
+
         // added to menu
-        if (_favGeometryMap.find(*it) == _favGeometryMap.end())
+        if(_favGeometryMap.find(*it) == _favGeometryMap.end())
         {
             mat = new osg::MatrixTransform();
 
-            osg::Vec3 vec(0, 0, -offset);
-            _lerpMap[mat] = new Lerp(-rootMat.getTrans() - osg::Vec3(0,-rootMat.getTrans()[1],0)
-                    + osg::Vec3(0,0,_height) + _maskMap[mg]->getMatrix().getTrans(),
-                    vec, _speed);
+            osg::Vec3 vec(0,0,-offset);
+            _lerpMap[mat] = new Lerp(
+                    -rootMat.getTrans() - osg::Vec3(0,-rootMat.getTrans()[1],0)
+                            + osg::Vec3(0,0,_height)
+                            + _maskMap[mg]->getMatrix().getTrans(),vec,_speed);
 
             _favGeometryMap[*it] = mg;
             _favMaskMap[mg] = mat;
         }
-        
+
         // in menu - not moving
-        if (_lerpMap.find(_favMaskMap[mg]) == _lerpMap.end())
+        if(_lerpMap.find(_favMaskMap[mg]) == _lerpMap.end())
         {
             mat = new osg::MatrixTransform();
-            m.makeTranslate(osg::Vec3(0, 0, -offset));
+            m.makeTranslate(osg::Vec3(0,0,-offset));
             mat->setMatrix(m);
             _favMaskMap[mg] = mat;
         }
@@ -1194,12 +1208,12 @@ void BubbleMenu::updateMenus()
             mat = _favMaskMap[mg];
         }
 
-        mg->resetIntersect(2*_radius);
+        mg->resetIntersect(2 * _radius);
         _intersectMap[mg->getIntersect()] = mg;
-       
+
         mat->addChild(mg->getNode());
         _favMenuRoot->addChild(mat);
-       
+
         offset += 2 * _radius + padding;
     }
 }
@@ -1214,8 +1228,8 @@ bool BubbleMenu::processIsect(IsectInfo & isect, int hand)
     {
         return true;
     }
-    
-    if (_menuActive)
+
+    if(_menuActive)
     {
         if(_intersectMap.find(isect.geode) != _intersectMap.end())
         {
@@ -1231,13 +1245,14 @@ bool BubbleMenu::processIsect(IsectInfo & isect, int hand)
                 }
             }
 
-            if (_activeIsect != _intersectMap[isect.geode])
+            if(_activeIsect != _intersectMap[isect.geode])
             {
                 _hoverStartTime = PluginHelper::getProgramDuration();
                 _activeIsect = _intersectMap[isect.geode];
             }
 
-            if (PluginHelper::getProgramDuration() - _hoverStartTime > _hoverCutoff)
+            if(PluginHelper::getProgramDuration() - _hoverStartTime
+                    > _hoverCutoff)
             {
                 _intersectMap[isect.geode]->showHoverText();
                 _activeIsect = _intersectMap[isect.geode];
@@ -1250,10 +1265,11 @@ bool BubbleMenu::processIsect(IsectInfo & isect, int hand)
         }
     }
 
-    else if (!_menuActive && _showFavMenu)
+    else if(!_menuActive && _showFavMenu)
     {
-        if(_intersectMap.find(isect.geode) != _intersectMap.end() 
-           && _favGeometryMap[_intersectMap[isect.geode]->getMenuItem()] == _intersectMap[isect.geode])
+        if(_intersectMap.find(isect.geode) != _intersectMap.end()
+                && _favGeometryMap[_intersectMap[isect.geode]->getMenuItem()]
+                        == _intersectMap[isect.geode])
         {
             TrackerBase::TrackerType ttype =
                     TrackingManager::instance()->getHandTrackerType(hand);
@@ -1267,13 +1283,14 @@ bool BubbleMenu::processIsect(IsectInfo & isect, int hand)
                 }
             }
 
-            if (_activeIsect != _intersectMap[isect.geode])
+            if(_activeIsect != _intersectMap[isect.geode])
             {
                 _hoverStartTime = PluginHelper::getProgramDuration();
                 _activeIsect = _intersectMap[isect.geode];
             }
 
-            if (PluginHelper::getProgramDuration() - _hoverStartTime > _hoverCutoff)
+            if(PluginHelper::getProgramDuration() - _hoverStartTime
+                    > _hoverCutoff)
             {
                 _intersectMap[isect.geode]->showHoverText();
                 _activeIsect = _intersectMap[isect.geode];
@@ -1285,7 +1302,6 @@ bool BubbleMenu::processIsect(IsectInfo & isect, int hand)
             return true;
         }
     }
-
 
     return false;
 }
@@ -1312,68 +1328,69 @@ void BubbleMenu::openMenu(BubbleMenuSubMenuGeometry * smg)
 {
     bool isOpenMenu = false;
 
-    if (_soundEnabled)
+    if(_soundEnabled)
     {
 //        whoosh->play();
     }
 
-    osg::Vec3 centerPos = osg::Vec3(0, 0, -_subradius*1.5);
+    osg::Vec3 centerPos = osg::Vec3(0,0,-_subradius * 1.5);
 
     // a menu is open
-    if (_openMenus.size() > 1)
+    if(_openMenus.size() > 1)
     {
         closeMenu(_openMenus.top());
 
         // Lerp smg to center with a delay
-        _lerpMap[_maskMap[smg]] = new Lerp(_maskMap[smg]->getMatrix().getTrans(),
-            centerPos, _speed, _speed);
+        _lerpMap[_maskMap[smg]] = new Lerp(
+                _maskMap[smg]->getMatrix().getTrans(),centerPos,_speed,_speed);
         isOpenMenu = true;
     }
     // no menu open
     else
     {
         // Lerp smg to center immediately
-        _lerpMap[_maskMap[smg]] = new Lerp(_maskMap[smg]->getMatrix().getTrans(),
-            centerPos, _speed);
+        _lerpMap[_maskMap[smg]] = new Lerp(
+                _maskMap[smg]->getMatrix().getTrans(),centerPos,_speed);
     }
 
     // open children of smg
-    for (int i = 0; i < ((SubMenu*)smg->getMenuItem())->getNumChildren(); i++)
+    for(int i = 0; i < ((SubMenu*)smg->getMenuItem())->getNumChildren(); i++)
     {
-        BubbleMenuGeometry * bmg = 
-            _geometryMap[((SubMenu*)smg->getMenuItem())->getChild(i)]; 
+        BubbleMenuGeometry * bmg =
+                _geometryMap[((SubMenu*)smg->getMenuItem())->getChild(i)];
         osg::Vec3 pos = _positionMap[bmg];
 
-        if (bmg)
+        if(bmg)
         {
-            if (isOpenMenu)
+            if(isOpenMenu)
             {
-                _lerpMap[_maskMap[bmg]] = new Lerp(centerPos, pos, _speed, 
-                    2*_speed, false, true);
+                _lerpMap[_maskMap[bmg]] = new Lerp(centerPos,pos,_speed,
+                        2 * _speed,false,true);
             }
             else
             {
-                _lerpMap[_maskMap[bmg]] = new Lerp(centerPos, pos, _speed, 
-                    _speed, false, true);
+                _lerpMap[_maskMap[bmg]] = new Lerp(centerPos,pos,_speed,_speed,
+                        false,true);
             }
         }
         else // is a submenu
         {
-            std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair = 
-                _menuGeometryMap[(SubMenu*)((SubMenu*)smg->getMenuItem())->getChild(i)]; 
-            
+            std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair =
+                    _menuGeometryMap[(SubMenu*)((SubMenu*)smg->getMenuItem())->getChild(
+                            i)];
+
             osg::Vec3 pos = bmgpair.second->getNode()->getMatrix().getTrans();
             pos = _positionMap[bmgpair.second];
 
-            if (isOpenMenu)
+            if(isOpenMenu)
             {
-                _lerpMap[_maskMap[bmgpair.second]] = new Lerp(centerPos, 
-                    pos, _speed, 2*_speed, false, true);
+                _lerpMap[_maskMap[bmgpair.second]] = new Lerp(centerPos,pos,
+                        _speed,2 * _speed,false,true);
             }
             else
             {
-                _lerpMap[_maskMap[bmgpair.second]] = new Lerp(centerPos,
-                    pos, _speed, _speed, false, true);
+                _lerpMap[_maskMap[bmgpair.second]] = new Lerp(centerPos,pos,
+                        _speed,_speed,false,true);
             }
 
         }
@@ -1394,8 +1411,8 @@ void BubbleMenu::openMenu(BubbleMenuSubMenuGeometry * smg)
 
 void BubbleMenu::closeMenu(SubMenu * menu)
 {
-    
-    if (_soundEnabled)
+
+    if(_soundEnabled)
     {
 //        whoosh->play();
     }
@@ -1419,7 +1436,6 @@ void BubbleMenu::closeMenu(SubMenu * menu)
         }
     }
 
-
     if(!smg)
     {
         return;
@@ -1427,53 +1443,55 @@ void BubbleMenu::closeMenu(SubMenu * menu)
 
     std::map<osg::ref_ptr<osg::MatrixTransform>,Lerp*>::iterator it;
     it = _lerpMap.find(_maskMap[smg]);
-    if (it == _lerpMap.end())
+    if(it == _lerpMap.end())
     {
         osg::Vec3 startPos = _maskMap[smg]->getMatrix().getTrans();
         osg::Vec3 newPos = _rootPositionMap[smg];
 
-        bool isRoot = false; 
+        bool isRoot = false;
 
-        for (std::vector<MenuItem*>::iterator it = _myMenu->getChildren().begin();
-             it != _myMenu->getChildren().end(); ++it)
+        for(std::vector<MenuItem*>::iterator it =
+                _myMenu->getChildren().begin();
+                it != _myMenu->getChildren().end(); ++it)
         {
-            if ((*it) == smg->getMenuItem())
+            if((*it) == smg->getMenuItem())
             {
                 isRoot = true;
             }
         }
-        if (isRoot)
+        if(isRoot)
         {
-            _lerpMap[_maskMap[smg]] = 
-                new Lerp(startPos, newPos, _speed, _speed);
+            _lerpMap[_maskMap[smg]] = new Lerp(startPos,newPos,_speed,_speed);
         }
         else
         {
-            _lerpMap[_maskMap[smg]] = 
-                new Lerp(startPos, newPos, _speed, _speed, true, false);
+            _lerpMap[_maskMap[smg]] = new Lerp(startPos,newPos,_speed,_speed,
+                    true,false);
 
         }
     }
 
-    for (int i = 0; i < ((SubMenu*)smg->getMenuItem())->getNumChildren(); i++)
+    for(int i = 0; i < ((SubMenu*)smg->getMenuItem())->getNumChildren(); i++)
     {
-       osg::Vec3 centerPos = osg::Vec3(0, 0, -_subradius * 1.5);
-       BubbleMenuGeometry * bmg = 
-         _geometryMap[((SubMenu*)smg->getMenuItem())->getChild(i)]; 
-       if (bmg)
-       {
-           _lerpMap[_maskMap[bmg]] = 
-               new Lerp(_maskMap[bmg]->getMatrix().getTrans(), centerPos, _speed, 0, true);
-       }
-       else // is a submenu
-       {
-           std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair = 
-               _menuGeometryMap[(SubMenu*)((SubMenu*)smg->getMenuItem())->getChild(i)]; 
-            
-           _lerpMap[_maskMap[bmgpair.second]] = 
-               new Lerp(_maskMap[bmgpair.second]->getMatrix().getTrans(),
-                    centerPos, _speed, 0, true);
-       }
+        osg::Vec3 centerPos = osg::Vec3(0,0,-_subradius * 1.5);
+        BubbleMenuGeometry * bmg =
+                _geometryMap[((SubMenu*)smg->getMenuItem())->getChild(i)];
+        if(bmg)
+        {
+            _lerpMap[_maskMap[bmg]] = new Lerp(
+                    _maskMap[bmg]->getMatrix().getTrans(),centerPos,_speed,0,
+                    true);
+        }
+        else // is a submenu
+        {
+            std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> bmgpair =
+                    _menuGeometryMap[(SubMenu*)((SubMenu*)smg->getMenuItem())->getChild(
+                            i)];
+
+            _lerpMap[_maskMap[bmgpair.second]] = new Lerp(
+                    _maskMap[bmgpair.second]->getMatrix().getTrans(),centerPos,
+                    _speed,0,true);
+        }
     }
 
     smg->openMenu(false);

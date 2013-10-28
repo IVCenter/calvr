@@ -22,7 +22,7 @@ class SceneObject;
 class CVRPlugin;
 class InteractionEvent;
 
-template <typename T> class VectorWithPosition : public std::vector <T>
+template<typename T> class VectorWithPosition : public std::vector<T>
 {
     public:
         void setPosition(int pos)
@@ -71,15 +71,12 @@ class CVRKERNEL_EXPORT SceneManager
          */
         enum PointerGraphicType
         {
-            CONE = 0,
-            POINTER,
-            NONE,
+            CONE = 0, POINTER, NONE,
         };
 
         enum WallType
         {
-            WT_UNKNOWN = 0,
-            WT_PLANAR 
+            WT_UNKNOWN = 0, WT_PLANAR
         };
 
         /**
@@ -214,7 +211,7 @@ class CVRKERNEL_EXPORT SceneManager
          */
         void unregisterSceneObject(SceneObject * object);
 
-        std::vector< SceneObject* > getSceneObjects(void);
+        std::vector<SceneObject*> getSceneObjects(void);
 
         float getDefaultContextMenuScale()
         {
@@ -249,10 +246,10 @@ class CVRKERNEL_EXPORT SceneManager
 
         struct CameraCallbacks
         {
-            osg::ref_ptr<osg::Camera::DrawCallback> initialDraw;
-            osg::ref_ptr<osg::Camera::DrawCallback> preDraw;
-            osg::ref_ptr<osg::Camera::DrawCallback> postDraw;
-            osg::ref_ptr<osg::Camera::DrawCallback> finalDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> initialDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> preDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> postDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> finalDraw;
         };
 
         CameraCallbacks * getCameraCallbacks(osg::Camera * cam);
@@ -281,8 +278,9 @@ class CVRKERNEL_EXPORT SceneManager
         {
             return _wallTransform;
         }
-        
-        bool getPointOnTiledWall(const osg::Matrix & mat, osg::Vec3 & wallPoint);
+
+        bool getPointOnTiledWall(const osg::Matrix & mat,
+                osg::Vec3 & wallPoint);
 
     protected:
         SceneManager();
@@ -298,7 +296,8 @@ class CVRKERNEL_EXPORT SceneManager
 
         void updateActiveObject();
         SceneObject * findChildActiveObject(SceneObject * object,
-                osg::Vec3 & start, osg::Vec3 & end, VectorWithPosition<SceneObject*> & nodeList);
+                osg::Vec3 & start, osg::Vec3 & end,
+                VectorWithPosition<SceneObject*> & nodeList);
         void removeNestedObject(SceneObject * object);
         void removePluginObjects(CVRPlugin * plugin);
 

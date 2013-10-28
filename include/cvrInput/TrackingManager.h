@@ -214,9 +214,12 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
          */
         bool getUpdateHeadTracking();
 
-        osg::Matrix getHandTransformFromTrackedBody(int hand, TrackerBase::TrackedBody * body);
-        osg::Matrix getHeadTransformFromTrackedBody(int head, TrackerBase::TrackedBody * body);
-        void getHandButtonFromSystemButton(int system, int systemButton, int & hand, int & handButton);
+        osg::Matrix getHandTransformFromTrackedBody(int hand,
+                TrackerBase::TrackedBody * body);
+        osg::Matrix getHeadTransformFromTrackedBody(int head,
+                TrackerBase::TrackedBody * body);
+        void getHandButtonFromSystemButton(int system, int systemButton,
+                int & hand, int & handButton);
 
     protected:
         TrackingManager();
@@ -307,8 +310,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
 
         enum ValuatorType
         {
-            NON_ZERO,
-            CHANGE
+            NON_ZERO, CHANGE
         };
 
         static TrackingManager * _myPtr; ///< Static self pointer

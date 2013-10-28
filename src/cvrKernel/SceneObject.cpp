@@ -86,26 +86,26 @@ SceneObject::~SceneObject()
 
     if(_moveMenuItem)
     {
-	delete _moveMenuItem;
-	_moveMenuItem = NULL;
+        delete _moveMenuItem;
+        _moveMenuItem = NULL;
     }
 
     if(_navMenuItem)
     {
-	delete _navMenuItem;
-	_navMenuItem = NULL;
+        delete _navMenuItem;
+        _navMenuItem = NULL;
     }
 
     if(_scaleMenuItem)
     {
-	delete _scaleMenuItem;
-	_scaleMenuItem = NULL;
+        delete _scaleMenuItem;
+        _scaleMenuItem = NULL;
     }
 
     if(_myMenu)
     {
-	delete _myMenu;
-	_myMenu = NULL;
+        delete _myMenu;
+        _myMenu = NULL;
     }
 }
 
@@ -414,7 +414,7 @@ void SceneObject::removeChild(SceneObject * so)
     {
         if((*it) == so)
         {
-	    SceneManager::instance()->removeNestedObject(*it);
+            SceneManager::instance()->removeNestedObject(*it);
             (*it)->_parent = NULL;
             _childrenObjects.erase(it);
             break;
@@ -555,16 +555,17 @@ osg::Matrix SceneObject::getWorldToObjectMatrix()
     }
 }
 
-bool SceneObject::processEvent(InteractionEvent * ie, VectorWithPosition<SceneObject*> & nodeList)
+bool SceneObject::processEvent(InteractionEvent * ie,
+        VectorWithPosition<SceneObject*> & nodeList)
 {
     nodeList.next();
     if(nodeList.getPosition() < nodeList.size())
     {
-	return nodeList[nodeList.getPosition()]->processEvent(ie,nodeList);
+        return nodeList[nodeList.getPosition()]->processEvent(ie,nodeList);
     }
     else
     {
-	return processEvent(ie);
+        return processEvent(ie);
     }
 }
 
@@ -671,11 +672,11 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 
                     osg::Matrix menuRot;
 
-		    // point towards viewer if not on tiled wall
-		    if(!ie->asPointerEvent())
-		    {
-			menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
-		    }
+                    // point towards viewer if not on tiled wall
+                    if(!ie->asPointerEvent())
+                    {
+                        menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+                    }
 
                     osg::Matrix m;
                     m.makeTranslate(menuPoint);

@@ -56,10 +56,7 @@ class TrackerBase
          */
         enum TrackerType
         {
-            TRACKER = 0,
-            POINTER,
-            MOUSE,
-            INVALID
+            TRACKER = 0, POINTER, MOUSE, INVALID
         };
 
         /**

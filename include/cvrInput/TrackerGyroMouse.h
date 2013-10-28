@@ -16,12 +16,12 @@ struct DeviceInfo;
 class TrackerGyroMouse : public TrackerBase
 {
     public:
-	TrackerGyroMouse();
-	virtual ~TrackerGyroMouse();
+        TrackerGyroMouse();
+        virtual ~TrackerGyroMouse();
 
         virtual bool init(std::string tag);
 
-	virtual TrackedBody * getBody(int index);
+        virtual TrackedBody * getBody(int index);
         virtual unsigned int getButtonMask();
         virtual float getValuator(int index);
 
@@ -54,7 +54,7 @@ class TrackerGyroMouse : public TrackerBase
 
         virtual TrackedButtonInteractionEvent * getNewBaseEvent(int body);
     protected:
-	int _numBodies; ///< number of tracked bodies
+        int _numBodies; ///< number of tracked bodies
         int _numVal; ///< number of valuators
         int _numButtons; ///< number of buttons
 

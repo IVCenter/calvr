@@ -60,15 +60,16 @@ void BubbleMenuTextGeometry::createGeometry(MenuItem * item)
 
     // Hover text
     _textGeode = new osg::Geode();
-    osgText::Text * hoverTextNode = makeText(item->getHoverText(), _textSize,
+    osgText::Text * hoverTextNode = makeText(item->getHoverText(),_textSize,
 //        osg::Vec3(0,0,_radius), osg::Vec4(1,1,1,1), osgText::Text::LEFT_CENTER);
-       osg::Vec3(_radius/2,0,1.5*_radius), osg::Vec4(1,1,1,1), osgText::Text::CENTER_CENTER);
+            osg::Vec3(_radius / 2,0,1.5 * _radius),osg::Vec4(1,1,1,1),
+            osgText::Text::CENTER_CENTER);
 
     osg::StateSet * ss = _textGeode->getOrCreateStateSet();
-    ss->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    ss->setRenderBinDetails(11, "Render Bin");
+    ss->setRenderBinDetails(11,"Render Bin");
 
     hoverTextNode->setFont(_font);
     _textGeode->addDrawable(hoverTextNode);
@@ -114,16 +115,16 @@ void BubbleMenuTextGeometry::updateGeometry()
 
 void BubbleMenuTextGeometry::showHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->addChild(_textGeode);
+        _node->addChild(_textGeode);
     }
 }
 
 void BubbleMenuTextGeometry::hideHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->removeChild(_textGeode);
+        _node->removeChild(_textGeode);
     }
 }

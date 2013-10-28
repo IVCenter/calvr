@@ -51,9 +51,7 @@ class BoardMenuScrollTextGeometry : public BoardMenuGeometry
 
         enum Arrow
         {
-            UP_ARROW,
-            DOWN_ARROW,
-            NO_ARROW
+            UP_ARROW, DOWN_ARROW, NO_ARROW
         };
 
         bool _scrollActive;
@@ -75,8 +73,8 @@ class BoardMenuScrollTextGeometry : public BoardMenuGeometry
 
         std::string _display;
 
-        std::list< std::pair< std::string, float > > _words, _wordsraw;
-        std::vector< std::list< std::pair< std::string, float > >::iterator > _rowindex;
+        std::list<std::pair<std::string,float> > _words, _wordsraw;
+        std::vector<std::list<std::pair<std::string,float> >::iterator> _rowindex;
         int _lines;
 
         int _rows;

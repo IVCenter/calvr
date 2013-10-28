@@ -71,8 +71,7 @@ class CVRMENU_EXPORT MenuRangeValue : public MenuItem
 
         enum CallbackType
         {
-            ON_CHANGE=0,
-            ON_RELEASE
+            ON_CHANGE = 0, ON_RELEASE
         };
 
         void setCallbackType(const CallbackType type);

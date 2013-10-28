@@ -63,22 +63,28 @@ void BubbleMenuTextButtonSetGeometry::createGeometry(MenuItem * item)
 
     _spacing = 3.0;
 
-    osg::Geode * _geode, * _geodeSelected;
+    osg::Geode * _geode, *_geodeSelected;
     _geode = new osg::Geode();
     _geodeSelected = new osg::Geode();
-    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius/2,0,0), _radius, osg::Vec4(0,1,0,1));
+    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius / 2,0,0),_radius,
+            osg::Vec4(0,1,0,1));
     osg::PolygonMode * polygonMode = new osg::PolygonMode();
-    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
-    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode, osg::StateAttribute::ON);
+    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK,
+            osg::PolygonMode::LINE);
+    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
 
     _geode->addDrawable(sphereGeom);
 
-    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius/2,0,0), _radius, osg::Vec4(0,1,0,1));
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode, osg::StateAttribute::ON);
+    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius / 2,0,0),
+            _radius,osg::Vec4(0,1,0,1));
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
 
     osg::LineWidth * lineWidth = new osg::LineWidth();
     lineWidth->setWidth(3);
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth, osg::StateAttribute::ON);
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth,
+            osg::StateAttribute::ON);
 
     _geodeSelected->addDrawable(sphereSelectedGeom);
 
@@ -109,19 +115,19 @@ void BubbleMenuTextButtonSetGeometry::createGeometry(MenuItem * item)
     _width = mb->getWidth();
     //mg->height = bb.zMax() - bb.zMin();
     //_height = _rowHeight;
-    
 
     // Hover text
     _textGeode = new osg::Geode();
-    osgText::Text * hoverTextNode = makeText(item->getHoverText(), _textSize,
+    osgText::Text * hoverTextNode = makeText(item->getHoverText(),_textSize,
 //        osg::Vec3(0,0,_radius), osg::Vec4(1,1,1,1), osgText::Text::LEFT_CENTER);
-       osg::Vec3(_radius/2,0,1.5*_radius), osg::Vec4(1,1,1,1), osgText::Text::CENTER_CENTER);
+            osg::Vec3(_radius / 2,0,1.5 * _radius),osg::Vec4(1,1,1,1),
+            osgText::Text::CENTER_CENTER);
 
     osg::StateSet * ss = _textGeode->getOrCreateStateSet();
-    ss->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    ss->setRenderBinDetails(11, "Render Bin");
+    ss->setRenderBinDetails(11,"Render Bin");
 
     hoverTextNode->setFont(_font);
     _textGeode->addDrawable(hoverTextNode);
@@ -390,16 +396,16 @@ void BubbleMenuTextButtonSetGeometry::updateButtons(MenuTextButtonSet * tbs)
 
 void BubbleMenuTextButtonSetGeometry::showHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->addChild(_textGeode);
+        _node->addChild(_textGeode);
     }
 }
 
 void BubbleMenuTextButtonSetGeometry::hideHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
-    _node->removeChild(_textGeode);
+        _node->removeChild(_textGeode);
     }
 }

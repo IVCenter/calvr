@@ -55,99 +55,108 @@ void BubbleMenuCheckboxGeometry::createGeometry(MenuItem * item)
 
     // Unselected text
     osgText::Text3D * textNode = make3DText(checkbox->getText(),_textSize,
-            osg::Vec3(0,0,0), _textColor);
+            osg::Vec3(0,0,0),_textColor);
     _geode->addDrawable(textNode);
 
     osg::BoundingBox bb = textNode->getBound();
     _width = bb.xMax() - bb.xMin();
     _height = _iconHeight;
 
-    textNode->setPosition(osg::Vec3(_radius/2, 0, 0));
+    textNode->setPosition(osg::Vec3(_radius / 2,0,0));
 
     // Selected text
-    textNode = make3DText(checkbox->getText(),_textSize,
-            osg::Vec3(0,0,0),_textColorSelected);
+    textNode = make3DText(checkbox->getText(),_textSize,osg::Vec3(0,0,0),
+            _textColorSelected);
     _geodeSelected->addDrawable(textNode);
 
-    textNode->setPosition(osg::Vec3(_radius/2, 0, 0));
+    textNode->setPosition(osg::Vec3(_radius / 2,0,0));
 
 //  osg::Vec4 c = osg::Vec4((float)(85.0/255.0), (float)(217.0/255.0), (float)(188.0/255.0), 1);
-   
-    // Unselected sphere
-    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius/2,0,0), 
-        _radius, osg::Vec4(0,1,0,1));
+
+// Unselected sphere
+    osg::Geometry * sphereGeom = makeSphere(osg::Vec3(_radius / 2,0,0),_radius,
+            osg::Vec4(0,1,0,1));
     osg::PolygonMode * polygonMode = new osg::PolygonMode();
-    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE);
-    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode, 
-        osg::StateAttribute::ON);
+    polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK,
+            osg::PolygonMode::LINE);
+    sphereGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
     _geode->addDrawable(sphereGeom);
 
     // Selected sphere
-    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius/2,0,0), 
-        _radius, osg::Vec4(0,1,0,1));
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode, 
-        osg::StateAttribute::ON);
+    osg::Geometry * sphereSelectedGeom = makeSphere(osg::Vec3(_radius / 2,0,0),
+            _radius,osg::Vec4(0,1,0,1));
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(polygonMode,
+            osg::StateAttribute::ON);
     osg::LineWidth * lineWidth = new osg::LineWidth();
     lineWidth->setWidth(3);
-    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth, 
-        osg::StateAttribute::ON);
+    sphereSelectedGeom->getOrCreateStateSet()->setAttribute(lineWidth,
+            osg::StateAttribute::ON);
     _geodeSelected->addDrawable(sphereSelectedGeom);
-    
+
     osg::Box *lbox, *rbox;
     osg::ShapeDrawable * boxDrawable;
 
     // Red X
     _xGeode = new osg::Geode();
-    
-    float xLength = _radius / 2.5,
-          yLength = _radius / 9,
-          zLength = _radius / 9;
-    
-    lbox = new osg::Box(osg::Vec3(_radius + _radius/3, 0, _radius), xLength, yLength, zLength);
-    lbox->setRotation(osg::Quat(M_PI/4, osg::Vec3(0,1,0)));
 
-    rbox = new osg::Box(osg::Vec3(_radius + _radius/3, 0, _radius), xLength, yLength, zLength);
-    rbox->setRotation(osg::Quat(-M_PI/4, osg::Vec3(0,1,0)));
+    float xLength = _radius / 2.5, yLength = _radius / 9, zLength = _radius / 9;
+
+    lbox = new osg::Box(osg::Vec3(_radius + _radius / 3,0,_radius),xLength,
+            yLength,zLength);
+    lbox->setRotation(osg::Quat(M_PI / 4,osg::Vec3(0,1,0)));
+
+    rbox = new osg::Box(osg::Vec3(_radius + _radius / 3,0,_radius),xLength,
+            yLength,zLength);
+    rbox->setRotation(osg::Quat(-M_PI / 4,osg::Vec3(0,1,0)));
 
     boxDrawable = new osg::ShapeDrawable(lbox);
     boxDrawable->setColor(osg::Vec4(1,0,0,1));
-    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND,
+            osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING,
+            osg::StateAttribute::ON);
     _xGeode->addDrawable(boxDrawable);
 
     boxDrawable = new osg::ShapeDrawable(rbox);
     boxDrawable->setColor(osg::Vec4(1,0,0,1));
-    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND,
+            osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING,
+            osg::StateAttribute::ON);
     _xGeode->addDrawable(boxDrawable);
 
     // Green check
     _checkGeode = new osg::Geode();
 
-    lbox = new osg::Box(osg::Vec3(_radius + _radius/4, 0, _radius), 
-        _radius/3, _radius/9, _radius/9);
-    lbox->setRotation(osg::Quat(M_PI/4, osg::Vec3(0,1,0)));
+    lbox = new osg::Box(osg::Vec3(_radius + _radius / 4,0,_radius),_radius / 3,
+            _radius / 9,_radius / 9);
+    lbox->setRotation(osg::Quat(M_PI / 4,osg::Vec3(0,1,0)));
 
-    rbox = new osg::Box(osg::Vec3(_radius + _radius/4 + _radius/4, 0, _radius + _radius/9), 
-        _radius/2, _radius/9, _radius/9);
-    rbox->setRotation(osg::Quat(-M_PI/4, osg::Vec3(0,1,0)));
-    
+    rbox = new osg::Box(
+            osg::Vec3(_radius + _radius / 4 + _radius / 4,0,
+                    _radius + _radius / 9),_radius / 2,_radius / 9,_radius / 9);
+    rbox->setRotation(osg::Quat(-M_PI / 4,osg::Vec3(0,1,0)));
+
     boxDrawable = new osg::ShapeDrawable(lbox);
     boxDrawable->setColor(osg::Vec4(0,1,0,1));
 
-    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND,
+            osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING,
+            osg::StateAttribute::ON);
     _checkGeode->addDrawable(boxDrawable);
 
     boxDrawable = new osg::ShapeDrawable(rbox);
-    boxDrawable->setColor(osg::Vec4(0,1,0,1));  
-    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    boxDrawable->setColor(osg::Vec4(0,1,0,1));
+    boxDrawable->getOrCreateStateSet()->setMode(GL_BLEND,
+            osg::StateAttribute::ON);
+    boxDrawable->getOrCreateStateSet()->setMode(GL_LIGHTING,
+            osg::StateAttribute::ON);
     _checkGeode->addDrawable(boxDrawable);
 
     _node->addChild(_checkGeode);
     _node->addChild(_xGeode);
-
 
     if(!checkbox->getValue())
     {
@@ -162,14 +171,15 @@ void BubbleMenuCheckboxGeometry::createGeometry(MenuItem * item)
 
     // Hover text
     _textGeode = new osg::Geode();
-    osgText::Text * hoverTextNode = makeText(item->getHoverText(), _textSize,
-        osg::Vec3(_radius/2,0,1.5*_radius), osg::Vec4(1,1,1,1), osgText::Text::CENTER_CENTER);
-     
+    osgText::Text * hoverTextNode = makeText(item->getHoverText(),_textSize,
+            osg::Vec3(_radius / 2,0,1.5 * _radius),osg::Vec4(1,1,1,1),
+            osgText::Text::CENTER_CENTER);
+
     osg::StateSet * ss = _textGeode->getOrCreateStateSet();
-    ss->setMode(GL_BLEND, osg::StateAttribute::ON);
-    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+    ss->setMode(GL_BLEND,osg::StateAttribute::ON);
+    ss->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-    ss->setRenderBinDetails(11, "Render Bin");
+    ss->setRenderBinDetails(11,"Render Bin");
 
     hoverTextNode->setFont(_font);
     _textGeode->addDrawable(hoverTextNode);
@@ -237,7 +247,7 @@ void BubbleMenuCheckboxGeometry::processEvent(InteractionEvent * event)
 
 void BubbleMenuCheckboxGeometry::showHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
         _node->addChild(_textGeode);
     }
@@ -245,7 +255,7 @@ void BubbleMenuCheckboxGeometry::showHoverText()
 
 void BubbleMenuCheckboxGeometry::hideHoverText()
 {
-    if (_textGeode && _node)
+    if(_textGeode && _node)
     {
         _node->removeChild(_textGeode);
     }

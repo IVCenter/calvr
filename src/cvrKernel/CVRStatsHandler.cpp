@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
 #include <cvrKernel/CVRStatsHandler.h>
 #include <cvrKernel/CalVR.h>
@@ -30,26 +30,14 @@
 
 using namespace cvr;
 
-CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
-    _keyEventAdvanceSubStats('A'),
-    _keyEventTogglesOnScreenStats('S'),
-    _keyEventPrintsOutStats('P'),
-    _keyEventToggleAdvanced('t'),
-    _advanced(false),
-    _textCalibrated(false),
-    _statsType(NO_STATS),
-    _statsSubType(ALL_SUB_STATS),
-    _initialized(false),
-    _threadingModel(osgViewer::ViewerBase::SingleThreaded),
-    _viewerValuesChildNum(0),
-    _viewerChildNum(0),
-    _cameraSceneChildNum(0),
-    _viewerSceneChildNum(0),
-    _numBlocks(8),
-    _blockMultiplier(10000.0),
-    _statsWidth(1280.0f),
-    _statsHeight(1024.0f),
-    _viewer(viewer)
+CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer) :
+        _keyEventAdvanceSubStats('A'), _keyEventTogglesOnScreenStats('S'), _keyEventPrintsOutStats(
+                'P'), _keyEventToggleAdvanced('t'), _advanced(false), _textCalibrated(
+                false), _statsType(NO_STATS), _statsSubType(ALL_SUB_STATS), _initialized(
+                false), _threadingModel(osgViewer::ViewerBase::SingleThreaded), _viewerValuesChildNum(
+                0), _viewerChildNum(0), _cameraSceneChildNum(0), _viewerSceneChildNum(
+                0), _numBlocks(8), _blockMultiplier(10000.0), _statsWidth(
+                1280.0f), _statsHeight(1024.0f), _viewer(viewer)
 {
     _camera = new osg::Camera;
     _camera->setRenderer(new osgViewer::Renderer(_camera.get()));
@@ -68,7 +56,6 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     svi->collectName = "frame_rate";
     svi->advanced = false;
     _defaultViewerValues.push_back(svi);
-
 
     StatTimeBarInfo * barInfo = new StatTimeBarInfo;
     barInfo->label = "Event:";
@@ -268,7 +255,6 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     barInfo->advanced = false;
     _defaultCameraTimeBars.push_back(barInfo);
 
-
     StatLineInfo * sli = new StatLineInfo;
     sli->color = osg::Vec4(1.0,1.0,1.0,1.0);
     sli->colorAlpha = osg::Vec4(1.0,1.0,1.0,0.5);
@@ -324,105 +310,110 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer):
     _defaultCameraLines.push_back(sli);
 }
 
-bool CVRStatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool CVRStatsHandler::handle(const osgGA::GUIEventAdapter& ea,
+        osgGA::GUIActionAdapter& aa)
 {
 
     osgViewer::View* myview = dynamic_cast<osgViewer::View*>(&aa);
-    if (!myview) return false;
+    if(!myview)
+        return false;
 
     osgViewer::ViewerBase* viewer = myview->getViewerBase();
-    if (viewer && _threadingModelText.valid() && viewer->getThreadingModel()!=_threadingModel)
+    if(viewer && _threadingModelText.valid()
+            && viewer->getThreadingModel() != _threadingModel)
     {
         _threadingModel = viewer->getThreadingModel();
         updateThreadingModelText();
     }
 
-
-    if (ea.getHandled()) return false;
+    if(ea.getHandled())
+        return false;
 
     switch(ea.getEventType())
     {
-        case(osgGA::GUIEventAdapter::KEYDOWN):
+        case (osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()==_keyEventTogglesOnScreenStats)
+            if(ea.getKey() == _keyEventTogglesOnScreenStats)
             {
-                if (viewer->getViewerStats())
+                if(viewer->getViewerStats())
                 {
-                    if (!_initialized)
+                    if(!_initialized)
                     {
                         setUpHUDCamera(viewer);
                     }
 
-		    if(!_switch)
-		    {
-			setUpScene(viewer);
-		    }
+                    if(!_switch)
+                    {
+                        setUpScene(viewer);
+                    }
 
                     ++_statsType;
 
-                    if (_statsType==LAST) _statsType = NO_STATS;
+                    if(_statsType == LAST)
+                        _statsType = NO_STATS;
 
                     osgViewer::ViewerBase::Cameras cameras;
                     viewer->getCameras(cameras);
 
                     switch(_statsType)
                     {
-                        case(NO_STATS):
+                        case (NO_STATS):
                         {
-                            for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
-                                itr != cameras.end();
-                                ++itr)
+                            for(osgViewer::ViewerBase::Cameras::iterator itr =
+                                    cameras.begin(); itr != cameras.end();
+                                    ++itr)
                             {
                                 osg::Stats* stats = (*itr)->getStats();
-                                if (stats)
+                                if(stats)
                                 {
                                     stats->collectStats("scene",false);
                                 }
                             }
 
-                            viewer->getViewerStats()->collectStats("scene",false);
+                            viewer->getViewerStats()->collectStats("scene",
+                                    false);
 
                             _camera->setNodeMask(0x0);
                             _switch->setAllChildrenOff();
                             break;
                         }
-                        case(FRAME_RATE):
+                        case (FRAME_RATE):
                         {
                             _camera->setNodeMask(0xffffffff);
-                            _switch->setValue(_viewerValuesChildNum, true);
+                            _switch->setValue(_viewerValuesChildNum,true);
                             break;
                         }
-                        case(VIEWER_STATS):
+                        case (VIEWER_STATS):
                         {
                             osgViewer::ViewerBase::Scenes scenes;
                             viewer->getScenes(scenes);
-                            for(osgViewer::ViewerBase::Scenes::iterator itr = scenes.begin();
-                                itr != scenes.end();
-                                ++itr)
+                            for(osgViewer::ViewerBase::Scenes::iterator itr =
+                                    scenes.begin(); itr != scenes.end(); ++itr)
                             {
                                 osgViewer::Scene* scene = *itr;
-                                osgDB::DatabasePager* dp = scene->getDatabasePager();
-                                if (dp && dp->isRunning())
+                                osgDB::DatabasePager* dp =
+                                        scene->getDatabasePager();
+                                if(dp && dp->isRunning())
                                 {
                                     dp->resetStats();
                                 }
                             }
 
                             _camera->setNodeMask(0xffffffff);
-                            _switch->setValue(_viewerChildNum, true);
+                            _switch->setValue(_viewerChildNum,true);
                             break;
                         }
-                        case(CAMERA_SCENE_STATS):
+                        case (CAMERA_SCENE_STATS):
                         {
                             _camera->setNodeMask(0xffffffff);
-                            _switch->setValue(_cameraSceneChildNum, true);
+                            _switch->setValue(_cameraSceneChildNum,true);
 
-                            for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
-                                itr != cameras.end();
-                                ++itr)
+                            for(osgViewer::ViewerBase::Cameras::iterator itr =
+                                    cameras.begin(); itr != cameras.end();
+                                    ++itr)
                             {
                                 osg::Stats* stats = (*itr)->getStats();
-                                if (stats)
+                                if(stats)
                                 {
                                     stats->collectStats("scene",true);
                                 }
@@ -430,12 +421,13 @@ bool CVRStatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
 
                             break;
                         }
-                        case(VIEWER_SCENE_STATS):
+                        case (VIEWER_SCENE_STATS):
                         {
                             _camera->setNodeMask(0xffffffff);
-                            _switch->setValue(_viewerSceneChildNum, true);
+                            _switch->setValue(_viewerSceneChildNum,true);
 
-                            viewer->getViewerStats()->collectStats("scene",true);
+                            viewer->getViewerStats()->collectStats("scene",
+                                    true);
 
                             break;
                         }
@@ -443,133 +435,140 @@ bool CVRStatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
                             break;
                     }
 
-		    setCollect(viewer);
+                    setCollect(viewer);
 
                     aa.requestRedraw();
                 }
                 return true;
             }
-            if (ea.getKey()==_keyEventPrintsOutStats)
+            if(ea.getKey() == _keyEventPrintsOutStats)
             {
-                if (viewer->getViewerStats())
+                if(viewer->getViewerStats())
                 {
-                    osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
+                    osg::notify(osg::NOTICE) << std::endl << "Stats report:"
+                            << std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
                     statsList.push_back(viewer->getViewerStats());
 
                     osgViewer::ViewerBase::Contexts contexts;
                     viewer->getContexts(contexts);
-                    for(osgViewer::ViewerBase::Contexts::iterator gcitr = contexts.begin();
-                        gcitr != contexts.end();
-                        ++gcitr)
+                    for(osgViewer::ViewerBase::Contexts::iterator gcitr =
+                            contexts.begin(); gcitr != contexts.end(); ++gcitr)
                     {
-                        osg::GraphicsContext::Cameras& cameras = (*gcitr)->getCameras();
-                        for(osg::GraphicsContext::Cameras::iterator itr = cameras.begin();
-                            itr != cameras.end();
-                            ++itr)
+                        osg::GraphicsContext::Cameras& cameras =
+                                (*gcitr)->getCameras();
+                        for(osg::GraphicsContext::Cameras::iterator itr =
+                                cameras.begin(); itr != cameras.end(); ++itr)
                         {
-                            if ((*itr)->getStats())
+                            if((*itr)->getStats())
                             {
                                 statsList.push_back((*itr)->getStats());
                             }
                         }
                     }
 
-                    for(int i = viewer->getViewerStats()->getEarliestFrameNumber(); i<= viewer->getViewerStats()->getLatestFrameNumber()-1; ++i)
+                    for(int i =
+                            viewer->getViewerStats()->getEarliestFrameNumber();
+                            i
+                                    <= viewer->getViewerStats()->getLatestFrameNumber()
+                                            - 1; ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
-                            itr != statsList.end();
-                            ++itr)
+                                itr != statsList.end(); ++itr)
                         {
-                            if (itr==statsList.begin()) (*itr)->report(osg::notify(osg::NOTICE), i);
-                            else (*itr)->report(osg::notify(osg::NOTICE), i, "    ");
+                            if(itr == statsList.begin())
+                                (*itr)->report(osg::notify(osg::NOTICE),i);
+                            else
+                                (*itr)->report(osg::notify(osg::NOTICE),i,
+                                        "    ");
                         }
-                        osg::notify(osg::NOTICE)<<std::endl;
+                        osg::notify(osg::NOTICE) << std::endl;
                     }
 
                 }
                 return true;
             }
-	    if(ea.getKey()==_keyEventAdvanceSubStats)
-	    {
-		if(_statsType < VIEWER_STATS)
-		{
-		    return false;
-		}
+            if(ea.getKey() == _keyEventAdvanceSubStats)
+            {
+                if(_statsType < VIEWER_STATS)
+                {
+                    return false;
+                }
 
-		_statsSubType++;
-		if(_statsSubType == LAST_SUB_STATS)
-		{
-		    _statsSubType = ALL_SUB_STATS;
-		}
+                _statsSubType++;
+                if(_statsSubType == LAST_SUB_STATS)
+                {
+                    _statsSubType = ALL_SUB_STATS;
+                }
 
-		if(_switch)
-		{
-		    _camera->removeChild(_switch);
-		    setUpScene(viewer);
-		}
+                if(_switch)
+                {
+                    _camera->removeChild(_switch);
+                    setUpScene(viewer);
+                }
 
-		switch(_statsType)
-		{
-		    case VIEWER_SCENE_STATS:
-			_switch->setValue(_viewerSceneChildNum, true);
-		    case CAMERA_SCENE_STATS:
-			_switch->setValue(_cameraSceneChildNum, true);
-		    case VIEWER_STATS:
-			_switch->setValue(_viewerChildNum, true);
-		    case FRAME_RATE:
-			_switch->setValue(_viewerValuesChildNum, true);
-		    case NO_STATS:
-			break;
-		    default:
-			break;
-		}
+                switch(_statsType)
+                {
+                    case VIEWER_SCENE_STATS:
+                        _switch->setValue(_viewerSceneChildNum,true);
+                    case CAMERA_SCENE_STATS:
+                        _switch->setValue(_cameraSceneChildNum,true);
+                    case VIEWER_STATS:
+                        _switch->setValue(_viewerChildNum,true);
+                    case FRAME_RATE:
+                        _switch->setValue(_viewerValuesChildNum,true);
+                    case NO_STATS:
+                        break;
+                    default:
+                        break;
+                }
 
-		setCollect(viewer);
-
-                aa.requestRedraw();
-
-		return true;
-	    }
-
-	    if(ea.getKey()==_keyEventToggleAdvanced)
-	    {
-		if(_statsType == NO_STATS)
-		{
-		    return false;
-		}
-
-		_advanced = !_advanced;
-
-		if(_switch)
-		{
-		    _camera->removeChild(_switch);
-		    setUpScene(viewer);
-		}
-
-		switch(_statsType)
-		{
-		    case VIEWER_SCENE_STATS:
-			_switch->setValue(_viewerSceneChildNum, true);
-		    case CAMERA_SCENE_STATS:
-			_switch->setValue(_cameraSceneChildNum, true);
-		    case VIEWER_STATS:
-			_switch->setValue(_viewerChildNum, true);
-		    case FRAME_RATE:
-			_switch->setValue(_viewerValuesChildNum, true);
-		    case NO_STATS:
-			break;
-		    default:
-			break;
-		}
-
-		setCollect(viewer);
+                setCollect(viewer);
 
                 aa.requestRedraw();
-	    }
+
+                return true;
+            }
+
+            if(ea.getKey() == _keyEventToggleAdvanced)
+            {
+                if(_statsType == NO_STATS)
+                {
+                    return false;
+                }
+
+                _advanced = !_advanced;
+
+                if(_switch)
+                {
+                    _camera->removeChild(_switch);
+                    setUpScene(viewer);
+                }
+
+                switch(_statsType)
+                {
+                    case VIEWER_SCENE_STATS:
+                        _switch->setValue(_viewerSceneChildNum,true);
+                    case CAMERA_SCENE_STATS:
+                        _switch->setValue(_cameraSceneChildNum,true);
+                    case VIEWER_STATS:
+                        _switch->setValue(_viewerChildNum,true);
+                    case FRAME_RATE:
+                        _switch->setValue(_viewerValuesChildNum,true);
+                    case NO_STATS:
+                        break;
+                    default:
+                        break;
+                }
+
+                setCollect(viewer);
+
+                aa.requestRedraw();
+            }
         }
-        default: break;
+        default:
+            break;
     }
 
     return false;
@@ -580,13 +579,27 @@ void CVRStatsHandler::updateThreadingModelText()
 {
     switch(_threadingModel)
     {
-        case(osgViewer::Viewer::SingleThreaded): _threadingModelText->setText("ThreadingModel: SingleThreaded"); break;
-        case(osgViewer::Viewer::CullDrawThreadPerContext): _threadingModelText->setText("ThreadingModel: CullDrawThreadPerContext"); break;
-        case(osgViewer::Viewer::DrawThreadPerContext): _threadingModelText->setText("ThreadingModel: DrawThreadPerContext"); break;
-        case(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext): _threadingModelText->setText("ThreadingModel: CullThreadPerCameraDrawThreadPerContext"); break;
-        case(osgViewer::Viewer::AutomaticSelection): _threadingModelText->setText("ThreadingModel: AutomaticSelection"); break;
+        case (osgViewer::Viewer::SingleThreaded):
+            _threadingModelText->setText("ThreadingModel: SingleThreaded");
+            break;
+        case (osgViewer::Viewer::CullDrawThreadPerContext):
+            _threadingModelText->setText(
+                    "ThreadingModel: CullDrawThreadPerContext");
+            break;
+        case (osgViewer::Viewer::DrawThreadPerContext):
+            _threadingModelText->setText(
+                    "ThreadingModel: DrawThreadPerContext");
+            break;
+        case (osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext):
+            _threadingModelText->setText(
+                    "ThreadingModel: CullThreadPerCameraDrawThreadPerContext");
+            break;
+        case (osgViewer::Viewer::AutomaticSelection):
+            _threadingModelText->setText("ThreadingModel: AutomaticSelection");
+            break;
         default:
-            _threadingModelText->setText("ThreadingModel: unknown"); break;
+            _threadingModelText->setText("ThreadingModel: unknown");
+            break;
     }
 }
 
@@ -594,30 +607,34 @@ void CVRStatsHandler::reset()
 {
     _initialized = false;
     _camera->setGraphicsContext(0);
-    _camera->removeChildren( 0, _camera->getNumChildren() );
+    _camera->removeChildren(0,_camera->getNumChildren());
 }
 
 void CVRStatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 {
-    osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+    osgViewer::GraphicsWindow* window =
+            dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
-    if (!window)
+    if(!window)
     {
         osgViewer::Viewer::Windows windows;
         viewer->getWindows(windows);
 
-        if (windows.empty()) return;
+        if(windows.empty())
+            return;
 
         window = windows.front();
     }
 
     _camera->setGraphicsContext(window);
 
-    _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
-    
-    _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
+    _camera->setViewport(0,0,window->getTraits()->width,
+            window->getTraits()->height);
 
-    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,_statsWidth,0.0,_statsHeight));
+    _camera->setRenderOrder(osg::Camera::POST_RENDER,10);
+
+    _camera->setProjectionMatrix(
+            osg::Matrix::ortho2D(0.0,_statsWidth,0.0,_statsHeight));
     _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     _camera->setViewMatrix(osg::Matrix::identity());
 
@@ -632,185 +649,193 @@ void CVRStatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 // Drawcallback to draw averaged attribute
 struct AveragedValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    AveragedValueTextDrawCallback(osg::Stats* stats, const std::string& name, int frameDelta, bool averageInInverseSpace, double multiplier):
-        _stats(stats),
-        _attributeName(name),
-        _frameDelta(frameDelta),
-        _averageInInverseSpace(averageInInverseSpace),
-        _multiplier(multiplier),
-        _tickLastUpdated(0)
-    {
-    }
-
-    /** do customized draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
-    {
-        osgText::Text* text = (osgText::Text*)drawable;
-
-        osg::Timer_t tick = osg::Timer::instance()->tick();
-        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
-
-        if (delta>50) // update every 50ms
+        AveragedValueTextDrawCallback(osg::Stats* stats,
+                const std::string& name, int frameDelta,
+                bool averageInInverseSpace, double multiplier) :
+                _stats(stats), _attributeName(name), _frameDelta(frameDelta), _averageInInverseSpace(
+                        averageInInverseSpace), _multiplier(multiplier), _tickLastUpdated(
+                        0)
         {
-            _tickLastUpdated = tick;
-            double value;
-            if (_stats->getAveragedAttribute( _attributeName, value, _averageInInverseSpace))
-            {
-                sprintf(_tmpText,"%4.2f",value * _multiplier);
-                text->setText(_tmpText);
-            }
-            else
-            {
-                text->setText("");
-            }
         }
-        text->drawImplementation(renderInfo);
-    }
 
-    osg::ref_ptr<osg::Stats>    _stats;
-    std::string                 _attributeName;
-    int                         _frameDelta;
-    bool                        _averageInInverseSpace;
-    double                      _multiplier;
-    mutable char                _tmpText[128];
-    mutable osg::Timer_t        _tickLastUpdated;
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                const osg::Drawable* drawable) const
+        {
+            osgText::Text* text = (osgText::Text*)drawable;
+
+            osg::Timer_t tick = osg::Timer::instance()->tick();
+            double delta = osg::Timer::instance()->delta_m(_tickLastUpdated,
+                    tick);
+
+            if(delta > 50) // update every 50ms
+            {
+                _tickLastUpdated = tick;
+                double value;
+                if(_stats->getAveragedAttribute(_attributeName,value,
+                        _averageInInverseSpace))
+                {
+                    sprintf(_tmpText,"%4.2f",value * _multiplier);
+                    text->setText(_tmpText);
+                }
+                else
+                {
+                    text->setText("");
+                }
+            }
+            text->drawImplementation(renderInfo);
+        }
+
+        osg::ref_ptr<osg::Stats> _stats;
+        std::string _attributeName;
+        int _frameDelta;
+        bool _averageInInverseSpace;
+        double _multiplier;
+        mutable char _tmpText[128];
+        mutable osg::Timer_t _tickLastUpdated;
 };
 
 struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    CameraSceneStatsTextDrawCallback(osg::Camera* camera, int cameraNumber):
-        _camera(camera),
-        _tickLastUpdated(0),
-        _cameraNumber(cameraNumber)
-    {
-    }
-
-    /** do customized draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
-    {
-        if (!_camera) return;
-
-        osgText::Text* text = (osgText::Text*)drawable;
-
-        osg::Timer_t tick = osg::Timer::instance()->tick();
-        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
-
-        if (delta > 100) // update every 100ms
+        CameraSceneStatsTextDrawCallback(osg::Camera* camera, int cameraNumber) :
+                _camera(camera), _tickLastUpdated(0), _cameraNumber(
+                        cameraNumber)
         {
-            _tickLastUpdated = tick;
-            std::ostringstream viewStr;
-            viewStr.clear();
+        }
 
-            osg::Stats* stats = _camera->getStats();
-            osgViewer::Renderer* renderer = dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                const osg::Drawable* drawable) const
+        {
+            if(!_camera)
+                return;
 
-            if (stats && renderer)
+            osgText::Text* text = (osgText::Text*)drawable;
+
+            osg::Timer_t tick = osg::Timer::instance()->tick();
+            double delta = osg::Timer::instance()->delta_m(_tickLastUpdated,
+                    tick);
+
+            if(delta > 100) // update every 100ms
             {
-                viewStr.setf(std::ios::left, std::ios::adjustfield);
-                viewStr.width(14);
-                // Used fixed formatting, as scientific will switch to "...e+.." notation for
-                // large numbers of vertices/drawables/etc.
-                viewStr.setf(std::ios::fixed);
-                viewStr.precision(0);
+                _tickLastUpdated = tick;
+                std::ostringstream viewStr;
+                viewStr.clear();
 
-                viewStr << std::setw(1) << "#" << _cameraNumber << std::endl;
+                osg::Stats* stats = _camera->getStats();
+                osgViewer::Renderer* renderer =
+                        dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
 
-                // Camera name
-                if (!_camera->getName().empty())
-                    viewStr << _camera->getName();
-                viewStr << std::endl;
-
-                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
-                if (!(renderer->getGraphicsThreadDoesCull()))
+                if(stats && renderer)
                 {
-                    --frameNumber;
-                }
+                    viewStr.setf(std::ios::left,std::ios::adjustfield);
+                    viewStr.width(14);
+                    // Used fixed formatting, as scientific will switch to "...e+.." notation for
+                    // large numbers of vertices/drawables/etc.
+                    viewStr.setf(std::ios::fixed);
+                    viewStr.precision(0);
 
-                #define STATS_ATTRIBUTE(str) \
+                    viewStr << std::setw(1) << "#" << _cameraNumber
+                            << std::endl;
+
+                    // Camera name
+                    if(!_camera->getName().empty())
+                        viewStr << _camera->getName();
+                    viewStr << std::endl;
+
+                    int frameNumber =
+                            renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                    if(!(renderer->getGraphicsThreadDoesCull()))
+                    {
+                        --frameNumber;
+                    }
+
+#define STATS_ATTRIBUTE(str) \
                     if (stats->getAttribute(frameNumber, str, value)) \
                         viewStr << std::setw(8) << value << std::endl; \
                     else \
                         viewStr << std::setw(8) << "." << std::endl; \
 
-                double value = 0.0;
+                    double value = 0.0;
 
-                STATS_ATTRIBUTE("Visible number of lights")
-                STATS_ATTRIBUTE("Visible number of render bins")
-                STATS_ATTRIBUTE("Visible depth")
-                STATS_ATTRIBUTE("Visible number of materials")
-                STATS_ATTRIBUTE("Visible number of impostors")
-                STATS_ATTRIBUTE("Visible number of drawables")
-                STATS_ATTRIBUTE("Visible vertex count")
+                    STATS_ATTRIBUTE("Visible number of lights")
+                    STATS_ATTRIBUTE("Visible number of render bins")
+                    STATS_ATTRIBUTE("Visible depth")
+                    STATS_ATTRIBUTE("Visible number of materials")
+                    STATS_ATTRIBUTE("Visible number of impostors")
+                    STATS_ATTRIBUTE("Visible number of drawables")
+                    STATS_ATTRIBUTE("Visible vertex count")
 
-                STATS_ATTRIBUTE("Visible number of GL_POINTS")
-                STATS_ATTRIBUTE("Visible number of GL_LINES")
-                STATS_ATTRIBUTE("Visible number of GL_LINE_STRIP")
-                STATS_ATTRIBUTE("Visible number of GL_LINE_LOOP")
-                STATS_ATTRIBUTE("Visible number of GL_TRIANGLES")
-                STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_STRIP")
-                STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_FAN")
-                STATS_ATTRIBUTE("Visible number of GL_QUADS")
-                STATS_ATTRIBUTE("Visible number of GL_QUAD_STRIP")
-                STATS_ATTRIBUTE("Visible number of GL_POLYGON")
+                    STATS_ATTRIBUTE("Visible number of GL_POINTS")
+                    STATS_ATTRIBUTE("Visible number of GL_LINES")
+                    STATS_ATTRIBUTE("Visible number of GL_LINE_STRIP")
+                    STATS_ATTRIBUTE("Visible number of GL_LINE_LOOP")
+                    STATS_ATTRIBUTE("Visible number of GL_TRIANGLES")
+                    STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_STRIP")
+                    STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_FAN")
+                    STATS_ATTRIBUTE("Visible number of GL_QUADS")
+                    STATS_ATTRIBUTE("Visible number of GL_QUAD_STRIP")
+                    STATS_ATTRIBUTE("Visible number of GL_POLYGON")
 
-                text->setText(viewStr.str());
+                    text->setText(viewStr.str());
+                }
             }
+            text->drawImplementation(renderInfo);
         }
-        text->drawImplementation(renderInfo);
-    }
 
-    osg::observer_ptr<osg::Camera>  _camera;
-    mutable osg::Timer_t            _tickLastUpdated;
-    int                             _cameraNumber;
+        osg::observer_ptr<osg::Camera> _camera;
+        mutable osg::Timer_t _tickLastUpdated;
+        int _cameraNumber;
 };
-
 
 struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    ViewSceneStatsTextDrawCallback(osgViewer::View* view, int viewNumber):
-        _view(view),
-        _tickLastUpdated(0),
-        _viewNumber(viewNumber)
-    {
-    }
-
-    /** do customized draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
-    {
-        if (!_view) return;
-
-        osgText::Text* text = (osgText::Text*)drawable;
-
-        osg::Timer_t tick = osg::Timer::instance()->tick();
-        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
-
-        if (delta > 200) // update every 100ms
+        ViewSceneStatsTextDrawCallback(osgViewer::View* view, int viewNumber) :
+                _view(view), _tickLastUpdated(0), _viewNumber(viewNumber)
         {
-            _tickLastUpdated = tick;
-            osg::Stats* stats = _view->getStats();
-            if (stats)
+        }
+
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                const osg::Drawable* drawable) const
+        {
+            if(!_view)
+                return;
+
+            osgText::Text* text = (osgText::Text*)drawable;
+
+            osg::Timer_t tick = osg::Timer::instance()->tick();
+            double delta = osg::Timer::instance()->delta_m(_tickLastUpdated,
+                    tick);
+
+            if(delta > 200) // update every 100ms
             {
-                std::ostringstream viewStr;
-                viewStr.clear();
-                viewStr.setf(std::ios::left, std::ios::adjustfield);
-                viewStr.width(20);
-                viewStr.setf(std::ios::fixed);
-                viewStr.precision(0);
-
-                viewStr << std::setw(1) << "#" << _viewNumber;
-
-                // View name
-                if (!_view->getName().empty())
-                    viewStr << ": " << _view->getName();
-                viewStr << std::endl;
-
-                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
-                // if (!(renderer->getGraphicsThreadDoesCull()))
+                _tickLastUpdated = tick;
+                osg::Stats* stats = _view->getStats();
+                if(stats)
                 {
-                    --frameNumber;
-                }
+                    std::ostringstream viewStr;
+                    viewStr.clear();
+                    viewStr.setf(std::ios::left,std::ios::adjustfield);
+                    viewStr.width(20);
+                    viewStr.setf(std::ios::fixed);
+                    viewStr.precision(0);
 
-                #define STATS_ATTRIBUTE_PAIR(str1, str2) \
+                    viewStr << std::setw(1) << "#" << _viewNumber;
+
+                    // View name
+                    if(!_view->getName().empty())
+                        viewStr << ": " << _view->getName();
+                    viewStr << std::endl;
+
+                    int frameNumber =
+                            renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                    // if (!(renderer->getGraphicsThreadDoesCull()))
+                    {
+                        --frameNumber;
+                    }
+
+#define STATS_ATTRIBUTE_PAIR(str1, str2) \
                     if (stats->getAttribute(frameNumber, str1, value)) \
                         viewStr << std::setw(9) << value; \
                     else \
@@ -820,99 +845,122 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
                     else \
                         viewStr << std::setw(9) << "." << std::endl; \
 
-                double value = 0.0;
+                    double value = 0.0;
 
-                // header
-                viewStr << std::setw(9) << "Unique" << std::setw(9) << "Instance" << std::endl;
+                    // header
+                    viewStr << std::setw(9) << "Unique" << std::setw(9)
+                            << "Instance" << std::endl;
 
-                STATS_ATTRIBUTE_PAIR("Number of unique StateSet","Number of instanced Stateset")
-                STATS_ATTRIBUTE_PAIR("Number of unique Group","Number of instanced Group")
-                STATS_ATTRIBUTE_PAIR("Number of unique Transform","Number of instanced Transform")
-                STATS_ATTRIBUTE_PAIR("Number of unique LOD","Number of instanced LOD")
-                STATS_ATTRIBUTE_PAIR("Number of unique Switch","Number of instanced Switch")
-                STATS_ATTRIBUTE_PAIR("Number of unique Geode","Number of instanced Geode")
-                STATS_ATTRIBUTE_PAIR("Number of unique Drawable","Number of instanced Drawable")
-                STATS_ATTRIBUTE_PAIR("Number of unique Geometry","Number of instanced Geometry")
-                STATS_ATTRIBUTE_PAIR("Number of unique Vertices","Number of instanced Vertices")
-                STATS_ATTRIBUTE_PAIR("Number of unique Primitives","Number of instanced Primitives")
+                    STATS_ATTRIBUTE_PAIR("Number of unique StateSet",
+                            "Number of instanced Stateset")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Group",
+                            "Number of instanced Group")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Transform",
+                            "Number of instanced Transform")
+                    STATS_ATTRIBUTE_PAIR("Number of unique LOD",
+                            "Number of instanced LOD")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Switch",
+                            "Number of instanced Switch")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Geode",
+                            "Number of instanced Geode")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Drawable",
+                            "Number of instanced Drawable")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Geometry",
+                            "Number of instanced Geometry")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Vertices",
+                            "Number of instanced Vertices")
+                    STATS_ATTRIBUTE_PAIR("Number of unique Primitives",
+                            "Number of instanced Primitives")
 
+                    text->setText(viewStr.str());
+                }
+                else
+                {
+                    OSG_NOTIFY(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
 
-                text->setText(viewStr.str());
+                    text->setText("");
+                }
             }
-            else
-            {
-                OSG_NOTIFY(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
-
-                text->setText("");
-            }
+            text->drawImplementation(renderInfo);
         }
-        text->drawImplementation(renderInfo);
-    }
 
-    osg::observer_ptr<osgViewer::View>  _view;
-    mutable osg::Timer_t                _tickLastUpdated;
-    int                                 _viewNumber;
+        osg::observer_ptr<osgViewer::View> _view;
+        mutable osg::Timer_t _tickLastUpdated;
+        int _viewNumber;
 };
 
 struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    BlockDrawCallback(CVRStatsHandler* statsHandler, float xPos, osg::Stats* viewerStats, osg::Stats* stats, const std::string& beginName, const std::string& endName, int frameDelta, int numFrames):
-        _statsHandler(statsHandler),
-        _xPos(xPos),
-        _viewerStats(viewerStats),
-        _stats(stats),
-        _beginName(beginName),
-        _endName(endName),
-        _frameDelta(frameDelta),
-        _numFrames(numFrames) {}
-
-    /** do customized draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
-    {
-        osg::Geometry* geom = (osg::Geometry*)drawable;
-        osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
-
-        int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
-
-        int startFrame = frameNumber + _frameDelta - _numFrames + 1;
-        int endFrame = frameNumber + _frameDelta;
-        double referenceTime;
-        if (!_viewerStats->getAttribute( startFrame, "Reference time", referenceTime))
+        BlockDrawCallback(CVRStatsHandler* statsHandler, float xPos,
+                osg::Stats* viewerStats, osg::Stats* stats,
+                const std::string& beginName, const std::string& endName,
+                int frameDelta, int numFrames) :
+                _statsHandler(statsHandler), _xPos(xPos), _viewerStats(
+                        viewerStats), _stats(stats), _beginName(beginName), _endName(
+                        endName), _frameDelta(frameDelta), _numFrames(numFrames)
         {
-            return;
         }
 
-        unsigned int vi = 0;
-        double beginValue, endValue;
-        for(int i = startFrame; i <= endFrame; ++i)
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                const osg::Drawable* drawable) const
         {
-            if (_stats->getAttribute( i, _beginName, beginValue) &&
-                _stats->getAttribute( i, _endName, endValue) )
+            osg::Geometry* geom = (osg::Geometry*)drawable;
+            osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
+
+            int frameNumber =
+                    renderInfo.getState()->getFrameStamp()->getFrameNumber();
+
+            int startFrame = frameNumber + _frameDelta - _numFrames + 1;
+            int endFrame = frameNumber + _frameDelta;
+            double referenceTime;
+            if(!_viewerStats->getAttribute(startFrame,"Reference time",
+                    referenceTime))
             {
-                (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->getBlockMultiplier();
+                return;
             }
+
+            unsigned int vi = 0;
+            double beginValue, endValue;
+            for(int i = startFrame; i <= endFrame; ++i)
+            {
+                if(_stats->getAttribute(i,_beginName,beginValue)
+                        && _stats->getAttribute(i,_endName,endValue))
+                {
+                    (*vertices)[vi++].x() = _xPos
+                            + (beginValue - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                    (*vertices)[vi++].x() = _xPos
+                            + (beginValue - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                    (*vertices)[vi++].x() = _xPos
+                            + (endValue - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                    (*vertices)[vi++].x() = _xPos
+                            + (endValue - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                }
+            }
+
+            osg::DrawArrays* drawArrays =
+                    static_cast<osg::DrawArrays*>(geom->getPrimitiveSet(0));
+            drawArrays->setCount(vi);
+
+            drawable->drawImplementation(renderInfo);
         }
 
-        osg::DrawArrays* drawArrays = static_cast<osg::DrawArrays*>(geom->getPrimitiveSet(0));
-        drawArrays->setCount(vi);
-
-        drawable->drawImplementation(renderInfo);
-    }
-
-    CVRStatsHandler*               _statsHandler;
-    float                       _xPos;
-    osg::ref_ptr<osg::Stats>    _viewerStats;
-    osg::ref_ptr<osg::Stats>    _stats;
-    std::string                 _beginName;
-    std::string                 _endName;
-    int                         _frameDelta;
-    int                         _numFrames;
+        CVRStatsHandler* _statsHandler;
+        float _xPos;
+        osg::ref_ptr<osg::Stats> _viewerStats;
+        osg::ref_ptr<osg::Stats> _stats;
+        std::string _beginName;
+        std::string _endName;
+        int _frameDelta;
+        int _numFrames;
 };
 
-osg::Geometry* CVRStatsHandler::createBackgroundRectangle(const osg::Vec3& pos, const float width, const float height, osg::Vec4& color)
+osg::Geometry* CVRStatsHandler::createBackgroundRectangle(const osg::Vec3& pos,
+        const float width, const float height, osg::Vec4& color)
 {
     osg::StateSet *ss = new osg::StateSet;
 
@@ -924,17 +972,18 @@ osg::Geometry* CVRStatsHandler::createBackgroundRectangle(const osg::Vec3& pos, 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
 
-    vertices->push_back(osg::Vec3(pos.x(), pos.y(), 0));
-    vertices->push_back(osg::Vec3(pos.x(), pos.y()-height,0));
-    vertices->push_back(osg::Vec3(pos.x()+width, pos.y()-height,0));
-    vertices->push_back(osg::Vec3(pos.x()+width, pos.y(),0));
+    vertices->push_back(osg::Vec3(pos.x(),pos.y(),0));
+    vertices->push_back(osg::Vec3(pos.x(),pos.y() - height,0));
+    vertices->push_back(osg::Vec3(pos.x() + width,pos.y() - height,0));
+    vertices->push_back(osg::Vec3(pos.x() + width,pos.y(),0));
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
     geometry->setColorArray(colors);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    osg::DrawElementsUInt *base =  new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS,0);
+    osg::DrawElementsUInt *base = new osg::DrawElementsUInt(
+            osg::PrimitiveSet::QUADS,0);
     base->push_back(0);
     base->push_back(1);
     base->push_back(2);
@@ -945,153 +994,183 @@ osg::Geometry* CVRStatsHandler::createBackgroundRectangle(const osg::Vec3& pos, 
     return geometry;
 }
 
-
 struct StatsGraph : public osg::MatrixTransform
 {
-    StatsGraph(osg::Vec3 pos, float width, float height)
-        : _pos(pos), _width(width), _height(height),
-          _statsGraphGeode(new osg::Geode)
-    {
-        _pos -= osg::Vec3(0, height, 0.1);
-        setMatrix(osg::Matrix::translate(_pos));
-        addChild(_statsGraphGeode.get());
-    }
-
-    void addStatGraph(osg::Stats* viewerStats, osg::Stats* stats, const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
-    {
-        _statsGraphGeode->addDrawable(new Graph(_width, _height, viewerStats, stats, color, max, nameBegin, nameEnd));
-    }
-
-    osg::Vec3           _pos;
-    float               _width;
-    float               _height;
-
-    osg::ref_ptr<osg::Geode> _statsGraphGeode;
-
-protected:
-    struct Graph : public osg::Geometry
-    {
-        Graph(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
-              const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
+        StatsGraph(osg::Vec3 pos, float width, float height) :
+                _pos(pos), _width(width), _height(height), _statsGraphGeode(
+                        new osg::Geode)
         {
-            setUseDisplayList(false);
-
-            setVertexArray(new osg::Vec3Array);
-
-            osg::Vec4Array* colors = new osg::Vec4Array;
-            colors->push_back(color);
-            setColorArray(colors);
-            setColorBinding(osg::Geometry::BIND_OVERALL);
-
-            setDrawCallback(new GraphUpdateCallback(width, height, viewerStats, stats, max, nameBegin, nameEnd));
-        }
-    };
-
-    struct GraphUpdateCallback : public osg::Drawable::DrawCallback
-    {
-        GraphUpdateCallback(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
-                            float max, const std::string& nameBegin, const std::string& nameEnd = "")
-            : _width((unsigned int)width), _height((unsigned int)height), _curX(0),
-              _viewerStats(viewerStats), _stats(stats), _max(max), _nameBegin(nameBegin), _nameEnd(nameEnd)
-        {
+            _pos -= osg::Vec3(0,height,0.1);
+            setMatrix(osg::Matrix::translate(_pos));
+            addChild(_statsGraphGeode.get());
         }
 
-        virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+        void addStatGraph(osg::Stats* viewerStats, osg::Stats* stats,
+                const osg::Vec4& color, float max, const std::string& nameBegin,
+                const std::string& nameEnd = "")
         {
-            osg::Geometry* geometry = const_cast<osg::Geometry*>(drawable->asGeometry());
-            if (!geometry) return;
-            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-            if (!vertices) return;
+            _statsGraphGeode->addDrawable(
+                    new Graph(_width,_height,viewerStats,stats,color,max,
+                            nameBegin,nameEnd));
+        }
 
-            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+        osg::Vec3 _pos;
+        float _width;
+        float _height;
 
-            // Get stats
-            double value;
-            if (_nameEnd.empty())
-            {
-                if (!_stats->getAveragedAttribute( _nameBegin, value, true ))
+        osg::ref_ptr<osg::Geode> _statsGraphGeode;
+
+    protected:
+        struct Graph : public osg::Geometry
+        {
+                Graph(float width, float height, osg::Stats* viewerStats,
+                        osg::Stats* stats, const osg::Vec4& color, float max,
+                        const std::string& nameBegin,
+                        const std::string& nameEnd = "")
                 {
-                    value = 0.0;
+                    setUseDisplayList(false);
+
+                    setVertexArray(new osg::Vec3Array);
+
+                    osg::Vec4Array* colors = new osg::Vec4Array;
+                    colors->push_back(color);
+                    setColorArray(colors);
+                    setColorBinding(osg::Geometry::BIND_OVERALL);
+
+                    setDrawCallback(
+                            new GraphUpdateCallback(width,height,viewerStats,
+                                    stats,max,nameBegin,nameEnd));
                 }
-            }
-            else
-            {
-                double beginValue, endValue;
-                if (_stats->getAttribute( frameNumber, _nameBegin, beginValue) &&
-                    _stats->getAttribute( frameNumber, _nameEnd, endValue) )
+        };
+
+        struct GraphUpdateCallback : public osg::Drawable::DrawCallback
+        {
+                GraphUpdateCallback(float width, float height,
+                        osg::Stats* viewerStats, osg::Stats* stats, float max,
+                        const std::string& nameBegin,
+                        const std::string& nameEnd = "") :
+                        _width((unsigned int)width), _height(
+                                (unsigned int)height), _curX(0), _viewerStats(
+                                viewerStats), _stats(stats), _max(max), _nameBegin(
+                                nameBegin), _nameEnd(nameEnd)
                 {
-                    value = endValue - beginValue;
                 }
-                else
+
+                virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                        const osg::Drawable* drawable) const
                 {
-                    value = 0.0;
-                }
-            }
+                    osg::Geometry* geometry =
+                            const_cast<osg::Geometry*>(drawable->asGeometry());
+                    if(!geometry)
+                        return;
+                    osg::Vec3Array* vertices =
+                            dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+                    if(!vertices)
+                        return;
 
-            // Add new vertex for this frame.
-            value = osg::clampTo(value, 0.0, double(_max));
-            vertices->push_back(osg::Vec3(float(_curX), float(_height) / _max * value, 0));
+                    int frameNumber =
+                            renderInfo.getState()->getFrameStamp()->getFrameNumber();
 
-            // One vertex per pixel in X.
-            if (vertices->size() > _width)
-            {
-                unsigned int excedent = vertices->size() - _width;
-                vertices->erase(vertices->begin(), vertices->begin() + excedent);
-
-                // Make the graph scroll when there is enough data.
-                // Note: We check the frame number so that even if we have
-                // many graphs, the transform is translated only once per
-                // frame.
-                static const float increment = -1.0;
-                if (GraphUpdateCallback::_frameNumber != frameNumber)
-                {
-                    // We know the exact layout of this part of the scene
-                    // graph, so this is OK...
-                    osg::MatrixTransform* transform =
-                        geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
-                    if (transform)
+                    // Get stats
+                    double value;
+                    if(_nameEnd.empty())
                     {
-                        transform->setMatrix(transform->getMatrix() * osg::Matrix::translate(osg::Vec3(increment, 0, 0)));
+                        if(!_stats->getAveragedAttribute(_nameBegin,value,true))
+                        {
+                            value = 0.0;
+                        }
                     }
+                    else
+                    {
+                        double beginValue, endValue;
+                        if(_stats->getAttribute(frameNumber,_nameBegin,
+                                beginValue)
+                                && _stats->getAttribute(frameNumber,_nameEnd,
+                                        endValue))
+                        {
+                            value = endValue - beginValue;
+                        }
+                        else
+                        {
+                            value = 0.0;
+                        }
+                    }
+
+                    // Add new vertex for this frame.
+                    value = osg::clampTo(value,0.0,double(_max));
+                    vertices->push_back(
+                            osg::Vec3(float(_curX),
+                                    float(_height) / _max * value,0));
+
+                    // One vertex per pixel in X.
+                    if(vertices->size() > _width)
+                    {
+                        unsigned int excedent = vertices->size() - _width;
+                        vertices->erase(vertices->begin(),
+                                vertices->begin() + excedent);
+
+                        // Make the graph scroll when there is enough data.
+                        // Note: We check the frame number so that even if we have
+                        // many graphs, the transform is translated only once per
+                        // frame.
+                        static const float increment = -1.0;
+                        if(GraphUpdateCallback::_frameNumber != frameNumber)
+                        {
+                            // We know the exact layout of this part of the scene
+                            // graph, so this is OK...
+                            osg::MatrixTransform* transform =
+                                    geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
+                            if(transform)
+                            {
+                                transform->setMatrix(
+                                        transform->getMatrix()
+                                                * osg::Matrix::translate(
+                                                        osg::Vec3(increment,0,
+                                                                0)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Create primitive set if none exists.
+                        if(geometry->getNumPrimitiveSets() == 0)
+                            geometry->addPrimitiveSet(
+                                    new osg::DrawArrays(GL_LINE_STRIP,0,0));
+
+                        // Update primitive set.
+                        osg::DrawArrays* drawArrays =
+                                dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(
+                                        0));
+                        if(!drawArrays)
+                            return;
+                        drawArrays->setFirst(0);
+                        drawArrays->setCount(vertices->size());
+                    }
+
+                    _curX++;
+                    GraphUpdateCallback::_frameNumber = frameNumber;
+
+                    geometry->dirtyBound();
+
+                    drawable->drawImplementation(renderInfo);
                 }
-            }
-            else
-            {
-                // Create primitive set if none exists.
-                if (geometry->getNumPrimitiveSets() == 0)
-                    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
 
-                // Update primitive set.
-                osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
-                if (!drawArrays) return;
-                drawArrays->setFirst(0);
-                drawArrays->setCount(vertices->size());
-            }
-
-            _curX++;
-            GraphUpdateCallback::_frameNumber = frameNumber;
-
-            geometry->dirtyBound();
-
-            drawable->drawImplementation(renderInfo);
-        }
-
-        const unsigned int      _width;
-        const unsigned int      _height;
-        mutable unsigned int    _curX;
-        osg::Stats*             _viewerStats;
-        osg::Stats*             _stats;
-        const float             _max;
-        const std::string       _nameBegin;
-        const std::string       _nameEnd;
-        static int              _frameNumber;
-    };
+                const unsigned int _width;
+                const unsigned int _height;
+                mutable unsigned int _curX;
+                osg::Stats* _viewerStats;
+                osg::Stats* _stats;
+                const float _max;
+                const std::string _nameBegin;
+                const std::string _nameEnd;
+                static int _frameNumber;
+        };
 };
 
 int StatsGraph::GraphUpdateCallback::_frameNumber = 0;
 
-
-osg::Geometry* CVRStatsHandler::createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
+osg::Geometry* CVRStatsHandler::createGeometry(const osg::Vec3& pos,
+        float height, const osg::Vec4& colour, unsigned int numBlocks)
 {
     osg::Geometry* geometry = new osg::Geometry;
 
@@ -1099,14 +1178,14 @@ osg::Geometry* CVRStatsHandler::createGeometry(const osg::Vec3& pos, float heigh
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
-    vertices->reserve(numBlocks*4);
+    vertices->reserve(numBlocks * 4);
 
-    for(unsigned int i=0; i<numBlocks; ++i)
+    for(unsigned int i = 0; i < numBlocks; ++i)
     {
-        vertices->push_back(pos+osg::Vec3(i*20, height, 0.0));
-        vertices->push_back(pos+osg::Vec3(i*20, 0.0, 0.0));
-        vertices->push_back(pos+osg::Vec3(i*20+10.0, 0.0, 0.0));
-        vertices->push_back(pos+osg::Vec3(i*20+10.0, height, 0.0));
+        vertices->push_back(pos + osg::Vec3(i * 20,height,0.0));
+        vertices->push_back(pos + osg::Vec3(i * 20,0.0,0.0));
+        vertices->push_back(pos + osg::Vec3(i * 20 + 10.0,0.0,0.0));
+        vertices->push_back(pos + osg::Vec3(i * 20 + 10.0,height,0.0));
     }
 
     osg::Vec4Array* colours = new osg::Vec4Array;
@@ -1114,140 +1193,141 @@ osg::Geometry* CVRStatsHandler::createGeometry(const osg::Vec3& pos, float heigh
     geometry->setColorArray(colours);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numBlocks*4));
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS,0,numBlocks * 4));
 
     return geometry;
 }
 
-
 struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    FrameMarkerDrawCallback(CVRStatsHandler* statsHandler, float xPos, osg::Stats* viewerStats, int frameDelta, int numFrames):
-        _statsHandler(statsHandler),
-        _xPos(xPos),
-        _viewerStats(viewerStats),
-        _frameDelta(frameDelta),
-        _numFrames(numFrames) {}
-
-    /** do customized draw code.*/
-    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
-    {
-        osg::Geometry* geom = (osg::Geometry*)drawable;
-        osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
-
-        int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
-
-        int startFrame = frameNumber + _frameDelta - _numFrames + 1;
-        int endFrame = frameNumber + _frameDelta;
-        double referenceTime;
-        if (!_viewerStats->getAttribute( startFrame, "Reference time", referenceTime))
+        FrameMarkerDrawCallback(CVRStatsHandler* statsHandler, float xPos,
+                osg::Stats* viewerStats, int frameDelta, int numFrames) :
+                _statsHandler(statsHandler), _xPos(xPos), _viewerStats(
+                        viewerStats), _frameDelta(frameDelta), _numFrames(
+                        numFrames)
         {
-            return;
         }
 
-        unsigned int vi = 0;
-        double currentReferenceTime;
-        for(int i = startFrame; i <= endFrame; ++i)
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,
+                const osg::Drawable* drawable) const
         {
-            if (_viewerStats->getAttribute( i, "Reference time", currentReferenceTime))
+            osg::Geometry* geom = (osg::Geometry*)drawable;
+            osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
+
+            int frameNumber =
+                    renderInfo.getState()->getFrameStamp()->getFrameNumber();
+
+            int startFrame = frameNumber + _frameDelta - _numFrames + 1;
+            int endFrame = frameNumber + _frameDelta;
+            double referenceTime;
+            if(!_viewerStats->getAttribute(startFrame,"Reference time",
+                    referenceTime))
             {
-                (*vertices)[vi++].x() = _xPos + (currentReferenceTime - referenceTime) * _statsHandler->getBlockMultiplier();
-                (*vertices)[vi++].x() = _xPos + (currentReferenceTime - referenceTime) * _statsHandler->getBlockMultiplier();
+                return;
             }
+
+            unsigned int vi = 0;
+            double currentReferenceTime;
+            for(int i = startFrame; i <= endFrame; ++i)
+            {
+                if(_viewerStats->getAttribute(i,"Reference time",
+                        currentReferenceTime))
+                {
+                    (*vertices)[vi++].x() = _xPos
+                            + (currentReferenceTime - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                    (*vertices)[vi++].x() = _xPos
+                            + (currentReferenceTime - referenceTime)
+                                    * _statsHandler->getBlockMultiplier();
+                }
+            }
+
+            drawable->drawImplementation(renderInfo);
         }
 
-        drawable->drawImplementation(renderInfo);
-    }
-
-    CVRStatsHandler*               _statsHandler;
-    float                       _xPos;
-    osg::ref_ptr<osg::Stats>    _viewerStats;
-    std::string                 _endName;
-    int                         _frameDelta;
-    int                         _numFrames;
+        CVRStatsHandler* _statsHandler;
+        float _xPos;
+        osg::ref_ptr<osg::Stats> _viewerStats;
+        std::string _endName;
+        int _frameDelta;
+        int _numFrames;
 };
 
 struct PagerCallback : public virtual osg::NodeCallback
 {
 
-    PagerCallback(    osgDB::DatabasePager* dp,
-                    osgText::Text* minValue,
-                    osgText::Text* maxValue,
-                    osgText::Text* averageValue,
-                    osgText::Text* filerequestlist,
-                    osgText::Text* compilelist,
-                    double multiplier):
-        _dp(dp),
-        _minValue(minValue),
-        _maxValue(maxValue),
-        _averageValue(averageValue),
-        _filerequestlist(filerequestlist),
-        _compilelist(compilelist),
-        _multiplier(multiplier)
-    {
-    }
-
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if (_dp.valid())
+        PagerCallback(osgDB::DatabasePager* dp, osgText::Text* minValue,
+                osgText::Text* maxValue, osgText::Text* averageValue,
+                osgText::Text* filerequestlist, osgText::Text* compilelist,
+                double multiplier) :
+                _dp(dp), _minValue(minValue), _maxValue(maxValue), _averageValue(
+                        averageValue), _filerequestlist(filerequestlist), _compilelist(
+                        compilelist), _multiplier(multiplier)
         {
-            double value = _dp->getAverageTimeToMergeTiles();
-            if (value>= 0.0 && value <= 1000)
-            {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _averageValue->setText(_tmpText);
-            }
-            else
-            {
-                _averageValue->setText("");
-            }
-
-            value = _dp->getMinimumTimeToMergeTile();
-            if (value>= 0.0 && value <= 1000)
-            {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _minValue->setText(_tmpText);
-            }
-            else
-            {
-                _minValue->setText("");
-            }
-
-            value = _dp->getMaximumTimeToMergeTile();
-            if (value>= 0.0 && value <= 1000)
-            {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _maxValue->setText(_tmpText);
-            }
-            else
-            {
-                _maxValue->setText("");
-            }
-
-            sprintf(_tmpText,"%4d", _dp->getFileRequestListSize());
-            _filerequestlist->setText(_tmpText);
-
-            sprintf(_tmpText,"%4d", _dp->getDataToCompileListSize());
-            _compilelist->setText(_tmpText);
         }
 
-        traverse(node,nv);
-    }
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            if(_dp.valid())
+            {
+                double value = _dp->getAverageTimeToMergeTiles();
+                if(value >= 0.0 && value <= 1000)
+                {
+                    sprintf(_tmpText,"%4.0f",value * _multiplier);
+                    _averageValue->setText(_tmpText);
+                }
+                else
+                {
+                    _averageValue->setText("");
+                }
 
-    osg::observer_ptr<osgDB::DatabasePager> _dp;
+                value = _dp->getMinimumTimeToMergeTile();
+                if(value >= 0.0 && value <= 1000)
+                {
+                    sprintf(_tmpText,"%4.0f",value * _multiplier);
+                    _minValue->setText(_tmpText);
+                }
+                else
+                {
+                    _minValue->setText("");
+                }
 
-    osg::ref_ptr<osgText::Text> _minValue;
-    osg::ref_ptr<osgText::Text> _maxValue;
-    osg::ref_ptr<osgText::Text> _averageValue;
-    osg::ref_ptr<osgText::Text> _filerequestlist;
-    osg::ref_ptr<osgText::Text> _compilelist;
-    double              _multiplier;
-    char                _tmpText[128];
-    osg::Timer_t        _tickLastUpdated;
+                value = _dp->getMaximumTimeToMergeTile();
+                if(value >= 0.0 && value <= 1000)
+                {
+                    sprintf(_tmpText,"%4.0f",value * _multiplier);
+                    _maxValue->setText(_tmpText);
+                }
+                else
+                {
+                    _maxValue->setText("");
+                }
+
+                sprintf(_tmpText,"%4d",_dp->getFileRequestListSize());
+                _filerequestlist->setText(_tmpText);
+
+                sprintf(_tmpText,"%4d",_dp->getDataToCompileListSize());
+                _compilelist->setText(_tmpText);
+            }
+
+            traverse(node,nv);
+        }
+
+        osg::observer_ptr<osgDB::DatabasePager> _dp;
+
+        osg::ref_ptr<osgText::Text> _minValue;
+        osg::ref_ptr<osgText::Text> _maxValue;
+        osg::ref_ptr<osgText::Text> _averageValue;
+        osg::ref_ptr<osgText::Text> _filerequestlist;
+        osg::ref_ptr<osgText::Text> _compilelist;
+        double _multiplier;
+        char _tmpText[128];
+        osg::Timer_t _tickLastUpdated;
 };
 
-
-osg::Geometry* CVRStatsHandler::createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
+osg::Geometry* CVRStatsHandler::createFrameMarkers(const osg::Vec3& pos,
+        float height, const osg::Vec4& colour, unsigned int numBlocks)
 {
     osg::Geometry* geometry = new osg::Geometry;
 
@@ -1255,12 +1335,16 @@ osg::Geometry* CVRStatsHandler::createFrameMarkers(const osg::Vec3& pos, float h
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
-    vertices->reserve(numBlocks*2);
+    vertices->reserve(numBlocks * 2);
 
-    for(unsigned int i=0; i<numBlocks; ++i)
+    for(unsigned int i = 0; i < numBlocks; ++i)
     {
-        vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.01, height, 0.0));
-        vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.01, 0.0, 0.0));
+        vertices->push_back(
+                pos
+                        + osg::Vec3(double(i) * _blockMultiplier * 0.01,height,
+                                0.0));
+        vertices->push_back(
+                pos + osg::Vec3(double(i) * _blockMultiplier * 0.01,0.0,0.0));
     }
 
     osg::Vec4Array* colours = new osg::Vec4Array;
@@ -1268,12 +1352,13 @@ osg::Geometry* CVRStatsHandler::createFrameMarkers(const osg::Vec3& pos, float h
     geometry->setColorArray(colours);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numBlocks*2));
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,numBlocks * 2));
 
     return geometry;
 }
 
-osg::Geometry* CVRStatsHandler::createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks)
+osg::Geometry* CVRStatsHandler::createTick(const osg::Vec3& pos, float height,
+        const osg::Vec4& colour, unsigned int numTicks)
 {
     osg::Geometry* geometry = new osg::Geometry;
 
@@ -1281,13 +1366,17 @@ osg::Geometry* CVRStatsHandler::createTick(const osg::Vec3& pos, float height, c
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     geometry->setVertexArray(vertices);
-    vertices->reserve(numTicks*2);
+    vertices->reserve(numTicks * 2);
 
-    for(unsigned int i=0; i<numTicks; ++i)
+    for(unsigned int i = 0; i < numTicks; ++i)
     {
-        float tickHeight = (i%10) ? height : height * 2.0;
-        vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.001, tickHeight , 0.0));
-        vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.001, 0.0, 0.0));
+        float tickHeight = (i % 10) ? height : height * 2.0;
+        vertices->push_back(
+                pos
+                        + osg::Vec3(double(i) * _blockMultiplier * 0.001,
+                                tickHeight,0.0));
+        vertices->push_back(
+                pos + osg::Vec3(double(i) * _blockMultiplier * 0.001,0.0,0.0));
     }
 
     osg::Vec4Array* colours = new osg::Vec4Array;
@@ -1295,7 +1384,7 @@ osg::Geometry* CVRStatsHandler::createTick(const osg::Vec3& pos, float height, c
     geometry->setColorArray(colours);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numTicks*2));
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES,0,numTicks * 2));
 
     return geometry;
 }
@@ -1310,9 +1399,11 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
-    stateset->setAttribute(new osg::PolygonMode(), osg::StateAttribute::PROTECTED);
+    stateset->setAttribute(new osg::PolygonMode(),
+            osg::StateAttribute::PROTECTED);
 
-    std::string font(CalVR::instance()->getResourceDir() + "/resources/arial.ttf");
+    std::string font(
+            CalVR::instance()->getResourceDir() + "/resources/arial.ttf");
 
     // collect all the relevant cameras
     osgViewer::ViewerBase::Cameras validCameras;
@@ -1320,10 +1411,9 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     osgViewer::ViewerBase::Cameras cameras;
     for(osgViewer::ViewerBase::Cameras::iterator itr = validCameras.begin();
-        itr != validCameras.end();
-        ++itr)
+            itr != validCameras.end(); ++itr)
     {
-        if ((*itr)->getStats())
+        if((*itr)->getStats())
         {
             cameras.push_back(*itr);
         }
@@ -1332,21 +1422,22 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     // check for query time support
     unsigned int numCamrasWithTimerQuerySupport = 0;
     for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin();
-        citr != cameras.end();
-        ++citr)
+            citr != cameras.end(); ++citr)
     {
-        if ((*citr)->getGraphicsContext())
+        if((*citr)->getGraphicsContext())
         {
-            unsigned int contextID = (*citr)->getGraphicsContext()->getState()->getContextID();
-            const osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(contextID, false);
-            if (extensions && extensions->isTimerQuerySupported())
+            unsigned int contextID =
+                    (*citr)->getGraphicsContext()->getState()->getContextID();
+            const osg::Drawable::Extensions* extensions =
+                    osg::Drawable::getExtensions(contextID,false);
+            if(extensions && extensions->isTimerQuerySupported())
             {
                 ++numCamrasWithTimerQuerySupport;
             }
         }
     }
 
-    bool acquireGPUStats = numCamrasWithTimerQuerySupport==cameras.size();
+    bool acquireGPUStats = numCamrasWithTimerQuerySupport == cameras.size();
 
     float leftPos = 10.0f;
     float startBlocks = 150.0f;
@@ -1354,24 +1445,25 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     if(!_textCalibrated)
     {
-	osg::ref_ptr<osgText::Text> ctext = new osgText::Text();
-	ctext->setFont(font);
-	ctext->setCharacterSize(characterSize);
-	ctext->setText("::");
+        osg::ref_ptr<osgText::Text> ctext = new osgText::Text();
+        ctext->setFont(font);
+        ctext->setCharacterSize(characterSize);
+        ctext->setText("::");
 
-	float ctwidth = ctext->getBound().xMax() - ctext->getBound().xMin();
+        float ctwidth = ctext->getBound().xMax() - ctext->getBound().xMin();
 
-	ctext->setText(": :");
-	_spaceSize = (ctext->getBound().xMax() - ctext->getBound().xMin()) - ctwidth;
+        ctext->setText(": :");
+        _spaceSize = (ctext->getBound().xMax() - ctext->getBound().xMin())
+                - ctwidth;
 
-	_textCalibrated = true;
+        _textCalibrated = true;
     }
 
-    calculateStartBlocks(startBlocks, leftPos, characterSize, font);
+    calculateStartBlocks(startBlocks,leftPos,characterSize,font);
 
-    osg::Vec3 pos(leftPos, _statsHeight-24.0f,0.0f);
+    osg::Vec3 pos(leftPos,_statsHeight - 24.0f,0.0f);
 
-    osg::Vec4 colorDP( 1.0f,1.0f,0.5f,1.0f);
+    osg::Vec4 colorDP(1.0f,1.0f,0.5f,1.0f);
 
     osg::Group * viewerValuesGroup = new osg::Group();
     _viewerValuesChildNum = _switch->getNumChildren();
@@ -1379,11 +1471,11 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     for(int i = 0; i < _defaultViewerValues.size(); i++)
     {
-	osg::Geode* geode = new osg::Geode();
-	viewerValuesGroup->addChild(geode);
+        osg::Geode* geode = new osg::Geode();
+        viewerValuesGroup->addChild(geode);
 
         osg::ref_ptr<osgText::Text> label = new osgText::Text;
-        geode->addDrawable( label.get() );
+        geode->addDrawable(label.get());
 
         label->setColor(_defaultViewerValues[i]->color);
         label->setFont(font);
@@ -1394,7 +1486,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         pos.x() = label->getBound().xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
-        geode->addDrawable( value.get() );
+        geode->addDrawable(value.get());
 
         value->setColor(_defaultViewerValues[i]->color);
         value->setFont(font);
@@ -1402,18 +1494,20 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         value->setPosition(pos);
         value->setText("0.0");
 
-        value->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),_defaultViewerValues[i]->name,-1, true, 1.0));
+        value->setDrawCallback(
+                new AveragedValueTextDrawCallback(viewer->getViewerStats(),
+                        _defaultViewerValues[i]->name,-1,true,1.0));
 
-        pos.y() -= characterSize*1.5f;
+        pos.y() -= characterSize * 1.5f;
     }
 
     for(int i = 0; i < _customViewerValues.size(); i++)
     {
-	osg::Geode* geode = new osg::Geode();
-	viewerValuesGroup->addChild(geode);
+        osg::Geode* geode = new osg::Geode();
+        viewerValuesGroup->addChild(geode);
 
         osg::ref_ptr<osgText::Text> label = new osgText::Text;
-        geode->addDrawable( label.get() );
+        geode->addDrawable(label.get());
 
         label->setColor(_customViewerValues[i]->color);
         label->setFont(font);
@@ -1424,7 +1518,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         pos.x() = label->getBound().xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
-        geode->addDrawable( value.get() );
+        geode->addDrawable(value.get());
 
         value->setColor(_customViewerValues[i]->color);
         value->setFont(font);
@@ -1432,98 +1526,101 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         value->setPosition(pos);
         value->setText("0.0");
 
-        value->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),_customViewerValues[i]->name,-1, true, 1.0));
+        value->setDrawCallback(
+                new AveragedValueTextDrawCallback(viewer->getViewerStats(),
+                        _customViewerValues[i]->name,-1,true,1.0));
 
-        pos.y() -= characterSize*1.5f;
+        pos.y() -= characterSize * 1.5f;
     }
 
     for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin();
-                citr != cameras.end();
-                ++citr)
+            citr != cameras.end(); ++citr)
     {
-	for(int i = 0; i < _defaultCameraValues.size(); i++)
-	{
-	    osg::Geode* geode = new osg::Geode();
-	    viewerValuesGroup->addChild(geode);
+        for(int i = 0; i < _defaultCameraValues.size(); i++)
+        {
+            osg::Geode* geode = new osg::Geode();
+            viewerValuesGroup->addChild(geode);
 
-	    osg::ref_ptr<osgText::Text> label = new osgText::Text;
-	    geode->addDrawable( label.get() );
+            osg::ref_ptr<osgText::Text> label = new osgText::Text;
+            geode->addDrawable(label.get());
 
-	    label->setColor(_defaultCameraValues[i]->color);
-	    label->setFont(font);
-	    label->setCharacterSize(characterSize);
-	    label->setPosition(pos);
-	    label->setText(_defaultCameraValues[i]->label);
+            label->setColor(_defaultCameraValues[i]->color);
+            label->setFont(font);
+            label->setCharacterSize(characterSize);
+            label->setPosition(pos);
+            label->setText(_defaultCameraValues[i]->label);
 
-	    pos.x() = label->getBound().xMax() + _spaceSize;
+            pos.x() = label->getBound().xMax() + _spaceSize;
 
-	    osg::ref_ptr<osgText::Text> value = new osgText::Text;
-	    geode->addDrawable( value.get() );
+            osg::ref_ptr<osgText::Text> value = new osgText::Text;
+            geode->addDrawable(value.get());
 
-	    value->setColor(_defaultCameraValues[i]->color);
-	    value->setFont(font);
-	    value->setCharacterSize(characterSize);
-	    value->setPosition(pos);
-	    value->setText("0.0");
+            value->setColor(_defaultCameraValues[i]->color);
+            value->setFont(font);
+            value->setCharacterSize(characterSize);
+            value->setPosition(pos);
+            value->setText("0.0");
 
-	    value->setDrawCallback(new AveragedValueTextDrawCallback((*citr)->getStats(),_defaultCameraValues[i]->name,-1, true, 1.0));
+            value->setDrawCallback(
+                    new AveragedValueTextDrawCallback((*citr)->getStats(),
+                            _defaultCameraValues[i]->name,-1,true,1.0));
 
-	    pos.y() -= characterSize*1.5f;
-	}
+            pos.y() -= characterSize * 1.5f;
+        }
 
-	for(int i = 0; i < _customCameraValues.size(); i++)
-	{
-	    osg::Geode* geode = new osg::Geode();
-	    viewerValuesGroup->addChild(geode);
+        for(int i = 0; i < _customCameraValues.size(); i++)
+        {
+            osg::Geode* geode = new osg::Geode();
+            viewerValuesGroup->addChild(geode);
 
-	    osg::ref_ptr<osgText::Text> label = new osgText::Text;
-	    geode->addDrawable( label.get() );
+            osg::ref_ptr<osgText::Text> label = new osgText::Text;
+            geode->addDrawable(label.get());
 
-	    label->setColor(_customCameraValues[i]->color);
-	    label->setFont(font);
-	    label->setCharacterSize(characterSize);
-	    label->setPosition(pos);
-	    label->setText(_customCameraValues[i]->label);
+            label->setColor(_customCameraValues[i]->color);
+            label->setFont(font);
+            label->setCharacterSize(characterSize);
+            label->setPosition(pos);
+            label->setText(_customCameraValues[i]->label);
 
-	    pos.x() = label->getBound().xMax() + _spaceSize;
+            pos.x() = label->getBound().xMax() + _spaceSize;
 
-	    osg::ref_ptr<osgText::Text> value = new osgText::Text;
-	    geode->addDrawable( value.get() );
+            osg::ref_ptr<osgText::Text> value = new osgText::Text;
+            geode->addDrawable(value.get());
 
-	    value->setColor(_customCameraValues[i]->color);
-	    value->setFont(font);
-	    value->setCharacterSize(characterSize);
-	    value->setPosition(pos);
-	    value->setText("0.0");
+            value->setColor(_customCameraValues[i]->color);
+            value->setFont(font);
+            value->setCharacterSize(characterSize);
+            value->setPosition(pos);
+            value->setText("0.0");
 
-	    value->setDrawCallback(new AveragedValueTextDrawCallback((*citr)->getStats(),_customCameraValues[i]->name,-1, true, 1.0));
+            value->setDrawCallback(
+                    new AveragedValueTextDrawCallback((*citr)->getStats(),
+                            _customCameraValues[i]->name,-1,true,1.0));
 
-	    pos.y() -= characterSize*1.5f;
-	}
+            pos.y() -= characterSize * 1.5f;
+        }
     }
 
-    osg::Vec4 backgroundColor(0.0, 0.0, 0.0f, 0.3);
-    osg::Vec4 staticTextColor(1.0, 1.0, 0.0f, 1.0);
-    osg::Vec4 dynamicTextColor(1.0, 1.0, 1.0f, 1.0);
+    osg::Vec4 backgroundColor(0.0,0.0,0.0f,0.3);
+    osg::Vec4 staticTextColor(1.0,1.0,0.0f,1.0);
+    osg::Vec4 dynamicTextColor(1.0,1.0,1.0f,1.0);
     float backgroundMargin = 5;
     float backgroundSpacing = 3;
-
 
     // viewer stats
     {
         osg::Group* group = new osg::Group;
         _viewerChildNum = _switch->getNumChildren();
-        _switch->addChild(group, false);
+        _switch->addChild(group,false);
 
         osg::Geode* geode = new osg::Geode();
         group->addChild(geode);
-
 
         {
             pos.x() = leftPos;
 
             _threadingModelText = new osgText::Text;
-            geode->addDrawable( _threadingModelText.get() );
+            geode->addDrawable(_threadingModelText.get());
 
             _threadingModelText->setColor(osg::Vec4(1.0,1.0,1.0,1.0));
             _threadingModelText->setFont(font);
@@ -1532,91 +1629,107 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
             updateThreadingModelText();
 
-            pos.y() -= characterSize*1.5f;
+            pos.y() -= characterSize * 1.5f;
         }
 
         float topOfViewerStats = pos.y() + characterSize;
 
-	float topY = pos.y() + characterSize + backgroundMargin;
-	osg::Vec3 posOld = pos;
+        float topY = pos.y() + characterSize + backgroundMargin;
+        osg::Vec3 posOld = pos;
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
-	{
-	    for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
-	    {
-		if(_defaultViewerTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		createTimeBar(viewer->getViewerStats(),NULL,geode,pos,_defaultViewerTimeBars[i],font,characterSize,startBlocks,leftPos);
-	    }
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS
+                || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+                || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
+        {
+            for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
+            {
+                if(_defaultViewerTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                createTimeBar(viewer->getViewerStats(),NULL,geode,pos,
+                        _defaultViewerTimeBars[i],font,characterSize,
+                        startBlocks,leftPos);
+            }
+        }
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
-	{
-	    for(int i = 0; i < _customViewerTimeBars.size(); i++)
-	    {
-		if(_customViewerTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		createTimeBar(viewer->getViewerStats(),NULL,geode,pos,_customViewerTimeBars[i],font,characterSize,startBlocks,leftPos);
-	    }
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
+        {
+            for(int i = 0; i < _customViewerTimeBars.size(); i++)
+            {
+                if(_customViewerTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                createTimeBar(viewer->getViewerStats(),NULL,geode,pos,
+                        _customViewerTimeBars[i],font,characterSize,startBlocks,
+                        leftPos);
+            }
+        }
 
-	if(_statsSubType == PLUGINS_SUB_STATS || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
-	{
-	    StatTimeBarInfo sbi;
-	    sbi.collectName = "CalVRStatsPlugins";
-	    sbi.advanced = false;
+        if(_statsSubType == PLUGINS_SUB_STATS
+                || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
+        {
+            StatTimeBarInfo sbi;
+            sbi.collectName = "CalVRStatsPlugins";
+            sbi.advanced = false;
 
-	    std::vector<std::string> pluginList = PluginManager::instance()->getLoadedPluginList();
-	    for(int i = 0; i < pluginList.size(); i++)
-	    {
-		sbi.label = pluginList[i] + ": ";
-		sbi.color = osg::Vec4(0.0,1.0,0.5,1.0);
-		sbi.colorAlpha = sbi.color;
-		sbi.colorAlpha.a() = 0.5;
-		sbi.nameDuration = pluginList[i] + " preFrame time taken";
-		sbi.nameTimeStart = pluginList[i] + " preFrame begin time";
-		sbi.nameTimeEnd = pluginList[i] + " preFrame end time";
+            std::vector<std::string> pluginList =
+                    PluginManager::instance()->getLoadedPluginList();
+            for(int i = 0; i < pluginList.size(); i++)
+            {
+                sbi.label = pluginList[i] + ": ";
+                sbi.color = osg::Vec4(0.0,1.0,0.5,1.0);
+                sbi.colorAlpha = sbi.color;
+                sbi.colorAlpha.a() = 0.5;
+                sbi.nameDuration = pluginList[i] + " preFrame time taken";
+                sbi.nameTimeStart = pluginList[i] + " preFrame begin time";
+                sbi.nameTimeEnd = pluginList[i] + " preFrame end time";
 
-		createTimeBar(viewer->getViewerStats(),NULL,geode,pos,&sbi,font,characterSize,startBlocks,leftPos);
-	    }
-	}
+                createTimeBar(viewer->getViewerStats(),NULL,geode,pos,&sbi,font,
+                        characterSize,startBlocks,leftPos);
+            }
+        }
 
         pos.x() = leftPos;
 
         // add camera stats
         for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin();
-            citr != cameras.end();
-            ++citr)
+                citr != cameras.end(); ++citr)
         {
-            group->addChild(createCameraTimeStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getViewerStats(), *citr));
+            group->addChild(
+                    createCameraTimeStats(font,pos,startBlocks,acquireGPUStats,
+                            characterSize,viewer->getViewerStats(),*citr));
         }
 
-	geode->addDrawable(createBackgroundRectangle(
-            posOld + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-            _statsWidth - 2 * backgroundMargin,
-            topY - (pos.y() + characterSize - backgroundMargin),
-            backgroundColor) );
+        geode->addDrawable(
+                createBackgroundRectangle(
+                        posOld
+                                + osg::Vec3(-backgroundMargin,
+                                        characterSize + backgroundMargin,0),
+                        _statsWidth - 2 * backgroundMargin,
+                        topY - (pos.y() + characterSize - backgroundMargin),
+                        backgroundColor));
 
         // add frame ticks
         {
             osg::Geode* geode = new osg::Geode;
             group->addChild(geode);
 
-            osg::Vec4 colourTicks(1.0f,1.0f,1.0f, 0.5f);
+            osg::Vec4 colourTicks(1.0f,1.0f,1.0f,0.5f);
 
             pos.x() = startBlocks;
             pos.y() += characterSize;
             float height = topOfViewerStats - pos.y();
 
-            osg::Geometry* ticks = createTick(pos, 5.0f, colourTicks, 100);
+            osg::Geometry* ticks = createTick(pos,5.0f,colourTicks,100);
             geode->addDrawable(ticks);
 
-            osg::Geometry* frameMarkers = createFrameMarkers(pos, height, colourTicks, _numBlocks + 1);
-            frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getViewerStats(), 0, _numBlocks + 1));
+            osg::Geometry* frameMarkers = createFrameMarkers(pos,height,
+                    colourTicks,_numBlocks + 1);
+            frameMarkers->setDrawCallback(
+                    new FrameMarkerDrawCallback(this,startBlocks,
+                            viewer->getViewerStats(),0,_numBlocks + 1));
             geode->addDrawable(frameMarkers);
 
             pos.x() = leftPos;
@@ -1629,93 +1742,131 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             float height = 5 * characterSize;
 
             // Create a stats graph and add any stats we want to track with it.
-            StatsGraph* statsGraph = new StatsGraph(pos, width, height);
+            StatsGraph* statsGraph = new StatsGraph(pos,width,height);
             group->addChild(statsGraph);
 
-	    for(int i = 0; i < _defaultViewerValueLines.size(); i++)
-	    {
-		if(_defaultViewerValueLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), _defaultViewerValueLines[i]->color, _defaultViewerValueLines[i]->max, _defaultViewerValueLines[i]->name);
-	    }
+            for(int i = 0; i < _defaultViewerValueLines.size(); i++)
+            {
+                if(_defaultViewerValueLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                statsGraph->addStatGraph(viewer->getViewerStats(),
+                        viewer->getViewerStats(),
+                        _defaultViewerValueLines[i]->color,
+                        _defaultViewerValueLines[i]->max,
+                        _defaultViewerValueLines[i]->name);
+            }
 
-	    for(int i = 0; i < _customViewerValueLines.size(); i++)
-	    {
-		if(_customViewerValueLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), _customViewerValueLines[i]->color, _customViewerValueLines[i]->max, _customViewerValueLines[i]->name);
-	    }
+            for(int i = 0; i < _customViewerValueLines.size(); i++)
+            {
+                if(_customViewerValueLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                statsGraph->addStatGraph(viewer->getViewerStats(),
+                        viewer->getViewerStats(),
+                        _customViewerValueLines[i]->color,
+                        _customViewerValueLines[i]->max,
+                        _customViewerValueLines[i]->name);
+            }
 
-	    if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
-	    {
-		for(int i = 0; i < _defaultViewerLines.size(); i++)
-		{
-		    if(_defaultViewerLines[i]->advanced && !_advanced)
-		    {
-			continue;
-		    }
-		    statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), _defaultViewerLines[i]->color, _defaultViewerLines[i]->max, _defaultViewerLines[i]->name);
-		}
-	    }
+            if(_statsSubType == ALL_SUB_STATS
+                    || _statsSubType == VIEWER_SUB_STATS
+                    || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+                    || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
+            {
+                for(int i = 0; i < _defaultViewerLines.size(); i++)
+                {
+                    if(_defaultViewerLines[i]->advanced && !_advanced)
+                    {
+                        continue;
+                    }
+                    statsGraph->addStatGraph(viewer->getViewerStats(),
+                            viewer->getViewerStats(),
+                            _defaultViewerLines[i]->color,
+                            _defaultViewerLines[i]->max,
+                            _defaultViewerLines[i]->name);
+                }
+            }
 
-	    if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
-	    {
-		for(int i = 0; i < _customViewerLines.size(); i++)
-		{
-		    if(_customViewerLines[i]->advanced && !_advanced)
-		    {
-			continue;
-		    }
-		    statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), _customViewerLines[i]->color, _customViewerLines[i]->max, _customViewerLines[i]->name);
-		}
-	    }
+            if(_statsSubType == ALL_SUB_STATS
+                    || _statsSubType == VIEWER_SUB_STATS)
+            {
+                for(int i = 0; i < _customViewerLines.size(); i++)
+                {
+                    if(_customViewerLines[i]->advanced && !_advanced)
+                    {
+                        continue;
+                    }
+                    statsGraph->addStatGraph(viewer->getViewerStats(),
+                            viewer->getViewerStats(),
+                            _customViewerLines[i]->color,
+                            _customViewerLines[i]->max,
+                            _customViewerLines[i]->name);
+                }
+            }
 
             for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin();
-                citr != cameras.end();
-                ++citr)
-	    {
-		for(int i = 0; i < _defaultCameraValueLines.size(); i++)
-		{
-		    if(_defaultCameraValueLines[i]->advanced && !_advanced)
-		    {
-			continue;
-		    }
-		    statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), _defaultCameraValueLines[i]->color, _defaultCameraValueLines[i]->max, _defaultCameraValueLines[i]->name);
-		}
+                    citr != cameras.end(); ++citr)
+            {
+                for(int i = 0; i < _defaultCameraValueLines.size(); i++)
+                {
+                    if(_defaultCameraValueLines[i]->advanced && !_advanced)
+                    {
+                        continue;
+                    }
+                    statsGraph->addStatGraph(viewer->getViewerStats(),
+                            (*citr)->getStats(),
+                            _defaultCameraValueLines[i]->color,
+                            _defaultCameraValueLines[i]->max,
+                            _defaultCameraValueLines[i]->name);
+                }
 
-		if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
-		{
-		    for(int i = 0; i < _defaultCameraLines.size(); i++)
-		    {
-			if(_defaultCameraLines[i]->advanced && !_advanced)
-			{
-			    continue;
-			}
-			statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), _defaultCameraLines[i]->color, _defaultCameraLines[i]->max, _defaultCameraLines[i]->name);
-		    }
-		}
+                if(_statsSubType == ALL_SUB_STATS
+                        || _statsSubType == CAMERA_SUB_STATS
+                        || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+                        || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
+                {
+                    for(int i = 0; i < _defaultCameraLines.size(); i++)
+                    {
+                        if(_defaultCameraLines[i]->advanced && !_advanced)
+                        {
+                            continue;
+                        }
+                        statsGraph->addStatGraph(viewer->getViewerStats(),
+                                (*citr)->getStats(),
+                                _defaultCameraLines[i]->color,
+                                _defaultCameraLines[i]->max,
+                                _defaultCameraLines[i]->name);
+                    }
+                }
 
-		if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS)
-		{
-		    for(int i = 0; i < _customCameraLines.size(); i++)
-		    {
-			if(_customCameraLines[i]->advanced && !_advanced)
-			{
-			    continue;
-			}
-			statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), _customCameraLines[i]->color, _customCameraLines[i]->max, _customCameraLines[i]->name);
-		    }
-		}
-	    }
+                if(_statsSubType == ALL_SUB_STATS
+                        || _statsSubType == CAMERA_SUB_STATS)
+                {
+                    for(int i = 0; i < _customCameraLines.size(); i++)
+                    {
+                        if(_customCameraLines[i]->advanced && !_advanced)
+                        {
+                            continue;
+                        }
+                        statsGraph->addStatGraph(viewer->getViewerStats(),
+                                (*citr)->getStats(),
+                                _customCameraLines[i]->color,
+                                _customCameraLines[i]->max,
+                                _customCameraLines[i]->name);
+                    }
+                }
+            }
 
-            geode->addDrawable(createBackgroundRectangle( pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),
-                                                          width + 2 * backgroundMargin,
-                                                          height + 2 * backgroundMargin,
-                                                          backgroundColor) );
+            geode->addDrawable(
+                    createBackgroundRectangle(
+                            pos
+                                    + osg::Vec3(-backgroundMargin,
+                                            backgroundMargin,0),
+                            width + 2 * backgroundMargin,
+                            height + 2 * backgroundMargin,backgroundColor));
 
             pos.x() = leftPos;
             pos.y() -= height + 2 * backgroundMargin;
@@ -1725,33 +1876,38 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         osgViewer::ViewerBase::Scenes scenes;
         viewer->getScenes(scenes);
         for(osgViewer::ViewerBase::Scenes::iterator itr = scenes.begin();
-            itr != scenes.end();
-            ++itr)
+                itr != scenes.end(); ++itr)
         {
             osgViewer::Scene* scene = *itr;
             osgDB::DatabasePager* dp = scene->getDatabasePager();
-            if (dp && dp->isRunning())
+            if(dp && dp->isRunning())
             {
                 pos.y() -= (characterSize + backgroundSpacing);
 
-                geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                                _statsWidth - 2 * backgroundMargin,
-                                                                characterSize + 2 * backgroundMargin,
-                                                                backgroundColor));
+                geode->addDrawable(
+                        createBackgroundRectangle(
+                                pos
+                                        + osg::Vec3(-backgroundMargin,
+                                                characterSize
+                                                        + backgroundMargin,0),
+                                _statsWidth - 2 * backgroundMargin,
+                                characterSize + 2 * backgroundMargin,
+                                backgroundColor));
 
                 osg::ref_ptr<osgText::Text> averageLabel = new osgText::Text;
-                geode->addDrawable( averageLabel.get() );
+                geode->addDrawable(averageLabel.get());
 
                 averageLabel->setColor(colorDP);
                 averageLabel->setFont(font);
                 averageLabel->setCharacterSize(characterSize);
                 averageLabel->setPosition(pos);
-                averageLabel->setText("DatabasePager time to merge new tiles - average: ");
+                averageLabel->setText(
+                        "DatabasePager time to merge new tiles - average: ");
 
                 pos.x() = averageLabel->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
-                geode->addDrawable( averageValue.get() );
+                geode->addDrawable(averageValue.get());
 
                 averageValue->setColor(colorDP);
                 averageValue->setFont(font);
@@ -1759,11 +1915,11 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageValue->setPosition(pos);
                 averageValue->setText("1000");
 
-                pos.x() = averageValue->getBound().xMax() + 2.0f*characterSize;
-
+                pos.x() = averageValue->getBound().xMax()
+                        + 2.0f * characterSize;
 
                 osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
-                geode->addDrawable( minLabel.get() );
+                geode->addDrawable(minLabel.get());
 
                 minLabel->setColor(colorDP);
                 minLabel->setFont(font);
@@ -1774,7 +1930,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.x() = minLabel->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
-                geode->addDrawable( minValue.get() );
+                geode->addDrawable(minValue.get());
 
                 minValue->setColor(colorDP);
                 minValue->setFont(font);
@@ -1782,10 +1938,10 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minValue->setPosition(pos);
                 minValue->setText("1000");
 
-                pos.x() = minValue->getBound().xMax() + 2.0f*characterSize;
+                pos.x() = minValue->getBound().xMax() + 2.0f * characterSize;
 
                 osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
-                geode->addDrawable( maxLabel.get() );
+                geode->addDrawable(maxLabel.get());
 
                 maxLabel->setColor(colorDP);
                 maxLabel->setFont(font);
@@ -1796,7 +1952,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.x() = maxLabel->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
-                geode->addDrawable( maxValue.get() );
+                geode->addDrawable(maxValue.get());
 
                 maxValue->setColor(colorDP);
                 maxValue->setFont(font);
@@ -1807,7 +1963,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.x() = maxValue->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> requestsLabel = new osgText::Text;
-                geode->addDrawable( requestsLabel.get() );
+                geode->addDrawable(requestsLabel.get());
 
                 requestsLabel->setColor(colorDP);
                 requestsLabel->setFont(font);
@@ -1818,7 +1974,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.x() = requestsLabel->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> requestList = new osgText::Text;
-                geode->addDrawable( requestList.get() );
+                geode->addDrawable(requestList.get());
 
                 requestList->setColor(colorDP);
                 requestList->setFont(font);
@@ -1826,10 +1982,11 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestList->setPosition(pos);
                 requestList->setText("0");
 
-                pos.x() = requestList->getBound().xMax() + 2.0f*characterSize;;
+                pos.x() = requestList->getBound().xMax() + 2.0f * characterSize;
+                ;
 
                 osg::ref_ptr<osgText::Text> compileLabel = new osgText::Text;
-                geode->addDrawable( compileLabel.get() );
+                geode->addDrawable(compileLabel.get());
 
                 compileLabel->setColor(colorDP);
                 compileLabel->setFont(font);
@@ -1840,7 +1997,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.x() = compileLabel->getBound().xMax();
 
                 osg::ref_ptr<osgText::Text> compileList = new osgText::Text;
-                geode->addDrawable( compileList.get() );
+                geode->addDrawable(compileList.get());
 
                 compileList->setColor(colorDP);
                 compileList->setFont(font);
@@ -1850,7 +2007,10 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
                 pos.x() = maxLabel->getBound().xMax();
 
-                geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), requestList.get(), compileList.get(), 1000.0));
+                geode->setCullCallback(
+                        new PagerCallback(dp,minValue.get(),maxValue.get(),
+                                averageValue.get(),requestList.get(),
+                                compileList.get(),1000.0));
             }
 
             pos.x() = leftPos;
@@ -1863,19 +2023,23 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         osg::Group* group = new osg::Group;
         _cameraSceneChildNum = _switch->getNumChildren();
-        _switch->addChild(group, false);
+        _switch->addChild(group,false);
 
         osg::Geode* geode = new osg::Geode();
         geode->setCullingActive(false);
         group->addChild(geode);
-        geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                        7 * characterSize + 2 * backgroundMargin,
-                                                        19 * characterSize + 2 * backgroundMargin,
-                                                        backgroundColor));
+        geode->addDrawable(
+                createBackgroundRectangle(
+                        pos
+                                + osg::Vec3(-backgroundMargin,
+                                        characterSize + backgroundMargin,0),
+                        7 * characterSize + 2 * backgroundMargin,
+                        19 * characterSize + 2 * backgroundMargin,
+                        backgroundColor));
 
         // Camera scene & primitive stats static text
         osg::ref_ptr<osgText::Text> camStaticText = new osgText::Text;
-        geode->addDrawable( camStaticText.get() );
+        geode->addDrawable(camStaticText.get());
         camStaticText->setColor(staticTextColor);
         camStaticText->setFont(font);
         camStaticText->setCharacterSize(characterSize);
@@ -1883,7 +2047,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         std::ostringstream viewStr;
         viewStr.clear();
-        viewStr.setf(std::ios::left, std::ios::adjustfield);
+        viewStr.setf(std::ios::left,std::ios::adjustfield);
         viewStr.width(14);
         viewStr << "Camera" << std::endl;
         viewStr << "" << std::endl; // placeholder for Camera name
@@ -1912,26 +2076,33 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         // Add camera scene stats, one block per camera
         int cameraCounter = 0;
-        for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin(); citr != cameras.end(); ++citr)
+        for(osgViewer::ViewerBase::Cameras::iterator citr = cameras.begin();
+                citr != cameras.end(); ++citr)
         {
-            geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                            5 * characterSize + 2 * backgroundMargin,
-                                                            19 * characterSize + 2 * backgroundMargin,
-                                                            backgroundColor));
+            geode->addDrawable(
+                    createBackgroundRectangle(
+                            pos
+                                    + osg::Vec3(-backgroundMargin,
+                                            characterSize + backgroundMargin,0),
+                            5 * characterSize + 2 * backgroundMargin,
+                            19 * characterSize + 2 * backgroundMargin,
+                            backgroundColor));
 
             // Camera scene stats
             osg::ref_ptr<osgText::Text> camStatsText = new osgText::Text;
-            geode->addDrawable( camStatsText.get() );
+            geode->addDrawable(camStatsText.get());
 
             camStatsText->setColor(dynamicTextColor);
             camStatsText->setFont(font);
             camStatsText->setCharacterSize(characterSize);
             camStatsText->setPosition(pos);
             camStatsText->setText("");
-            camStatsText->setDrawCallback(new CameraSceneStatsTextDrawCallback(*citr, cameraCounter));
+            camStatsText->setDrawCallback(
+                    new CameraSceneStatsTextDrawCallback(*citr,cameraCounter));
 
             // Move camera block to the right
-            pos.x() +=  5 * characterSize + 2 * backgroundMargin + backgroundSpacing;
+            pos.x() += 5 * characterSize + 2 * backgroundMargin
+                    + backgroundSpacing;
             cameraCounter++;
         }
     }
@@ -1940,20 +2111,24 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     {
         osg::Group* group = new osg::Group;
         _viewerSceneChildNum = _switch->getNumChildren();
-        _switch->addChild(group, false);
+        _switch->addChild(group,false);
 
         osg::Geode* geode = new osg::Geode();
         geode->setCullingActive(false);
         group->addChild(geode);
 
-        geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                        6 * characterSize + 2 * backgroundMargin,
-                                                        12 * characterSize + 2 * backgroundMargin,
-                                                        backgroundColor));
+        geode->addDrawable(
+                createBackgroundRectangle(
+                        pos
+                                + osg::Vec3(-backgroundMargin,
+                                        characterSize + backgroundMargin,0),
+                        6 * characterSize + 2 * backgroundMargin,
+                        12 * characterSize + 2 * backgroundMargin,
+                        backgroundColor));
 
         // View scene stats static text
         osg::ref_ptr<osgText::Text> camStaticText = new osgText::Text;
-        geode->addDrawable( camStaticText.get() );
+        geode->addDrawable(camStaticText.get());
         camStaticText->setColor(staticTextColor);
         camStaticText->setFont(font);
         camStaticText->setCharacterSize(characterSize);
@@ -1961,7 +2136,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         std::ostringstream viewStr;
         viewStr.clear();
-        viewStr.setf(std::ios::left, std::ios::adjustfield);
+        viewStr.setf(std::ios::left,std::ios::adjustfield);
         viewStr.width(14);
         viewStr << "View" << std::endl;
         viewStr << " " << std::endl;
@@ -1975,7 +2150,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Geometry" << std::endl;
         viewStr << "Vertices" << std::endl;
         viewStr << "Primitives" << std::endl;
-        viewStr.setf(std::ios::right, std::ios::adjustfield);
+        viewStr.setf(std::ios::right,std::ios::adjustfield);
         camStaticText->setText(viewStr.str());
 
         // Move viewer block to the right
@@ -1986,24 +2161,30 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         std::vector<osgViewer::View*>::iterator it;
         int viewCounter = 0;
-        for (it = views.begin(); it != views.end(); ++it)
+        for(it = views.begin(); it != views.end(); ++it)
         {
-            geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                            10 * characterSize + 2 * backgroundMargin,
-                                                            12 * characterSize + 2 * backgroundMargin,
-                                                            backgroundColor));
+            geode->addDrawable(
+                    createBackgroundRectangle(
+                            pos
+                                    + osg::Vec3(-backgroundMargin,
+                                            characterSize + backgroundMargin,0),
+                            10 * characterSize + 2 * backgroundMargin,
+                            12 * characterSize + 2 * backgroundMargin,
+                            backgroundColor));
 
             // Text for scene statistics
-            osgText::Text* text = new  osgText::Text;
-            geode->addDrawable( text );
+            osgText::Text* text = new osgText::Text;
+            geode->addDrawable(text);
 
             text->setColor(dynamicTextColor);
             text->setFont(font);
             text->setCharacterSize(characterSize);
             text->setPosition(pos);
-            text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
+            text->setDrawCallback(
+                    new ViewSceneStatsTextDrawCallback(*it,viewCounter));
 
-            pos.x() += 10 * characterSize + 2 * backgroundMargin + backgroundSpacing;
+            pos.x() += 10 * characterSize + 2 * backgroundMargin
+                    + backgroundSpacing;
             viewCounter++;
         }
     }
@@ -2011,26 +2192,27 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
 void CVRStatsHandler::setCollect(osgViewer::ViewerBase * viewer)
 {
-    for(std::map<std::string,bool>::iterator it = _collectMapViewer.begin(); it != _collectMapViewer.end(); it++)
+    for(std::map<std::string,bool>::iterator it = _collectMapViewer.begin();
+            it != _collectMapViewer.end(); it++)
     {
-	viewer->getViewerStats()->collectStats(it->first,false);
+        viewer->getViewerStats()->collectStats(it->first,false);
     }
 
     osgViewer::ViewerBase::Cameras cameras;
     viewer->getCameras(cameras);
 
-    for(std::map<std::string,bool>::iterator it = _collectMapCameras.begin(); it != _collectMapCameras.end(); it++)
+    for(std::map<std::string,bool>::iterator it = _collectMapCameras.begin();
+            it != _collectMapCameras.end(); it++)
     {
-	for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
-		itr != cameras.end();
-		++itr)
-	{
-	    osg::Stats* stats = (*itr)->getStats();
-	    if (stats)
-	    {
-		stats->collectStats(it->first,false);
-	    }
-	}
+        for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
+                itr != cameras.end(); ++itr)
+        {
+            osg::Stats* stats = (*itr)->getStats();
+            if(stats)
+            {
+                stats->collectStats(it->first,false);
+            }
+        }
     }
 
     _collectMapViewer.clear();
@@ -2038,169 +2220,179 @@ void CVRStatsHandler::setCollect(osgViewer::ViewerBase * viewer)
 
     if(_statsType >= FRAME_RATE)
     {
-	for(int i = 0; i < _defaultViewerValues.size(); i++)
-	{
-	    if(_defaultViewerValues[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapViewer[_defaultViewerValues[i]->collectName] = true;
-	}
-	for(int i = 0; i < _defaultCameraValues.size(); i++)
-	{
-	    if(_defaultCameraValues[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapCameras[_defaultCameraValues[i]->collectName] = true;
-	}
+        for(int i = 0; i < _defaultViewerValues.size(); i++)
+        {
+            if(_defaultViewerValues[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapViewer[_defaultViewerValues[i]->collectName] = true;
+        }
+        for(int i = 0; i < _defaultCameraValues.size(); i++)
+        {
+            if(_defaultCameraValues[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapCameras[_defaultCameraValues[i]->collectName] = true;
+        }
     }
 
     if(_statsType >= VIEWER_STATS)
     {
-	for(int i = 0; i < _defaultViewerValueLines.size(); i++)
-	{
-	    if(_defaultViewerValueLines[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapViewer[_defaultViewerValueLines[i]->collectName] = true;
-	}
+        for(int i = 0; i < _defaultViewerValueLines.size(); i++)
+        {
+            if(_defaultViewerValueLines[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapViewer[_defaultViewerValueLines[i]->collectName] = true;
+        }
 
-	for(int i = 0; i < _defaultCameraValueLines.size(); i++)
-	{
-	    if(_defaultCameraValueLines[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapCameras[_defaultCameraValueLines[i]->collectName] = true;
-	}
+        for(int i = 0; i < _defaultCameraValueLines.size(); i++)
+        {
+            if(_defaultCameraValueLines[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapCameras[_defaultCameraValueLines[i]->collectName] = true;
+        }
 
-	for(int i = 0; i < _customViewerValueLines.size(); i++)
-	{
-	    if(_customViewerValueLines[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapViewer[_customViewerValueLines[i]->collectName] = true;
-	}
+        for(int i = 0; i < _customViewerValueLines.size(); i++)
+        {
+            if(_customViewerValueLines[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapViewer[_customViewerValueLines[i]->collectName] = true;
+        }
 
-	for(int i = 0; i < _customCameraValueLines.size(); i++)
-	{
-	    if(_customCameraValueLines[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    _collectMapCameras[_customCameraValueLines[i]->collectName] = true;
-	}
+        for(int i = 0; i < _customCameraValueLines.size(); i++)
+        {
+            if(_customCameraValueLines[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapCameras[_customCameraValueLines[i]->collectName] = true;
+        }
 
-	if(_statsSubType == PLUGINS_SUB_STATS || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
-	{
-	    _collectMapViewer["CalVRStatsPlugins"] = true;
-	}
+        if(_statsSubType == PLUGINS_SUB_STATS
+                || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
+        {
+            _collectMapViewer["CalVRStatsPlugins"] = true;
+        }
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
-	{
-	    for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
-	    {
-		if(_defaultViewerTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapViewer[_defaultViewerTimeBars[i]->collectName] = true;
-	    }
-	    for(int i = 0; i < _defaultViewerLines.size(); i++)
-	    {
-		if(_defaultViewerLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapViewer[_defaultViewerLines[i]->collectName] = true;
-	    }
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS
+                || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+                || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
+        {
+            for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
+            {
+                if(_defaultViewerTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapViewer[_defaultViewerTimeBars[i]->collectName] =
+                        true;
+            }
+            for(int i = 0; i < _defaultViewerLines.size(); i++)
+            {
+                if(_defaultViewerLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapViewer[_defaultViewerLines[i]->collectName] = true;
+            }
+        }
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
-	{
-	   for(int i = 0; i < _customViewerTimeBars.size(); i++)
-	    {
-		if(_customViewerTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapViewer[_customViewerTimeBars[i]->collectName] = true;
-	    }
-	    for(int i = 0; i < _customViewerLines.size(); i++)
-	    {
-		if(_customViewerLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapViewer[_customViewerLines[i]->collectName] = true;
-	    } 
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
+        {
+            for(int i = 0; i < _customViewerTimeBars.size(); i++)
+            {
+                if(_customViewerTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapViewer[_customViewerTimeBars[i]->collectName] = true;
+            }
+            for(int i = 0; i < _customViewerLines.size(); i++)
+            {
+                if(_customViewerLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapViewer[_customViewerLines[i]->collectName] = true;
+            }
+        }
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
-	{
-	    for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
-	    {
-		if(_defaultCameraTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapCameras[_defaultCameraTimeBars[i]->collectName] = true;
-	    }
-	    for(int i = 0; i < _defaultCameraLines.size(); i++)
-	    {
-		if(_defaultCameraLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapCameras[_defaultCameraLines[i]->collectName] = true;
-	    }
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS
+                || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+                || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
+        {
+            for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
+            {
+                if(_defaultCameraTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapCameras[_defaultCameraTimeBars[i]->collectName] =
+                        true;
+            }
+            for(int i = 0; i < _defaultCameraLines.size(); i++)
+            {
+                if(_defaultCameraLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapCameras[_defaultCameraLines[i]->collectName] = true;
+            }
+        }
 
-	if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS)
-	{
-	    for(int i = 0; i < _customCameraTimeBars.size(); i++)
-	    {
-		if(_customCameraTimeBars[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapCameras[_customCameraTimeBars[i]->collectName] = true;
-	    }
-	    for(int i = 0; i < _customCameraLines.size(); i++)
-	    {
-		if(_customCameraLines[i]->advanced && !_advanced)
-		{
-		    continue;
-		}
-		_collectMapCameras[_customCameraLines[i]->collectName] = true;
-	    }
-	}
+        if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS)
+        {
+            for(int i = 0; i < _customCameraTimeBars.size(); i++)
+            {
+                if(_customCameraTimeBars[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapCameras[_customCameraTimeBars[i]->collectName] =
+                        true;
+            }
+            for(int i = 0; i < _customCameraLines.size(); i++)
+            {
+                if(_customCameraLines[i]->advanced && !_advanced)
+                {
+                    continue;
+                }
+                _collectMapCameras[_customCameraLines[i]->collectName] = true;
+            }
+        }
     }
 
-    for(std::map<std::string,bool>::iterator it = _collectMapViewer.begin(); it != _collectMapViewer.end(); it++)
+    for(std::map<std::string,bool>::iterator it = _collectMapViewer.begin();
+            it != _collectMapViewer.end(); it++)
     {
-	viewer->getViewerStats()->collectStats(it->first,true);
+        viewer->getViewerStats()->collectStats(it->first,true);
     }
 
-    for(std::map<std::string,bool>::iterator it = _collectMapCameras.begin(); it != _collectMapCameras.end(); it++)
+    for(std::map<std::string,bool>::iterator it = _collectMapCameras.begin();
+            it != _collectMapCameras.end(); it++)
     {
-	for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
-		itr != cameras.end();
-		++itr)
-	{
-	    osg::Stats* stats = (*itr)->getStats();
-	    if (stats)
-	    {
-		stats->collectStats(it->first,true);
-	    }
-	}
+        for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
+                itr != cameras.end(); ++itr)
+        {
+            osg::Stats* stats = (*itr)->getStats();
+            if(stats)
+            {
+                stats->collectStats(it->first,true);
+            }
+        }
     }
 }
 
-void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, float characterSize, std::string & font)
+void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
+        float characterSize, std::string & font)
 {
     osg::ref_ptr<osgText::Text> label = new osgText::Text();
     label->setFont(font);
@@ -2208,91 +2400,100 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos, f
     label->setPosition(osg::Vec3(leftPos,0.0,0.0));
     label->setText("");
 
-    if(_statsSubType == PLUGINS_SUB_STATS || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
+    if(_statsSubType == PLUGINS_SUB_STATS
+            || _statsSubType == NO_CUSTOM_PLUGINS_SUB_STATS)
     {
-	std::vector<std::string> pluginList = PluginManager::instance()->getLoadedPluginList();
-	for(int i = 0; i < pluginList.size(); i++)
-	{
-	    //extra space added to pad side
-	    label->setText(pluginList[i] + ":  000.00");
-	    if(label->getBound().xMax() > startBlocks)
-	    {
-		startBlocks = label->getBound().xMax();
-	    }
-	}
+        std::vector<std::string> pluginList =
+                PluginManager::instance()->getLoadedPluginList();
+        for(int i = 0; i < pluginList.size(); i++)
+        {
+            //extra space added to pad side
+            label->setText(pluginList[i] + ":  000.00");
+            if(label->getBound().xMax() > startBlocks)
+            {
+                startBlocks = label->getBound().xMax();
+            }
+        }
     }
 
-    if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
+    if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS
+            || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+            || _statsSubType == NO_CUSTOM_VIEWER_SUB_STATS)
     {
-	for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
-	{
-	    if(_defaultViewerTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    label->setText(_defaultViewerTimeBars[i]->label + "  000.00");
-	    if(label->getBound().xMax() > startBlocks)
-	    {
-		startBlocks = label->getBound().xMax();
-	    }
-	}
+        for(int i = 0; i < _defaultViewerTimeBars.size(); i++)
+        {
+            if(_defaultViewerTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            label->setText(_defaultViewerTimeBars[i]->label + "  000.00");
+            if(label->getBound().xMax() > startBlocks)
+            {
+                startBlocks = label->getBound().xMax();
+            }
+        }
     }
 
     if(_statsSubType == ALL_SUB_STATS || _statsSubType == VIEWER_SUB_STATS)
     {
-	for(int i = 0; i < _customViewerTimeBars.size(); i++)
-	{
-	    if(_customViewerTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    label->setText(_customViewerTimeBars[i]->label + "  000.00");
-	    if(label->getBound().xMax() > startBlocks)
-	    {
-		startBlocks = label->getBound().xMax();
-	    }
-	}
+        for(int i = 0; i < _customViewerTimeBars.size(); i++)
+        {
+            if(_customViewerTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            label->setText(_customViewerTimeBars[i]->label + "  000.00");
+            if(label->getBound().xMax() > startBlocks)
+            {
+                startBlocks = label->getBound().xMax();
+            }
+        }
     }
 
-    if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
+    if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS
+            || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+            || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
     {
-	for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
-	{
-	    if(_defaultCameraTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    label->setText(_defaultCameraTimeBars[i]->label + "  000.00");
-	    if(label->getBound().xMax() > startBlocks)
-	    {
-		startBlocks = label->getBound().xMax();
-	    }
-	}
+        for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
+        {
+            if(_defaultCameraTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            label->setText(_defaultCameraTimeBars[i]->label + "  000.00");
+            if(label->getBound().xMax() > startBlocks)
+            {
+                startBlocks = label->getBound().xMax();
+            }
+        }
     }
 
     if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS)
     {
-	for(int i = 0; i < _customCameraTimeBars.size(); i++)
-	{
-	    if(_customCameraTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    label->setText(_customCameraTimeBars[i]->label + "  000.00");
-	    if(label->getBound().xMax() > startBlocks)
-	    {
-		startBlocks = label->getBound().xMax();
-	    }
-	} 
+        for(int i = 0; i < _customCameraTimeBars.size(); i++)
+        {
+            if(_customCameraTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            label->setText(_customCameraTimeBars[i]->label + "  000.00");
+            if(label->getBound().xMax() > startBlocks)
+            {
+                startBlocks = label->getBound().xMax();
+            }
+        }
     }
 }
 
-void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats, osg::Geode * geode, osg::Vec3 & pos, StatTimeBarInfo * stb, std::string & font, float characterSize, float startBlocks, float leftPos)
+void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats,
+        osg::Geode * geode, osg::Vec3 & pos, StatTimeBarInfo * stb,
+        std::string & font, float characterSize, float startBlocks,
+        float leftPos)
 {
     pos.x() = leftPos;
 
     osg::ref_ptr<osgText::Text> label = new osgText::Text;
-    geode->addDrawable( label.get() );
+    geode->addDrawable(label.get());
 
     label->setColor(stb->color);
     label->setFont(font);
@@ -2303,7 +2504,7 @@ void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats,
     pos.x() = label->getBound().xMax() + _spaceSize;
 
     osg::ref_ptr<osgText::Text> value = new osgText::Text;
-    geode->addDrawable( value.get() );
+    geode->addDrawable(value.get());
 
     value->setColor(stb->color);
     value->setFont(font);
@@ -2311,20 +2512,29 @@ void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats,
     value->setPosition(pos);
     value->setText("0.0");
 
-    value->setDrawCallback(new AveragedValueTextDrawCallback(stats ? stats : viewerStats,stb->nameDuration,-1, false, 1000.0));
+    value->setDrawCallback(
+            new AveragedValueTextDrawCallback(stats ? stats : viewerStats,
+                    stb->nameDuration,-1,false,1000.0));
 
     pos.x() = startBlocks;
-    osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, stb->colorAlpha, _numBlocks);
-    geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats ? stats : viewerStats, stb->nameTimeStart, stb->nameTimeEnd, -1, _numBlocks));
+    osg::Geometry* geometry = createGeometry(pos,characterSize * 0.8,
+            stb->colorAlpha,_numBlocks);
+    geometry->setDrawCallback(
+            new BlockDrawCallback(this,startBlocks,viewerStats,
+                    stats ? stats : viewerStats,stb->nameTimeStart,
+                    stb->nameTimeEnd,-1,_numBlocks));
     geode->addDrawable(geometry);
 
-    pos.y() -= characterSize*1.5f;
+    pos.y() -= characterSize * 1.5f;
 }
 
-osg::Node* CVRStatsHandler::createCameraTimeStats(std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
+osg::Node* CVRStatsHandler::createCameraTimeStats(std::string& font,
+        osg::Vec3& pos, float startBlocks, bool acquireGPUStats,
+        float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
 {
     osg::Stats* stats = camera->getStats();
-    if (!stats) return 0;
+    if(!stats)
+        return 0;
 
     osg::Group* group = new osg::Group;
 
@@ -2333,28 +2543,32 @@ osg::Node* CVRStatsHandler::createCameraTimeStats(std::string& font, osg::Vec3& 
 
     float leftPos = pos.x();
 
-    if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS || _statsSubType == NO_CUSTOM_ALL_SUB_STATS || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
+    if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS
+            || _statsSubType == NO_CUSTOM_ALL_SUB_STATS
+            || _statsSubType == NO_CUSTOM_CAMERA_SUB_STATS)
     {
-	for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
-	{
-	    if(_defaultCameraTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    createTimeBar(viewerStats,stats,geode,pos,_defaultCameraTimeBars[i],font,characterSize,startBlocks,leftPos);
-	}
+        for(int i = 0; i < _defaultCameraTimeBars.size(); i++)
+        {
+            if(_defaultCameraTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            createTimeBar(viewerStats,stats,geode,pos,_defaultCameraTimeBars[i],
+                    font,characterSize,startBlocks,leftPos);
+        }
     }
 
     if(_statsSubType == ALL_SUB_STATS || _statsSubType == CAMERA_SUB_STATS)
     {
-	for(int i = 0; i < _customCameraTimeBars.size(); i++)
-	{
-	    if(_customCameraTimeBars[i]->advanced && !_advanced)
-	    {
-		continue;
-	    }
-	    createTimeBar(viewerStats,stats,geode,pos,_customCameraTimeBars[i],font,characterSize,startBlocks,leftPos);
-	}
+        for(int i = 0; i < _customCameraTimeBars.size(); i++)
+        {
+            if(_customCameraTimeBars[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            createTimeBar(viewerStats,stats,geode,pos,_customCameraTimeBars[i],
+                    font,characterSize,startBlocks,leftPos);
+        }
     }
 
     pos.x() = leftPos;
@@ -2366,29 +2580,29 @@ void CVRStatsHandler::refresh()
 {
     if(!_initialized)
     {
-	return;
+        return;
     }
 
     if(_switch)
     {
-	_camera->removeChild(_switch);
-	setUpScene(_viewer);
+        _camera->removeChild(_switch);
+        setUpScene(_viewer);
     }
 
     switch(_statsType)
     {
-	case VIEWER_SCENE_STATS:
-	    _switch->setValue(_viewerSceneChildNum, true);
-	case CAMERA_SCENE_STATS:
-	    _switch->setValue(_cameraSceneChildNum, true);
-	case VIEWER_STATS:
-	    _switch->setValue(_viewerChildNum, true);
-	case FRAME_RATE:
-	    _switch->setValue(_viewerValuesChildNum, true);
-	case NO_STATS:
-	    break;
-	default:
-	    break;
+        case VIEWER_SCENE_STATS:
+            _switch->setValue(_viewerSceneChildNum,true);
+        case CAMERA_SCENE_STATS:
+            _switch->setValue(_cameraSceneChildNum,true);
+        case VIEWER_STATS:
+            _switch->setValue(_viewerChildNum,true);
+        case FRAME_RATE:
+            _switch->setValue(_viewerValuesChildNum,true);
+        case NO_STATS:
+            break;
+        default:
+            break;
     }
 
     setCollect(_viewer);
@@ -2400,7 +2614,9 @@ void CVRStatsHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("P","Output stats to console.");
 }
 
-void CVRStatsHandler::addStatValue(StatAddType addType, std::string label, std::string statName, osg::Vec3 color, std::string collectName, bool average, bool advanced)
+void CVRStatsHandler::addStatValue(StatAddType addType, std::string label,
+        std::string statName, osg::Vec3 color, std::string collectName,
+        bool average, bool advanced)
 {
     StatValueInfo * svi = new StatValueInfo;
     svi->label = label;
@@ -2417,17 +2633,19 @@ void CVRStatsHandler::addStatValue(StatAddType addType, std::string label, std::
 
     if(addType == VIEWER_STAT)
     {
-	_customViewerValues.push_back(svi);
+        _customViewerValues.push_back(svi);
     }
     else
     {
-	_customCameraValues.push_back(svi);
+        _customCameraValues.push_back(svi);
     }
 
     refresh();
 }
 
-void CVRStatsHandler::addStatValueWithLine(StatAddType addType, std::string label, std::string statName, osg::Vec3 color, std::string collectName, float lineMax, bool average, bool advanced)
+void CVRStatsHandler::addStatValueWithLine(StatAddType addType,
+        std::string label, std::string statName, osg::Vec3 color,
+        std::string collectName, float lineMax, bool average, bool advanced)
 {
     StatValueInfo * svi = new StatValueInfo;
     svi->label = label;
@@ -2452,19 +2670,22 @@ void CVRStatsHandler::addStatValueWithLine(StatAddType addType, std::string labe
 
     if(addType == VIEWER_STAT)
     {
-	_customViewerValues.push_back(svi);
-	_customViewerValueLines.push_back(sli);
+        _customViewerValues.push_back(svi);
+        _customViewerValueLines.push_back(sli);
     }
     else
     {
-	_customCameraValues.push_back(svi);
-	_customCameraValueLines.push_back(sli);
+        _customCameraValues.push_back(svi);
+        _customCameraValueLines.push_back(sli);
     }
 
     refresh();
 }
 
-void CVRStatsHandler::addStatTimeBar(StatAddType addType, std::string label, std::string statDurationName, std::string statStartTimeName, std::string statEndTimeName, osg::Vec3 color, std::string collectName, bool advanced)
+void CVRStatsHandler::addStatTimeBar(StatAddType addType, std::string label,
+        std::string statDurationName, std::string statStartTimeName,
+        std::string statEndTimeName, osg::Vec3 color, std::string collectName,
+        bool advanced)
 {
     StatTimeBarInfo * sbi = new StatTimeBarInfo;
     sbi->label = label;
@@ -2482,17 +2703,20 @@ void CVRStatsHandler::addStatTimeBar(StatAddType addType, std::string label, std
 
     if(addType == VIEWER_STAT)
     {
-	_customViewerTimeBars.push_back(sbi);
+        _customViewerTimeBars.push_back(sbi);
     }
     else
     {
-	_customCameraTimeBars.push_back(sbi);
+        _customCameraTimeBars.push_back(sbi);
     }
 
     refresh();
 }
 
-void CVRStatsHandler::addStatTimeBarWithLine(StatAddType addType, std::string label, std::string statDurationName, std::string statStartTimeName, std::string statEndTimeName, osg::Vec3 color, std::string collectName, float lineMax, bool advanced)
+void CVRStatsHandler::addStatTimeBarWithLine(StatAddType addType,
+        std::string label, std::string statDurationName,
+        std::string statStartTimeName, std::string statEndTimeName,
+        osg::Vec3 color, std::string collectName, float lineMax, bool advanced)
 {
     StatTimeBarInfo * sbi = new StatTimeBarInfo;
     sbi->label = label;
@@ -2518,19 +2742,20 @@ void CVRStatsHandler::addStatTimeBarWithLine(StatAddType addType, std::string la
 
     if(addType == VIEWER_STAT)
     {
-	_customViewerTimeBars.push_back(sbi);
-	_customViewerLines.push_back(sli);
+        _customViewerTimeBars.push_back(sbi);
+        _customViewerLines.push_back(sli);
     }
     else
     {
-	_customCameraTimeBars.push_back(sbi);
-	_customCameraLines.push_back(sli);
+        _customCameraTimeBars.push_back(sbi);
+        _customCameraLines.push_back(sli);
     }
 
     refresh();
 }
 
-void CVRStatsHandler::addStatLine(StatAddType addType, std::string statName, osg::Vec3 color, std::string collectName, float lineMax, bool advanced)
+void CVRStatsHandler::addStatLine(StatAddType addType, std::string statName,
+        osg::Vec3 color, std::string collectName, float lineMax, bool advanced)
 {
     StatLineInfo * sli = new StatLineInfo;
     sli->name = statName;
@@ -2546,11 +2771,11 @@ void CVRStatsHandler::addStatLine(StatAddType addType, std::string statName, osg
 
     if(addType == VIEWER_STAT)
     {
-	_customViewerLines.push_back(sli);
+        _customViewerLines.push_back(sli);
     }
     else
     {
-	_customCameraLines.push_back(sli);
+        _customCameraLines.push_back(sli);
     }
 
     refresh();
@@ -2560,37 +2785,39 @@ void CVRStatsHandler::removeStatValue(std::string statName)
 {
     bool statRemoved = false;
 
-    for(std::vector<StatValueInfo*>::iterator it = _customViewerValues.begin(); it != _customViewerValues.end(); )
+    for(std::vector<StatValueInfo*>::iterator it = _customViewerValues.begin();
+            it != _customViewerValues.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customViewerValues.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customViewerValues.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatValueInfo*>::iterator it = _customCameraValues.begin(); it != _customCameraValues.end(); )
+    for(std::vector<StatValueInfo*>::iterator it = _customCameraValues.begin();
+            it != _customCameraValues.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customCameraValues.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customCameraValues.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
     if(statRemoved)
     {
-	refresh();
+        refresh();
     }
 }
 
@@ -2598,65 +2825,71 @@ void CVRStatsHandler::removeStatValueWithLine(std::string statName)
 {
     bool statRemoved = false;
 
-    for(std::vector<StatValueInfo*>::iterator it = _customViewerValues.begin(); it != _customViewerValues.end(); )
+    for(std::vector<StatValueInfo*>::iterator it = _customViewerValues.begin();
+            it != _customViewerValues.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customViewerValues.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customViewerValues.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatValueInfo*>::iterator it = _customCameraValues.begin(); it != _customCameraValues.end(); )
+    for(std::vector<StatValueInfo*>::iterator it = _customCameraValues.begin();
+            it != _customCameraValues.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customCameraValues.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customCameraValues.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customViewerValueLines.begin(); it != _customViewerValueLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it =
+            _customViewerValueLines.begin();
+            it != _customViewerValueLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customViewerValueLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customViewerValueLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customCameraValueLines.begin(); it != _customCameraValueLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it =
+            _customCameraValueLines.begin();
+            it != _customCameraValueLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customCameraValueLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customCameraValueLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
     if(statRemoved)
     {
-	refresh();
+        refresh();
     }
 }
 
@@ -2664,37 +2897,39 @@ void CVRStatsHandler::removeStatTimeBar(std::string statDurationName)
 {
     bool statRemoved = false;
 
-    for(std::vector<StatTimeBarInfo*>::iterator it = _customViewerTimeBars.begin(); it != _customViewerTimeBars.end(); )
+    for(std::vector<StatTimeBarInfo*>::iterator it =
+            _customViewerTimeBars.begin(); it != _customViewerTimeBars.end();)
     {
-	if((*it)->nameDuration == statDurationName)
-	{
-	    delete (*it);
-	    it = _customViewerTimeBars.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->nameDuration == statDurationName)
+        {
+            delete (*it);
+            it = _customViewerTimeBars.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatTimeBarInfo*>::iterator it = _customCameraTimeBars.begin(); it != _customCameraTimeBars.end(); )
+    for(std::vector<StatTimeBarInfo*>::iterator it =
+            _customCameraTimeBars.begin(); it != _customCameraTimeBars.end();)
     {
-	if((*it)->nameDuration == statDurationName)
-	{
-	    delete (*it);
-	    it = _customCameraTimeBars.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->nameDuration == statDurationName)
+        {
+            delete (*it);
+            it = _customCameraTimeBars.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
     if(statRemoved)
     {
-	refresh();
+        refresh();
     }
 }
 
@@ -2702,65 +2937,69 @@ void CVRStatsHandler::removeStatTimeBarWithLine(std::string statDurationName)
 {
     bool statRemoved = false;
 
-    for(std::vector<StatTimeBarInfo*>::iterator it = _customViewerTimeBars.begin(); it != _customViewerTimeBars.end(); )
+    for(std::vector<StatTimeBarInfo*>::iterator it =
+            _customViewerTimeBars.begin(); it != _customViewerTimeBars.end();)
     {
-	if((*it)->nameDuration == statDurationName)
-	{
-	    delete (*it);
-	    it = _customViewerTimeBars.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->nameDuration == statDurationName)
+        {
+            delete (*it);
+            it = _customViewerTimeBars.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatTimeBarInfo*>::iterator it = _customCameraTimeBars.begin(); it != _customCameraTimeBars.end(); )
+    for(std::vector<StatTimeBarInfo*>::iterator it =
+            _customCameraTimeBars.begin(); it != _customCameraTimeBars.end();)
     {
-	if((*it)->nameDuration == statDurationName)
-	{
-	    delete (*it);
-	    it = _customCameraTimeBars.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->nameDuration == statDurationName)
+        {
+            delete (*it);
+            it = _customCameraTimeBars.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customViewerLines.begin(); it != _customViewerLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it = _customViewerLines.begin();
+            it != _customViewerLines.end();)
     {
-	if((*it)->name == statDurationName)
-	{
-	    delete (*it);
-	    it = _customViewerLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statDurationName)
+        {
+            delete (*it);
+            it = _customViewerLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customCameraLines.begin(); it != _customCameraLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it = _customCameraLines.begin();
+            it != _customCameraLines.end();)
     {
-	if((*it)->name == statDurationName)
-	{
-	    delete (*it);
-	    it = _customCameraLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statDurationName)
+        {
+            delete (*it);
+            it = _customCameraLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
     if(statRemoved)
     {
-	refresh();
+        refresh();
     }
 }
 
@@ -2768,64 +3007,70 @@ void CVRStatsHandler::removeStatLine(std::string statName)
 {
     bool statRemoved = false;
 
-    for(std::vector<StatLineInfo*>::iterator it = _customViewerValueLines.begin(); it != _customViewerValueLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it =
+            _customViewerValueLines.begin();
+            it != _customViewerValueLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customViewerValueLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customViewerValueLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customCameraValueLines.begin(); it != _customCameraValueLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it =
+            _customCameraValueLines.begin();
+            it != _customCameraValueLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customCameraValueLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customCameraValueLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customViewerLines.begin(); it != _customViewerLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it = _customViewerLines.begin();
+            it != _customViewerLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customViewerLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customViewerLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
-    for(std::vector<StatLineInfo*>::iterator it = _customCameraLines.begin(); it != _customCameraLines.end(); )
+    for(std::vector<StatLineInfo*>::iterator it = _customCameraLines.begin();
+            it != _customCameraLines.end();)
     {
-	if((*it)->name == statName)
-	{
-	    delete (*it);
-	    it = _customCameraLines.erase(it);
-	    statRemoved = true;
-	}
-	else
-	{
-	    it++;
-	}
+        if((*it)->name == statName)
+        {
+            delete (*it);
+            it = _customCameraLines.erase(it);
+            statRemoved = true;
+        }
+        else
+        {
+            it++;
+        }
     }
 
     if(statRemoved)
     {
-	refresh();
+        refresh();
     }
 }

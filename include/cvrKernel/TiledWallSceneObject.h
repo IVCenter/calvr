@@ -9,8 +9,8 @@ namespace cvr
 class CVRKERNEL_EXPORT TiledWallSceneObject : public SceneObject
 {
     public:
-        TiledWallSceneObject(std::string name, bool navigation, bool movable, bool clip,
-                bool contextMenu, bool showBounds = false);
+        TiledWallSceneObject(std::string name, bool navigation, bool movable,
+                bool clip, bool contextMenu, bool showBounds = false);
         virtual ~TiledWallSceneObject();
 
         void setTiledWallMovement(bool b);

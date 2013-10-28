@@ -12,6 +12,8 @@
 #include <osg/Version>
 #include <osg/Matrix>
 
+#include <cfloat>
+
 using namespace cvr;
 using namespace osgUtil;
 using namespace osg;
@@ -29,6 +31,8 @@ ScreenMVCullVisitor::ScreenMVCullVisitor(const ScreenMVCullVisitor& cv) :
         CullVisitor(cv)
 {
     _cullingStatus = cv._cullingStatus;
+    _firstCullStatus = cv._firstCullStatus;
+    _skipCull = cv._skipCull;
 }
 
 // osgUtil::CullVisitor functions
@@ -45,7 +49,7 @@ inline CullVisitor::value_type distance(const osg::Vec3& coord,
                     * (CullVisitor::value_type)matrix(2,2) + matrix(3,2));
 }
 
-void ScreenMVCullVisitor::apply(Node& node)
+void ScreenMVCullVisitor::apply(osg::Node& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -77,7 +81,7 @@ void ScreenMVCullVisitor::apply(Node& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::apply(Geode& node)
+void ScreenMVCullVisitor::apply(osg::Geode& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -180,7 +184,7 @@ void ScreenMVCullVisitor::apply(Geode& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::apply(Billboard& node)
+void ScreenMVCullVisitor::apply(osg::Billboard& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -268,7 +272,7 @@ void ScreenMVCullVisitor::apply(Billboard& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::apply(LightSource& node)
+void ScreenMVCullVisitor::apply(osg::LightSource& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -297,7 +301,7 @@ void ScreenMVCullVisitor::apply(LightSource& node)
         popStateSet();
 }
 
-void ScreenMVCullVisitor::apply(ClipNode& node)
+void ScreenMVCullVisitor::apply(osg::ClipNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -327,7 +331,7 @@ void ScreenMVCullVisitor::apply(ClipNode& node)
         popStateSet();
 }
 
-void ScreenMVCullVisitor::apply(TexGenNode& node)
+void ScreenMVCullVisitor::apply(osg::TexGenNode& node)
 {
     // push the node's state.
     StateSet* node_state = node.getStateSet();
@@ -352,7 +356,7 @@ void ScreenMVCullVisitor::apply(TexGenNode& node)
         popStateSet();
 }
 
-void ScreenMVCullVisitor::apply(Group& node)
+void ScreenMVCullVisitor::apply(osg::Group& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -385,7 +389,7 @@ void ScreenMVCullVisitor::apply(Group& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::apply(Transform& node)
+void ScreenMVCullVisitor::apply(osg::Transform& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -405,7 +409,7 @@ void ScreenMVCullVisitor::apply(Transform& node)
     if(node_state)
         pushStateSet(node_state);
 
-    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(*getModelViewMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(*getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get(),node.getReferenceFrame());
 
@@ -424,7 +428,7 @@ void ScreenMVCullVisitor::apply(Transform& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::apply(Projection& node)
+void ScreenMVCullVisitor::apply(osg::Projection& node)
 {
 
     // push the culling mode.
@@ -446,7 +450,7 @@ void ScreenMVCullVisitor::apply(Projection& node)
     _computed_znear = FLT_MAX;
     _computed_zfar = -FLT_MAX;
 
-    ref_ptr < RefMatrix > matrix = createOrReuseMatrix(node.getMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(node.getMatrix());
     pushProjectionMatrix(matrix.get());
 
     //OSG_NOTIFY(osg::INFO)<<"Push projection "<<*matrix<<std::endl;
@@ -483,12 +487,12 @@ void ScreenMVCullVisitor::apply(Projection& node)
     popCurrentMask();
 }
 
-void ScreenMVCullVisitor::apply(Switch& node)
+void ScreenMVCullVisitor::apply(osg::Switch& node)
 {
     apply((Group&)node);
 }
 
-void ScreenMVCullVisitor::apply(LOD& node)
+void ScreenMVCullVisitor::apply(osg::LOD& node)
 {
     bool status = _cullingStatus;
     bool firstStatus = _firstCullStatus;
@@ -581,7 +585,7 @@ class RenderStageCache : public osg::Object
 
         OpenThreads::Mutex _mutex;
         RenderStageMap _renderStageMap;
-};
+    };
 
 }
 
@@ -712,12 +716,11 @@ void ScreenMVCullVisitor::apply(osg::Camera& camera)
             camera.setRenderingCache(rsCache.get());
         }
 
-        osg::ref_ptr < osgUtil::RenderStage > rtts = rsCache->getRenderStage(
-                this);
+        osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);
         if(!rtts)
         {
-            OpenThreads::ScopedLock < OpenThreads::Mutex
-                    > lock(*(camera.getDataChangeMutex()));
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(
+                    *(camera.getDataChangeMutex()));
 
             rtts = new osgUtil::RenderStage;
             rsCache->setRenderStage(this,rtts.get());
@@ -951,8 +954,8 @@ void ScreenMVCullVisitor::apply(osg::OcclusionQueryNode& node)
     _cullingStatus = status;
 }
 
-void ScreenMVCullVisitor::pushModelViewMatrix(RefMatrix* matrix,
-        Transform::ReferenceFrame referenceFrame)
+void ScreenMVCullVisitor::pushModelViewMatrix(osg::RefMatrix* matrix,
+        osg::Transform::ReferenceFrame referenceFrame)
 {
     //std::cerr << "Push Matrix" << std::endl;
     osg::RefMatrix* originalModelView =
@@ -1047,8 +1050,7 @@ void ScreenMVCullVisitor::popModelViewMatrix()
     _bbCornerNear = (~_bbCornerFar) & 7;
 }
 
-void ScreenMVCullVisitor::setFrustums(osg::Polytope & near,
-        osg::Polytope & far)
+void ScreenMVCullVisitor::setFrustums(osg::Polytope & near, osg::Polytope & far)
 {
     _nearFrustum = near;
     _farFrustum = far;

@@ -56,72 +56,73 @@ bool Navigation::init()
 
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {
-	NavImplementationBase * navbase = NULL;
-	switch(TrackingManager::instance()->getHandNavType(i))
-	{
-	    case MOUSE_NAV:
-	    {
-		navbase = new NavMouse();
-		break;
-	    }
-	    case MOUSEKEYBOARD_NAV:
-	    {
-		navbase = new NavMouseKeyboard();
-		break;
-	    }
-	    case POINTER_NAV:
-	    {
-		navbase = new NavPointer();
-		break;
-	    }
-	    case TRACKER_NAV:
-	    {
-		navbase = new NavTracker();
-		break;
-	    }
-	    case VALUATOR_NAV:
-	    {
-		navbase = new NavValuator();
-		break;
-	    }
-	    default:
-	    {
-		navbase = new NavImplementationBase();
-		break;
-	    }
-	}
-	navbase->_hand = i;
-	std::stringstream ss;
-	ss << "Input.Hand" << i << ".NavType";
-	navbase->init(ss.str());
-	_navImpMap[i] = navbase;
+        NavImplementationBase * navbase = NULL;
+        switch(TrackingManager::instance()->getHandNavType(i))
+        {
+            case MOUSE_NAV:
+            {
+                navbase = new NavMouse();
+                break;
+            }
+            case MOUSEKEYBOARD_NAV:
+            {
+                navbase = new NavMouseKeyboard();
+                break;
+            }
+            case POINTER_NAV:
+            {
+                navbase = new NavPointer();
+                break;
+            }
+            case TRACKER_NAV:
+            {
+                navbase = new NavTracker();
+                break;
+            }
+            case VALUATOR_NAV:
+            {
+                navbase = new NavValuator();
+                break;
+            }
+            default:
+            {
+                navbase = new NavImplementationBase();
+                break;
+            }
+        }
+        navbase->_hand = i;
+        std::stringstream ss;
+        ss << "Input.Hand" << i << ".NavType";
+        navbase->init(ss.str());
+        _navImpMap[i] = navbase;
     }
 
     bool found = true;
     int index = 0;
     while(found)
     {
-	std::stringstream ss;
-	ss << "Input.NavDevice" << index;
-	std::string type = ConfigManager::getEntry("value",ss.str(),"NONE",&found);
-	if(!found)
-	{
-	    continue;
-	}
+        std::stringstream ss;
+        ss << "Input.NavDevice" << index;
+        std::string type = ConfigManager::getEntry("value",ss.str(),"NONE",
+                &found);
+        if(!found)
+        {
+            continue;
+        }
 
-	NavDeviceBase * ndb = NULL;
+        NavDeviceBase * ndb = NULL;
 
-	//check type for valid device type
-	
-	if(ndb)
-	{
-	    if(ndb->init(ss.str()))
-	    {
-		_navDeviceList.push_back(ndb);
-	    }
-	}
+        //check type for valid device type
 
-	index++;
+        if(ndb)
+        {
+            if(ndb->init(ss.str()))
+            {
+                _navDeviceList.push_back(ndb);
+            }
+        }
+
+        index++;
     }
 
     _floorOffset = ConfigManager::getFloat("value","FloorOffset",1500);
@@ -149,7 +150,7 @@ NavMode Navigation::getButtonMode(int button)
 {
     if(_buttonMap.find(button) == _buttonMap.end())
     {
-	return NONE;
+        return NONE;
     }
 
     return _buttonMap[button];
@@ -187,12 +188,14 @@ void Navigation::update()
     stats = CVRViewer::instance()->getViewerStats();
     if(stats && !stats->collectStats("CalVRStatsAdvanced"))
     {
-	stats = NULL;
+        stats = NULL;
     }
 
     if(stats)
     {
-	startTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
+        startTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
     }
 
     if(_eventActive)
@@ -202,15 +205,23 @@ void Navigation::update()
 
     for(int i = 0; i < _navDeviceList.size(); i++)
     {
-	_navDeviceList[i]->update();
+        _navDeviceList[i]->update();
     }
 
     if(stats)
     {
-        endTime = osg::Timer::instance()->delta_s(CVRViewer::instance()->getStartTick(), osg::Timer::instance()->tick());
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation begin time", startTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation end time", endTime);
-        stats->setAttribute(CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(), "Navigation time taken", endTime-startTime);
+        endTime = osg::Timer::instance()->delta_s(
+                CVRViewer::instance()->getStartTick(),
+                osg::Timer::instance()->tick());
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Navigation begin time",startTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Navigation end time",endTime);
+        stats->setAttribute(
+                CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
+                "Navigation time taken",endTime - startTime);
     }
 }
 
@@ -220,37 +231,38 @@ void Navigation::processEvent(InteractionEvent * iEvent)
 
     if(event)
     {
-	if(_eventActive)
-	{
-	    if(event->getHand() == _activeHand)
-	    {
-		_navImpMap[_activeHand]->processEvent(event);
-	    }
-	}
-	else
-	{
-	    _navImpMap[event->getHand()]->processEvent(event);
-	}
+        if(_eventActive)
+        {
+            if(event->getHand() == _activeHand)
+            {
+                _navImpMap[_activeHand]->processEvent(event);
+            }
+        }
+        else
+        {
+            _navImpMap[event->getHand()]->processEvent(event);
+        }
         return;
     }
     else
     {
-	if(_eventActive)
-	{
-	    _navImpMap[_activeHand]->processEvent(iEvent);
-	}
-	else
-	{
-	    for(std::map<int,NavImplementationBase*>::iterator it = _navImpMap.begin(); it != _navImpMap.end(); it++)
-	    {
-		it->second->processEvent(iEvent);
-		if(_eventActive)
-		{
-		    break;
-		}
-	    }
-	}
-	return;
+        if(_eventActive)
+        {
+            _navImpMap[_activeHand]->processEvent(iEvent);
+        }
+        else
+        {
+            for(std::map<int,NavImplementationBase*>::iterator it =
+                    _navImpMap.begin(); it != _navImpMap.end(); it++)
+            {
+                it->second->processEvent(iEvent);
+                if(_eventActive)
+                {
+                    break;
+                }
+            }
+        }
+        return;
     }
 }
 
@@ -258,17 +270,18 @@ void NavMouse::processEvent(InteractionEvent * ie)
 {
     if(ie->asKeyboardEvent())
     {
-	//std::cerr << "Key event." << std::endl;
+        //std::cerr << "Key event." << std::endl;
     }
 
     MouseInteractionEvent * event = ie->asMouseEvent();
 
     if(!event)
     {
-	return;
+        return;
     }
 
-    if(event->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    if(event->getInteraction() == BUTTON_UP
+            && !Navigation::instance()->getEventActive())
     {
         return;
     }
@@ -299,14 +312,15 @@ void NavMouse::processEvent(InteractionEvent * ie)
                 //std::cerr << "Starting event." << std::endl;
                 _eventX = event->getX();
                 _eventY = event->getY();
-		Navigation::instance()->setEventActive(true,_hand);
+                Navigation::instance()->setEventActive(true,_hand);
                 break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_UP)
+    else if(Navigation::instance()->getEventActive()
+            && event->getInteraction() == BUTTON_UP)
     {
         processMouseNav(_eventMode,event);
         Navigation::instance()->setEventActive(false,_hand);
@@ -348,7 +362,10 @@ void NavMouse::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
             m.makeRotate(xOffset * fdur * 60.0 / 7000.0,osg::Vec3(0,0,1));
 
             osg::Matrix m2;
-            m2.makeTranslate(osg::Vec3(0,(-yOffset * fdur * 60.0 / 5.0) * Navigation::instance()->getScale(),0));
+            m2.makeTranslate(
+                    osg::Vec3(0,
+                            (-yOffset * fdur * 60.0 / 5.0)
+                                    * Navigation::instance()->getScale(),0));
 
             osg::Vec3 viewerPos =
                     TrackingManager::instance()->getHeadMat().getTrans();
@@ -538,10 +555,11 @@ void NavTracker::processEvent(InteractionEvent * ie)
 
     if(!event)
     {
-	return;
+        return;
     }
 
-    if(event->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    if(event->getInteraction() == BUTTON_UP
+            && !Navigation::instance()->getEventActive())
     {
         return;
     }
@@ -572,19 +590,21 @@ void NavTracker::processEvent(InteractionEvent * ie)
                 //std::cerr << "Starting event." << std::endl;
                 _eventPos = event->getTransform().getTrans();
                 _eventRot = event->getTransform().getRotate();
-		Navigation::instance()->setEventActive(true,_hand);
+                Navigation::instance()->setEventActive(true,_hand);
                 break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_UP)
+    else if(Navigation::instance()->getEventActive()
+            && event->getInteraction() == BUTTON_UP)
     {
         processNav(_eventMode,event->getTransform());
         Navigation::instance()->setEventActive(false,_hand);
     }
-    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_DRAG)
+    else if(Navigation::instance()->getEventActive()
+            && event->getInteraction() == BUTTON_DRAG)
     {
         processNav(_eventMode,event->getTransform());
     }
@@ -638,28 +658,35 @@ void NavTracker::processNav(NavMode nm, osg::Matrix & mat)
             m = objmat * osg::Matrix::translate(-origin) * turn * m;
             SceneManager::instance()->setObjectMatrix(m);
 
-	    if(Navigation::instance()->getSnapToGround())
-	    {
-		float thresh = 400;
-		if(fabs(mat.getTrans().z() - _eventPos.z()) < thresh)
-		{
-		    float range = 300;
-		    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
+            if(Navigation::instance()->getSnapToGround())
+            {
+                float thresh = 400;
+                if(fabs(mat.getTrans().z() - _eventPos.z()) < thresh)
+                {
+                    float range = 300;
+                    osg::Vec3 start(0,0,0),
+                            end(0,0,
+                                    -(Navigation::instance()->getFloorOffset()
+                                            + range));
 
-		    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
-		    if(isecvec.size())
-		    {
-			if(isecvec[0].point.z() < -Navigation::instance()->getFloorOffset() + range)
-			{
-			    float adjust = isecvec[0].point.z() + Navigation::instance()->getFloorOffset();
-			    osg::Matrix adjMat;
-			    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
-			    m = m * adjMat;
-			    SceneManager::instance()->setObjectMatrix(m);
-			}
-		    }
-		}
-	    }
+                    std::vector<IsectInfo> isecvec = getObjectIntersection(
+                            SceneManager::instance()->getScene(),start,end);
+                    if(isecvec.size())
+                    {
+                        if(isecvec[0].point.z()
+                                < -Navigation::instance()->getFloorOffset()
+                                        + range)
+                        {
+                            float adjust = isecvec[0].point.z()
+                                    + Navigation::instance()->getFloorOffset();
+                            osg::Matrix adjMat;
+                            adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
+                            m = m * adjMat;
+                            SceneManager::instance()->setObjectMatrix(m);
+                        }
+                    }
+                }
+            }
 
             break;
         }
@@ -734,10 +761,11 @@ void NavPointer::processEvent(InteractionEvent * ie)
 
     if(!event)
     {
-	return;
+        return;
     }
 
-    if(event->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    if(event->getInteraction() == BUTTON_UP
+            && !Navigation::instance()->getEventActive())
     {
         return;
     }
@@ -765,26 +793,30 @@ void NavPointer::processEvent(InteractionEvent * ie)
             case FLY:
             case SCALE:
                 //std::cerr << "Starting event." << std::endl;
-                SceneManager::instance()->getPointOnTiledWall(event->getTransform(),_eventPos);
+                SceneManager::instance()->getPointOnTiledWall(
+                        event->getTransform(),_eventPos);
                 _eventRot = event->getTransform().getRotate();
-		Navigation::instance()->setEventActive(true,_hand);
+                Navigation::instance()->setEventActive(true,_hand);
                 break;
-	    case MOVE_WORLD:
-		 SceneManager::instance()->getPointOnTiledWall(event->getTransform(),_eventPos);
+            case MOVE_WORLD:
+                SceneManager::instance()->getPointOnTiledWall(
+                        event->getTransform(),_eventPos);
                 _eventPos = getWallTrackballPoint(_eventPos);
-		Navigation::instance()->setEventActive(true,_hand);
-		break;
+                Navigation::instance()->setEventActive(true,_hand);
+                break;
             case NONE:
             default:
                 break;
         }
     }
-    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_UP)
+    else if(Navigation::instance()->getEventActive()
+            && event->getInteraction() == BUTTON_UP)
     {
         processNav(_eventMode,event->getTransform());
         Navigation::instance()->setEventActive(false,_hand);
     }
-    else if(Navigation::instance()->getEventActive() && event->getInteraction() == BUTTON_DRAG)
+    else if(Navigation::instance()->getEventActive()
+            && event->getInteraction() == BUTTON_DRAG)
     {
         processNav(_eventMode,event->getTransform());
     }
@@ -797,9 +829,10 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
         case WALK:
         case DRIVE:
         {
-	    osg::Vec3 pos, offset;
-	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
-            offset.y() = -(pos.z() - _eventPos.z()) * 50.0 / SceneManager::instance()->getTiledWallHeight();
+            osg::Vec3 pos, offset;
+            SceneManager::instance()->getPointOnTiledWall(mat,pos);
+            offset.y() = -(pos.z() - _eventPos.z()) * 50.0
+                    / SceneManager::instance()->getTiledWallHeight();
             offset = offset * Navigation::instance()->getScale();
             osg::Matrix m;
 
@@ -840,28 +873,35 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
             m = objmat * osg::Matrix::translate(-origin) * turn * m;
             SceneManager::instance()->setObjectMatrix(m);
 
-	    if(Navigation::instance()->getSnapToGround())
-	    {
-		float thresh = 400;
-		if(fabs(mat.getTrans().z() - _eventPos.z()) < thresh)
-		{
-		    float range = 300;
-		    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
+            if(Navigation::instance()->getSnapToGround())
+            {
+                float thresh = 400;
+                if(fabs(mat.getTrans().z() - _eventPos.z()) < thresh)
+                {
+                    float range = 300;
+                    osg::Vec3 start(0,0,0),
+                            end(0,0,
+                                    -(Navigation::instance()->getFloorOffset()
+                                            + range));
 
-		    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
-		    if(isecvec.size())
-		    {
-			if(isecvec[0].point.z() < -Navigation::instance()->getFloorOffset() + range)
-			{
-			    float adjust = isecvec[0].point.z() + Navigation::instance()->getFloorOffset();
-			    osg::Matrix adjMat;
-			    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
-			    m = m * adjMat;
-			    SceneManager::instance()->setObjectMatrix(m);
-			}
-		    }
-		}
-	    }
+                    std::vector<IsectInfo> isecvec = getObjectIntersection(
+                            SceneManager::instance()->getScene(),start,end);
+                    if(isecvec.size())
+                    {
+                        if(isecvec[0].point.z()
+                                < -Navigation::instance()->getFloorOffset()
+                                        + range)
+                        {
+                            float adjust = isecvec[0].point.z()
+                                    + Navigation::instance()->getFloorOffset();
+                            osg::Matrix adjMat;
+                            adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
+                            m = m * adjMat;
+                            SceneManager::instance()->setObjectMatrix(m);
+                        }
+                    }
+                }
+            }
 
             break;
         }
@@ -881,34 +921,35 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
             //posOffset = posOffset * Navigation::instance()->getScale();
             osg::Matrix objmat =
                     SceneManager::instance()->getObjectTransform()->getMatrix();
-            objmat = objmat * osg::Matrix::translate(-mat.getTrans()) * rotOffset
-                    * osg::Matrix::translate(mat.getTrans());
+            objmat = objmat * osg::Matrix::translate(-mat.getTrans())
+                    * rotOffset * osg::Matrix::translate(mat.getTrans());
             SceneManager::instance()->setObjectMatrix(objmat);
             break;
         }
         case MOVE_WORLD:
         {
-	    osg::Vec3 pos;
-	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
-	    osg::Vec3 tbPoint = getWallTrackballPoint(pos);
+            osg::Vec3 pos;
+            SceneManager::instance()->getPointOnTiledWall(mat,pos);
+            osg::Vec3 tbPoint = getWallTrackballPoint(pos);
 
-	    osg::Vec3 center = SceneManager::instance()->getTiledWallTransform().getTrans();
+            osg::Vec3 center =
+                    SceneManager::instance()->getTiledWallTransform().getTrans();
 
-	    osg::Matrix rotOffset;
-	    rotOffset.makeRotate(_eventPos,tbPoint);
+            osg::Matrix rotOffset;
+            rotOffset.makeRotate(_eventPos,tbPoint);
 
-	    osg::Matrix objmat =
+            osg::Matrix objmat =
                     SceneManager::instance()->getObjectTransform()->getMatrix();
             objmat = objmat * osg::Matrix::translate(-center) * rotOffset
                     * osg::Matrix::translate(center);
             SceneManager::instance()->setObjectMatrix(objmat);
-	    _eventPos = tbPoint;
+            _eventPos = tbPoint;
             break;
         }
         case SCALE:
         {
             osg::Vec3 pos;
-	    SceneManager::instance()->getPointOnTiledWall(mat,pos);
+            SceneManager::instance()->getPointOnTiledWall(mat,pos);
             float zdiff = pos.z() - _eventPos.z();
             zdiff = zdiff / 300.0;
             float newScale;
@@ -944,9 +985,11 @@ void NavPointer::processNav(NavMode nm, osg::Matrix & mat)
 
 osg::Vec3 NavPointer::getWallTrackballPoint(osg::Vec3 & wallPoint)
 {
-    float minDim = std::min(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
+    float minDim = std::min(SceneManager::instance()->getTiledWallWidth(),
+            SceneManager::instance()->getTiledWallHeight());
     minDim /= 2.0;
-    osg::Matrix wallInv = osg::Matrix::inverse(SceneManager::instance()->getTiledWallTransform());
+    osg::Matrix wallInv = osg::Matrix::inverse(
+            SceneManager::instance()->getTiledWallTransform());
     osg::Vec3 point = wallPoint * wallInv;
     point.x() /= minDim;
     point.y() = 0.0;
@@ -984,7 +1027,7 @@ void NavValuator::processEvent(InteractionEvent * ie)
     ValuatorInteractionEvent * vie = ie->asValuatorEvent();
     if(!vie || vie->getHand() != _hand)
     {
-	return;
+        return;
     }
 
     osg::Vec3 moveVec;
@@ -998,78 +1041,94 @@ void NavValuator::processEvent(InteractionEvent * ie)
 
     if(vie->getValuator() == _fbVal)
     {
-	moveVec.y() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _fbMult * moveMult;
-	move = true;
+        moveVec.y() = vie->getValue() * fabs(vie->getValue())
+                * Navigation::instance()->getScale() * _fbMult * moveMult;
+        move = true;
     }
     if(vie->getValuator() == _lrVal)
     {
-	moveVec.x() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _lrMult * moveMult;
-	move = true;
+        moveVec.x() = vie->getValue() * fabs(vie->getValue())
+                * Navigation::instance()->getScale() * _lrMult * moveMult;
+        move = true;
     }
     if(vie->getValuator() == _udVal)
     {
-	moveVec.z() = vie->getValue() * fabs(vie->getValue()) * Navigation::instance()->getScale() * _udMult * moveMult;
-	move = true;
+        moveVec.z() = vie->getValue() * fabs(vie->getValue())
+                * Navigation::instance()->getScale() * _udMult * moveMult;
+        move = true;
     }
 
     if(vie->getValuator() == _rollVal)
     {
-	float angle = vie->getValue() * fabs(vie->getValue()) * M_PI * _rollMult * rotMult;
-	osg::Matrix r;
-	r.makeRotate(angle,osg::Vec3(0,1,0));
-	rotation = rotation * r;
-	rotate = true;
+        float angle = vie->getValue() * fabs(vie->getValue()) * M_PI * _rollMult
+                * rotMult;
+        osg::Matrix r;
+        r.makeRotate(angle,osg::Vec3(0,1,0));
+        rotation = rotation * r;
+        rotate = true;
     }
     if(vie->getValuator() == _pitchVal)
     {
-	float angle = vie->getValue()* fabs(vie->getValue()) * M_PI * _pitchMult * rotMult;
-	osg::Matrix r;
-	r.makeRotate(angle,osg::Vec3(1,0,0));
-	rotation = rotation * r;
-	rotate = true;
+        float angle = vie->getValue() * fabs(vie->getValue()) * M_PI
+                * _pitchMult * rotMult;
+        osg::Matrix r;
+        r.makeRotate(angle,osg::Vec3(1,0,0));
+        rotation = rotation * r;
+        rotate = true;
     }
     if(vie->getValuator() == _headingVal)
     {
-	float angle = vie->getValue() * fabs(vie->getValue()) * M_PI * _headingMult * rotMult;
-	osg::Matrix r;
-	r.makeRotate(angle,osg::Vec3(0,0,1));
-	rotation = rotation * r;
-	rotate = true;
+        float angle = vie->getValue() * fabs(vie->getValue()) * M_PI
+                * _headingMult * rotMult;
+        osg::Matrix r;
+        r.makeRotate(angle,osg::Vec3(0,0,1));
+        rotation = rotation * r;
+        rotate = true;
     }
 
-    osg::Matrix objmat = SceneManager::instance()->getObjectTransform()->getMatrix();
+    osg::Matrix objmat =
+            SceneManager::instance()->getObjectTransform()->getMatrix();
 
     if(rotate)
     {
-	osg::Vec3 headPos = TrackingManager::instance()->getHeadMat(TrackingManager::instance()->getHeadForHand(vie->getHand())).getTrans();
-	//objmat = objmat * osg::Matrix::translate(-_rotationPoint) * rotation * osg::Matrix::translate(_rotationPoint);
-	objmat = objmat * osg::Matrix::translate(-headPos) * rotation * osg::Matrix::translate(headPos);
+        osg::Vec3 headPos =
+                TrackingManager::instance()->getHeadMat(
+                        TrackingManager::instance()->getHeadForHand(
+                                vie->getHand())).getTrans();
+        //objmat = objmat * osg::Matrix::translate(-_rotationPoint) * rotation * osg::Matrix::translate(_rotationPoint);
+        objmat = objmat * osg::Matrix::translate(-headPos) * rotation
+                * osg::Matrix::translate(headPos);
     }
     if(move)
     {
-	objmat = objmat * osg::Matrix::translate(-moveVec);
-	if(Navigation::instance()->getPrimaryButtonMode() == DRIVE && Navigation::instance()->getSnapToGround())
-	{
-	    float range = 300;
-	    osg::Vec3 start(0,0,0), end(0,0,-(Navigation::instance()->getFloorOffset()+range));
+        objmat = objmat * osg::Matrix::translate(-moveVec);
+        if(Navigation::instance()->getPrimaryButtonMode() == DRIVE
+                && Navigation::instance()->getSnapToGround())
+        {
+            float range = 300;
+            osg::Vec3 start(0,0,0), end(0,0,
+                    -(Navigation::instance()->getFloorOffset() + range));
 
-	    std::vector<IsectInfo> isecvec = getObjectIntersection(SceneManager::instance()->getScene(),start,end);
-	    if(isecvec.size())
-	    {
-		if(isecvec[0].point.z() < -Navigation::instance()->getFloorOffset() + range)
-		{
-		    float adjust = isecvec[0].point.z() + Navigation::instance()->getFloorOffset();
-		    osg::Matrix adjMat;
-		    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
-		    objmat = objmat * adjMat;
-		}
-	    }
-	}
+            std::vector<IsectInfo> isecvec = getObjectIntersection(
+                    SceneManager::instance()->getScene(),start,end);
+            if(isecvec.size())
+            {
+                if(isecvec[0].point.z()
+                        < -Navigation::instance()->getFloorOffset() + range)
+                {
+                    float adjust = isecvec[0].point.z()
+                            + Navigation::instance()->getFloorOffset();
+                    osg::Matrix adjMat;
+                    adjMat.makeTranslate(osg::Vec3(0,0,-adjust));
+                    objmat = objmat * adjMat;
+                }
+            }
+        }
     }
 
     if(rotate || move)
     {
-	SceneManager::instance()->setObjectMatrix(objmat);
+        SceneManager::instance()->setObjectMatrix(objmat);
     }
 }
 
@@ -1094,122 +1153,123 @@ void NavMouseKeyboard::processEvent(InteractionEvent * ie)
     KeyboardInteractionEvent * kie = ie->asKeyboardEvent();
     if(kie)
     {
-	//std::cerr << "Key: " << kie->getKey() << std::endl;
-	if(kie->getInteraction() == KEY_DOWN)
-	{
-	    switch((char)kie->getKey())
-	    {
-		case 'w':
-		case 23:
-		{
-		    _forwardDown = true;
-		    break;
-		}
-		case 'a':
-		case 1:
-		{
-		    _leftDown = true;
-		    break;
-		}
-		case 's':
-		case 19:
-		{
-		    _backDown = true;
-		    break;
-		}
-		case 'd':
-		case 4:
-		{
-		    _rightDown = true;
-		    break;
-		}
-		case 'e':
-		{
-		    _scaleUpDown = true;
-		    break;
-		}
-		case 'q':
-		{
-		    _scaleDownDown = true;
-		    break;
-		}
-		default:
-		{
-		    if(kie->getKey() == 65507)
-		    {
-			_ctrlDown = true;
-		    }
-		    break;
-		}
-	    }
-	}
-	else if(kie->getInteraction() == KEY_UP)
-	{
-	    switch((char)kie->getKey())
-	    {
-		case 'w':
-		case 23:
-		{
-		    _forwardDown = false;
-		    break;
-		}
-		case 'a':
-		case 1:
-		{
-		    _leftDown = false;
-		    break;
-		}
-		case 's':
-		case 19:
-		{
-		    _backDown = false;
-		    break;
-		}
-		case 'd':
-		case 4:
-		{
-		    _rightDown = false;
-		    break;
-		}
-		case 'e':
-		{
-		    _scaleUpDown = false;
-		    break;
-		}
-		case 'q':
-		{
-		    _scaleDownDown = false;
-		    break;
-		}
-		default:
-		    if(kie->getKey() == 65507)
-		    {
-			_ctrlDown = false;
-		    }
-		    break;
-	    }
-	}
-	if(_forwardDown || _backDown || _leftDown || _rightDown || _scaleUpDown || _scaleDownDown)
-	{
-	    if(!Navigation::instance()->getEventActive())
-	    {
-		Navigation::instance()->setEventActive(true,_hand);
-	    }
-	}
-	else
-	{
-	    if(Navigation::instance()->getEventActive() && !_mouseMove)
-	    {
-		Navigation::instance()->setEventActive(false,_hand);
-	    }
-	}
-	return;
+        //std::cerr << "Key: " << kie->getKey() << std::endl;
+        if(kie->getInteraction() == KEY_DOWN)
+        {
+            switch((char)kie->getKey())
+            {
+                case 'w':
+                case 23:
+                {
+                    _forwardDown = true;
+                    break;
+                }
+                case 'a':
+                case 1:
+                {
+                    _leftDown = true;
+                    break;
+                }
+                case 's':
+                case 19:
+                {
+                    _backDown = true;
+                    break;
+                }
+                case 'd':
+                case 4:
+                {
+                    _rightDown = true;
+                    break;
+                }
+                case 'e':
+                {
+                    _scaleUpDown = true;
+                    break;
+                }
+                case 'q':
+                {
+                    _scaleDownDown = true;
+                    break;
+                }
+                default:
+                {
+                    if(kie->getKey() == 65507)
+                    {
+                        _ctrlDown = true;
+                    }
+                    break;
+                }
+            }
+        }
+        else if(kie->getInteraction() == KEY_UP)
+        {
+            switch((char)kie->getKey())
+            {
+                case 'w':
+                case 23:
+                {
+                    _forwardDown = false;
+                    break;
+                }
+                case 'a':
+                case 1:
+                {
+                    _leftDown = false;
+                    break;
+                }
+                case 's':
+                case 19:
+                {
+                    _backDown = false;
+                    break;
+                }
+                case 'd':
+                case 4:
+                {
+                    _rightDown = false;
+                    break;
+                }
+                case 'e':
+                {
+                    _scaleUpDown = false;
+                    break;
+                }
+                case 'q':
+                {
+                    _scaleDownDown = false;
+                    break;
+                }
+                default:
+                    if(kie->getKey() == 65507)
+                    {
+                        _ctrlDown = false;
+                    }
+                    break;
+            }
+        }
+        if(_forwardDown || _backDown || _leftDown || _rightDown || _scaleUpDown
+                || _scaleDownDown)
+        {
+            if(!Navigation::instance()->getEventActive())
+            {
+                Navigation::instance()->setEventActive(true,_hand);
+            }
+        }
+        else
+        {
+            if(Navigation::instance()->getEventActive() && !_mouseMove)
+            {
+                Navigation::instance()->setEventActive(false,_hand);
+            }
+        }
+        return;
     }
 
     MouseInteractionEvent * mie = ie->asMouseEvent();
     if(mie)
     {
-	mouseMove(mie);
+        mouseMove(mie);
     }
 }
 
@@ -1217,107 +1277,115 @@ void NavMouseKeyboard::update()
 {
     if(_forwardDown || _backDown || _leftDown || _rightDown)
     {
-	double distance = CVRViewer::instance()->getLastFrameDuration() * 2000.0 * Navigation::instance()->getScale();
-	osg::Vec3d dir(0,0,0);
-	if(!_ctrlDown)
-	{
-	    if(_forwardDown)
-	    {
-		dir = osg::Vec3d(0,1.0,0);
-	    }
-	    if(_backDown)
-	    {
-		dir = dir + osg::Vec3d(0,-1.0,0);
-	    }
-	    if(_leftDown)
-	    {
-		dir = dir + osg::Vec3d(-1.0,0,0);
-	    }
-	    if(_rightDown)
-	    {
-		dir = dir + osg::Vec3d(1.0,0,0);
-	    }
-	    dir.normalize();
-	    if(dir.length() < 0.9)
-	    {
-		return;
-	    }
-	    dir = dir * distance;
-	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(-dir);
-	    PluginHelper::setObjectMatrix(objXform);
-	}
-	else
-	{
-	    double rotation = 0;
-	    double roffset = CVRViewer::instance()->getLastFrameDuration() * M_PI / 6;
-	    if(_leftDown)
-	    {
-		rotation = roffset;
-	    }
-	    if(_rightDown)
-	    {
-		rotation += -roffset;
-	    }
-	    if(_forwardDown)
-	    {
-		dir = osg::Vec3d(0,0,-1.0);
-	    }
-	    if(_backDown)
-	    {
-		dir = dir + osg::Vec3d(0,0,1.0);
-	    }
-	    osg::Matrix trans;
-	    osg::Matrix rot;
-	    dir.normalize();
-	    if(dir.length() > 0.9)
-	    {
-		dir = dir * distance;
-		trans.makeTranslate(dir);
-	    }
-	    if(rotation)
-	    {
-		rot.makeRotate(rotation,osg::Vec3d(0,1.0,0));
-	    }
-	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * rot * trans;
-	    PluginHelper::setObjectMatrix(objXform);
-	}
+        double distance = CVRViewer::instance()->getLastFrameDuration() * 2000.0
+                * Navigation::instance()->getScale();
+        osg::Vec3d dir(0,0,0);
+        if(!_ctrlDown)
+        {
+            if(_forwardDown)
+            {
+                dir = osg::Vec3d(0,1.0,0);
+            }
+            if(_backDown)
+            {
+                dir = dir + osg::Vec3d(0,-1.0,0);
+            }
+            if(_leftDown)
+            {
+                dir = dir + osg::Vec3d(-1.0,0,0);
+            }
+            if(_rightDown)
+            {
+                dir = dir + osg::Vec3d(1.0,0,0);
+            }
+            dir.normalize();
+            if(dir.length() < 0.9)
+            {
+                return;
+            }
+            dir = dir * distance;
+            osg::Matrix objXform = PluginHelper::getObjectMatrix()
+                    * osg::Matrix::translate(-dir);
+            PluginHelper::setObjectMatrix(objXform);
+        }
+        else
+        {
+            double rotation = 0;
+            double roffset = CVRViewer::instance()->getLastFrameDuration()
+                    * M_PI / 6;
+            if(_leftDown)
+            {
+                rotation = roffset;
+            }
+            if(_rightDown)
+            {
+                rotation += -roffset;
+            }
+            if(_forwardDown)
+            {
+                dir = osg::Vec3d(0,0,-1.0);
+            }
+            if(_backDown)
+            {
+                dir = dir + osg::Vec3d(0,0,1.0);
+            }
+            osg::Matrix trans;
+            osg::Matrix rot;
+            dir.normalize();
+            if(dir.length() > 0.9)
+            {
+                dir = dir * distance;
+                trans.makeTranslate(dir);
+            }
+            if(rotation)
+            {
+                rot.makeRotate(rotation,osg::Vec3d(0,1.0,0));
+            }
+            osg::Matrix objXform = PluginHelper::getObjectMatrix() * rot
+                    * trans;
+            PluginHelper::setObjectMatrix(objXform);
+        }
     }
     if(_scaleDownDown || _scaleUpDown)
     {
-	float base = 2.0;
-	float currentLScale = log(PluginHelper::getObjectScale()) / log(base);
-	float scalediff = 0.0;
-	float scaleChange = 1.0 * CVRViewer::instance()->getLastFrameDuration();
-	if(_scaleDownDown)
-	{
-	    scalediff -= scaleChange; 
-	}
-	if(_scaleUpDown)
-	{
-	    scalediff += scaleChange;
-	}
-	if(!_scaleDownDown || !_scaleUpDown)
-	{
-	    float newScale = pow(base, currentLScale+scalediff);
-	    osg::Vec3d headpoint = TrackingManager::instance()->getHeadMat().getTrans();
-	    osg::Vec3d headobjpoint = headpoint * PluginHelper::getWorldToObjectTransform();
-	    PluginHelper::setObjectScale(newScale);
-	    osg::Vec3d newheadpoint = headobjpoint * PluginHelper::getObjectToWorldTransform();
-	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(headpoint - newheadpoint);
-	    PluginHelper::setObjectMatrix(objXform);
-	}
+        float base = 2.0;
+        float currentLScale = log(PluginHelper::getObjectScale()) / log(base);
+        float scalediff = 0.0;
+        float scaleChange = 1.0 * CVRViewer::instance()->getLastFrameDuration();
+        if(_scaleDownDown)
+        {
+            scalediff -= scaleChange;
+        }
+        if(_scaleUpDown)
+        {
+            scalediff += scaleChange;
+        }
+        if(!_scaleDownDown || !_scaleUpDown)
+        {
+            float newScale = pow(base,currentLScale + scalediff);
+            osg::Vec3d headpoint =
+                    TrackingManager::instance()->getHeadMat().getTrans();
+            osg::Vec3d headobjpoint = headpoint
+                    * PluginHelper::getWorldToObjectTransform();
+            PluginHelper::setObjectScale(newScale);
+            osg::Vec3d newheadpoint = headobjpoint
+                    * PluginHelper::getObjectToWorldTransform();
+            osg::Matrix objXform = PluginHelper::getObjectMatrix()
+                    * osg::Matrix::translate(headpoint - newheadpoint);
+            PluginHelper::setObjectMatrix(objXform);
+        }
     }
 }
 
 void NavMouseKeyboard::mouseMove(MouseInteractionEvent * mie)
 {
-    if(mie->getInteraction() == BUTTON_UP && !Navigation::instance()->getEventActive())
+    if(mie->getInteraction() == BUTTON_UP
+            && !Navigation::instance()->getEventActive())
     {
         return;
     }
 
-    if(Navigation::instance()->getEventActive()
-            && mie->getButton())
+    if(Navigation::instance()->getEventActive() && mie->getButton())
     {
         return;
     }
@@ -1326,43 +1394,50 @@ void NavMouseKeyboard::mouseMove(MouseInteractionEvent * mie)
             && (mie->getInteraction() == BUTTON_DOWN
                     || mie->getInteraction() == BUTTON_DOUBLE_CLICK))
     {
-	if(_ctrlDown)
-	{
-	    osg::Vec3d dir(0,1.0,0);
-	    dir = dir * mie->getTransform();
-	    dir = dir - mie->getTransform().getTrans();
-	    dir.normalize();
-	    _lastDir = dir;
-	    _lastScreenNum = mie->getMasterScreenNum();
-	    _mouseMove = true;
-	    Navigation::instance()->setEventActive(true,_hand);
-	}
+        if(_ctrlDown)
+        {
+            osg::Vec3d dir(0,1.0,0);
+            dir = dir * mie->getTransform();
+            dir = dir - mie->getTransform().getTrans();
+            dir.normalize();
+            _lastDir = dir;
+            _lastScreenNum = mie->getMasterScreenNum();
+            _mouseMove = true;
+            Navigation::instance()->setEventActive(true,_hand);
+        }
     }
-    else if(Navigation::instance()->getEventActive() && !mie->getButton() && _mouseMove && (mie->getInteraction() == BUTTON_UP || mie->getInteraction() == BUTTON_DRAG))
+    else if(Navigation::instance()->getEventActive() && !mie->getButton()
+            && _mouseMove
+            && (mie->getInteraction() == BUTTON_UP
+                    || mie->getInteraction() == BUTTON_DRAG))
     {
-	osg::Vec3d dir(0,1.0,0);
-	dir = dir * mie->getTransform();
-	dir = dir - mie->getTransform().getTrans();
-	dir.normalize();
-	if(mie->getMasterScreenNum() != _lastScreenNum)
-	{
-	    _lastDir = dir;
-	    _lastScreenNum = mie->getMasterScreenNum();
-	}
-	else
-	{
-	    //TODO add head hand mapping
-	    osg::Vec3d headpoint = TrackingManager::instance()->getHeadMat().getTrans();
+        osg::Vec3d dir(0,1.0,0);
+        dir = dir * mie->getTransform();
+        dir = dir - mie->getTransform().getTrans();
+        dir.normalize();
+        if(mie->getMasterScreenNum() != _lastScreenNum)
+        {
+            _lastDir = dir;
+            _lastScreenNum = mie->getMasterScreenNum();
+        }
+        else
+        {
+            //TODO add head hand mapping
+            osg::Vec3d headpoint =
+                    TrackingManager::instance()->getHeadMat().getTrans();
 
-	    osg::Matrix objXform = PluginHelper::getObjectMatrix() * osg::Matrix::translate(-headpoint) * osg::Matrix::rotate(_lastDir,dir) * osg::Matrix::translate(headpoint);
-	    PluginHelper::setObjectMatrix(objXform);
-	    _lastDir = dir;
-	}
+            osg::Matrix objXform = PluginHelper::getObjectMatrix()
+                    * osg::Matrix::translate(-headpoint)
+                    * osg::Matrix::rotate(_lastDir,dir)
+                    * osg::Matrix::translate(headpoint);
+            PluginHelper::setObjectMatrix(objXform);
+            _lastDir = dir;
+        }
 
-	if(mie->getInteraction() == BUTTON_UP)
-	{
-	    _mouseMove = false;
-	    Navigation::instance()->setEventActive(false,_hand);
-	}
+        if(mie->getInteraction() == BUTTON_UP)
+        {
+            _mouseMove = false;
+            Navigation::instance()->setEventActive(false,_hand);
+        }
     }
 }

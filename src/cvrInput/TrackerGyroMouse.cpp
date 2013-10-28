@@ -30,9 +30,10 @@ struct cvr::TrackerGyroMouse::DeviceInfo
         vrpn_Analog_Remote *ana;
 };
 
-void VRPN_CALLBACK handleBodyInfoGM (void *userdata, const vrpn_TRACKERCB t)
+void VRPN_CALLBACK handleBodyInfoGM(void *userdata, const vrpn_TRACKERCB t)
 {
-    std::vector<TrackerBase::TrackedBody *> * tbList = (std::vector<TrackerBase::TrackedBody *> *) userdata;
+    std::vector<TrackerBase::TrackedBody *> * tbList = (std::vector<
+            TrackerBase::TrackedBody *> *)userdata;
 
     if(t.sensor >= tbList->size())
     {
@@ -52,11 +53,13 @@ void VRPN_CALLBACK handleBodyInfoGM (void *userdata, const vrpn_TRACKERCB t)
 
     if(bodyDebugGM && debugStationGM == t.sensor)
     {
-        std::cerr << "Tracker station " << t.sensor << ": x: " << tb->x << " y: " << tb->y << " z: " << tb->z << "Quat: " << tb->qx << " " << tb->qy << " " << tb->qz << " " << tb->qw << std::endl;
+        std::cerr << "Tracker station " << t.sensor << ": x: " << tb->x
+                << " y: " << tb->y << " z: " << tb->z << "Quat: " << tb->qx
+                << " " << tb->qy << " " << tb->qz << " " << tb->qw << std::endl;
     }
 }
 
-void VRPN_CALLBACK handleButtonGM (void *userdata, const vrpn_BUTTONCB b)
+void VRPN_CALLBACK handleButtonGM(void *userdata, const vrpn_BUTTONCB b)
 {
     //const char *name = (const char *)userdata;
 
@@ -83,7 +86,7 @@ void VRPN_CALLBACK handleButtonGM (void *userdata, const vrpn_BUTTONCB b)
     }
 }
 
-void VRPN_CALLBACK handleAnalogGM (void *userdata, const vrpn_ANALOGCB a)
+void VRPN_CALLBACK handleAnalogGM(void *userdata, const vrpn_ANALOGCB a)
 {
     /*int i;
      const char *name = (const char *)userdata;
@@ -96,18 +99,19 @@ void VRPN_CALLBACK handleAnalogGM (void *userdata, const vrpn_ANALOGCB a)
 
     std::vector<float> * valList = (std::vector<float> *)userdata;
 #ifndef WIN32
-	int numVal = std::min((size_t)a.num_channel, valList->size());
+    int numVal = std::min((size_t)a.num_channel,valList->size());
 #else
-	int numVal = min((size_t)a.num_channel, valList->size());
+    int numVal = min((size_t)a.num_channel, valList->size());
 #endif
-    for (int i = 0; i < numVal; i++)
+    for(int i = 0; i < numVal; i++)
     {
         valList->at(i) = a.channel[i];
     }
 
     if(buttonDebugGM)
     {
-        std::cerr << "Valuator " << a.num_channel << ": " << a.channel[a.num_channel] << std::endl;
+        std::cerr << "Valuator " << a.num_channel << ": "
+                << a.channel[a.num_channel] << std::endl;
     }
 }
 
@@ -131,7 +135,7 @@ TrackerGyroMouse::TrackerGyroMouse()
         buttonDebugGM = ConfigManager::getBool("button","Input.TrackingDebug",
                 false,NULL);
         bodyDebugGM = ConfigManager::getBool("body","Input.TrackingDebug",false,
-                NULL);
+        NULL);
         if(bodyDebugGM)
         {
             debugStationGM = ConfigManager::getInt("station",
@@ -184,7 +188,8 @@ bool TrackerGyroMouse::init(std::string tag)
 
     _numBodies = 1;
     _numButtons = 3;
-    _withWheel = ConfigManager::getBool("value",tag + ".GyroMouse.WithWheel",false);
+    _withWheel = ConfigManager::getBool("value",tag + ".GyroMouse.WithWheel",
+            false);
     _numVal = _withWheel ? 3 : 2;
 
     _device->name = ConfigManager::getEntry(tag + ".GyroMouse.Server");
@@ -208,13 +213,13 @@ bool TrackerGyroMouse::init(std::string tag)
     {
         TrackedBody * tb = new TrackedBody;
         tb->x = tb->y = tb->z = 0.0;
-	osg::Quat q;
-	tb->qx = q.x();
-	tb->qy = q.y();
-	tb->qz = q.z();
-	tb->qw = q.w();
+        osg::Quat q;
+        tb->qx = q.x();
+        tb->qy = q.y();
+        tb->qz = q.z();
+        tb->qw = q.w();
         _bodyList.push_back(tb);
-	_matList.push_back(osg::Matrix());
+        _matList.push_back(osg::Matrix());
     }
 
     _device->btn = new vrpn_Button_Remote(_device->name.c_str());
@@ -232,7 +237,7 @@ bool TrackerGyroMouse::init(std::string tag)
     for(int i = 0; i < _numVal; i++)
     {
         _valList.push_back(0);
-	_lastValList.push_back(0);
+        _lastValList.push_back(0);
     }
 
     return true;
@@ -278,62 +283,65 @@ int TrackerGyroMouse::getNumButtons()
     return _numButtons;
 }
 
-void TrackerGyroMouse::update(std::map<int,std::list<InteractionEvent*> > & eventMap)
+void TrackerGyroMouse::update(
+        std::map<int,std::list<InteractionEvent*> > & eventMap)
 {
     float useSensitivity = 1.0;
     if(_sensitivity < 0.0 && SceneManager::instance()->getTiledWallValid())
     {
 #ifndef WIN32
-	float maxDem = std::max(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
+        float maxDem = std::max(SceneManager::instance()->getTiledWallWidth(),
+                SceneManager::instance()->getTiledWallHeight());
 #else
-		float maxDem = max(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
+        float maxDem = max(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
 #endif
-	if(maxDem > 0.0)
-	{
-	    _sensitivity = 2000.0 / maxDem;
-	    //std::cerr << "MaxDem: " << maxDem << " sen: " << _sensitivity << std::endl;
-	}
-	else
-	{
-	    _sensitivity = 1.0;
-	}
-	useSensitivity = _sensitivity;
+        if(maxDem > 0.0)
+        {
+            _sensitivity = 2000.0 / maxDem;
+            //std::cerr << "MaxDem: " << maxDem << " sen: " << _sensitivity << std::endl;
+        }
+        else
+        {
+            _sensitivity = 1.0;
+        }
+        useSensitivity = _sensitivity;
     }
     else if(_sensitivity > 0.0)
     {
-	useSensitivity = _sensitivity;
+        useSensitivity = _sensitivity;
     }
 
     if(_hand < 0)
     {
-	int mySystem = -1;
-	for(int i = 0; i < TrackingManager::instance()->getNumTrackingSystems(); i++)
-	{
-	    if(TrackingManager::instance()->getTrackingSystem(i) == this)
-	    {
-		mySystem = i;
-		break;
-	    }
-	}
+        int mySystem = -1;
+        for(int i = 0; i < TrackingManager::instance()->getNumTrackingSystems();
+                i++)
+        {
+            if(TrackingManager::instance()->getTrackingSystem(i) == this)
+            {
+                mySystem = i;
+                break;
+            }
+        }
 
-	if(mySystem < 0)
-	{
-	    // should never happen
-	    return;
-	}
+        if(mySystem < 0)
+        {
+            // should never happen
+            return;
+        }
 
-	for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
-	{
-	    int system, body;
-	    TrackingManager::instance()->getHandAddress(i,system,body);
-	    if(system == mySystem && body == 0)
-	    {
-		_hand = i;
-		break;
-	    }
-	}
+        for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
+        {
+            int system, body;
+            TrackingManager::instance()->getHandAddress(i,system,body);
+            if(system == mySystem && body == 0)
+            {
+                _hand = i;
+                break;
+            }
+        }
     }
-    
+
     if(_device)
     {
         if(_device->btn)
@@ -364,121 +372,127 @@ void TrackerGyroMouse::update(std::map<int,std::list<InteractionEvent*> > & even
     if(xoffset != 0.0)
     {
 #ifndef WIN32
-	xoffset = std::max(xoffset,-maxv);
-	xoffset = std::min(xoffset,maxv);
+        xoffset = std::max(xoffset,-maxv);
+        xoffset = std::min(xoffset,maxv);
 #else
-		xoffset = max(xoffset,-maxv);
-	    xoffset = min(xoffset,maxv);
+        xoffset = max(xoffset,-maxv);
+        xoffset = min(xoffset,maxv);
 #endif
 
-	xoffset /= maxv;
-	//xchange = log(fabs(xoffset)+1.0)/factor;
-	xchange = xoffset / factor;
-	/*if(xoffset < 0)
-	{
-	    xchange = -xchange;
-	}*/
-	_posX += xchange * useSensitivity;
-	posChanged = true;
+        xoffset /= maxv;
+        //xchange = log(fabs(xoffset)+1.0)/factor;
+        xchange = xoffset / factor;
+        /*if(xoffset < 0)
+         {
+         xchange = -xchange;
+         }*/
+        _posX += xchange * useSensitivity;
+        posChanged = true;
     }
 
     if(yoffset != 0.0)
     {
 #ifndef WIN32
-	yoffset = std::max(yoffset,-maxv);
-	yoffset = std::min(yoffset,maxv);
+        yoffset = std::max(yoffset,-maxv);
+        yoffset = std::min(yoffset,maxv);
 #else
-		yoffset = max(yoffset,-maxv);
-	    yoffset = min(yoffset,maxv);
+        yoffset = max(yoffset,-maxv);
+        yoffset = min(yoffset,maxv);
 #endif
 
-	yoffset /= maxv;
+        yoffset /= maxv;
 
-	float wallRatio = SceneManager::instance()->getTiledWallHeight() / SceneManager::instance()->getTiledWallWidth();
-	yoffset /= wallRatio;
+        float wallRatio = SceneManager::instance()->getTiledWallHeight()
+                / SceneManager::instance()->getTiledWallWidth();
+        yoffset /= wallRatio;
 
-	//ychange = log(fabs(yoffset)+1.0)/factor;
-	ychange = yoffset / factor;
-	/*if(yoffset < 0)
-	{
-	    ychange = -ychange;
-	}*/
-	_posY += ychange * useSensitivity;
-	posChanged = true;
+        //ychange = log(fabs(yoffset)+1.0)/factor;
+        ychange = yoffset / factor;
+        /*if(yoffset < 0)
+         {
+         ychange = -ychange;
+         }*/
+        _posY += ychange * useSensitivity;
+        posChanged = true;
     }
 
-    if(_hand >= 0 && !TrackingManager::instance()->getHandButtonMask(_hand) && (_posX < 0.0 || _posX > 1.0 || _posY < 0.0 || _posY > 1.0))
+    if(_hand >= 0 && !TrackingManager::instance()->getHandButtonMask(_hand)
+            && (_posX < 0.0 || _posX > 1.0 || _posY < 0.0 || _posY > 1.0))
     {
 #ifndef WIN32
-	_posY = std::max(_posY,0.0f);
-	_posY = std::min(_posY,1.0f);
-	_posX = std::max(_posX,0.0f);
-	_posX = std::min(_posX,1.0f);
+        _posY = std::max(_posY,0.0f);
+        _posY = std::min(_posY,1.0f);
+        _posX = std::max(_posX,0.0f);
+        _posX = std::min(_posX,1.0f);
 #else
-		_posY = max(_posY,0.0f);
-	    _posY = min(_posY,1.0f);
-	    _posX = max(_posX,0.0f);
-	    _posX = min(_posX,1.0f);
+        _posY = max(_posY,0.0f);
+        _posY = min(_posY,1.0f);
+        _posX = max(_posX,0.0f);
+        _posX = min(_posX,1.0f);
 #endif
-	posChanged = true;
+        posChanged = true;
     }
 
     if(posChanged)
     {
-	//update matrix
-	//std::cerr << "Pos X: " << _posX << " Y: " << _posY << std::endl;
+        //update matrix
+        //std::cerr << "Pos X: " << _posX << " Y: " << _posY << std::endl;
 
-	// is this always right?
-	osg::Vec3 camPos = TrackingManager::instance()->getHeadMat(0).getTrans();
-	osg::Vec3 wallPos((_posX - 0.5)*SceneManager::instance()->getTiledWallWidth(),0,(-_posY + 0.5)*SceneManager::instance()->getTiledWallHeight());
-	wallPos = wallPos * SceneManager::instance()->getTiledWallTransform();
-	osg::Vec3 dir = wallPos - camPos;
-	dir.normalize();
-	osg::Quat q;
-	q.makeRotate(osg::Vec3(0,1.0,0),dir);
-	_bodyList[0]->x = camPos.x();
-	_bodyList[0]->y = camPos.y();
-	_bodyList[0]->z = camPos.z();
-	_bodyList[0]->qx = q.x();
-	_bodyList[0]->qy = q.y();
-	_bodyList[0]->qz = q.z();
-	_bodyList[0]->qw = q.w();
+        // is this always right?
+        osg::Vec3 camPos =
+                TrackingManager::instance()->getHeadMat(0).getTrans();
+        osg::Vec3 wallPos(
+                (_posX - 0.5) * SceneManager::instance()->getTiledWallWidth(),0,
+                (-_posY + 0.5)
+                        * SceneManager::instance()->getTiledWallHeight());
+        wallPos = wallPos * SceneManager::instance()->getTiledWallTransform();
+        osg::Vec3 dir = wallPos - camPos;
+        dir.normalize();
+        osg::Quat q;
+        q.makeRotate(osg::Vec3(0,1.0,0),dir);
+        _bodyList[0]->x = camPos.x();
+        _bodyList[0]->y = camPos.y();
+        _bodyList[0]->z = camPos.z();
+        _bodyList[0]->qx = q.x();
+        _bodyList[0]->qy = q.y();
+        _bodyList[0]->qz = q.z();
+        _bodyList[0]->qw = q.w();
     }
 
     /*osg::Matrix m;
-    osg::Vec3 pos;
-    osg::Quat rot;
-    pos.x() = _bodyList[0]->x;
-    pos.y() = _bodyList[0]->y;
-    pos.z() = _bodyList[0]->z;
-    rot.x() = _bodyList[0]->qx;
-    rot.y() = _bodyList[0]->qy;
-    rot.z() = _bodyList[0]->qz;
-    rot.w() = _bodyList[0]->qw;
+     osg::Vec3 pos;
+     osg::Quat rot;
+     pos.x() = _bodyList[0]->x;
+     pos.y() = _bodyList[0]->y;
+     pos.z() = _bodyList[0]->z;
+     rot.x() = _bodyList[0]->qx;
+     rot.y() = _bodyList[0]->qy;
+     rot.z() = _bodyList[0]->qz;
+     rot.w() = _bodyList[0]->qw;
 
-    m.makeRotate(rot);
-    m.setTrans(pos);
+     m.makeRotate(rot);
+     m.setTrans(pos);
 
-    // generate button events;
-    unsigned int mask = 1;
-    for(int i = 0; i < _numButtons; i++)
-    {
-	if((_buttonMask & mask) != (_lastButtonMask & mask))
-	{
-	    if(_buttonMask & mask)
-	    {
-		std::cerr << "Button " << i << " down" << std::endl;
-		//button down
-	    }
-	    else
-	    {
-		std::cerr << "Button " << i << " up" << std::endl;
-		//button up
-	    }
-	}
-	mask = mask << 1;
-    }
-    _lastButtonMask = _buttonMask;*/
+     // generate button events;
+     unsigned int mask = 1;
+     for(int i = 0; i < _numButtons; i++)
+     {
+     if((_buttonMask & mask) != (_lastButtonMask & mask))
+     {
+     if(_buttonMask & mask)
+     {
+     std::cerr << "Button " << i << " down" << std::endl;
+     //button down
+     }
+     else
+     {
+     std::cerr << "Button " << i << " up" << std::endl;
+     //button up
+     }
+     }
+     mask = mask << 1;
+     }
+     _lastButtonMask = _buttonMask;*/
 }
 
 TrackedButtonInteractionEvent * TrackerGyroMouse::getNewBaseEvent(int body)

@@ -274,21 +274,27 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-		if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(mrv->getCallback())
-		    {
-			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(mrv->getCallback())
+                    {
+                        mrv->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
             }
-	    else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             _lastMouseY = y;
             _lastMouseX = x;
@@ -301,43 +307,45 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
         if(event->getInteraction() == BUTTON_DOWN
                 || event->getInteraction() == BUTTON_DOUBLE_CLICK)
         {
-	    if(event->asPointerEvent())
-	    {
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),_point);
-	    }
-	    else
-	    {
-		_point = tie->getTransform().getTrans();
-		osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
-		forward = forward - _point;
-		_normal = forward ^ osg::Vec3(0,0,1.0);
-		_normal.normalize();
-	    }
+            if(event->asPointerEvent())
+            {
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),_point);
+            }
+            else
+            {
+                _point = tie->getTransform().getTrans();
+                osg::Vec3 forward = osg::Vec3(0,1.0,0) * tie->getTransform();
+                forward = forward - _point;
+                _normal = forward ^ osg::Vec3(0,0,1.0);
+                _normal.normalize();
+            }
             _lastDistance = 0.0;
             return;
         }
         if(event->getInteraction() == BUTTON_DRAG
                 || event->getInteraction() == BUTTON_UP)
         {
-	    float newDistance;
-	    float range;
+            float newDistance;
+            float range;
 
             MenuRangeValue * mrv = (MenuRangeValue*)_item;
 
-	    if(tie->asPointerEvent())
-	    {
-		osg::Vec3 newPoint;
-		SceneManager::instance()->getPointOnTiledWall(tie->getTransform(),newPoint);
-		newDistance = newPoint.z() - _point.z();
-		range = SceneManager::instance()->getTiledWallHeight() * 0.6;
-	    }
-	    else
-	    {
-		osg::Vec3 vec = tie->getTransform().getTrans();
-		vec = vec - _point;
-		newDistance = vec * _normal;
-		range = 600;
-	    }
+            if(tie->asPointerEvent())
+            {
+                osg::Vec3 newPoint;
+                SceneManager::instance()->getPointOnTiledWall(
+                        tie->getTransform(),newPoint);
+                newDistance = newPoint.z() - _point.z();
+                range = SceneManager::instance()->getTiledWallHeight() * 0.6;
+            }
+            else
+            {
+                osg::Vec3 vec = tie->getTransform().getTrans();
+                vec = vec - _point;
+                newDistance = vec * _normal;
+                range = 600;
+            }
 
             bool valueUpdated = false;
             if(newDistance < _lastDistance)
@@ -367,21 +375,27 @@ void BoardMenuRangeValueGeometry::processEvent(InteractionEvent * event)
 
             if(valueUpdated)
             {
-		if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE || event->getInteraction() == BUTTON_UP)
-		{
-		    if(mrv->getCallback())
-		    {
-			mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		    }
-		}
+                if(mrv->getCallbackType() != MenuRangeValue::ON_RELEASE
+                        || event->getInteraction() == BUTTON_UP)
+                {
+                    if(mrv->getCallback())
+                    {
+                        mrv->getCallback()->menuCallback(_item,
+                                event->asHandEvent() ?
+                                        event->asHandEvent()->getHand() : 0);
+                    }
+                }
             }
-	    else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE && event->getInteraction() == BUTTON_UP)
-	    {
-		if(mrv->getCallback())
-		{
-		    mrv->getCallback()->menuCallback(_item, event->asHandEvent() ? event->asHandEvent()->getHand() : 0);
-		}
-	    }
+            else if(mrv->getCallbackType() == MenuRangeValue::ON_RELEASE
+                    && event->getInteraction() == BUTTON_UP)
+            {
+                if(mrv->getCallback())
+                {
+                    mrv->getCallback()->menuCallback(_item,
+                            event->asHandEvent() ?
+                                    event->asHandEvent()->getHand() : 0);
+                }
+            }
 
             _lastDistance = newDistance;
 

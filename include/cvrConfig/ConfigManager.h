@@ -85,8 +85,9 @@ class CVRCONFIG_EXPORT ConfigManager
          * @param found If valid, *found is set to true if the tag existed and false
          *              if the default value was returned
          */
-        static std::string getEntryConcat(std::string attribute, std::string path,
-                char separator, std::string def = "", bool * found = NULL);
+        static std::string getEntryConcat(std::string attribute,
+                std::string path, char separator, std::string def = "",
+                bool * found = NULL);
 
         /**
          * @brief Looks for a float config file value in tag path with the default attribute
@@ -98,7 +99,7 @@ class CVRCONFIG_EXPORT ConfigManager
          *              if the default value was returned
          */
         static float getFloat(std::string path, float def = 0.0, bool * found =
-                NULL);
+        NULL);
 
         /**
          * @brief Looks for a float config file value in tag path with the specified attribute
@@ -169,7 +170,7 @@ class CVRCONFIG_EXPORT ConfigManager
          *              if the default value was returned
          */
         static bool getBool(std::string path, bool def = false, bool * found =
-                NULL);
+        NULL);
 
         /**
          * @brief Looks for a boolean config file value in tag path with the specified attribute

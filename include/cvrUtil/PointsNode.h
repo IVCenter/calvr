@@ -35,15 +35,14 @@ namespace cvr
  */
 class PointsNode : public osg::Group
 {
-    friend class PointsUpdateCallback;
+        friend class PointsUpdateCallback;
     public:
         /**
          * @brief Used to describe the binding for a point attribute
          */
         enum PointsBinding
         {
-            POINTS_PER_POINT = 0,
-            POINTS_OVERALL
+            POINTS_PER_POINT = 0, POINTS_OVERALL
         };
 
         /**
@@ -51,9 +50,7 @@ class PointsNode : public osg::Group
          */
         enum PointsMode
         {
-            POINTS_GL_POINTS = 0,
-            POINTS_POINT_SPRITES,
-            POINTS_SHADED_SPHERES
+            POINTS_GL_POINTS = 0, POINTS_POINT_SPRITES, POINTS_SHADED_SPHERES
         };
 
         /**
@@ -67,7 +64,12 @@ class PointsNode : public osg::Group
          * @param radiusBinding If radius should be per-point or overall
          * @param colorBinding If color should be per-point or overall
          */
-        PointsNode(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4ub defaultColor, PointsBinding sizeBinding = POINTS_PER_POINT, PointsBinding radiusBinding = POINTS_PER_POINT, PointsBinding colorBinding = POINTS_PER_POINT);
+        PointsNode(PointsMode mode, int startingNumPoints,
+                float defaultPointSize, float defaultRadius,
+                osg::Vec4ub defaultColor, PointsBinding sizeBinding =
+                        POINTS_PER_POINT, PointsBinding radiusBinding =
+                        POINTS_PER_POINT, PointsBinding colorBinding =
+                        POINTS_PER_POINT);
 
         /**
          * @brief Constructor
@@ -80,8 +82,14 @@ class PointsNode : public osg::Group
          * @param radiusBinding If radius should be per-point or overall
          * @param colorBinding If color should be per-point or overall
          */
-        PointsNode(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4 defaultColor, PointsBinding sizeBinding = POINTS_PER_POINT, PointsBinding radiusBinding = POINTS_PER_POINT, PointsBinding colorBinding = POINTS_PER_POINT);
-        PointsNode(const PointsNode & pn, const osg::CopyOp & copyop=osg::CopyOp::SHALLOW_COPY);
+        PointsNode(PointsMode mode, int startingNumPoints,
+                float defaultPointSize, float defaultRadius,
+                osg::Vec4 defaultColor, PointsBinding sizeBinding =
+                        POINTS_PER_POINT, PointsBinding radiusBinding =
+                        POINTS_PER_POINT, PointsBinding colorBinding =
+                        POINTS_PER_POINT);
+        PointsNode(const PointsNode & pn, const osg::CopyOp & copyop =
+                osg::CopyOp::SHALLOW_COPY);
 
         /**
          * @brief Set the vertex array for the set of points
@@ -159,7 +167,8 @@ class PointsNode : public osg::Group
          *
          * If the pointIndex is 0, attributes with an POINTS_OVERALL binding are set
          */
-        void setPoint(int pointIndex, osg::Vec3 position, osg::Vec4ub color, float radius, float size);
+        void setPoint(int pointIndex, osg::Vec3 position, osg::Vec4ub color,
+                float radius, float size);
 
         /**
          * @brief Set the values for a given point
@@ -171,7 +180,8 @@ class PointsNode : public osg::Group
          *
          * If the pointIndex is 0, attributes with an POINTS_OVERALL binding are set
          */
-        void setPoint(int pointIndex, osg::Vec3 position, osg::Vec4 color, float radius, float size);
+        void setPoint(int pointIndex, osg::Vec3 position, osg::Vec4 color,
+                float radius, float size);
 
         /**
          * @brief Set the position of a given point
@@ -205,7 +215,7 @@ class PointsNode : public osg::Group
          * If the pointIndex is 0 and the point size binding is POINTS_OVERALL, the overall size is set
          */
         void setPointSize(int pointIndex, float size);
-        
+
         /**
          * @brief Get the position of a given point
          */
@@ -243,14 +253,16 @@ class PointsNode : public osg::Group
          *
          * If the radius or size values are less than 0, the default values will be used
          */
-        void addPoint(osg::Vec3 position, osg::Vec4ub color, float radius = -1, float size = -1);
+        void addPoint(osg::Vec3 position, osg::Vec4ub color, float radius = -1,
+                float size = -1);
 
         /**
          * @brief Add a point to the set with the given attributes
          *
          * If the radius or size values are less than 0, the default values will be used
          */
-        void addPoint(osg::Vec3 position, osg::Vec4 color, float radius = -1, float size = -1);
+        void addPoint(osg::Vec3 position, osg::Vec4 color, float radius = -1,
+                float size = -1);
 
         /**
          * @brief Remove the point at the given index from the set
@@ -323,7 +335,10 @@ class PointsNode : public osg::Group
         /**
          * @brief Init for the class, called by the constructors
          */
-        void init(PointsMode mode, int startingNumPoints, float defaultPointSize, float defaultRadius, osg::Vec4ub & defaultColor, PointsBinding sizeBinding, PointsBinding radiusBinding, PointsBinding colorBinding);
+        void init(PointsMode mode, int startingNumPoints,
+                float defaultPointSize, float defaultRadius,
+                osg::Vec4ub & defaultColor, PointsBinding sizeBinding,
+                PointsBinding radiusBinding, PointsBinding colorBinding);
 
         /**
          * @brief Called during the update traversal to update shader uniforms

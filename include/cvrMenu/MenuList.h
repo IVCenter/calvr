@@ -113,9 +113,7 @@ class CVRMENU_EXPORT MenuList : public MenuItem
 
         enum ScrollingHint
         {
-            LINEAR=0,
-            CONTINUOUS,
-            ONE_TO_ONE
+            LINEAR = 0, CONTINUOUS, ONE_TO_ONE
         };
 
         void setScrollingHint(const ScrollingHint hint);
@@ -124,8 +122,7 @@ class CVRMENU_EXPORT MenuList : public MenuItem
 
         enum CallbackType
         {
-            ON_CHANGE=0,
-            ON_RELEASE
+            ON_CHANGE = 0, ON_RELEASE
         };
 
         void setCallbackType(const CallbackType type);

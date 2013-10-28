@@ -26,7 +26,7 @@ ConfigManager::~ConfigManager()
 {
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	delete _configFileList[i];
+        delete _configFileList[i];
     }
     _configFileList.clear();
 }
@@ -93,54 +93,63 @@ bool ConfigManager::init()
         return false;
     }
 
-    for(int i = 0; i< fileList.size(); i++)
+    for(int i = 0; i < fileList.size(); i++)
     {
-	size_t pos = fileList[i].find_last_of('.');
-	if(pos == std::string::npos || pos + 1 == fileList[i].size())
-	{
-	    std::cerr << "ConfigManager: Error: Unable to find extension for file: " << fileList[i] << std::endl;
-	    return false;
-	}
-	std::string extension = fileList[i].substr(pos+1,fileList[i].size()-(pos+1));
-	std::transform(extension.begin(),extension.end(),extension.begin(),::tolower);
-	
-	ConfigFileReader * cfr = NULL;
-	if(extension == "xml")
-	{
-	    cfr = new XMLReader();
-	}
-	else
-	{
-	    std::cerr << "ConfigManager: Error: No reader could be identified for file: " << fileList[i] << std::endl;
-	    return false;
-	}
+        size_t pos = fileList[i].find_last_of('.');
+        if(pos == std::string::npos || pos + 1 == fileList[i].size())
+        {
+            std::cerr
+                    << "ConfigManager: Error: Unable to find extension for file: "
+                    << fileList[i] << std::endl;
+            return false;
+        }
+        std::string extension = fileList[i].substr(pos + 1,
+                fileList[i].size() - (pos + 1));
+        std::transform(extension.begin(),extension.end(),extension.begin(),
+                ::tolower);
 
-	if(cfr)
-	{
-	    cfr->setDebugOutput(true);
-	    if(cfr->loadFile(fileList[i]))
-	    {
-		_configFileList.push_back(cfr);
-	    }
-	    else
-	    {
-		std::cerr << "ConfigManager: Error loading config files." << std::endl;
-		delete cfr;
-		return false;
-	    }
-	    cfr->setDebugOutput(false);
-	}
-	else
-	{
-	    std::cerr << "ConfigManager: Error: ConfigFileReader pointer is NULL. file: " << fileList[i] << std::endl;
-	    return false;
-	}
+        ConfigFileReader * cfr = NULL;
+        if(extension == "xml")
+        {
+            cfr = new XMLReader();
+        }
+        else
+        {
+            std::cerr
+                    << "ConfigManager: Error: No reader could be identified for file: "
+                    << fileList[i] << std::endl;
+            return false;
+        }
+
+        if(cfr)
+        {
+            cfr->setDebugOutput(true);
+            if(cfr->loadFile(fileList[i]))
+            {
+                _configFileList.push_back(cfr);
+            }
+            else
+            {
+                std::cerr << "ConfigManager: Error loading config files."
+                        << std::endl;
+                delete cfr;
+                return false;
+            }
+            cfr->setDebugOutput(false);
+        }
+        else
+        {
+            std::cerr
+                    << "ConfigManager: Error: ConfigFileReader pointer is NULL. file: "
+                    << fileList[i] << std::endl;
+            return false;
+        }
     }
 
     _debugOutput = getBool("ConfigDebug",false);
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	_configFileList[i]->setDebugOutput(_debugOutput);
+        _configFileList[i]->setDebugOutput(_debugOutput);
     }
 
     return true;
@@ -169,40 +178,40 @@ std::string ConfigManager::getEntry(std::string attribute, std::string path,
 
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	result = _configFileList[i]->getEntry(attribute,path,def,&wasFound);
-	if(wasFound)
-	{
-	    break;
-	}
+        result = _configFileList[i]->getEntry(attribute,path,def,&wasFound);
+        if(wasFound)
+        {
+            break;
+        }
     }
 
     if(found)
     {
-	*found = wasFound;
+        *found = wasFound;
     }
 
     if(wasFound)
     {
-	if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< result << std::endl;
-	}
-	return result;
+        if(_debugOutput)
+        {
+            std::cerr << "Path: " << path << " Attr: " << attribute
+                    << " value: " << result << std::endl;
+        }
+        return result;
     }
     else
     {
-	if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< def << " (default)" << std::endl;
-	}
-	return def;
+        if(_debugOutput)
+        {
+            std::cerr << "Path: " << path << " Attr: " << attribute
+                    << " value: " << def << " (default)" << std::endl;
+        }
+        return def;
     }
 }
 
-std::string ConfigManager::getEntryConcat(std::string attribute, std::string path,
-                char separator, std::string def, bool * found)
+std::string ConfigManager::getEntryConcat(std::string attribute,
+        std::string path, char separator, std::string def, bool * found)
 {
     if(path.empty())
     {
@@ -218,46 +227,47 @@ std::string ConfigManager::getEntryConcat(std::string attribute, std::string pat
 
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	bool tempFound = false;
-	std::string tempResult;
+        bool tempFound = false;
+        std::string tempResult;
 
-	tempResult = _configFileList[i]->getEntryConcat(attribute,path,separator,def,&tempFound);
-	if(tempFound)
-	{
-	    if(!wasFound)
-	    {
-		result = tempResult;
-		wasFound = true;
-	    }
-	    else
-	    {
-		result = result + separator + tempResult;
-	    }
-	}
+        tempResult = _configFileList[i]->getEntryConcat(attribute,path,
+                separator,def,&tempFound);
+        if(tempFound)
+        {
+            if(!wasFound)
+            {
+                result = tempResult;
+                wasFound = true;
+            }
+            else
+            {
+                result = result + separator + tempResult;
+            }
+        }
     }
 
     if(found)
     {
-	*found = wasFound;
+        *found = wasFound;
     }
 
     if(wasFound)
     {
-	if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< result << std::endl;
-	}
-	return result;
+        if(_debugOutput)
+        {
+            std::cerr << "Path: " << path << " Attr: " << attribute
+                    << " value: " << result << std::endl;
+        }
+        return result;
     }
     else
     {
-	if(_debugOutput)
-	{
-	    std::cerr << "Path: " << path << " Attr: " << attribute << " value: "
-		<< def << " (default)" << std::endl;
-	}
-	return def;
+        if(_debugOutput)
+        {
+            std::cerr << "Path: " << path << " Attr: " << attribute
+                    << " value: " << def << " (default)" << std::endl;
+        }
+        return def;
     }
 }
 
@@ -547,7 +557,7 @@ void ConfigManager::getChildren(std::string path,
 
     for(int i = 0; i < _configFileList.size(); i++)
     {
-	_configFileList[i]->getChildren(path,destList);
+        _configFileList[i]->getChildren(path,destList);
     }
 
     return;

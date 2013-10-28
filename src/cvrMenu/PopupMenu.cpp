@@ -19,12 +19,12 @@ PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
 
     if(closable)
     {
-	_rootMenu = new SubMenuClosable(_title,_title);
-	_rootMenu->setCallback(this);
+        _rootMenu = new SubMenuClosable(_title,_title);
+        _rootMenu->setCallback(this);
     }
     else
     {
-	_rootMenu = new SubMenu(_title,_title);
+        _rootMenu = new SubMenu(_title,_title);
     }
     _menu->setMenu(_rootMenu);
 
@@ -154,6 +154,6 @@ void PopupMenu::menuCallback(MenuItem * item)
 {
     if(item == _rootMenu)
     {
-	setVisible(false);
+        setVisible(false);
     }
 }

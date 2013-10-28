@@ -36,7 +36,7 @@ void ComputeBoundingBoxVisitor::apply(osg::Transform& node)
         osg::Matrix prevMatrix = m_curMatrix;
 
         //m_curMatrix.preMult(node.asMatrixTransform()->getMatrix());
-	node.computeLocalToWorldMatrix(m_curMatrix,this);
+        node.computeLocalToWorldMatrix(m_curMatrix,this);
 
         traverse(node);
 

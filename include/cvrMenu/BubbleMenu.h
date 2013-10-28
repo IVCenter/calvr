@@ -11,7 +11,6 @@
 
 // Sound
 
-
 #include <osg/Vec3>
 #include <osg/MatrixTransform>
 #include <osg/Geometry>
@@ -40,8 +39,7 @@ class BubbleMenu : public MenuBase
          */
         enum MenuTrigger
         {
-            DOUBLECLICK,
-            UPCLICK
+            DOUBLECLICK, UPCLICK
         };
 
         /**
@@ -96,7 +94,7 @@ class BubbleMenu : public MenuBase
          */
         virtual float getScale();
 
-       /**
+        /**
          * @brief Set whether the favorites bar is always showing
          */
 
@@ -122,7 +120,6 @@ class BubbleMenu : public MenuBase
          * @brief Close this submenu and its children submenus
          */
         void closeMenu(SubMenu * menu);
-
 
         std::string _iconDir; ///< base directory when looking for icons
 
@@ -179,13 +176,13 @@ class BubbleMenu : public MenuBase
         std::map<SubMenu*,std::pair<BubbleMenuGeometry*,BubbleMenuGeometry*> > _menuGeometryMap; ///< map from SubMenu to geometry pair (line item, and menu head)
 
         std::map<MenuItem *,BubbleMenuGeometry *> _favGeometryMap; ///< map from a MenuItem to its geometry class
-        std::map<BubbleMenuGeometry *, osg::ref_ptr<osg::MatrixTransform> > _maskMap; ///< map from geometry to its masking node
-        std::map<BubbleMenuGeometry *, osg::ref_ptr<osg::MatrixTransform> > _favMaskMap; ///< map from geometry to its favorites menu masking node
+        std::map<BubbleMenuGeometry *,osg::ref_ptr<osg::MatrixTransform> > _maskMap; ///< map from geometry to its masking node
+        std::map<BubbleMenuGeometry *,osg::ref_ptr<osg::MatrixTransform> > _favMaskMap; ///< map from geometry to its favorites menu masking node
 
-        std::map<osg::ref_ptr<osg::MatrixTransform> , Lerp*> _lerpMap; ///< map of a node to its linear interpolation controller
+        std::map<osg::ref_ptr<osg::MatrixTransform>,Lerp*> _lerpMap; ///< map of a node to its linear interpolation controller
 
-        std::map<BubbleMenuGeometry*, osg::Vec3> _positionMap; ///< map of menu geometry to its original position
-        std::map<BubbleMenuGeometry*, osg::Vec3> _rootPositionMap; ///< map of menu geometry to its top level parent's position
+        std::map<BubbleMenuGeometry*,osg::Vec3> _positionMap; ///< map of menu geometry to its original position
+        std::map<BubbleMenuGeometry*,osg::Vec3> _rootPositionMap; ///< map of menu geometry to its top level parent's position
 
         std::stack<SubMenu*> _openMenus; ///< stack of all currently opened SubMenus
 

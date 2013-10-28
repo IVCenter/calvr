@@ -26,7 +26,8 @@
 class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
 {
     public:
-        DepthPartitionNode();DepthPartitionNode(const DepthPartitionNode& dpn,
+        DepthPartitionNode();
+        DepthPartitionNode(const DepthPartitionNode& dpn,
                 const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Node( OpenFrames, DepthPartitionNode ); // Common Node functions
@@ -83,7 +84,7 @@ class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
 
         void removeNodesFromCameras();
 
-    protected:
+        protected:
         typedef std::vector<osg::ref_ptr<osg::Camera> > CameraList;
 
         ~DepthPartitionNode();
@@ -94,7 +95,7 @@ class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
         osg::Camera* createOrReuseCamera(const osg::Matrix& proj, double znear,
                 double zfar, const unsigned int &camNum, int context, osg::Camera * rootCam,const int numCameras);
 
-        bool _active; // Whether partitioning is active on the scene
+        bool _active;// Whether partitioning is active on the scene
 
         // The NodeVisitor that computes cameras for the scene
         osg::ref_ptr<DistanceAccumulator> _distAccumulator;
@@ -105,12 +106,12 @@ class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
         // Cameras that should be used to draw the scene.  These cameras
         // will be reused on every frame in order to save time and memory.
         std::map<int,CameraList> _cameraList;
-        unsigned int _numCameras; // Number of Cameras actually being used
+        unsigned int _numCameras;// Number of Cameras actually being used
 
         std::map<int,osg::ref_ptr<DistanceAccumulator> > _daMap;
 
         bool _forwardOtherTraversals;
         OpenThreads::Mutex _lock;
-};
+    };
 
 #endif

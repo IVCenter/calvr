@@ -30,8 +30,7 @@ namespace cvr
  */
 enum SocketType
 {
-    LISTEN,
-    CONNECT
+    LISTEN, CONNECT
 };
 
 /**
@@ -57,7 +56,7 @@ class CVRUTIL_EXPORT CVRSocket
          * @param sockType socket type
          */
         CVRSocket(SocketType type, std::string host, int port, int family =
-                AF_INET, int sockType = SOCK_STREAM);
+        AF_INET, int sockType = SOCK_STREAM);
         ~CVRSocket();
 
         /**

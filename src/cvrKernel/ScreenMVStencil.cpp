@@ -268,9 +268,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
     //add all hit points into a list
     if(l_p.hit_left)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(_myInfo->width / -2.0f,0,
                         l_p.t_left * _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(T_MIN,l_p.t_left,T_MIN));
@@ -280,9 +278,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(l_p.hit_right)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(_myInfo->width / 2.0f,0,
                         l_p.t_right * _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(T_MAX,l_p.t_right,T_MIN));
@@ -292,9 +288,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(l_p.hit_top)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(l_p.t_top * _myInfo->width / 2.0f,0,
                         _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(l_p.t_top,T_MAX,T_MIN));
@@ -304,9 +298,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(l_p.hit_bottom)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(l_p.t_bottom * _myInfo->width / 2.0f,0,
                         _myInfo->height / -2.0f)))
             list_of_points.push_back(osg::Vec3f(l_p.t_bottom,T_MIN,T_MIN));
@@ -316,9 +308,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(r_p.hit_left)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(_myInfo->width / -2.0f,0,
                         r_p.t_left * _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(T_MIN,r_p.t_left,T_MIN));
@@ -328,9 +318,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(r_p.hit_right)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(_myInfo->width / 2.0f,0,
                         r_p.t_right * _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(T_MAX,r_p.t_right,T_MIN));
@@ -340,9 +328,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(r_p.hit_top)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(r_p.t_top * _myInfo->width / 2.0f,0,
                         _myInfo->height / 2.0f)))
             list_of_points.push_back(osg::Vec3f(r_p.t_top,T_MAX,T_MIN));
@@ -352,9 +338,7 @@ void ScreenMVStencil::stencilOutView(const CameraOrient &cam,
 
     if(r_p.hit_bottom)
     {
-        if(IsInsideOfPlane(
-                cam.eye,
-                cam.viewDir,
+        if(IsInsideOfPlane(cam.eye,cam.viewDir,
                 osg::Vec3f(r_p.t_bottom * _myInfo->width / 2.0f,0,
                         _myInfo->height / -2.0f)))
             list_of_points.push_back(osg::Vec3f(r_p.t_bottom,T_MIN,T_MIN));
@@ -719,20 +703,15 @@ void ScreenMVStencil::PreDrawCallback::operator()(osg::RenderInfo & ri) const
         //first screen to render, so set up stencil buffer
         glStencilMask(~0);
         glClear(
-                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
-                        | GL_STENCIL_BUFFER_BIT);
+        GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         //extract position, v_up, v_right, v_view, and left/right plane
-        screen->extractLRPlanes(
-                PluginHelper::getHeadMat(0),
-                fov,
+        screen->extractLRPlanes(PluginHelper::getHeadMat(0),fov,
                 screen->_myInfo->myChannel->width
                         / screen->_myInfo->myChannel->height,cam0);
         screen->cameraToScreenSpace(cam0);
 
-        screen->extractLRPlanes(
-                PluginHelper::getHeadMat(1),
-                fov,
+        screen->extractLRPlanes(PluginHelper::getHeadMat(1),fov,
                 screen->_myInfo->myChannel->width
                         / screen->_myInfo->myChannel->height,cam1);
         screen->cameraToScreenSpace(cam1);

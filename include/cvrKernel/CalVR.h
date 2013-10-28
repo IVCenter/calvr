@@ -97,10 +97,7 @@ class CVRKERNEL_EXPORT CalVR
 
         enum CVRInitStatus
         {
-            INIT_OK=0,
-            SCREEN_INIT_ERROR,
-            SCENE_INIT_ERROR,
-            MENU_INIT_ERROR
+            INIT_OK = 0, SCREEN_INIT_ERROR, SCENE_INIT_ERROR, MENU_INIT_ERROR
         };
 
         CVRInitStatus _initStatus;
