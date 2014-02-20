@@ -675,7 +675,7 @@ struct AveragedValueTextDrawCallback : public virtual osg::Drawable::DrawCallbac
                 if(_stats->getAveragedAttribute(_attributeName,value,
                         _averageInInverseSpace))
                 {
-                    sprintf(_tmpText,"%4.2f",value * _multiplier);
+                    sprintf(_tmpText,"%4.3f",value * _multiplier);
                     text->setText(_tmpText);
                 }
                 else
@@ -1471,6 +1471,8 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     for(int i = 0; i < _defaultViewerValues.size(); i++)
     {
+	pos.x() = leftPos;
+
         osg::Geode* geode = new osg::Geode();
         viewerValuesGroup->addChild(geode);
 
@@ -1503,6 +1505,8 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
     for(int i = 0; i < _customViewerValues.size(); i++)
     {
+	pos.x() = leftPos;
+
         osg::Geode* geode = new osg::Geode();
         viewerValuesGroup->addChild(geode);
 
@@ -1538,6 +1542,8 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     {
         for(int i = 0; i < _defaultCameraValues.size(); i++)
         {
+	    pos.x() = leftPos;
+
             osg::Geode* geode = new osg::Geode();
             viewerValuesGroup->addChild(geode);
 
@@ -1570,6 +1576,8 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         for(int i = 0; i < _customCameraValues.size(); i++)
         {
+	    pos.x() = leftPos;
+
             osg::Geode* geode = new osg::Geode();
             viewerValuesGroup->addChild(geode);
 
@@ -2228,6 +2236,16 @@ void CVRStatsHandler::setCollect(osgViewer::ViewerBase * viewer)
             }
             _collectMapViewer[_defaultViewerValues[i]->collectName] = true;
         }
+
+	for(int i = 0; i < _customViewerValues.size(); i++)
+        {
+            if(_customViewerValues[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapViewer[_customViewerValues[i]->collectName] = true;
+        }
+
         for(int i = 0; i < _defaultCameraValues.size(); i++)
         {
             if(_defaultCameraValues[i]->advanced && !_advanced)
@@ -2235,6 +2253,15 @@ void CVRStatsHandler::setCollect(osgViewer::ViewerBase * viewer)
                 continue;
             }
             _collectMapCameras[_defaultCameraValues[i]->collectName] = true;
+        }
+
+	for(int i = 0; i < _customCameraValues.size(); i++)
+        {
+            if(_customCameraValues[i]->advanced && !_advanced)
+            {
+                continue;
+            }
+            _collectMapCameras[_customCameraValues[i]->collectName] = true;
         }
     }
 

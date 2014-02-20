@@ -259,8 +259,8 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                     {
                         _clickActive = false;
                     }
-                    return true;
                 }
+		return true;
             }
             return false;
         }
