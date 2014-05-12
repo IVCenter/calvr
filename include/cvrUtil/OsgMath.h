@@ -4,7 +4,7 @@
 #ifndef CALVR_OSG_MATH_H
 #define CALVR_OSG_MATH_H
 
-#include <cvrUtil\Export.h>
+#include <cvrUtil/Export.h>
 
 #include <osg/Vec3>
 
