@@ -21,6 +21,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuTextButtonSet.h
     ${HEADER_PATH}/MenuScrollText.h
     ${HEADER_PATH}/MenuImage.h
+    ${HEADER_PATH}/MenuBar.h
     ${HEADER_PATH}/MenuBase.h
     ${HEADER_PATH}/PopupMenuBase.h
     ${HEADER_PATH}/BoardMenu.h
@@ -43,6 +44,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuClosableGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuBarGeometry.h
     ${HEADER_PATH}/Export.h
     ${HEADER_PATH}/BubbleMenu.h
     ${HEADER_PATH}/BubbleMenu/BubbleMenuGeometry.h
@@ -71,6 +73,7 @@ SET(LIB_SRC_FILES
     MenuTextButtonSet.cpp
     MenuScrollText.cpp
     MenuImage.cpp
+    MenuBar.cpp
     MenuSystem.cpp
     BoardMenu.cpp
     MenuManager.cpp
@@ -89,6 +92,7 @@ SET(LIB_SRC_FILES
     BoardMenu/BoardMenuTextButtonSetGeometry.cpp
     BoardMenu/BoardMenuScrollTextGeometry.cpp
     BoardMenu/BoardMenuImageGeometry.cpp
+    BoardMenu/BoardMenuBarGeometry.cpp
     BoardMenu/BoardMenuSubMenuGeometry.cpp
     BoardMenu/BoardMenuSubMenuClosableGeometry.cpp
     BubbleMenu.cpp

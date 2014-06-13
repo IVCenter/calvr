@@ -33,6 +33,7 @@ enum MenuItemType
     TEXTSCROLL,
     IMAGE,
     LIST,
+    BAR,
     OTHER
 };
 

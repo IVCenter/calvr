@@ -8,6 +8,7 @@
 #include <cvrMenu/BoardMenu/BoardMenuTextButtonSetGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuScrollTextGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuImageGeometry.h>
+#include <cvrMenu/BoardMenu/BoardMenuBarGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuClosableGeometry.h>
 #include <cvrMenu/MenuButton.h>
@@ -119,6 +120,14 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             return mg;
             break;
         }
+	case BAR:
+	{
+	    BoardMenuGeometry * mg = new BoardMenuBarGeometry();
+	    mg->createGeometry(item);
+
+	    return mg;
+	    break;
+	}
         case LIST:
         {
             BoardMenuGeometry * mg = new BoardMenuListGeometry();
@@ -139,6 +148,9 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
         osg::Vec4 color, osg::Vec3 pos)
 {
     osg::Geometry * geo = new osg::Geometry();
+    geo->setUseDisplayList(false);
+    geo->setUseVertexBufferObjects(true);
+
     osg::Vec3Array* verts = new osg::Vec3Array();
     verts->push_back(pos);
     verts->push_back(pos + osg::Vec3(width,0,0));
@@ -147,14 +159,7 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
 
     geo->setVertexArray(verts);
 
-    osg::DrawElementsUInt * ele = new osg::DrawElementsUInt(
-            osg::PrimitiveSet::QUADS,0);
-
-    ele->push_back(0);
-    ele->push_back(1);
-    ele->push_back(2);
-    ele->push_back(3);
-    geo->addPrimitiveSet(ele);
+    geo->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     colors->push_back(color);
