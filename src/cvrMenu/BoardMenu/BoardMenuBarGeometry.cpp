@@ -57,7 +57,7 @@ void BoardMenuBarGeometry::resetIntersect(float width)
 
 void BoardMenuBarGeometry::updateBar(float width)
 {
-    _width = 0.0;
+    _width = width - 2.0 * _border;
     _height = _mb->getMultiplier() * 3.0;
 
     osg::Matrix m;

@@ -1,6 +1,7 @@
 #include <cvrMenu/BoardMenu.h>
 #include <cvrMenu/MenuButton.h>
 #include <cvrMenu/MenuCheckbox.h>
+#include <cvrMenu/MenuCollection.h>
 #include <cvrUtil/Intersection.h>
 #include <cvrUtil/OsgMath.h>
 #include <cvrConfig/ConfigManager.h>
@@ -335,9 +336,9 @@ void BoardMenu::itemDelete(MenuItem * item)
         return;
     }
 
-    std::vector<SubMenu*> searchList;
+    std::vector<MenuCollection*> searchList;
     searchList.push_back(_myMenu);
-    std::vector<std::pair<SubMenu*,MenuItem*> > removeList;
+    std::vector<std::pair<MenuCollection*,MenuItem*> > removeList;
 
     while(searchList.size())
     {
@@ -345,24 +346,24 @@ void BoardMenu::itemDelete(MenuItem * item)
                 searchList[0]->getChildren().begin();
                 it != searchList[0]->getChildren().end(); it++)
         {
-            if((*it)->isSubMenu())
+            if((*it)->isCollection())
             {
                 if((*it) == item)
                 {
                     removeList.push_back(
-                            std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+                            std::pair<MenuCollection*,MenuItem*>(searchList[0],(*it)));
                     continue;
                 }
                 else
                 {
-                    SubMenu * sm = dynamic_cast<SubMenu*>(*it);
+                    MenuCollection * sm = dynamic_cast<MenuCollection*>(*it);
                     searchList.push_back(sm);
                 }
             }
             else if((*it) == item)
             {
                 removeList.push_back(
-                        std::pair<SubMenu*,MenuItem*>(searchList[0],(*it)));
+                        std::pair<MenuCollection*,MenuItem*>(searchList[0],(*it)));
                 continue;
             }
         }
@@ -493,6 +494,23 @@ float BoardMenu::getScale()
     return _scale;
 }
 
+BoardMenuGeometry * BoardMenu::getItemGeometry(MenuItem * item)
+{
+    if(item->isSubMenu())
+    {
+	if(_menuGeometryMap.find((SubMenu*)item) != _menuGeometryMap.end())
+	{
+	    return _menuGeometryMap[(SubMenu*)item].first;
+	}
+    }
+    else if(_geometryMap.find(item) != _geometryMap.end())
+    {
+	return _geometryMap[item];
+    }
+
+    return NULL;
+}
+
 void BoardMenu::updateMenus()
 {
     if(!_myMenu)
@@ -547,8 +565,8 @@ void BoardMenu::updateMenus()
         if(_menuGeometryMap.find(foundList[i]) == _menuGeometryMap.end())
         {
             _menuGeometryMap[foundList[i]] = std::pair<BoardMenuGeometry*,
-                    BoardMenuGeometry*>(createGeometry(foundList[i],true),
-                    createGeometry(foundList[i]));
+                    BoardMenuGeometry*>(createGeometry(foundList[i],this,true),
+                    createGeometry(foundList[i],this));
         }
 
         if(_menuGeometryMap[foundList[i]].first)
@@ -560,43 +578,70 @@ void BoardMenu::updateMenus()
                 foundList[i]->getChildren().begin();
                 it != foundList[i]->getChildren().end(); it++)
         {
-            BoardMenuGeometry * mg;
+	    std::list<MenuItem*> itemList;
+	    itemList.push_back((*it));
+	    if(!(*it)->isSubMenu() && (*it)->isCollection())
+	    {
+		std::list<MenuCollection*> collectionList;
+		collectionList.push_back((MenuCollection*)(*it));
+		while(collectionList.size())
+		{
+		    for(int i = 0; i < collectionList.front()->getNumChildren(); ++i)
+		    {
+			MenuItem * mitem = collectionList.front()->getChild(i);
+			itemList.push_front(mitem);
+			if(mitem->isCollection() && !mitem->isSubMenu())
+			{
+			    collectionList.push_back((MenuCollection*)mitem);
+			}
+		    }
+		    collectionList.pop_front();
+		}
+	    }
 
-            if((*it)->isSubMenu())
-            {
-                if(_menuGeometryMap.find((SubMenu*)(*it))
-                        == _menuGeometryMap.end())
-                {
-                    _menuGeometryMap[(SubMenu*)(*it)] = std::pair<
-                            BoardMenuGeometry*,BoardMenuGeometry*>(
-                            createGeometry(*it,true),createGeometry(*it));
-                }
-                mg = _menuGeometryMap[(SubMenu*)(*it)].second;
-            }
-            else if(_geometryMap.find(*it) == _geometryMap.end())
-            {
-                _geometryMap[*it] = createGeometry(*it);
-                mg = _geometryMap[*it];
-                (*it)->setDirty(false);
-            }
-            else
-            {
-                mg = _geometryMap[*it];
-            }
+	    BoardMenuGeometry * mg;
 
-            if(mg)
+	    for(std::list<MenuItem*>::iterator itemIt = itemList.begin(); itemIt != itemList.end(); ++itemIt)
+	    {
+		if((*itemIt)->isSubMenu())
+		{
+		    if(_menuGeometryMap.find((SubMenu*)(*itemIt))
+			    == _menuGeometryMap.end())
+		    {
+			_menuGeometryMap[(SubMenu*)(*itemIt)] = std::pair<
+			    BoardMenuGeometry*,BoardMenuGeometry*>(
+				    createGeometry(*itemIt,this,true),createGeometry(*itemIt,this));
+			_intersectMap[_menuGeometryMap[(SubMenu*)(*itemIt)].first->getIntersect()] = _menuGeometryMap[(SubMenu*)(*itemIt)].first;
+			_intersectMap[_menuGeometryMap[(SubMenu*)(*itemIt)].second->getIntersect()] = _menuGeometryMap[(SubMenu*)(*itemIt)].second;
+		    }
+		    mg = _menuGeometryMap[(SubMenu*)(*itemIt)].second;
+		}
+		else if(_geometryMap.find(*itemIt) == _geometryMap.end())
+		{
+		    _geometryMap[*itemIt] = createGeometry(*itemIt,this);
+		    mg = _geometryMap[*itemIt];
+		    (*itemIt)->setDirty(false);
+		    _intersectMap[mg->getIntersect()] = mg;
+		}
+		else
+		{
+		    mg = _geometryMap[*itemIt];
+		}
+
+		if(mg && !(*itemIt)->isSubMenu() && (*itemIt)->isDirty())
+		{
+		    mg->updateGeometry();
+		    (*itemIt)->setDirty(false);
+		}
+	    }
+
+	    if(mg)
             {
                 geoList.push_back(mg);
             }
             else
             {
                 //std::cerr << "Geometry is null." << std::endl;
-            }
-
-            if(mg && !(*it)->isSubMenu() && (*it)->isDirty())
-            {
-                mg->updateGeometry();
-                (*it)->setDirty(false);
             }
         }
 

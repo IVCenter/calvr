@@ -129,7 +129,7 @@ class BoardMenuGeometry
         static std::map<std::string,osg::ref_ptr<osg::Texture2D> > _iconCache;
 };
 
-BoardMenuGeometry * createGeometry(MenuItem * item, bool head = false);
+BoardMenuGeometry * createGeometry(MenuItem * item, BoardMenu * menu, bool head = false);
 
 /**
  * @}

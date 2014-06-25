@@ -42,19 +42,14 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
 
     osgText::Text * textNode = makeText(mb->getText(),_textSize,
             osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
-    /*osgText::Text * textNode = new osgText::Text();
-     textNode->setCharacterSize(_textSize);
-     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-     textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
-     / 2.0));
-     textNode->setColor(_textColor);
-     textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
-     textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
-     textNode->setText(mb->getText());*/
+
+    if(!mb->getIndent())
+    {
+	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+    }
 
     osg::BoundingBox bb = textNode->getBound();
     _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
-    //mg->height = bb.zMax() - bb.zMin();
     _height = _iconHeight;
 
     _geode->addDrawable(textNode);
@@ -62,17 +57,14 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
     textNode = makeText(mb->getText(),_textSize,
             osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
             _textColorSelected);
-    /*textNode = new osgText::Text();
-     textNode->setCharacterSize(_textSize);
-     textNode->setAlignment(osgText::Text::LEFT_CENTER);
-     textNode->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight
-     / 2.0));
-     textNode->setColor(_textColorSelected);
-     textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
-     textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
-     textNode->setText(mb->getText());*/
 
     _geodeSelected->addDrawable(textNode);
+
+    if(!mb->getIndent())
+    {
+	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+	_width = bb.xMax() - bb.xMin();
+    }
 }
 
 void BoardMenuButtonGeometry::updateGeometry()
@@ -92,14 +84,34 @@ void BoardMenuButtonGeometry::updateGeometry()
             if(text->getText().createUTF8EncodedString() != button->getText())
             {
                 text->setText(button->getText());
-                osg::BoundingBox bb = text->getBound();
-                _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
+		osg::BoundingBox bb = text->getBound();
+
+		if(button->getIndent())
+		{
+		    text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
+		    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
+		}
+		else
+		{
+		    text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+		    _width = bb.xMax() - bb.xMin();
+		}
+
                 text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
                         0));
                 if(text)
-                {
-                    text->setText(button->getText());
-                }
+		{
+		    text->setText(button->getText());
+
+		    if(button->getIndent())
+		    {
+			text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
+		    }
+		    else
+		    {
+			text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+		    }
+		}
             }
         }
 

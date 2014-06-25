@@ -10,8 +10,10 @@ SET(LIB_NAME cvrMenu)
 SET(HEADER_PATH ${CalVR_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuItem.h
+    ${HEADER_PATH}/MenuCollection.h
     ${HEADER_PATH}/SubMenu.h
     ${HEADER_PATH}/SubMenuClosable.h
+    ${HEADER_PATH}/MenuItemGroup.h
     ${HEADER_PATH}/MenuButton.h
     ${HEADER_PATH}/MenuCheckbox.h
     ${HEADER_PATH}/MenuList.h
@@ -22,6 +24,9 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MenuScrollText.h
     ${HEADER_PATH}/MenuImage.h
     ${HEADER_PATH}/MenuBar.h
+    ${HEADER_PATH}/MenuFloatEntryItem.h
+    ${HEADER_PATH}/MenuIntEntryItem.h
+    ${HEADER_PATH}/MenuTextEntryItem.h
     ${HEADER_PATH}/MenuBase.h
     ${HEADER_PATH}/PopupMenuBase.h
     ${HEADER_PATH}/BoardMenu.h
@@ -31,6 +36,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/DialogPanel.h
     ${HEADER_PATH}/TabbedDialogPanel.h
     ${HEADER_PATH}/ScrollingDialogPanel.h
+    ${HEADER_PATH}/TextInputPannel.h
     ${HEADER_PATH}/BoardPopupMenu.h
     ${HEADER_PATH}/BoardMenu/BoardMenuGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuButtonGeometry.h
@@ -43,6 +49,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoardMenu/BoardMenuScrollTextGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuSubMenuClosableGeometry.h
+    ${HEADER_PATH}/BoardMenu/BoardMenuItemGroupGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuImageGeometry.h
     ${HEADER_PATH}/BoardMenu/BoardMenuBarGeometry.h
     ${HEADER_PATH}/Export.h
@@ -63,7 +70,9 @@ SET(LIB_PUBLIC_HEADERS
 
 SET(LIB_SRC_FILES
     MenuItem.cpp
+    MenuCollection.cpp
     SubMenu.cpp
+    MenuItemGroup.cpp
     MenuButton.cpp
     MenuCheckbox.cpp
     MenuList.cpp
@@ -74,6 +83,9 @@ SET(LIB_SRC_FILES
     MenuScrollText.cpp
     MenuImage.cpp
     MenuBar.cpp
+    MenuFloatEntryItem.cpp
+    MenuIntEntryItem.cpp
+    MenuTextEntryItem.cpp
     MenuSystem.cpp
     BoardMenu.cpp
     MenuManager.cpp
@@ -81,6 +93,7 @@ SET(LIB_SRC_FILES
     DialogPanel.cpp
     ScrollingDialogPanel.cpp
     TabbedDialogPanel.cpp
+    TextInputPannel.cpp
     BoardPopupMenu.cpp
     BoardMenu/BoardMenuGeometry.cpp
     BoardMenu/BoardMenuButtonGeometry.cpp
@@ -95,6 +108,7 @@ SET(LIB_SRC_FILES
     BoardMenu/BoardMenuBarGeometry.cpp
     BoardMenu/BoardMenuSubMenuGeometry.cpp
     BoardMenu/BoardMenuSubMenuClosableGeometry.cpp
+    BoardMenu/BoardMenuItemGroupGeometry.cpp
     BubbleMenu.cpp
     BubbleMenu/BubbleMenuGeometry.cpp
     BubbleMenu/BubbleMenuButtonGeometry.cpp

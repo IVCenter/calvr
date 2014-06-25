@@ -96,6 +96,8 @@ class BoardMenu : public MenuBase
          */
         virtual float getScale();
 
+        BoardMenuGeometry * getItemGeometry(MenuItem * item);
+
     protected:
         /**
          * @brief Update the menu geometry

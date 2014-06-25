@@ -26,6 +26,7 @@ enum MenuItemType
     CHECKBOX,
     SUBMENU,
     SUBMENU_CLOSABLE,
+    ITEM_GROUP,
     RANGEVALUE,
     RANGEVALUECOMPACT,
     TEXT,
@@ -60,6 +61,11 @@ class CVRMENU_EXPORT MenuItem
          * @brief Is this a menu item with children, or not
          */
         virtual bool isSubMenu()
+        {
+            return false;
+        }
+
+        virtual bool isCollection()
         {
             return false;
         }
@@ -110,18 +116,12 @@ class CVRMENU_EXPORT MenuItem
         /**
          * @brief Returns if this item's status has changed since its geometry was last checked
          */
-        bool isDirty()
-        {
-            return _dirty;
-        }
+        virtual bool isDirty();
 
         /**
          * @brief Set if this items geometry needs to be regenerated
          */
-        void setDirty(bool b)
-        {
-            _dirty = b;
-        }
+        virtual void setDirty(bool b);
 
         void setHoverText(std::string text)
         {

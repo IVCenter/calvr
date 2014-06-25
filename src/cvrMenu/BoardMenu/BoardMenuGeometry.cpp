@@ -11,6 +11,7 @@
 #include <cvrMenu/BoardMenu/BoardMenuBarGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuClosableGeometry.h>
+#include <cvrMenu/BoardMenu/BoardMenuItemGroupGeometry.h>
 #include <cvrMenu/MenuButton.h>
 #include <cvrMenu/MenuCheckbox.h>
 #include <cvrMenu/MenuList.h>
@@ -36,7 +37,7 @@ std::string BoardMenuGeometry::_iconDir;
 osg::ref_ptr<osgText::Font> BoardMenuGeometry::_font;
 std::map<std::string,osg::ref_ptr<osg::Texture2D> > BoardMenuGeometry::_iconCache;
 
-BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
+BoardMenuGeometry * cvr::createGeometry(MenuItem * item, BoardMenu * menu, bool head)
 {
     switch(item->getType())
     {
@@ -46,7 +47,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case CHECKBOX:
         {
@@ -54,7 +54,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case SUBMENU:
         {
@@ -62,7 +61,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case SUBMENU_CLOSABLE:
         {
@@ -70,15 +68,20 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
+	case ITEM_GROUP:
+	{
+	    BoardMenuGeometry * mg = new BoardMenuItemGroupGeometry(menu);
+            mg->createGeometry(item);
+
+	    return mg;
+	}
         case RANGEVALUE:
         {
             BoardMenuGeometry * mg = new BoardMenuRangeValueGeometry();
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case RANGEVALUECOMPACT:
         {
@@ -86,7 +89,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case TEXT:
         {
@@ -94,7 +96,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case TEXTBUTTONSET:
         {
@@ -102,7 +103,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case TEXTSCROLL:
         {
@@ -110,7 +110,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case IMAGE:
         {
@@ -118,7 +117,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
 	case BAR:
 	{
@@ -126,7 +124,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
 	    mg->createGeometry(item);
 
 	    return mg;
-	    break;
 	}
         case LIST:
         {
@@ -134,7 +131,6 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, bool head)
             mg->createGeometry(item);
 
             return mg;
-            break;
         }
         case OTHER:
         default:
