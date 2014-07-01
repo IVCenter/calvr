@@ -7,6 +7,10 @@ using namespace cvr;
 
 TextInputPannel::TextInputPannel(std::string title, KeyboardType kt, std::string configTag) : PopupMenu(title,configTag)
 {
+    _numDisplayResults = 0;
+    _searchListGroup = NULL;
+    _searchListBar = NULL;
+
     _textItem = new MenuText("",1.0,false);
     addMenuItem(_textItem);
 
@@ -40,10 +44,15 @@ TextInputPannel::TextInputPannel(std::string title, KeyboardType kt, std::string
 	_shiftButton = new MenuButton("Shift",false);
 	_shiftButton->setCallback(this);
 	_optionGroup->addItem(_shiftButton);
+
+	_spaceButton = new MenuButton("Space",false);
+	_spaceButton->setCallback(this);
+	_optionGroup->addItem(_spaceButton);
     }
     else
     {
 	_shiftButton = NULL;
+	_spaceButton = NULL;
     }
     _backButton = new MenuButton("Backspace",false);
     _backButton->setCallback(this);
@@ -76,6 +85,14 @@ void TextInputPannel::addCustomRow(std::vector<std::string> & row)
     {
 	_rootMenu->addItem(mig);
     }
+}
+
+void TextInputPannel::setSearchList(std::vector<std::string> & list, int numDisplayResults)
+{
+    _searchList = list;
+    _numDisplayResults = numDisplayResults;
+
+    updateListDisplay();
 }
 
 void TextInputPannel::setText(std::string text)
@@ -119,14 +136,34 @@ void TextInputPannel::menuCallback(MenuItem * item)
 	return;
     }
 
+    if(item == _spaceButton)
+    {
+	_text += " ";
+	_textItem->setText(_text);
+	updateListDisplay();
+	return;
+    }
+
     if(item == _backButton)
     {
 	if(_text.size())
 	{
 	    _text.erase(_text.size()-1);
 	    _textItem->setText(_text);
+	    updateListDisplay();
 	}
 	return;
+    }
+
+    for(int i = 0; i < _searchListButtons.size(); ++i)
+    {
+	if(item == _searchListButtons[i])
+	{
+	    _text = _searchListButtons[i]->getText();
+	    _textItem->setText(_text);
+	    updateListDisplay();
+	    return;
+	}
     }
 
     MenuButton * button = dynamic_cast<MenuButton*>(item);
@@ -134,6 +171,7 @@ void TextInputPannel::menuCallback(MenuItem * item)
     {
 	_text += button->getText();
 	_textItem->setText(_text);
+	updateListDisplay();
 	return;
     }
 
@@ -372,4 +410,80 @@ void TextInputPannel::makeNumpad()
     tempItem->addItem(tempButton);
     _rowGroup->addItem(tempItem);
     _colGroups.push_back(tempItem);
+}
+
+void TextInputPannel::updateListDisplay()
+{
+    if(!_searchListGroup)
+    {
+	_searchListGroup = new MenuItemGroup(MenuItemGroup::COL_LAYOUT,MenuItemGroup::ALIGN_LEFT_INDENT);
+	_searchListBar = new MenuBar(osg::Vec4(1.0,1.0,1.0,1.0));
+    }
+
+    for(int i = 0; i < _searchListButtons.size(); ++i)
+    {
+	_searchListGroup->removeItem(_searchListButtons[i]);
+    }
+
+    if(_text.empty() || _numDisplayResults <= 0)
+    {
+	removeMenuItem(_searchListGroup);
+	removeMenuItem(_searchListBar);
+	return;
+    }
+
+    if(!_searchListGroup->getParent())
+    {
+	int pos = _rootMenu->getItemPosition(_textBar);
+	if(pos >= 0)
+	{
+	    _rootMenu->addItem(_searchListGroup,pos+1);
+	    _rootMenu->addItem(_searchListBar,pos+2);
+	}
+	else
+	{
+	    _rootMenu->addItem(_searchListGroup);
+	    _rootMenu->addItem(_searchListBar);
+	}
+    }
+
+    while(_searchListButtons.size() < _numDisplayResults)
+    {
+	MenuButton * mb = new MenuButton("",false);
+	mb->setCallback(this);
+	_searchListButtons.push_back(mb);
+    }
+
+    std::vector<std::string> resultList;
+
+    for(int i = 0; i < _searchList.size(); ++i)
+    {
+	if(_searchList[i].size() < _text.size())
+	{
+	    continue;
+	}
+
+	// TODO: for windows use _stricmp
+	if(strncasecmp(_text.c_str(),_searchList[i].c_str(),_text.size()) == 0)
+	{
+	    resultList.push_back(_searchList[i]);
+	    if(resultList.size() == _numDisplayResults)
+	    {
+		break;
+	    }
+	}
+    }
+
+    if(resultList.size() == 0 || (resultList.size() == 1 && resultList[0] == _text))
+    {
+	removeMenuItem(_searchListGroup);
+	removeMenuItem(_searchListBar);
+	return;
+    }
+
+    for(int i = 0; i < resultList.size(); ++i)
+    {
+	_searchListButtons[i]->setText(resultList[i]);
+	_searchListGroup->addItem(_searchListButtons[i]);
+    }
 }

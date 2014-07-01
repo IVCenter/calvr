@@ -19,7 +19,9 @@ class CVRMENU_EXPORT MenuFloatEntryItem : public MenuItemGroup, public MenuCallb
         virtual ~MenuFloatEntryItem();
 
         float getValue();
+        std::string getLabel();
         void setValue(float value);
+        void setLabel(std::string label);
 
         virtual void menuCallback(MenuItem * item, int handID);
     protected:

@@ -38,12 +38,23 @@ float MenuFloatEntryItem::getValue()
     return _value;
 }
 
+std::string MenuFloatEntryItem::getLabel()
+{
+    return _label;
+}
+
 void MenuFloatEntryItem::setValue(float value)
 {
     _value = value;
     std::stringstream ss;
-    ss << _label << " " << value;
+    ss << _label << value;
     _numberText->setText(ss.str());
+}
+
+void MenuFloatEntryItem::setLabel(std::string label)
+{
+    _label = label;
+    setValue(_value);
 }
 
 void MenuFloatEntryItem::menuCallback(MenuItem * item, int handID)

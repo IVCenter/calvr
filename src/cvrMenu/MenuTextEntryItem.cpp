@@ -38,10 +38,26 @@ std::string MenuTextEntryItem::getText()
     return _text;
 }
 
+std::string MenuTextEntryItem::getLabel()
+{
+    return _label;
+}
+
 void MenuTextEntryItem::setText(std::string text)
 {
     _text = text;
-    _numberText->setText(_label + " " + text);
+    _numberText->setText(_label + text);
+}
+
+void MenuTextEntryItem::setLabel(std::string label)
+{
+    _label = label;
+    setText(_text);
+}
+
+void MenuTextEntryItem::setSearchList(std::vector<std::string> & list, int numDisplayResults)
+{
+    _inputPannel->setSearchList(list,numDisplayResults);
 }
 
 void MenuTextEntryItem::menuCallback(MenuItem * item, int handID)

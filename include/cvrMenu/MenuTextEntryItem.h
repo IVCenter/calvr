@@ -19,7 +19,11 @@ class CVRMENU_EXPORT MenuTextEntryItem : public MenuItemGroup, public MenuCallba
         virtual ~MenuTextEntryItem();
 
         std::string getText();
+        std::string getLabel();
         void setText(std::string text);
+        void setLabel(std::string label);
+
+        void setSearchList(std::vector<std::string> & list, int numDisplayResults);
 
         virtual void menuCallback(MenuItem * item, int handID);
     protected:
