@@ -49,7 +49,6 @@ class CVRMENU_EXPORT TextInputPannel : public PopupMenu
         MenuButton * _shiftButton;
         MenuButton * _spaceButton;
         MenuButton * _backButton;
-        MenuButton * _doneButton;
         MenuItemGroup * _numberRow;
 
         std::vector<MenuItemGroup*> _customRows;

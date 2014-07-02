@@ -18,9 +18,12 @@ MenuTextEntryItem::MenuTextEntryItem(std::string label, std::string text, MenuIt
 
     _inputPannel = new TextInputPannel("Keyboard",TextInputPannel::KT_QWERTY_NUM,"MenuSystem.EntryItemPannel");
 
-    _enterButton = new MenuButton("Enter");
+    _enterRow = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
+    _inputPannel->addMenuItem(_enterRow);
+
+    _enterButton = new MenuButton("Enter",false);
     _enterButton->setCallback(this);
-    _inputPannel->addMenuItem(_enterButton);
+    _enterRow->addItem(_enterButton);
 
     _inputPannel->setVisible(false);
     setText(text);

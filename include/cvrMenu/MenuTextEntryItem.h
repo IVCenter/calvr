@@ -30,6 +30,7 @@ class CVRMENU_EXPORT MenuTextEntryItem : public MenuItemGroup, public MenuCallba
         std::string _label;
         MenuButton * _numberText;
         TextInputPannel * _inputPannel;
+        MenuItemGroup * _enterRow;
         MenuButton * _enterButton;
         std::string _text;
 };

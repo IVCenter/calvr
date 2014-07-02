@@ -99,6 +99,7 @@ void TextInputPannel::setText(std::string text)
 {
     _text = text;
     _textItem->setText(_text);
+    updateListDisplay();
 }
 
 std::string TextInputPannel::getText()
@@ -434,7 +435,7 @@ void TextInputPannel::updateListDisplay()
 
     if(!_searchListGroup->getParent())
     {
-	int pos = _rootMenu->getItemPosition(_textBar);
+	/*int pos = _rootMenu->getItemPosition(_textBar);
 	if(pos >= 0)
 	{
 	    _rootMenu->addItem(_searchListGroup,pos+1);
@@ -444,7 +445,9 @@ void TextInputPannel::updateListDisplay()
 	{
 	    _rootMenu->addItem(_searchListGroup);
 	    _rootMenu->addItem(_searchListBar);
-	}
+	}*/
+	addMenuItem(_searchListBar);
+	addMenuItem(_searchListGroup);
     }
 
     while(_searchListButtons.size() < _numDisplayResults)
