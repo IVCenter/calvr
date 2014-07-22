@@ -851,7 +851,7 @@ void SceneManager::initSceneState()
     osg::StateSet * stateset = _sceneRoot->getOrCreateStateSet();
 
     osg::LightModel * lm = new osg::LightModel();
-    lm->setTwoSided(true);
+    lm->setTwoSided(ConfigManager::getBool("value","TwoSidedLighting",false,NULL));
     lm->setLocalViewer(true);
 
     osg::Material * mat = new osg::Material();
