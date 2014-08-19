@@ -73,16 +73,23 @@ SceneManager * SceneManager::instance()
 bool SceneManager::init()
 {
     _actualRoot = new osg::Group();
+    _actualRoot->setCullingActive(false);
     _sceneRoot = new osg::MatrixTransform();
+    _sceneRoot->setCullingActive(false);
 
     _depthPartitionLeft = new DepthPartitionNode();
     _depthPartitionLeft->setClearColorBuffer(false);
+    _depthPartitionLeft->setCullingActive(false);
     _depthPartitionRight = new DepthPartitionNode();
     _depthPartitionRight->setClearColorBuffer(false);
+    _depthPartitionRight->setCullingActive(false);
 
     _objectTransform = new osg::MatrixTransform();
+    _objectTransform->setCullingActive(false);
     _objectScale = new osg::MatrixTransform();
+    _objectScale->setCullingActive(false);
     _objectRoot = new osg::ClipNode();
+    _objectRoot->setCullingActive(false);
     _menuRoot = new osg::MatrixTransform();
 
     _actualRoot->addChild(_depthPartitionLeft);
