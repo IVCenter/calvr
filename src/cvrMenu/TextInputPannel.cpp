@@ -467,7 +467,11 @@ void TextInputPannel::updateListDisplay()
 	}
 
 	// TODO: for windows use _stricmp
+#ifdef WIN32
+	if(_strnicmp(_text.c_str(),_searchList[i].c_str(),_text.size()) == 0)
+#else
 	if(strncasecmp(_text.c_str(),_searchList[i].c_str(),_text.size()) == 0)
+#endif
 	{
 	    resultList.push_back(_searchList[i]);
 	    if(resultList.size() == _numDisplayResults)
