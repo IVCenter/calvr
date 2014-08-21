@@ -10,7 +10,7 @@ namespace cvr
 {
 
 class MenuButton;
-class TextInputPannel;
+class TextInputPanel;
 
 class CVRMENU_EXPORT MenuTextEntryItem : public MenuItemGroup, public MenuCallback
 {
@@ -29,7 +29,7 @@ class CVRMENU_EXPORT MenuTextEntryItem : public MenuItemGroup, public MenuCallba
     protected:
         std::string _label;
         MenuButton * _numberText;
-        TextInputPannel * _inputPannel;
+        TextInputPanel * _inputPanel;
         MenuItemGroup * _enterRow;
         MenuButton * _enterButton;
         std::string _text;

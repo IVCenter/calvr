@@ -1,11 +1,11 @@
-#include <cvrMenu/TextInputPannel.h>
+#include <cvrMenu/TextInputPanel.h>
 #include <cvrMenu/MenuButton.h>
 
 #include <cctype>
 
 using namespace cvr;
 
-TextInputPannel::TextInputPannel(std::string title, KeyboardType kt, std::string configTag) : PopupMenu(title,configTag)
+TextInputPanel::TextInputPanel(std::string title, KeyboardType kt, std::string configTag) : PopupMenu(title,configTag)
 {
     _numDisplayResults = 0;
     _searchListGroup = NULL;
@@ -61,11 +61,11 @@ TextInputPannel::TextInputPannel(std::string title, KeyboardType kt, std::string
     setVisible(false);
 }
 
-TextInputPannel::~TextInputPannel()
+TextInputPanel::~TextInputPanel()
 {
 }
 
-void TextInputPannel::addCustomRow(std::vector<std::string> & row)
+void TextInputPanel::addCustomRow(std::vector<std::string> & row)
 {
     MenuItemGroup * mig = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
 
@@ -87,7 +87,7 @@ void TextInputPannel::addCustomRow(std::vector<std::string> & row)
     }
 }
 
-void TextInputPannel::setSearchList(std::vector<std::string> & list, int numDisplayResults)
+void TextInputPanel::setSearchList(std::vector<std::string> & list, int numDisplayResults)
 {
     _searchList = list;
     _numDisplayResults = numDisplayResults;
@@ -95,19 +95,19 @@ void TextInputPannel::setSearchList(std::vector<std::string> & list, int numDisp
     updateListDisplay();
 }
 
-void TextInputPannel::setText(std::string text)
+void TextInputPanel::setText(std::string text)
 {
     _text = text;
     _textItem->setText(_text);
     updateListDisplay();
 }
 
-std::string TextInputPannel::getText()
+std::string TextInputPanel::getText()
 {
     return _text;
 }
 
-void TextInputPannel::menuCallback(MenuItem * item)
+void TextInputPanel::menuCallback(MenuItem * item)
 {
     if(item == _shiftButton)
     {
@@ -179,7 +179,7 @@ void TextInputPannel::menuCallback(MenuItem * item)
     PopupMenu::menuCallback(item);
 }
 
-void TextInputPannel::makeNumberRow()
+void TextInputPanel::makeNumberRow()
 {
     _numberRow = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
     addMenuItem(_numberRow);
@@ -217,7 +217,7 @@ void TextInputPannel::makeNumberRow()
     _numberRow->addItem(mb);
 }
 
-void TextInputPannel::makeQWERTY()
+void TextInputPanel::makeQWERTY()
 {
     _rowGroup = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
     addMenuItem(_rowGroup);
@@ -356,7 +356,7 @@ void TextInputPannel::makeQWERTY()
     _colGroups.push_back(tempItem);
 }
 
-void TextInputPannel::makeNumpad()
+void TextInputPanel::makeNumpad()
 {
      _rowGroup = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
     addMenuItem(_rowGroup);
@@ -413,7 +413,7 @@ void TextInputPannel::makeNumpad()
     _colGroups.push_back(tempItem);
 }
 
-void TextInputPannel::updateListDisplay()
+void TextInputPanel::updateListDisplay()
 {
     if(!_searchListGroup)
     {

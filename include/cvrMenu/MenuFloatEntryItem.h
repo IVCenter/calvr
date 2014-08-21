@@ -10,7 +10,7 @@ namespace cvr
 {
 
 class MenuButton;
-class TextInputPannel;
+class TextInputPanel;
 
 class CVRMENU_EXPORT MenuFloatEntryItem : public MenuItemGroup, public MenuCallback
 {
@@ -27,7 +27,7 @@ class CVRMENU_EXPORT MenuFloatEntryItem : public MenuItemGroup, public MenuCallb
     protected:
         std::string _label;
         MenuButton * _numberText;
-        TextInputPannel * _inputPannel;
+        TextInputPanel * _inputPanel;
         MenuButton * _enterButton;
         float _value;
 };

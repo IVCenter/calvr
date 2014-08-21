@@ -14,7 +14,7 @@
 namespace cvr
 {
 
-class CVRMENU_EXPORT TextInputPannel : public PopupMenu
+class CVRMENU_EXPORT TextInputPanel : public PopupMenu
 {
     public:
         enum KeyboardType
@@ -24,8 +24,8 @@ class CVRMENU_EXPORT TextInputPannel : public PopupMenu
             KT_NUMPAD
         };
 
-        TextInputPannel(std::string title, KeyboardType kt = KT_QWERTY, std::string configTag = "");
-        virtual ~TextInputPannel();
+        TextInputPanel(std::string title, KeyboardType kt = KT_QWERTY, std::string configTag = "");
+        virtual ~TextInputPanel();
 
         void addCustomRow(std::vector<std::string> & row);
         void setSearchList(std::vector<std::string> & list, int numDisplayResults);

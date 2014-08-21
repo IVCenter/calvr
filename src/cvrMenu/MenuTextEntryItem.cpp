@@ -1,6 +1,6 @@
 #include <cvrMenu/MenuTextEntryItem.h>
 #include <cvrMenu/MenuButton.h>
-#include <cvrMenu/TextInputPannel.h>
+#include <cvrMenu/TextInputPanel.h>
 
 #include <iostream>
 #include <sstream>
@@ -16,16 +16,16 @@ MenuTextEntryItem::MenuTextEntryItem(std::string label, std::string text, MenuIt
     _numberText->setCallback(this);
     addItem(_numberText);
 
-    _inputPannel = new TextInputPannel("Keyboard",TextInputPannel::KT_QWERTY_NUM,"MenuSystem.EntryItemPannel");
+    _inputPanel = new TextInputPanel("Keyboard",TextInputPanel::KT_QWERTY_NUM,"MenuSystem.EntryItemPanel");
 
     _enterRow = new MenuItemGroup(MenuItemGroup::ROW_LAYOUT);
-    _inputPannel->addMenuItem(_enterRow);
+    _inputPanel->addMenuItem(_enterRow);
 
     _enterButton = new MenuButton("Enter",false);
     _enterButton->setCallback(this);
     _enterRow->addItem(_enterButton);
 
-    _inputPannel->setVisible(false);
+    _inputPanel->setVisible(false);
     setText(text);
 }
 
@@ -33,7 +33,7 @@ MenuTextEntryItem::~MenuTextEntryItem()
 {
     delete _numberText;
     delete _enterButton;
-    delete _inputPannel;
+    delete _inputPanel;
 }
 
 std::string MenuTextEntryItem::getText()
@@ -60,27 +60,27 @@ void MenuTextEntryItem::setLabel(std::string label)
 
 void MenuTextEntryItem::setSearchList(std::vector<std::string> & list, int numDisplayResults)
 {
-    _inputPannel->setSearchList(list,numDisplayResults);
+    _inputPanel->setSearchList(list,numDisplayResults);
 }
 
 void MenuTextEntryItem::menuCallback(MenuItem * item, int handID)
 {
     if(item == _numberText)
     {
-	_inputPannel->setVisible(true);
+	_inputPanel->setVisible(true);
 	return;
     }
 
     if(item == _enterButton)
     {
-	setText(_inputPannel->getText());
+	setText(_inputPanel->getText());
 
 	if(getCallback())
 	{
 	    getCallback()->menuCallback(this,handID);
 	}
-	_inputPannel->setVisible(false);
-	_inputPannel->setText("");
+	_inputPanel->setVisible(false);
+	_inputPanel->setText("");
 	return;
     }
 }

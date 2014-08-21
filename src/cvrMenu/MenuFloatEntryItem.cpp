@@ -1,6 +1,6 @@
 #include <cvrMenu/MenuFloatEntryItem.h>
 #include <cvrMenu/MenuButton.h>
-#include <cvrMenu/TextInputPannel.h>
+#include <cvrMenu/TextInputPanel.h>
 
 #include <iostream>
 #include <sstream>
@@ -16,13 +16,13 @@ MenuFloatEntryItem::MenuFloatEntryItem(std::string label, float value, MenuItemG
     _numberText->setCallback(this);
     addItem(_numberText);
 
-    _inputPannel = new TextInputPannel("Numpad",TextInputPannel::KT_NUMPAD,"MenuSystem.EntryItemPannel");
+    _inputPanel = new TextInputPanel("Numpad",TextInputPanel::KT_NUMPAD,"MenuSystem.EntryItemPanel");
 
     _enterButton = new MenuButton("Enter");
     _enterButton->setCallback(this);
-    _inputPannel->addMenuItem(_enterButton);
+    _inputPanel->addMenuItem(_enterButton);
 
-    _inputPannel->setVisible(false);
+    _inputPanel->setVisible(false);
     setValue(value);
 }
 
@@ -30,7 +30,7 @@ MenuFloatEntryItem::~MenuFloatEntryItem()
 {
     delete _numberText;
     delete _enterButton;
-    delete _inputPannel;
+    delete _inputPanel;
 }
 
 float MenuFloatEntryItem::getValue()
@@ -61,26 +61,26 @@ void MenuFloatEntryItem::menuCallback(MenuItem * item, int handID)
 {
     if(item == _numberText)
     {
-	_inputPannel->setVisible(true);
+	_inputPanel->setVisible(true);
 	return;
     }
 
     if(item == _enterButton)
     {
-	if(!_inputPannel->getText().size())
+	if(!_inputPanel->getText().size())
 	{
 	    return;
 	}
 	
-	float temp = atof(_inputPannel->getText().c_str());
+	float temp = atof(_inputPanel->getText().c_str());
 	setValue(temp);
 
 	if(getCallback())
 	{
 	    getCallback()->menuCallback(this,handID);
 	}
-	_inputPannel->setVisible(false);
-	_inputPannel->setText("");
+	_inputPanel->setVisible(false);
+	_inputPanel->setText("");
 	return;
     }
 }
