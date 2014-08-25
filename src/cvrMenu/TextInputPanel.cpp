@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuButton.h>
 
 #include <cctype>
+#include <string.h>
 
 using namespace cvr;
 
