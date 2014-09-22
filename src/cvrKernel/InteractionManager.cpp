@@ -194,7 +194,7 @@ void InteractionManager::setMouse(int x, int y)
     // get Point in world space
     screenPoint = screenPoint * si->transform;
     // head mounted displays are relative to the head orientation
-    if(si->myChannel->stereoMode == "HMD")
+    if(si->myChannel->stereoMode == "HMD" || si->myChannel->stereoMode == "OCULUS")
     {
         screenPoint = screenPoint
                 * TrackingManager::instance()->getHeadMat(si->myChannel->head);
