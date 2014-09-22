@@ -25,6 +25,10 @@
 #include <cvrKernel/ScreenLenticular.h>
 #endif
 
+#ifdef WITH_OVR
+#include <cvrKernel/ScreenOculus.h>
+#endif
+
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
 #endif
@@ -790,7 +794,14 @@ bool ScreenConfig::makeScreens()
             screen->init();
         }
 #endif
-
+#ifdef WITH_OVR
+		else if(_screenInfoList[i]->myChannel->stereoMode == "OCULUS")
+        {
+            screen = new ScreenOculus();
+            screen->_myInfo = _screenInfoList[i];
+            screen->init(-1);
+        }
+#endif
         if(screen)
         {
             _screenList.push_back(screen);

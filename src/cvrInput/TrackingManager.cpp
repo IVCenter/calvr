@@ -13,6 +13,10 @@
 #include <cvrInput/TrackerGyroMouse.h>
 #endif
 
+#ifdef WITH_OVR
+#include <cvrInput/TrackerOculus.h>
+#endif
+
 #include <cvrConfig/ConfigManager.h>
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/InteractionManager.h>
@@ -172,6 +176,12 @@ bool TrackingManager::init()
             {
                 tracker = new TrackerGyroMouse();
             }
+#endif
+#ifdef WITH_OVR
+			else if(systemName == "OCULUS")
+			{
+				tracker = new TrackerOculus();
+			}
 #endif
             else if(systemName == "MOUSE")
             {

@@ -471,7 +471,7 @@ void NavMouse::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
 
             osg::Vec3 screenCenter = si->xyz;
 
-            if(si->myChannel->stereoMode == "HMD")
+            if(si->myChannel->stereoMode == "HMD" || si->myChannel->stereoMode == "OCULUS")
             {
                 screenCenter = screenCenter
                         * TrackingManager::instance()->getHeadMat(
@@ -509,7 +509,7 @@ void NavMouse::processMouseNav(NavMode nm, MouseInteractionEvent * mie)
 
             osg::Vec3 screenCenter = si->xyz;
 
-            if(si->myChannel->stereoMode == "HMD")
+            if(si->myChannel->stereoMode == "HMD" || si->myChannel->stereoMode == "OCULUS")
             {
                 screenCenter = screenCenter
                         * TrackingManager::instance()->getHeadMat(
