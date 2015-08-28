@@ -17,7 +17,9 @@
 #include <cvrMenu/MenuList.h>
 #include <cvrMenu/MenuRangeValue.h>
 #include <cvrMenu/SubMenu.h>
+#include <cvrUtil/Bounds.h>
 
+#include <osg/Version>
 #include <osgText/Text>
 #include <osg/Geometry>
 #include <osgDB/ReadFile>
@@ -268,7 +270,7 @@ void BoardMenuGeometry::calibrateTextSize(float textSize)
     textNode->setText("A");
 
     osg::BoundingBox bb;
-    bb = textNode->getBound();
+    bb = getBound(textNode);
 
     float height = bb.zMax() - bb.zMin();
 

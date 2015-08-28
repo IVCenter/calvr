@@ -1,4 +1,5 @@
 #include <cvrKernel/CVRCullVisitor.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geode>
 #include <osg/OcclusionQueryNode>
@@ -103,13 +104,20 @@ void CVRCullVisitor::apply(osg::Geode& node)
     for(unsigned int i = 0; i < node.getNumDrawables(); ++i)
     {
         Drawable* drawable = node.getDrawable(i);
-        const BoundingBox &bb = drawable->getBound();
+
+        const BoundingBox &bb = getBound(drawable);
 
         if(drawable->getCullCallback())
         {
+#if ( OSG_VERSION_LESS_THAN(3, 4, 0) )
             if(drawable->getCullCallback()->cull(this,drawable,&_renderInfo)
                     == true)
                 continue;
+#else
+            osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable->getCullCallback());
+            if (dcb && dcb->cull( this, drawable, &_renderInfo ) == true )
+                continue;
+#endif
         }
 
         //else
@@ -215,9 +223,15 @@ void CVRCullVisitor::apply(osg::Billboard& node)
 
         if(drawable->getCullCallback())
         {
+#if ( OSG_VERSION_LESS_THAN(3, 4, 0) )
             if(drawable->getCullCallback()->cull(this,drawable,&_renderInfo)
                     == true)
                 continue;
+#else
+            osg::Drawable::CullCallback* dcb = dynamic_cast<osg::Drawable::CullCallback*>(drawable->getCullCallback());
+            if (dcb && dcb->cull( this, drawable, &_renderInfo ) == true )
+                continue;
+#endif
         }
 
         RefMatrix* billboard_matrix = createOrReuseMatrix(modelview);

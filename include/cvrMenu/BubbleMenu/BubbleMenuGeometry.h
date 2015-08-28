@@ -15,6 +15,7 @@
 #include <osgText/Text>
 #include <osgText/Text3D>
 #include <osg/ShapeDrawable>
+#include <osg/Version>
 
 #include <string>
 

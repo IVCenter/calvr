@@ -773,7 +773,7 @@ const osg::BoundingBox & SceneObject::getOrComputeBoundingBox()
         // maybe check for a change in the bounding sphere?
         if(_boundsDirty)
         {
-            computeBoundingBox();
+            SceneObject::computeBoundingBox();
             _boundsDirty = false;
         }
 
@@ -812,11 +812,12 @@ void SceneObject::computeBoundingBox()
 {
     _bbLocal.init();
 
-    ComputeBoundingBoxVisitor cbbv;
+    //ComputeBoundingBoxVisitor cbbv;
 
     for(int i = 0; i < _childrenNodes.size(); i++)
     {
-        cbbv = ComputeBoundingBoxVisitor();
+        //cbbv = ComputeBoundingBoxVisitor();
+        ComputeBoundingBoxVisitor cbbv;
         cbbv.setBound(_bbLocal);
         _childrenNodes[i]->accept(cbbv);
         _bbLocal = cbbv.getBound();

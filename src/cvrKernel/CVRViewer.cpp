@@ -475,6 +475,12 @@ void CVRViewer::defaultUpdateTraversal()
     //double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick,
     //        osg::Timer::instance()->tick());
 
+#if ( OSG_VERSION_GREATER_OR_EQUAL(3, 4, 0) )
+    //_eventVisitor = new osgGA::EventVisitor;
+    //_eventVisitor->setActionAdapter(this);
+    _eventVisitor->setFrameStamp(getFrameStamp());
+#endif
+
     _updateVisitor->reset();
     _updateVisitor->setFrameStamp(getFrameStamp());
     _updateVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
@@ -632,7 +638,12 @@ void CVRViewer::eventTraversal()
                 osgGA::EventQueue::Events::iterator itr;
                 for(itr = gw_events.begin(); itr != gw_events.end(); ++itr)
                 {
+#if ( OSG_VERSION_LESS_THAN(3, 4, 0) )
                     osgGA::GUIEventAdapter* event = itr->get();
+#else                    
+                    osgGA::GUIEventAdapter* event = (*itr)->asGUIEventAdapter();
+                    if (!event) continue;
+#endif
 
                     float x = event->getX();
                     float y = event->getY();
@@ -1976,7 +1987,11 @@ bool CVRViewer::processEvent(InteractionEvent * event)
     for(EventHandlers::iterator hitr = _eventHandlers.begin();
             hitr != _eventHandlers.end(); ++hitr)
     {
+#if ( OSG_VERSION_LESS_THAN(3, 4, 0) )
         (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask(*ea,*this,0,0);
+#else        
+        (*hitr)->handle(ea,0, _eventVisitor.get());
+#endif
     }
     ret = ea->getHandled();
     ea->unref();

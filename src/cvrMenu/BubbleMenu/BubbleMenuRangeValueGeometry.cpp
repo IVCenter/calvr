@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuRangeValue.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 #include <osg/LineWidth>
@@ -111,7 +112,7 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     _label = make3DText(mrv->getLabel(),_textSize,osg::Vec3(0,0,0),_textColor);
 
-    osg::BoundingBox bbb = _label->getBound();
+    osg::BoundingBox bbb = getBound(_label);
     float width = bbb.xMax() - bbb.xMin();
     _label->setPosition(osg::Vec3(_radius / 2,0,0));
 
@@ -120,7 +121,7 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
     // Current value on selected
     snprintf(buffer,7,printstr,mrv->getValue());
     _currentValue = make3DText(buffer,_textSize,osg::Vec3(0,0,0),_textColor);
-    bbb = _currentValue->getBound();
+    bbb = getBound(_currentValue);
     width = bbb.xMax() - bbb.xMin();
     _currentValue->setPosition(osg::Vec3(_radius / 2,0,0));
 
@@ -142,7 +143,7 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     float width2;
 
-    osg::BoundingBox bbmin = _minValue->getBound();
+    osg::BoundingBox bbmin = getBound(_minValue);
 
     width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -161,7 +162,7 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     width2 += _iconHeight + _border;
 
-    bbmin = _currentValue->getBound();
+    bbmin = getBound(_currentValue);
 
     width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -187,12 +188,12 @@ void BubbleMenuRangeValueGeometry::createGeometry(MenuItem * item)
     //_geode->addDrawable(_maxValue.get());
     //_geodeSelected->addDrawable(_maxValue.get());
 
-    bbmin = _maxValue->getBound();
+    bbmin = getBound(_maxValue);
     width2 += bbmin.xMax() - bbmin.xMin();
 
     _height = _iconHeight * 2.0 + _border;
 
-    osg::BoundingBox bb = _label->getBound();
+    osg::BoundingBox bb = getBound(_label);
     _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border,width2);
 
     // Hover text
@@ -219,11 +220,11 @@ void BubbleMenuRangeValueGeometry::updateGeometry()
 
     float width1 = 0.0;
 
-    osg::BoundingBox bb = _label->getBound();
+    osg::BoundingBox bb = getBound(_label);
     width1 = bb.xMax() - bb.xMin() + _iconHeight + _border;
 
     float width2 = 0.0;
-    bb = _minValue->getBound();
+    bb = getBound(_minValue);
     width2 = bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     char buffer[7];
@@ -247,10 +248,10 @@ void BubbleMenuRangeValueGeometry::updateGeometry()
     //_geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bb = _currentValue->getBound();
+    bb = getBound(_currentValue);
     width2 += bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
-    bb = _maxValue->getBound();
+    bb = getBound(_maxValue);
     width2 += bb.xMax() - bb.xMin();
 
     _width = std::max(width1,width2);

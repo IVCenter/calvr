@@ -4,6 +4,7 @@
 #include <cvrUtil/LocalToWorldVisitor.h>
 #include <cvrUtil/Intersection.h>
 #include <cvrUtil/OsgMath.h>
+#include <cvrUtil/Bounds.h>
 
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/CVRViewer.h>
@@ -535,7 +536,7 @@ void BoardMenuScrollTextGeometry::parseString(std::string & s)
                     {
                         subword = word.substr(wsindex,wsleng);
                         slabel->setText(subword);
-                        osg::BoundingBox bb = slabel->getBound();
+                        osg::BoundingBox bb = getBound(slabel);
                         size = bb.xMax() - bb.xMin();
                         //size = slabel.getWidth();
 
@@ -556,7 +557,7 @@ void BoardMenuScrollTextGeometry::parseString(std::string & s)
                 {
                     subword = word.substr(wsindex,wsleng);
                     slabel->setText(subword);
-                    osg::BoundingBox bb = slabel->getBound();
+                    osg::BoundingBox bb = getBound(slabel);
                     size = bb.xMax() - bb.xMin();
                     //size = slabel.getWidth();
                     _words.push_back(
@@ -581,7 +582,7 @@ void BoardMenuScrollTextGeometry::parseString(std::string & s)
             word = s.substr(index,leng);
 
             slabel->setText(word);
-            osg::BoundingBox bb = slabel->getBound();
+            osg::BoundingBox bb = getBound(slabel);
             size = bb.xMax() - bb.xMin();
             //size = slabel.getWidth();
 
@@ -652,7 +653,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
             if(it->second > _textWidth)
             {
                 slabel->setText(thing1);
-                bb = slabel->getBound();
+                bb = getBound(slabel);
                 rowpos = bb.xMax() - bb.xMin();
                 //rowpos = slabel.getWidth();
                 float splitsize = -1000;
@@ -663,7 +664,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
                 {
                     split1 = it->first.substr(0,splitindex);
                     slabel->setText(split1);
-                    bb = slabel->getBound();
+                    bb = getBound(slabel);
                     splitsize = bb.xMax() - bb.xMin();
                     //splitsize = slabel.getWidth();
                     //cerr << "splitsize: " << splitsize << endl;
@@ -686,7 +687,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
                 else
                 {
                     slabel->setText(split2);
-                    bb = slabel->getBound();
+                    bb = getBound(slabel);
 
                     it = _words.insert(it,
                             std::pair<std::string,float>(split2,
@@ -709,7 +710,7 @@ void BoardMenuScrollTextGeometry::prepDisplay(bool append)
             }
             thing1 += it->first;
             slabel->setText(thing1);
-            bb = slabel->getBound();
+            bb = getBound(slabel);
             rowpos = bb.xMax() - bb.xMin();
             //rowpos = slabel.getWidth();
             if(rowpos < _textWidth)
@@ -812,18 +813,18 @@ void BoardMenuScrollTextGeometry::calcSizes()
 
     testtext = makeText(ss.str(),_textSize * _textScale,osg::Vec3(0,0,0),
             osg::Vec4(1.0,1.0,1.0,1.0),osgText::Text::LEFT_TOP);
-    osg::BoundingBox bb = testtext->getBound();
+    osg::BoundingBox bb = getBound(testtext);
     _maxHeight = bb.zMax() - bb.zMin();
 
     testtext = makeText("A",_textSize * _textScale,osg::Vec3(0,0,0),
             osg::Vec4(1.0,1.0,1.0,1.0),osgText::Text::LEFT_TOP);
-    bb = testtext->getBound();
+    bb = getBound(testtext);
     float awidth = bb.xMax() - bb.xMin();
     _baselineHeight = bb.zMax() - bb.zMin();
 
     testtext = makeText("A A",_textSize * _textScale,osg::Vec3(0,0,0),
             osg::Vec4(1.0,1.0,1.0,1.0),osgText::Text::LEFT_TOP);
-    bb = testtext->getBound();
+    bb = getBound(testtext);
     float aawidth = bb.xMax() - bb.xMin();
 
     _spaceSize = aawidth - (2.0 * awidth);

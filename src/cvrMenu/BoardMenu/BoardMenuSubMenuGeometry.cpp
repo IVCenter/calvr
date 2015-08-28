@@ -1,5 +1,6 @@
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <cvrMenu/SubMenu.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 
@@ -114,7 +115,7 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
         _geode->addDrawable(textNode);
 
-        osg::BoundingBox bb = textNode->getBound();
+        osg::BoundingBox bb = getBound(textNode);
         _width = bb.xMax() - bb.xMin();
         _height = bb.zMax() - bb.zMin() + _border;
 
@@ -155,7 +156,7 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
          textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
          textNode->setText(submenu->getName());*/
 
-        osg::BoundingBox bb = textNode->getBound();
+        osg::BoundingBox bb = getBound(textNode);
         _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
         //mg->height = bb.zMax() - bb.zMin();
         _height = _iconHeight;

@@ -1,5 +1,7 @@
 #include <cvrMenu/BubbleMenu/BubbleMenuButtonGeometry.h>
 #include <cvrMenu/MenuButton.h>
+#include <cvrUtil/Bounds.h>
+
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
 
@@ -49,7 +51,7 @@ void BubbleMenuButtonGeometry::createGeometry(MenuItem * item)
             osg::Vec3(0,0,0),_textColor);
     _geode->addDrawable(textNode);
 
-    osg::BoundingBox bb = textNode->getBound();
+    osg::BoundingBox bb = getBound(textNode);
     _width = bb.xMax() - bb.xMin();
     _height = bb.yMax() - bb.yMin();
 
@@ -116,7 +118,7 @@ void BubbleMenuButtonGeometry::updateGeometry()
             if(text->getText().createUTF8EncodedString() != button->getText())
             {
                 text->setText(button->getText());
-                osg::BoundingBox bb = text->getBound();
+                osg::BoundingBox bb = getBound(text);
                 _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
                 text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
                         0));

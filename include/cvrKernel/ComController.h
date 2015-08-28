@@ -128,6 +128,9 @@ class CVRKERNEL_EXPORT ComController
          */
         static ComController * instance();
 
+        /* the sub application to run */
+        static std::string      application;
+
     protected:
         ComController();
         virtual ~ComController();
@@ -163,6 +166,7 @@ class CVRKERNEL_EXPORT ComController
         static ComController * _myPtr; ///< static self pointer
 
         bool _CCError; ///< error state of ComController
+
 };
 
 /**

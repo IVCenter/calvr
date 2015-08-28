@@ -14,6 +14,7 @@
 #include <cvrKernel/CVRStatsHandler.h>
 #include <cvrKernel/CalVR.h>
 #include <cvrKernel/PluginManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <sstream>
 #include <iomanip>
@@ -27,6 +28,7 @@
 #include <osgViewer/Renderer>
 #include <osg/PolygonMode>
 #include <osg/Geometry>
+#include <osg/Version>
 
 using namespace cvr;
 
@@ -1426,11 +1428,17 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     {
         if((*citr)->getGraphicsContext())
         {
+#if ( OSG_VERSION_LESS_THAN( 3, 4, 0 ) )
             unsigned int contextID =
                     (*citr)->getGraphicsContext()->getState()->getContextID();
             const osg::Drawable::Extensions* extensions =
                     osg::Drawable::getExtensions(contextID,false);
             if(extensions && extensions->isTimerQuerySupported())
+#else            
+            const osg::State* state = (*citr)->getGraphicsContext()->getState();
+            const osg::GLExtensions* extensions = state->get<osg::GLExtensions>();
+            if(extensions && extensions->isTimerQuerySupported)
+#endif
             {
                 ++numCamrasWithTimerQuerySupport;
             }
@@ -1450,10 +1458,10 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         ctext->setCharacterSize(characterSize);
         ctext->setText("::");
 
-        float ctwidth = ctext->getBound().xMax() - ctext->getBound().xMin();
+        float ctwidth = getBound(ctext).xMax() - getBound(ctext).xMin();
 
         ctext->setText(": :");
-        _spaceSize = (ctext->getBound().xMax() - ctext->getBound().xMin())
+        _spaceSize = (getBound(ctext).xMax() - getBound(ctext).xMin())
                 - ctwidth;
 
         _textCalibrated = true;
@@ -1485,7 +1493,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         label->setPosition(pos);
         label->setText(_defaultViewerValues[i]->label);
 
-        pos.x() = label->getBound().xMax() + _spaceSize;
+        pos.x() = getBound(label).xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
         geode->addDrawable(value.get());
@@ -1519,7 +1527,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         label->setPosition(pos);
         label->setText(_customViewerValues[i]->label);
 
-        pos.x() = label->getBound().xMax() + _spaceSize;
+        pos.x() = getBound(label).xMax() + _spaceSize;
 
         osg::ref_ptr<osgText::Text> value = new osgText::Text;
         geode->addDrawable(value.get());
@@ -1556,7 +1564,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             label->setPosition(pos);
             label->setText(_defaultCameraValues[i]->label);
 
-            pos.x() = label->getBound().xMax() + _spaceSize;
+            pos.x() = getBound(label).xMax() + _spaceSize;
 
             osg::ref_ptr<osgText::Text> value = new osgText::Text;
             geode->addDrawable(value.get());
@@ -1590,7 +1598,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             label->setPosition(pos);
             label->setText(_customCameraValues[i]->label);
 
-            pos.x() = label->getBound().xMax() + _spaceSize;
+            pos.x() = getBound(label).xMax() + _spaceSize;
 
             osg::ref_ptr<osgText::Text> value = new osgText::Text;
             geode->addDrawable(value.get());
@@ -1912,7 +1920,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageLabel->setText(
                         "DatabasePager time to merge new tiles - average: ");
 
-                pos.x() = averageLabel->getBound().xMax();
+                pos.x() = getBound(averageLabel).xMax();
 
                 osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
                 geode->addDrawable(averageValue.get());
@@ -1923,7 +1931,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 averageValue->setPosition(pos);
                 averageValue->setText("1000");
 
-                pos.x() = averageValue->getBound().xMax()
+                pos.x() = getBound(averageValue).xMax()
                         + 2.0f * characterSize;
 
                 osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
@@ -1935,7 +1943,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minLabel->setPosition(pos);
                 minLabel->setText("min: ");
 
-                pos.x() = minLabel->getBound().xMax();
+                pos.x() = getBound(minLabel).xMax();
 
                 osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
                 geode->addDrawable(minValue.get());
@@ -1946,7 +1954,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 minValue->setPosition(pos);
                 minValue->setText("1000");
 
-                pos.x() = minValue->getBound().xMax() + 2.0f * characterSize;
+                pos.x() = getBound(minValue).xMax() + 2.0f * characterSize;
 
                 osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
                 geode->addDrawable(maxLabel.get());
@@ -1957,7 +1965,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxLabel->setPosition(pos);
                 maxLabel->setText("max: ");
 
-                pos.x() = maxLabel->getBound().xMax();
+                pos.x() = getBound(maxLabel).xMax();
 
                 osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
                 geode->addDrawable(maxValue.get());
@@ -1968,7 +1976,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxValue->setPosition(pos);
                 maxValue->setText("1000");
 
-                pos.x() = maxValue->getBound().xMax();
+                pos.x() = getBound(maxValue).xMax();
 
                 osg::ref_ptr<osgText::Text> requestsLabel = new osgText::Text;
                 geode->addDrawable(requestsLabel.get());
@@ -1979,7 +1987,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestsLabel->setPosition(pos);
                 requestsLabel->setText("requests: ");
 
-                pos.x() = requestsLabel->getBound().xMax();
+                pos.x() = getBound(requestsLabel).xMax();
 
                 osg::ref_ptr<osgText::Text> requestList = new osgText::Text;
                 geode->addDrawable(requestList.get());
@@ -1990,7 +1998,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 requestList->setPosition(pos);
                 requestList->setText("0");
 
-                pos.x() = requestList->getBound().xMax() + 2.0f * characterSize;
+                pos.x() = getBound(requestList).xMax() + 2.0f * characterSize;
                 ;
 
                 osg::ref_ptr<osgText::Text> compileLabel = new osgText::Text;
@@ -2002,7 +2010,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileLabel->setPosition(pos);
                 compileLabel->setText("tocompile: ");
 
-                pos.x() = compileLabel->getBound().xMax();
+                pos.x() = getBound(compileLabel).xMax();
 
                 osg::ref_ptr<osgText::Text> compileList = new osgText::Text;
                 geode->addDrawable(compileList.get());
@@ -2013,7 +2021,7 @@ void CVRStatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 compileList->setPosition(pos);
                 compileList->setText("0");
 
-                pos.x() = maxLabel->getBound().xMax();
+                pos.x() = getBound(maxLabel).xMax();
 
                 geode->setCullCallback(
                         new PagerCallback(dp,minValue.get(),maxValue.get(),
@@ -2436,9 +2444,9 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
         {
             //extra space added to pad side
             label->setText(pluginList[i] + ":  000.00");
-            if(label->getBound().xMax() > startBlocks)
+            if(getBound(label).xMax() > startBlocks)
             {
-                startBlocks = label->getBound().xMax();
+                startBlocks = getBound(label).xMax();
             }
         }
     }
@@ -2454,9 +2462,9 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
                 continue;
             }
             label->setText(_defaultViewerTimeBars[i]->label + "  000.00");
-            if(label->getBound().xMax() > startBlocks)
+            if(getBound(label).xMax() > startBlocks)
             {
-                startBlocks = label->getBound().xMax();
+                startBlocks = getBound(label).xMax();
             }
         }
     }
@@ -2470,9 +2478,9 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
                 continue;
             }
             label->setText(_customViewerTimeBars[i]->label + "  000.00");
-            if(label->getBound().xMax() > startBlocks)
+            if(getBound(label).xMax() > startBlocks)
             {
-                startBlocks = label->getBound().xMax();
+                startBlocks = getBound(label).xMax();
             }
         }
     }
@@ -2488,9 +2496,9 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
                 continue;
             }
             label->setText(_defaultCameraTimeBars[i]->label + "  000.00");
-            if(label->getBound().xMax() > startBlocks)
+            if(getBound(label).xMax() > startBlocks)
             {
-                startBlocks = label->getBound().xMax();
+                startBlocks = getBound(label).xMax();
             }
         }
     }
@@ -2504,9 +2512,9 @@ void CVRStatsHandler::calculateStartBlocks(float & startBlocks, float leftPos,
                 continue;
             }
             label->setText(_customCameraTimeBars[i]->label + "  000.00");
-            if(label->getBound().xMax() > startBlocks)
+            if(getBound(label).xMax() > startBlocks)
             {
-                startBlocks = label->getBound().xMax();
+                startBlocks = getBound(label).xMax();
             }
         }
     }
@@ -2528,7 +2536,7 @@ void CVRStatsHandler::createTimeBar(osg::Stats * viewerStats, osg::Stats* stats,
     label->setPosition(pos);
     label->setText(stb->label);
 
-    pos.x() = label->getBound().xMax() + _spaceSize;
+    pos.x() = getBound(label).xMax() + _spaceSize;
 
     osg::ref_ptr<osgText::Text> value = new osgText::Text;
     geode->addDrawable(value.get());

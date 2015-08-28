@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuRangeValue.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 
@@ -115,7 +116,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     float width2;
 
-    osg::BoundingBox bbmin = _minValue->getBound();
+    osg::BoundingBox bbmin = getBound(_minValue);
 
     width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -141,7 +142,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bbmin = _currentValue->getBound();
+    bbmin = getBound(_currentValue);
 
     width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -167,12 +168,12 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_maxValue.get());
     _geodeSelected->addDrawable(_maxValue.get());
 
-    bbmin = _maxValue->getBound();
+    bbmin = getBound(_maxValue);
     width2 += bbmin.xMax() - bbmin.xMin();
 
     _height = _iconHeight * 2.0 + _border;
 
-    osg::BoundingBox bb = _label->getBound();
+    osg::BoundingBox bb = getBound(_label);
     _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border,width2);
 }
 
@@ -183,11 +184,11 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
     float width1 = 0.0;
 
-    osg::BoundingBox bb = _label->getBound();
+    osg::BoundingBox bb = getBound(_label);
     width1 = bb.xMax() - bb.xMin() + _iconHeight + _border;
 
     float width2 = 0.0;
-    bb = _minValue->getBound();
+    bb = getBound(_label);
     width2 = bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     char buffer[7];
@@ -210,10 +211,10 @@ void BoardMenuRangeValueGeometry::updateGeometry()
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bb = _currentValue->getBound();
+    bb = getBound(_currentValue);
     width2 += bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
-    bb = _maxValue->getBound();
+    bb = getBound(_maxValue);
     width2 += bb.xMax() - bb.xMin();
 
     _width = std::max(width1,width2);

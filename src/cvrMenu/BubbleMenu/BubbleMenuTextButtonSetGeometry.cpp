@@ -3,6 +3,7 @@
 
 #include <cvrUtil/LocalToWorldVisitor.h>
 #include <cvrUtil/Intersection.h>
+#include <cvrUtil/Bounds.h>
 
 #include <cvrKernel/SceneManager.h>
 #include <cvrKernel/NodeMask.h>
@@ -313,7 +314,7 @@ BubbleMenuTextButtonSetGeometry::TextButtonGeometry * BubbleMenuTextButtonSetGeo
             osgText::Text::CENTER_CENTER);
     tbg->textSelected->addDrawable(textd);
 
-    osg::BoundingBox bb = textd->getBound();
+    osg::BoundingBox bb = getBound(textd);
     osg::Vec3 scale, trans;
     float scalef;
     if((_buttonWidth * 0.85) / (bb.xMax() - bb.xMin())

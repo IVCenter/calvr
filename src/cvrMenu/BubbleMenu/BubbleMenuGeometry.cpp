@@ -15,12 +15,14 @@
 #include <cvrMenu/MenuRangeValue.h>
 #include <cvrMenu/SubMenu.h>
 #include <cvrMenu/BubbleMenu/Lerp.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osgText/Text>
 #include <osg/Geometry>
 #include <osgDB/ReadFile>
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
+#include <osg/Version>
 
 #include <iostream>
 #include <cstdlib>
@@ -382,7 +384,7 @@ void BubbleMenuGeometry::calibrateTextSize(float textSize)
     textNode->setText("A");
 
     osg::BoundingBox bb;
-    bb = textNode->getBound();
+    bb = getBound(textNode);
 
     float height = bb.zMax() - bb.zMin();
 
