@@ -27,6 +27,7 @@
 #include <osgViewer/Renderer>
 #include <osg/PolygonMode>
 #include <osg/Geometry>
+#include <osg/BlendFunc>
 
 using namespace cvr;
 
@@ -642,6 +643,10 @@ void CVRStatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setClearMask(0);
 
     _camera->setRenderer(new osgViewer::Renderer(_camera.get()));
+
+    osg::StateSet * stateset = _camera->getOrCreateStateSet();
+    osg::BlendFunc * bf = new osg::BlendFunc(osg::BlendFunc::SRC_ALPHA,osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+    stateset->setAttributeAndModes(bf,osg::StateAttribute::ON);
 
     _initialized = true;
 }
