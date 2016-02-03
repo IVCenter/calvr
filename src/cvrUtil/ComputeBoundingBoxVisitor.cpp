@@ -1,6 +1,8 @@
 #include <cvrUtil/ComputeBoundingBoxVisitor.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geode>
+#include <osg/Version>
 
 #include <iostream>
 
@@ -17,7 +19,8 @@ void ComputeBoundingBoxVisitor::apply(osg::Geode &geode)
 {
     for(unsigned int i = 0; i < geode.getNumDrawables(); i++)
     {
-        osg::BoundingBox bb = geode.getDrawable(i)->computeBound();
+        osg::BoundingBox bb = cvr::getBound(geode.getDrawable(i));
+
         m_bb.expandBy(bb.corner(0) * m_curMatrix);
         m_bb.expandBy(bb.corner(1) * m_curMatrix);
         m_bb.expandBy(bb.corner(2) * m_curMatrix);

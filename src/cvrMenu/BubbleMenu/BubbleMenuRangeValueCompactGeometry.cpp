@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuRangeValueCompact.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 #include <osg/PolygonMode>
@@ -96,7 +97,7 @@ void BubbleMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
 
     _label = make3DText(mrv->getLabel(),_textSize,osg::Vec3(0,0,0),_textColor);
 
-    osg::BoundingBox bbb = _label->getBound();
+    osg::BoundingBox bbb = getBound(_label);
     float width = bbb.xMax() - bbb.xMin();
 
     _label->setPosition(osg::Vec3(_radius / 2,0,0));
@@ -134,10 +135,10 @@ void BubbleMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     _geodeSelected->addDrawable(_currentValue.get());
 
     osg::BoundingBox bb;
-    bb = _label->getBound();
+    bb = getBound(_label);
     _widthLabel += bb.xMax() - bb.xMin();
 
-    bb = _currentValue->getBound();
+    bb = getBound(_currentValue);
     _widthValue += bb.xMax() - bb.xMin();
 
     _height = _iconHeight;
@@ -183,7 +184,7 @@ void BubbleMenuRangeValueCompactGeometry::updateGeometry()
 
     _geodeSelected->addDrawable(_currentValue.get());
 
-    osg::BoundingBox bb = _currentValue->getBound();
+    osg::BoundingBox bb = getBound(_currentValue);
     _widthValue = bb.xMax() - bb.xMin() + _border + _iconHeight;
 
     if(_group->getNumParents())

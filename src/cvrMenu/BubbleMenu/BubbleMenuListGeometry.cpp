@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuList.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 #include <osg/PolygonMode>
@@ -107,7 +108,7 @@ void BubbleMenuListGeometry::createGeometry(MenuItem * item)
 
     _geode->addDrawable(sphereGeom);
 
-    osg::BoundingBox bb = _valuesSelected[margin]->getBound();
+    osg::BoundingBox bb = getBound(_valuesSelected[margin]);
     _width = bb.xMax() - bb.xMin() + _iconHeight * 2 + _border;
     _height = _iconHeight;
 
@@ -160,7 +161,7 @@ void BubbleMenuListGeometry::updateGeometry()
         float maxWidth = 0;
         for(int i = 0; i < valueCount; i++)
         {
-            osg::BoundingBox bb = _valuesSelected[i]->getBound();
+            osg::BoundingBox bb = getBound(_valuesSelected[i]);
             float width = bb.xMax() - bb.xMin() + _iconHeight + _border;
             if(width > maxWidth)
                 maxWidth = width;
@@ -199,7 +200,7 @@ void BubbleMenuListGeometry::updateGeometry()
     {
         _geodeSelected->addDrawable(_valuesSelected[valueCount / 2]);
 
-        osg::BoundingBox bb = _value->getBound();
+        osg::BoundingBox bb = getBound(_value);
         _width = bb.xMax() - bb.xMin() + _iconHeight * 2 + _border;
     }
 }

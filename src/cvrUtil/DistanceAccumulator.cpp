@@ -5,9 +5,11 @@
  */
 
 #include <cvrUtil/DistanceAccumulator.h>
+#include <cvrUtil/Bounds.h>
 #include <osg/Geode>
 #include <osg/Transform>
 #include <osg/Projection>
+#include <osg/Version>
 #include <algorithm>
 #include <math.h>
 #include <limits.h>
@@ -241,7 +243,8 @@ void DistanceAccumulator::apply(osg::Geode &geode)
         {
             drawable = geode.getDrawable(i);
 
-            const osg::BoundingBox &bb = drawable->getBound();
+            const osg::BoundingBox &bb = cvr::getBound(drawable);
+
             if(bb.valid())
             {
                 bool containsTest = _localFrusta.back().contains(bb);

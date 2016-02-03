@@ -145,6 +145,14 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     std::cerr << "HostName: " << _hostName << std::endl;
 
+    if ( args.read( "--exec", ComController::application ) ) {
+        /* do nothing */
+    } else {
+        ComController::application = "CalVR";
+    }
+
+    printf("[II] CalVR sub-shell application: %s\n", ComController::application.c_str() );
+
     _config = new cvr::ConfigManager();
     if(!_config->init())
     {

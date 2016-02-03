@@ -13,6 +13,7 @@
 #include <osg/Texture2D>
 #include <osg/Vec4>
 #include <osgText/Text>
+#include <osg/Version>
 
 #include <string>
 

@@ -4,9 +4,9 @@
  *
  */
 
-#include <cvrUtil/DepthPartitionNode.h>
 #include <cvrKernel/SceneManager.h>
 #include <osgUtil/CullVisitor>
+#include <cvrUtil/DepthPartitionNode.h>
 
 #include <iostream>
 

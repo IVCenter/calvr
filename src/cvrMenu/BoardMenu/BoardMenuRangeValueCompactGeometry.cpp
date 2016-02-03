@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuRangeValueCompact.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrKernel/InteractionManager.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 
@@ -106,10 +107,10 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     _geodeSelected->addDrawable(_currentValue.get());
 
     osg::BoundingBox bb;
-    bb = _label->getBound();
+    bb = getBound(_label);
     _widthLabel += bb.xMax() - bb.xMin();
 
-    bb = _currentValue->getBound();
+    bb = getBound(_currentValue);
     _widthValue += bb.xMax() - bb.xMin();
 
     _height = _iconHeight;
@@ -141,7 +142,7 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
 
     _geodeSelected->addDrawable(_currentValue.get());
 
-    osg::BoundingBox bb = _currentValue->getBound();
+    osg::BoundingBox bb = getBound(_currentValue);
     _widthValue = bb.xMax() - bb.xMin() + _border + _iconHeight;
 
     _width = std::max(_widthLabel,_widthValue);

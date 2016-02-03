@@ -1,5 +1,6 @@
 #include <cvrMenu/BubbleMenu/BubbleMenuSubMenuGeometry.h>
 #include <cvrMenu/SubMenu.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
 #include <osg/PolygonMode>
@@ -96,7 +97,7 @@ void BubbleMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
         _geode->addDrawable(textNode);
 
-        osg::BoundingBox bb = textNode->getBound();
+        osg::BoundingBox bb = getBound(textNode);
         _width = bb.xMax() - bb.xMin();
         _height = bb.zMax() - bb.zMin() + _border;
 
@@ -122,7 +123,7 @@ void BubbleMenuSubMenuGeometry::createGeometry(MenuItem * item)
         osgText::Text3D * textNode = make3DText(submenu->getName(),_textSize,
                 osg::Vec3(0,0,0),_textColor);
 
-        osg::BoundingBox bb = textNode->getBound();
+        osg::BoundingBox bb = getBound(textNode);
         _width = bb.xMax() - bb.xMin();
         _height = _iconHeight;
 

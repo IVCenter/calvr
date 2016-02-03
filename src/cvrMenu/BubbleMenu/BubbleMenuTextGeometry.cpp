@@ -1,5 +1,6 @@
 #include <cvrMenu/BubbleMenu/BubbleMenuTextGeometry.h>
 #include <cvrMenu/MenuText.h>
+#include <cvrUtil/Bounds.h>
 
 using namespace cvr;
 
@@ -47,7 +48,7 @@ void BubbleMenuTextGeometry::createGeometry(MenuItem * item)
 
     _text->setMaximumWidth(mb->getMaxWidth());
 
-    osg::BoundingBox bb = _text->getBound();
+    osg::BoundingBox bb = getBound(_text);
     _width = bb.xMax() - bb.xMin(); // + _iconHeight + _border;
     if(mb->getIndent())
     {
@@ -101,7 +102,7 @@ void BubbleMenuTextGeometry::updateGeometry()
         }
         _text->setPosition(pos);
 
-        osg::BoundingBox bb = _text->getBound();
+        osg::BoundingBox bb = getBound(_text);
         _width = bb.xMax() - bb.xMin(); // + _iconHeight + _border;
 
         if(mb->getIndent())

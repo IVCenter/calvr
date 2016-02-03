@@ -1,7 +1,9 @@
 #include <cvrMenu/BoardMenu/BoardMenuCheckboxGeometry.h>
 #include <cvrMenu/MenuCheckbox.h>
+#include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
+#include <osg/Version>
 
 using namespace cvr;
 
@@ -61,7 +63,7 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
      textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
      textNode->setText(checkbox->getText());*/
 
-    osg::BoundingBox bb = textNode->getBound();
+    osg::BoundingBox bb = getBound(textNode);
     _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
     //mg->height = bb.zMax() - bb.zMin();
     _height = _iconHeight;
@@ -130,7 +132,7 @@ void BoardMenuCheckboxGeometry::updateGeometry()
             if(text->getText().createUTF8EncodedString() != checkbox->getText())
             {
                 text->setText(checkbox->getText());
-                osg::BoundingBox bb = text->getBound();
+                osg::BoundingBox bb = getBound(text);
                 _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
                 text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
                         0));
