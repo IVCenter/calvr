@@ -131,8 +131,8 @@ bool ScreenConfig::init()
 
     setClearColor(osg::Vec4(r,g,b,a));
 
-    computeViewProj();
-    updateCamera();
+    //computeViewProj();
+    //updateCamera();
 
     bool stereoStatus = ConfigManager::getBool("value","EyeSeparation",true);
 

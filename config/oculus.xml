@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+
+
+   <Background g="0.0" a="0.0" />
+
+   <Stencil value="true" />
+   <MultiThreaded value="CullDrawThreadPerContext" />
+   <PreSwapOperation value="NONE" />
+   <SyncToVBlank value="off" />
+   <Near value="100"/>
+   <Far value="100000000" />
+   <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
+   <MultiSample value="0" />
+    <Background r="0.0" />
+
+   <ShowAxis value="off" />
+   <Freeze value="off" />
+
+   <ConfigDebug value="false" />
+   <EventDebug value="false" />
+
+   <Input>
+     <TrackingDebug value="true" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+
+     <TrackingSystem1 value="OCULUS">
+       <NumBodies value="1" />
+       <Orientation h="0" p="90" r="0" />
+       <Offset x="0" y="0" z="200" />
+
+       <Body0>
+         <Orientation p="-90" />
+       </Body0>
+     </TrackingSystem1>
+
+     <TrackingSystem2 value="VRPN">
+       <Offset x="0" y="-100" z="-210" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="2" />
+       <NumButtons value="16" />
+       <NumValuators value="6" />
+
+       <VRPN>
+         <Server value="Tracker0@localhost" />
+       </VRPN>
+       
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem2>
+
+     <NumHeads value="1" />
+     <Head0Address system="1" body="0" />
+
+     <NumHands value="2" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0xF"  />
+       <Valuator0 system="0" number="0" type="NON_ZERO" />
+     </Hand0>
+     <Hand1>
+       <Address system="2" body="1" />
+       <ButtonMask system2="0xFF00" />
+       <ButtonMapping value="4,0,1,2,3" />
+       <Valuator0 system="2" number="3" type="NON_ZERO" />
+       <Valuator1 system="2" number="4" type="NON_ZERO" />
+     </Hand1>
+   </Input>
+    
+   <Plugin>
+
+    <PanoViewLOD value="on">
+     <FloorOffset value="1500" />
+     <PrintValues value="true" />
+     <ShaderDir value="C:\data\Pans\PansLOD\glsl\" />
+     <ImageSearchPath value="C:\data\Pans\PansLOD" />
+     <DefaultConfigDir value="C:\data\Pans\PansLOD\config\" />
+     <CacheSize value="256" />
+     <Pans>
+                <Luxor>
+                    <LuxorKarnakObelisks />
+                    <LuxorMedinetColumnsBlueCeiling />
+                    <LuxorMedinetHabuCourt />
+                    <LuxorMedinetHabuRoyalTreasure1 />
+                    <LuxorMedinetHabuRoyalTreasure2 />
+                    <LuxorMHoutback />
+                    <LuxorMHwall />
+                    <LuxorRamasseum />
+                    <LuxorSet />
+                    <LuxorTempleChapel />
+                    <LuxorTempleEntryNight />
+                    <LuxorTempleNight2 />
+                    <LuxorTempleOutsideColumn />
+                </Luxor>
+                <KAUST>
+                    <KAUSTmuseum1 />
+                    <KAUSTmuseum2 />
+                    <SaudiMar11 />
+                </KAUST>
+                <Wisconsin>
+                    <Taliesin-Path />
+                    <UPset />
+                    <UW-Madison-2 />
+                    <wiscoSet />
+                </Wisconsin>
+                <BluebonnetSet />
+                <CineGrid />
+                <KACST-Indoor2 />
+                <KACST-Outdoor1 />
+                <Dr-Seuss />
+     </Pans>
+    </PanoViewLOD>
+
+    <StructView value="on">
+      <Layer0File value="C:\data\baybridge\T1_Block_01A_One_Quarter_wPiles_StructSteel01.osgb" />
+      <Layer1File value="C:\data\baybridge\T1Block01B_One_Quarter_Struct_Steel.osgb" />
+      <Layer2File value="C:\data\baybridge\T1Block02_OneQuarter_TopSlabRebar.osgb" />
+      <Layer3File value="C:\data\baybridge\T1Block03_OneQuarter_BotSlabRebar.osgb" />
+      <Layer4File value="C:\data\baybridge\T1Block04_One_Quarter_CutOutRebar.osgb" />
+      <Layer5File value="C:\data\baybridge\T1Block05_OneQuarter_Walls.osgb" />
+      <Layer6File value="C:\data\baybridge\T1Block06_One_Quarter_FendersRebars.osgb" />
+      <Layer7File value="C:\data\baybridge\T1Block07_OneQuarter_SkirtRebar.osgb" />
+      <Layer8File value="C:\data\baybridge\T1Block08_One_Quarter_SkirtABLayout.osgb" />
+      <Layer9File value="C:\data\baybridge\T1Block11_One_Quarter_Drainage.osgb" />
+      <Layer10File value="C:\data\baybridge\T1Block13_FullConcrete.osgb" />
+      <Layer11File value="C:\data\baybridge\Tower-all.osgb" />
+    </StructView>
+
+    <ModelLoader value="on" >
+      <ConfigDir value="C:\data\models\ModelLoader\" />
+      <Files>
+        <se_building path="C:\data\models\se_building.osgb" mask="1" />
+        <RadLab path="C:\data\models\RadLab.osgb" mask="1" />
+	      <QaserAlBint path="C:\data\QaserAlBint_VRML\Qaser_Albent.osgb" mask="1" scale="1000.0" z="0.6" />
+        <spacestation path="C:\data\models\spacestation.osgb" mask="1" />
+      </Files>
+    </ModelLoader>
+
+   </Plugin>
+
+   <ContextMenus>
+     <Scale value="1.3" />
+     <MinDistance value="750" />
+     <MaxDistance value="1500" />
+     <DefaultOpenButton value="1" />
+   </ContextMenus>
+
+   <MenuSystem type="BOARDMENU">
+    <BoardMenu>
+     <Position distance="1500" />
+     <Scale value="1.3" />
+     <Buttons select="0" open="1" />
+     <Trigger value="DOUBLECLICK" />
+    </BoardMenu>
+   </MenuSystem>
+
+   <ViewerPosition x="0" y="-2957" z="0" />
+   <SceneSize value="1000" />
+
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+    <Pipe server="0" screen="0" name="0" />
+   </PipeConfig>
+
+   <ChannelConfig>
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="OCULUS"  windowIndex="0"  name="0"  />
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="1" />
+   </ChannelConfig>
+   
+   <WindowConfig>
+    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+   </WindowConfig>
+
+
+   <ScreenConfig>
+   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
+   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
+   </ScreenConfig>
+

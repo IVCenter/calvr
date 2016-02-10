@@ -38,15 +38,28 @@ class TrackerOculus : public TrackerBase
         virtual void update(
                 std::map<int,std::list<InteractionEvent*> > & eventMap);
 
-		static ovrHmd getHMD()
+		static ovrHmdDesc getHMD()
 		{
 			return _hmd;
 		}
+		
+		static ovrSession getSession()
+		{
+			return _session;
+		}
+
+		static bool isInit()
+		{
+			return _init;
+		}
+
     protected:
 
         TrackedBody _body; ///< head body info
 
-		static ovrHmd _hmd;
+		static ovrHmdDesc _hmd;
+		static ovrSession _session;
+		static bool _init;
 };
 
 /**

@@ -151,9 +151,9 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
 
     osg::Vec3Array* verts = new osg::Vec3Array();
     verts->push_back(pos);
+	verts->push_back(pos + osg::Vec3(0, 0, height));
+	verts->push_back(pos + osg::Vec3(width, 0, height));
     verts->push_back(pos + osg::Vec3(width,0,0));
-    verts->push_back(pos + osg::Vec3(width,0,height));
-    verts->push_back(pos + osg::Vec3(0,0,height));
 
     geo->setVertexArray(verts);
 
@@ -166,9 +166,10 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
 
     osg::Vec2Array* texcoords = new osg::Vec2Array;
     texcoords->push_back(osg::Vec2(0,0));
+	texcoords->push_back(osg::Vec2(0, 1));
+	texcoords->push_back(osg::Vec2(1, 1));
     texcoords->push_back(osg::Vec2(1,0));
-    texcoords->push_back(osg::Vec2(1,1));
-    texcoords->push_back(osg::Vec2(0,1));
+    
     geo->setTexCoordArray(0,texcoords);
 
     return geo;

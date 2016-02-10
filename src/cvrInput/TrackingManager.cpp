@@ -13,10 +13,6 @@
 #include <cvrInput/TrackerGyroMouse.h>
 #endif
 
-#ifdef WITH_OVR
-#include <cvrInput/TrackerOculus.h>
-#endif
-
 #include <cvrConfig/ConfigManager.h>
 #include <cvrKernel/ComController.h>
 #include <cvrKernel/InteractionManager.h>
@@ -32,6 +28,10 @@
 #include <cvrUtil/TimeOfDay.h>
 #else
 #include <sys/time.h>
+#endif
+
+#ifdef WITH_OVR
+#include <cvrInput/TrackerOculus.h>
 #endif
 
 using namespace cvr;

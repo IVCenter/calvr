@@ -42,6 +42,8 @@ CVRStatsHandler::CVRStatsHandler(osgViewer::ViewerBase * viewer) :
                 0), _numBlocks(8), _blockMultiplier(10000.0), _statsWidth(
                 1280.0f), _statsHeight(1024.0f), _viewer(viewer)
 {
+	_cameraMask = 0;
+
     _camera = new osg::Camera;
     _camera->setRenderer(new osgViewer::Renderer(_camera.get()));
     _camera->setProjectionResizePolicy(osg::Camera::FIXED);
@@ -642,7 +644,7 @@ void CVRStatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setViewMatrix(osg::Matrix::identity());
 
     // only clear the depth buffer
-    _camera->setClearMask(0);
+	_camera->setClearMask(_cameraMask);
 
     _camera->setRenderer(new osgViewer::Renderer(_camera.get()));
 
@@ -3113,4 +3115,10 @@ void CVRStatsHandler::removeStatLine(std::string statName)
     {
         refresh();
     }
+}
+
+void CVRStatsHandler::setCameraClearMask(unsigned int mask)
+{
+	_cameraMask = mask;
+	_camera->setClearMask(mask);
 }

@@ -15,6 +15,16 @@ FIND_PATH(OVR_INCLUDE_DIR OVR.h
   /opt/include
 )
 
+FIND_PATH(OVR_KERNEL_SRC_DIR Kernel/OVR_RefCount.h
+  PATHS
+  /usr/local/include
+  /usr/include
+  /sw/include # Fink
+  /opt/local/include # DarwinPorts
+  /opt/csw/include # Blastwave
+  /opt/include
+)
+
 FIND_LIBRARY(OVR_LIBRARY 
   NAMES ovr ovr64
   PATHS $ENV{OVR_HOME}
@@ -35,7 +45,7 @@ FIND_LIBRARY(OVR_LIBRARY
 )
 
 SET(OVR_FOUND "NO")
-IF(OVR_LIBRARY AND OVR_INCLUDE_DIR)
+IF(OVR_LIBRARY AND OVR_INCLUDE_DIR AND OVR_KERNEL_SRC_DIR)
   SET(OVR_FOUND "YES")
-ENDIF(OVR_LIBRARY AND OVR_INCLUDE_DIR)
+ENDIF(OVR_LIBRARY AND OVR_INCLUDE_DIR AND OVR_KERNEL_SRC_DIR)
 

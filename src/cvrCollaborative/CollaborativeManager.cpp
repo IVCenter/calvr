@@ -1,3 +1,9 @@
+#ifdef WIN32
+#define M_PI 3.141592653589793238462643
+#define NOMINMAX
+#include <algorithm>
+#endif
+
 #include <cvrCollaborative/CollaborativeManager.h>
 #include <cvrCollaborative/CollaborativeThread.h>
 #include <cvrConfig/ConfigManager.h>
@@ -16,10 +22,6 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 #include <osgDB/ReadFile>
-
-#ifdef WIN32
-#define M_PI 3.141592653589793238462643
-#endif
 
 #ifndef MSG_NOSIGNAL
 #define MSG_NOSIGNAL 0
@@ -1051,15 +1053,10 @@ osg::Node * CollaborativeManager::makeHead(int num)
                     center.x() = bb.xMin() + (bb.xMax() - bb.xMin()) * 0.5;
                     center.y() = bb.yMin() + (bb.yMax() - bb.yMin()) * 0.5;
                     center.z() = bb.zMin() + (bb.zMax() - bb.zMin()) * 0.5;
-#ifndef WIN32
                     scale = std::min(250.0 / (bb.xMax() - bb.xMin()),
                             250.0 / (bb.yMax() - bb.yMin()));
                     scale = std::min((double)scale,
                             250.0 / (bb.zMax() - bb.zMin()));
-#else
-                    scale = min(250.0 / (bb.xMax() - bb.xMin()), 250.0 / (bb.yMax() - bb.yMin()));
-                    scale = min((double)scale,250.0 / (bb.zMax() - bb.zMin()));
-#endif
                 }
                 else
                 {

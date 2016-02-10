@@ -158,3 +158,13 @@ void ScreenBase::computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view,
             * osg::Matrix::lookAt(osg::Vec3(0,0,0),osg::Vec3(0,1,0),
                     osg::Vec3(0,0,1));
 }
+
+void ScreenBase::setNear(double near)
+{
+	_near = near;
+}
+
+void ScreenBase::setFar(double far)
+{
+	_far = far;
+}

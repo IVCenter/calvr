@@ -11,8 +11,11 @@
 #include <osg/Geometry>
 #include <osg/Camera>
 #include <osgUtil/SceneView>
+#include <OpenThreads/Mutex>
 
 #include <OVR.h>
+
+#include <list>
 
 namespace cvr
 {
@@ -22,25 +25,37 @@ namespace cvr
  * @{
  */
 
-struct OculusCameraCallback : public osg::Camera::DrawCallback
+struct OculusPreDrawCallback : public osg::Camera::DrawCallback
 {
-	virtual void operator() (osg::RenderInfo &renderInfo) const;
+	virtual void operator()(osg::RenderInfo& renderInfo) const;
+	void initTextureSet() const;
 
-	ovrHmd hmd;
-	ovrPosef headPose[2];
-	ovrFrameTiming frameTiming;
-	mutable osg::ref_ptr<osg::Uniform> _leftTWStart;
-	mutable osg::ref_ptr<osg::Uniform> _leftTWEnd;
-	mutable osg::ref_ptr<osg::Uniform> _rightTWStart;
-	mutable osg::ref_ptr<osg::Uniform> _rightTWEnd;
+	mutable GLuint fbo;
+	int width;
+	int height;
+	ovrSession * session;
+	int eye;
+	mutable ovrLayerEyeFov * layer;
+	mutable ovrSwapTextureSet * textureSet;
 };
 
-struct OculusFrameEndCallback : public PerContextCallback
+struct OculusFramePoseInfo
 {
-	virtual void perContextCallback(int contextid, PCCType type) const;
+	int frameNumber;
+	ovrPosef RenderPose[2];
+};
 
-	int screenID;
-	ovrHmd hmd;
+struct OculusSwapCallback : public osg::GraphicsContext::SwapCallback 
+{
+	void swapBuffersImplementation(osg::GraphicsContext *gc);
+
+	void addFramePose(OculusFramePoseInfo * pinfo);
+
+	OpenThreads::Mutex mutex;
+	std::list<OculusFramePoseInfo*> poseList;
+	ovrSession * session;
+	ovrLayerEyeFov * layer;
+	bool disableVsync;
 };
 
 /**
@@ -81,37 +96,31 @@ class ScreenOculus : public ScreenBase
         virtual void adjustViewportCoords(int & x, int & y);
 
     protected:
-		ovrHmd _hmd;
-        osg::Matrix _viewLeft; ///< left eye view matrix
-        osg::Matrix _viewRight; ///< right eye view matrix
-        osg::Matrix _projLeft; ///< left eye projection matrix
-        osg::Matrix _projRight; ///< right eye projection matrix
+		void initTextures();
+
+		bool _init;
+		ovrSession _session;
+		ovrHmdDesc _hmd;
+		ovrLayerEyeFov _layer;
+		ovrVector3f _hmdToEyeViewOffset[2];
+
+		osg::Matrix _viewLeft; ///< left eye view matrix
+		osg::Matrix _viewRight; ///< right eye view matrix
+		osg::Matrix _projLeft; ///< left eye projection matrix
+		osg::Matrix _projRight; ///< right eye projection matrix
 
 		osg::ref_ptr<osg::Texture2D> _leftTexture;
 		osg::ref_ptr<osg::Texture2D> _leftDepthTexture;
 		osg::ref_ptr<osg::Texture2D> _rightTexture;
 		osg::ref_ptr<osg::Texture2D> _rightDepthTexture;
 
-        osg::ref_ptr<osg::Camera> _cameraLeft; ///< osg::Camera for this screen
+		osg::ref_ptr<osg::Camera> _cameraLeft; ///< osg::Camera for this screen
 		osg::ref_ptr<osg::Camera> _cameraRight;
-		osg::ref_ptr<osg::Camera> _cameraDistLeft;
-		osg::ref_ptr<osg::Camera> _cameraDistRight;
-
-		osg::ref_ptr<osg::Shader> _distVert;
-		osg::ref_ptr<osg::Shader> _distFrag;
-		osg::ref_ptr<osg::Program> _distProg;
-
-		//osg::ref_ptr<osg::Geode> _meshGeode;
-		//osg::ref_ptr<osg::Geometry> _meshGeom;
-
-		osg::ref_ptr<osg::Geode> _meshLeftGeode;
-		osg::ref_ptr<osg::Geode> _meshRightGeode;
-		osg::ref_ptr<osg::Geometry> _meshLeftGeom;
-		osg::ref_ptr<osg::Geometry> _meshRightGeom;
 
 		osg::Vec3 _cameraPos;
-		osg::ref_ptr<OculusCameraCallback> _cameraCallback;
-		OculusFrameEndCallback * _fec;
+
+		OculusSwapCallback * _swapCallback;
+		long long _frameNumber;
 };
 
 /**

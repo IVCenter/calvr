@@ -113,10 +113,7 @@ class CVRKERNEL_EXPORT ScreenBase
         /**
          * @brief Set near plane value for all screens
          */
-        static void setNear(double near)
-        {
-            _near = near;
-        }
+		static void setNear(double near);
 
         /**
          * @brief Get far plane value for all screens
@@ -129,10 +126,7 @@ class CVRKERNEL_EXPORT ScreenBase
         /**
          * @brief Set far plane value for all screens
          */
-        static void setFar(double far)
-        {
-            _far = far;
-        }
+		static void setFar(double far);
 
         /**
          * @brief Get the eye separation

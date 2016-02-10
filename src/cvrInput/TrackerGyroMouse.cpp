@@ -98,11 +98,9 @@ void VRPN_CALLBACK handleAnalogGM(void *userdata, const vrpn_ANALOGCB a)
      printf(" (%d chans)\n", a.num_channel);*/
 
     std::vector<float> * valList = (std::vector<float> *)userdata;
-#ifndef WIN32
+
     int numVal = std::min((size_t)a.num_channel,valList->size());
-#else
-    int numVal = min((size_t)a.num_channel, valList->size());
-#endif
+
     for(int i = 0; i < numVal; i++)
     {
         valList->at(i) = a.channel[i];
@@ -289,12 +287,9 @@ void TrackerGyroMouse::update(
     float useSensitivity = 1.0;
     if(_sensitivity < 0.0 && SceneManager::instance()->getTiledWallValid())
     {
-#ifndef WIN32
         float maxDem = std::max(SceneManager::instance()->getTiledWallWidth(),
                 SceneManager::instance()->getTiledWallHeight());
-#else
-        float maxDem = max(SceneManager::instance()->getTiledWallWidth(),SceneManager::instance()->getTiledWallHeight());
-#endif
+
         if(maxDem > 0.0)
         {
             _sensitivity = 2000.0 / maxDem;
@@ -371,13 +366,9 @@ void TrackerGyroMouse::update(
 
     if(xoffset != 0.0)
     {
-#ifndef WIN32
         xoffset = std::max(xoffset,-maxv);
         xoffset = std::min(xoffset,maxv);
-#else
-        xoffset = max(xoffset,-maxv);
-        xoffset = min(xoffset,maxv);
-#endif
+
 
         xoffset /= maxv;
         //xchange = log(fabs(xoffset)+1.0)/factor;
@@ -392,13 +383,8 @@ void TrackerGyroMouse::update(
 
     if(yoffset != 0.0)
     {
-#ifndef WIN32
         yoffset = std::max(yoffset,-maxv);
         yoffset = std::min(yoffset,maxv);
-#else
-        yoffset = max(yoffset,-maxv);
-        yoffset = min(yoffset,maxv);
-#endif
 
         yoffset /= maxv;
 
@@ -419,17 +405,11 @@ void TrackerGyroMouse::update(
     if(_hand >= 0 && !TrackingManager::instance()->getHandButtonMask(_hand)
             && (_posX < 0.0 || _posX > 1.0 || _posY < 0.0 || _posY > 1.0))
     {
-#ifndef WIN32
         _posY = std::max(_posY,0.0f);
         _posY = std::min(_posY,1.0f);
         _posX = std::max(_posX,0.0f);
         _posX = std::min(_posX,1.0f);
-#else
-        _posY = max(_posY,0.0f);
-        _posY = min(_posY,1.0f);
-        _posX = max(_posX,0.0f);
-        _posX = min(_posX,1.0f);
-#endif
+
         posChanged = true;
     }
 

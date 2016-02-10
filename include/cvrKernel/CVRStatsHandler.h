@@ -141,6 +141,7 @@ class CVRKERNEL_EXPORT CVRStatsHandler : public osgGA::GUIEventHandler
         void removeStatTimeBarWithLine(std::string statDurationName);
         void removeStatLine(std::string statName);
 
+		void setCameraClearMask(unsigned int mask);
     protected:
 
         void setUpHUDCamera(osgViewer::ViewerBase* viewer);
@@ -255,6 +256,7 @@ class CVRKERNEL_EXPORT CVRStatsHandler : public osgGA::GUIEventHandler
         float _spaceSize;
 
         osgViewer::ViewerBase * _viewer;
+		unsigned int _cameraMask;
 };
 
 }
