@@ -10,6 +10,7 @@
 
 #include <osg/ClipNode>
 #include <osg/MatrixTransform>
+#include <osg/BoundingBox>
 
 #include <vector>
 #include <map>
@@ -291,8 +292,7 @@ class CVRKERNEL_EXPORT SceneManager
         void initAxis();
 
         void detectWallBounds();
-        void updateToExtremeCorners(std::vector<float>& corners);
-        void getNodeWorldCorners(std::vector<float>& corners);
+        void getNodeWorldCorners(osg::BoundingBoxf& bound);
 
         void updateActiveObject();
         SceneObject * findChildActiveObject(SceneObject * object,

@@ -953,8 +953,7 @@ void SceneManager::initAxis()
 
 void SceneManager::detectWallBounds()
 {
-    unsigned int const FLOATS_FOR_CORNERS = 12;
-    osg::Vec3 final_tl, final_bl, final_tr, final_br;
+    osg::BoundingBoxf overallSize;
 
     if(ComController::instance()->getNumSlaves() > 0)
     {
@@ -964,135 +963,63 @@ void SceneManager::detectWallBounds()
         {
             int num_slaves = ComController::instance()->getNumSlaves();
 
-            unsigned int num_corners = num_slaves * FLOATS_FOR_CORNERS;
-            float* msgs_back = new float[num_corners];
+            osg::BoundingBoxf* msgs_back = new osg::BoundingBoxf[num_slaves];
             if(!cvr::ComController::instance()->readSlaves(msgs_back,
-                    sizeof(float) * FLOATS_FOR_CORNERS))
+                    sizeof(osg::BoundingBoxf)))
             {
                 delete[] msgs_back;
                 return;
             }
-            std::vector<float> corners(msgs_back,msgs_back + num_corners);
-            updateToExtremeCorners(corners);
-            delete[] msgs_back;
 
-            if(!cvr::ComController::instance()->sendSlaves(corners.data(),
-                    sizeof(float) * corners.size()))
+            // expand to find total size
+            for(int i = 0; i < num_slaves; i ++)
+            {
+                overallSize.expandBy(msgs_back[i]);
+            }
+
+            delete[] msgs_back;
+            
+            // send computed bounds to slaves
+            if(!cvr::ComController::instance()->sendSlaves(&overallSize,
+                    sizeof(osg::BoundingBoxf)))
             {
                 return;
             }
-
-            final_bl = osg::Vec3(corners[0],corners[1],corners[2]);
-            final_br = osg::Vec3(corners[3],corners[4],corners[5]);
-            final_tr = osg::Vec3(corners[6],corners[7],corners[8]);
-            final_tl = osg::Vec3(corners[9],corners[10],corners[11]);
         }
-        else // Send to master
+        else
         {
-            osg::Vec3 world_tl, world_bl, world_tr, world_br;
 
-            std::vector<float> corners;
-
+            osg::BoundingBoxf corners;
             getNodeWorldCorners(corners);
 
-            if(!cvr::ComController::instance()->sendMaster(corners.data(),
-                    sizeof(float) * corners.size()))
+            if(!cvr::ComController::instance()->sendMaster(&corners,
+                    sizeof(osg::BoundingBoxf)))
             {
                 return;
             }
 
             // Receive final extremes from master
-            float msgs_back[FLOATS_FOR_CORNERS];
-            if(!cvr::ComController::instance()->readMaster(msgs_back,
-                    sizeof(float) * FLOATS_FOR_CORNERS))
+            if(!cvr::ComController::instance()->readMaster(&overallSize,
+                    sizeof(osg::BoundingBoxf)))
             {
                 return;
             }
-
-            final_bl = osg::Vec3(msgs_back[0],msgs_back[1],msgs_back[2]);
-            final_br = osg::Vec3(msgs_back[3],msgs_back[4],msgs_back[5]);
-            final_tr = osg::Vec3(msgs_back[6],msgs_back[7],msgs_back[8]);
-            final_tl = osg::Vec3(msgs_back[9],msgs_back[10],msgs_back[11]);
-
-            unsigned int j = 0;
         }
     }
-    else // Make wall bounds the size of the window
+    else // just use head node bounds
     {
-        std::vector<float> corners;
 
-        getNodeWorldCorners(corners);
-
-        final_bl = osg::Vec3(corners[0],corners[1],corners[2]);
-        final_br = osg::Vec3(corners[3],corners[4],corners[5]);
-        final_tr = osg::Vec3(corners[6],corners[7],corners[8]);
-        final_tl = osg::Vec3(corners[9],corners[10],corners[11]);
+        getNodeWorldCorners(overallSize);
     }
 
-    osg::Vec3 wallCenter((final_bl.x() + final_tr.x()) / 2.0,final_tr.y(),
-            (final_bl.z() + final_tr.z()) / 2.0);
-    _wallTransform.makeTranslate(wallCenter);
+    // set the bounds now
+    _wallTransform.makeTranslate(overallSize.center());
 
-    /*mWorldBounds.worldXMin = final_bl.x();
-     mWorldBounds.worldXMax = final_tr.x();
-     mWorldBounds.worldZMin = final_bl.z();
-     mWorldBounds.worldZMax = final_tr.z();
-     mWorldBounds.worldY  = final_tr.y();*/
-
-    _wallWidth = (final_tr.x() - final_bl.x());
-    _wallHeight = (final_tr.z() - final_bl.z());
+    _wallWidth = overallSize.xMax() - overallSize.xMin();
+    _wallHeight = overallSize.zMax() - overallSize.zMin();
 }
 
-void SceneManager::updateToExtremeCorners(std::vector<float>& corners)
-{
-    unsigned int const FLOATS_FOR_CORNERS = 12;
-    unsigned int num_corners = corners.size();
-    assert(num_corners % FLOATS_FOR_CORNERS == 0);
-
-    osg::Vec3 bl, br, tr, tl;
-
-    for(unsigned int i = 0; i < num_corners; i += FLOATS_FOR_CORNERS)
-    {
-        if(0 == i)
-        {
-            bl = osg::Vec3(corners[i + 0],corners[i + 1],corners[i + 2]);
-            br = osg::Vec3(corners[i + 3],corners[i + 4],corners[i + 5]);
-            tr = osg::Vec3(corners[i + 6],corners[i + 7],corners[i + 8]);
-            tl = osg::Vec3(corners[i + 9],corners[i + 10],corners[i + 11]);
-        }
-        else // check for extremes
-        {
-            if(corners[i + 0] < bl.x() || corners[i + 2] < bl.z())
-                bl = osg::Vec3(corners[i + 0],corners[i + 1],corners[i + 2]);
-
-            if(corners[i + 3] > br.x() || corners[i + 5] < br.z())
-                br = osg::Vec3(corners[i + 3],corners[i + 4],corners[i + 5]);
-
-            if(corners[i + 6] > tr.x() || corners[i + 8] > tr.z())
-                tr = osg::Vec3(corners[i + 6],corners[i + 7],corners[i + 8]);
-
-            if(corners[i + 9] < tl.x() || corners[i + 11] > tl.z())
-                tl = osg::Vec3(corners[i + 9],corners[i + 10],corners[i + 11]);
-        }
-    }
-
-    corners.clear();
-
-    corners.push_back(bl.x());
-    corners.push_back(bl.y());
-    corners.push_back(bl.z());
-    corners.push_back(br.x());
-    corners.push_back(br.y());
-    corners.push_back(br.z());
-    corners.push_back(tr.x());
-    corners.push_back(tr.y());
-    corners.push_back(tr.z());
-    corners.push_back(tl.x());
-    corners.push_back(tl.y());
-    corners.push_back(tl.z());
-}
-
-void SceneManager::getNodeWorldCorners(std::vector<float>& corners)
+void SceneManager::getNodeWorldCorners(osg::BoundingBox& box)
 {
     int num_screens = ScreenConfig::instance()->getNumScreens();
     for(int i = 0; i < num_screens; ++i)
@@ -1103,29 +1030,11 @@ void SceneManager::getNodeWorldCorners(std::vector<float>& corners)
         osg::Matrix screen_to_world_xfrm =
                 ScreenConfig::instance()->getScreenInfo(i)->transform;
 
-        //        std::cerr << "WxH = " << width << " x " << height << std::endl;
-
-        osg::Vec3 tl, bl, tr, br;
-        bl = osg::Vec3(-width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm;
-        br = osg::Vec3(width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm;
-        tr = osg::Vec3(width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm;
-        tl = osg::Vec3(-width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm;
-
-        corners.push_back(bl.x());
-        corners.push_back(bl.y());
-        corners.push_back(bl.z());
-        corners.push_back(br.x());
-        corners.push_back(br.y());
-        corners.push_back(br.z());
-        corners.push_back(tr.x());
-        corners.push_back(tr.y());
-        corners.push_back(tr.z());
-        corners.push_back(tl.x());
-        corners.push_back(tl.y());
-        corners.push_back(tl.z());
+        box.expandBy(osg::Vec3(-width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm); 
+        box.expandBy(osg::Vec3(width / 2.f,0.f,-height / 2.f) * screen_to_world_xfrm);
+        box.expandBy(osg::Vec3(width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm);
+        box.expandBy(osg::Vec3(-width / 2.f,0.f,height / 2.f) * screen_to_world_xfrm);
     }
-
-    updateToExtremeCorners(corners);
 }
 
 void SceneManager::updateActiveObject()
