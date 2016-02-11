@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
+#include <math.h> 
 
 #include <mxml.h>
 

@@ -2,6 +2,7 @@
 
 #include <vrpn_Connection.h>
 
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <sstream>
