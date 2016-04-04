@@ -6,7 +6,8 @@
 
 #include <cvrInput/TrackerBase.h>
 
-#include <OVR.h>
+#include <OVR_Version.h>
+#include <OVR_CAPI.h>
 
 namespace cvr
 {

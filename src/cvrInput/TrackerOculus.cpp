@@ -45,9 +45,6 @@ bool TrackerOculus::init(std::string tag)
 
 	_hmd = ovr_GetHmdDesc(_session);
 
-
-	ovr_ConfigureTracking(_session, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
-
 	_body.x = 0.0;
 	_body.y = 0.0;
 	_body.z = 0.0;
@@ -111,9 +108,19 @@ void TrackerOculus::update(std::map<int,std::list<InteractionEvent*> > & eventMa
 
 	if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
 	{
+#if OVR_PRODUCT_VERSION < 1
 		_body.x = (ts.HeadPose.ThePose.Position.x - ts.LeveledCameraPose.Position.x) * 1000.0;
 		_body.y = (ts.HeadPose.ThePose.Position.y - ts.LeveledCameraPose.Position.y) * 1000.0;
 		_body.z = (ts.HeadPose.ThePose.Position.z - ts.LeveledCameraPose.Position.z) * 1000.0;
+#else
+		if (ovr_GetTrackerCount(_session) > 0)
+		{
+			ovrTrackerPose tp = ovr_GetTrackerPose(_session, 0);
+			_body.x = (ts.HeadPose.ThePose.Position.x - tp.LeveledPose.Position.x) * 1000.0;
+			_body.y = (ts.HeadPose.ThePose.Position.y - tp.LeveledPose.Position.y) * 1000.0;
+			_body.z = (ts.HeadPose.ThePose.Position.z - tp.LeveledPose.Position.z) * 1000.0;
+		}
+#endif
 
 		_body.qx = ts.HeadPose.ThePose.Orientation.x;
 		_body.qy = ts.HeadPose.ThePose.Orientation.y;

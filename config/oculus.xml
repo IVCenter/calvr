@@ -4,7 +4,7 @@
    <Background g="0.0" a="0.0" />
 
    <Stencil value="true" />
-   <MultiThreaded value="CullDrawThreadPerContext" />
+   <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
    <PreSwapOperation value="NONE" />
    <SyncToVBlank value="off" />
    <Near value="100"/>
@@ -19,8 +19,10 @@
    <ConfigDebug value="false" />
    <EventDebug value="false" />
 
+   <Oculus mirror="true" framebufferSRGB="false" />
+
    <Input>
-     <TrackingDebug value="true" />
+     <TrackingDebug value="false" />
      <TrackingSystem0 value="MOUSE">
        <Offset x="0" y="0" z="0" />
        <Orientation h="0" p="0" r="0" />
@@ -150,6 +152,18 @@
       </Files>
     </ModelLoader>
 
+     <VirvoVolume value="on">
+       <ConfigDir value="C:\data\volume" />
+       <Files>
+         <Larry_colon value="C:\data\volume\2012-01-mri-series14-tf-8bit.xvf" />
+         <Skull value="C:\data\volume\fctskull.xvf" />
+         <Heart value="C:\data\volume\heart-1076-1724-8bit.xvf" />
+         <Head-MRI value="C:\data\volume\mri-head-8bit.xvf" />
+         <Series3 value="C:\data\volume\series3-1mm-8bit-tiff-tf.xvf" />
+         <El_Fadilh value="C:\data\volume\el_fadilh-512-loch.xvf" />
+       </Files>
+     </VirvoVolume>
+     
    </Plugin>
 
    <ContextMenus>
