@@ -13,7 +13,8 @@
 #include <osgUtil/SceneView>
 #include <OpenThreads/Mutex>
 
-#include <OVR.h>
+#include <OVR_Version.h>
+#include <OVR_CAPI.h>
 
 #include <list>
 
@@ -30,13 +31,27 @@ struct OculusPreDrawCallback : public osg::Camera::DrawCallback
 	virtual void operator()(osg::RenderInfo& renderInfo) const;
 	void initTextureSet() const;
 
-	mutable GLuint fbo;
+	mutable GLuint fbo[2];
+	mutable int fboIndex;
+	mutable bool twoSV;
 	int width;
 	int height;
 	ovrSession * session;
 	int eye;
 	mutable ovrLayerEyeFov * layer;
+#if OVR_PRODUCT_VERSION < 1
 	mutable ovrSwapTextureSet * textureSet;
+	mutable ovrTexture * mirrorTex;
+	int mWidth, mHeight;
+	unsigned int mFormat;
+#else
+	mutable ovrTextureSwapChain textureChain;
+	mutable ovrTextureSwapChainDesc textureChainDesc;
+	ovrMirrorTextureDesc mirrorDesc;
+	mutable ovrMirrorTexture mirrorTex;
+#endif
+	osg::ref_ptr<osg::Texture2D> previewTexture;
+
 };
 
 struct OculusFramePoseInfo
@@ -116,6 +131,8 @@ class ScreenOculus : public ScreenBase
 
 		osg::ref_ptr<osg::Camera> _cameraLeft; ///< osg::Camera for this screen
 		osg::ref_ptr<osg::Camera> _cameraRight;
+
+		osg::ref_ptr<osg::Camera> _previewCamera;
 
 		osg::Vec3 _cameraPos;
 

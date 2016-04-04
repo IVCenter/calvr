@@ -644,7 +644,7 @@ void cosine(osg::Vec3 toZone0, osg::Vec3 orientation0, float &contribution0,
     contribution1 /= cTotal;
 }
 
-#ifdef WIN32
+#if 0 // ifdef WIN32
 double erf(double x)
 {
     // constants

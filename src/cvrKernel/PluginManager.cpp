@@ -48,7 +48,11 @@ bool PluginManager::init()
     while(position < pluginsHome.size())
     {
         size_t lastPosition = position;
+#ifndef WIN32
         position = pluginsHome.find_first_of(':',position);
+#else
+		position = pluginsHome.find_first_of(';', position);
+#endif
         if(position == std::string::npos)
         {
             size_t length = pluginsHome.size() - lastPosition;
