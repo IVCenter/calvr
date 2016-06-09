@@ -8,6 +8,15 @@
 
 using namespace cvr;
 
+struct RetrieveKey
+{
+    template <typename T>
+    typename T::first_type operator()(T keyValuePair) const
+    {
+        return keyValuePair.first;
+    }
+};
+
 FileHandler * FileHandler::_myPtr = NULL;
 
 FileHandler::FileHandler()
@@ -76,6 +85,13 @@ bool FileHandler::loadFile(std::string file)
     std::cerr << "Unable to load file " << file << std::endl;
 
     return false;
+}
+
+std::vector<std::string> FileHandler::getRegisteredExts()
+{
+    std::vector<std::string> keys;
+    std::transform(_extMap.begin(), _extMap.end(), back_inserter(keys), RetrieveKey());
+    return keys;
 }
 
 void FileHandler::registerExt(std::string ext, FileLoadCallback * flc)

@@ -48,13 +48,6 @@ class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
             return _clearColorBuffer;
         }
 
-        /** Specify the render order for each Camera */
-        void setRenderOrder(osg::Camera::RenderOrder order);
-        inline osg::Camera::RenderOrder getRenderOrder() const
-        {
-            return _renderOrder;
-        }
-
         /** Set/get the maximum depth that the scene will be traversed to.
          Defaults to UINT_MAX. */
         void setMaxTraversalDepth(unsigned int depth)
@@ -100,7 +93,6 @@ class CVRUTIL_EXPORT DepthPartitionNode : public osg::Group
         // The NodeVisitor that computes cameras for the scene
         osg::ref_ptr<DistanceAccumulator> _distAccumulator;
 
-        osg::Camera::RenderOrder _renderOrder;
         bool _clearColorBuffer;
 
         // Cameras that should be used to draw the scene.  These cameras

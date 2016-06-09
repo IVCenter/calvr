@@ -6,6 +6,7 @@
 
 #include <cvrKernel/SceneManager.h>
 #include <osgUtil/CullVisitor>
+#include <osg/Version>
 #include <cvrUtil/DepthPartitionNode.h>
 
 #include <iostream>
@@ -41,8 +42,8 @@ DepthPartitionNode::DepthPartitionNode()
 
 DepthPartitionNode::DepthPartitionNode(const DepthPartitionNode& dpn,
         const osg::CopyOp& copyop) :
-        osg::Group(dpn,copyop), _active(dpn._active), _renderOrder(
-                dpn._renderOrder), _clearColorBuffer(dpn._clearColorBuffer), _forwardOtherTraversals(
+        osg::Group(dpn,copyop), _active(dpn._active), 
+                _clearColorBuffer(dpn._clearColorBuffer), _forwardOtherTraversals(
                 dpn._forwardOtherTraversals)
 {
     _numCameras = 0;
@@ -57,7 +58,6 @@ void DepthPartitionNode::init()
     _active = true;
     _numCameras = 0;
     setCullingActive(false);
-    _renderOrder = osg::Camera::POST_RENDER;
     _clearColorBuffer = true;
 }
 
@@ -93,24 +93,6 @@ void DepthPartitionNode::setClearColorBuffer(bool clear)
      else
      _cameraList[0]->setClearMask(GL_DEPTH_BUFFER_BIT);
      }*/
-}
-
-void DepthPartitionNode::setRenderOrder(osg::Camera::RenderOrder order)
-{
-    _renderOrder = order;
-
-    for(std::map<int,CameraList>::iterator it = _cameraList.begin();
-            it != _cameraList.end(); it++)
-    {
-
-        // Update the render order for existing Cameras
-        unsigned int numCameras = it->second.size();
-        for(unsigned int i = 0; i < numCameras; i++)
-        {
-            it->second[i]->setRenderOrder(_renderOrder);
-        }
-
-    }
 }
 
 void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
@@ -211,6 +193,9 @@ void DepthPartitionNode::traverse(osg::NodeVisitor &nv)
 
             // Redirect the CullVisitor to the current camera
             currCam->accept(nv);
+
+            //osg::ref_ptr<osg::Camera> cam = new osg::Camera;
+            //cam->accept(nv);
         }
 
         // Set the clear color for the first camera
@@ -348,6 +333,11 @@ osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
                 rootCam->getRenderTargetImplementation());
         camera->setDrawBuffer(rootCam->getDrawBuffer());
         camera->setReadBuffer(rootCam->getReadBuffer());
+
+#if ( OSG_VERSION_GREATER_OR_EQUAL(3, 4, 0) )  
+        camera->setAttachmentMapModifiedCount(
+                rootCam->getAttachmentMapModifiedCount());
+#endif        
         camera->getBufferAttachmentMap().clear();
         for(osg::Camera::BufferAttachmentMap::iterator it =
                 rootCam->getBufferAttachmentMap().begin();
@@ -387,7 +377,7 @@ osg::Camera* DepthPartitionNode::createOrReuseCamera(const osg::Matrix& proj,
 
     camera->removeChildren(0,camera->getNumChildren());
     camera->setCullingActive(false);
-    camera->setRenderOrder(_renderOrder);
+    camera->setRenderOrder( osg::Camera::NESTED_RENDER);
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 
     // We will compute the near/far planes ourselves

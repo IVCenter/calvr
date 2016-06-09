@@ -66,6 +66,10 @@ class CVRKERNEL_EXPORT FileHandler
          */
         void unregisterExt(std::string ext, FileLoadCallback * fl);
 
+
+        //TODO need header
+        std::vector<std::string> getRegisteredExts();
+
     protected:
         FileHandler();
 
