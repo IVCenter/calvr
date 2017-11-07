@@ -322,17 +322,23 @@ CVRViewer::CVRViewer() :
             "SingleThreaded");
     if(threadModel == "CullThreadPerCameraDrawThreadPerContext")
     {
+#if OSG_VERSION_LESS_THAN(3, 5, 5)
         osg::Referenced::setThreadSafeReferenceCounting(true);
+#endif
         setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
     }
     else if(threadModel == "CullDrawThreadPerContext")
     {
+#if OSG_VERSION_LESS_THAN(3, 5, 5)
         osg::Referenced::setThreadSafeReferenceCounting(true);
+#endif
         setThreadingModel(CullDrawThreadPerContext);
     }
     else if(threadModel == "DrawThreadPerContext")
     {
+#if OSG_VERSION_LESS_THAN(3, 5, 5)
         osg::Referenced::setThreadSafeReferenceCounting(true);
+#endif
         setThreadingModel(DrawThreadPerContext);
     }
     else
@@ -1551,7 +1557,7 @@ void CVRViewer::startThreading()
     }
 
     // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
-    osg::Referenced::setThreadSafeReferenceCounting(true);
+    //osg::Referenced::setThreadSafeReferenceCounting(true);
 
     Scenes scenes;
     getScenes(scenes);
