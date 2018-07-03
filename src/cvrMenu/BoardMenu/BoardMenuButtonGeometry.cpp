@@ -51,7 +51,7 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
 	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
     }
 
-    osg::BoundingBox bb = getBound(textNode);
+    osg::BoundingBox bb = getBoundingBox(textNode);
     _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
     _height = _iconHeight;
 
@@ -87,7 +87,7 @@ void BoardMenuButtonGeometry::updateGeometry()
             if(text->getText().createUTF8EncodedString() != button->getText())
             {
                 text->setText(button->getText());
-        osg::BoundingBox bb = getBound(text);
+        osg::BoundingBox bb = getBoundingBox(text);
 
 		if(button->getIndent())
 		{
