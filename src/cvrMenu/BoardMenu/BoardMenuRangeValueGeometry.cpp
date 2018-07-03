@@ -116,7 +116,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     float width2;
 
-    osg::BoundingBox bbmin = getBound(_minValue);
+    osg::BoundingBox bbmin = getBoundingBox(_minValue);
 
     width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -142,7 +142,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bbmin = getBound(_currentValue);
+    bbmin = getBoundingBox(_currentValue);
 
     width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -168,12 +168,12 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_maxValue.get());
     _geodeSelected->addDrawable(_maxValue.get());
 
-    bbmin = getBound(_maxValue);
+    bbmin = getBoundingBox(_maxValue);
     width2 += bbmin.xMax() - bbmin.xMin();
 
     _height = _iconHeight * 2.0 + _border;
 
-    osg::BoundingBox bb = getBound(_label);
+    osg::BoundingBox bb = getBoundingBox(_label);
     _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border,width2);
 }
 
@@ -184,11 +184,11 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
     float width1 = 0.0;
 
-    osg::BoundingBox bb = getBound(_label);
+    osg::BoundingBox bb = getBoundingBox(_label);
     width1 = bb.xMax() - bb.xMin() + _iconHeight + _border;
 
     float width2 = 0.0;
-    bb = getBound(_label);
+    bb = getBoundingBox(_label);
     width2 = bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     char buffer[7];
@@ -211,10 +211,10 @@ void BoardMenuRangeValueGeometry::updateGeometry()
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bb = getBound(_currentValue);
+    bb = getBoundingBox(_currentValue);
     width2 += bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
-    bb = getBound(_maxValue);
+    bb = getBoundingBox(_maxValue);
     width2 += bb.xMax() - bb.xMin();
 
     _width = std::max(width1,width2);
