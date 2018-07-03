@@ -83,7 +83,7 @@ void BoardMenuTextButtonSetGeometry::createGeometry(MenuItem * item)
 
     //_text = makeText(mb->getText(), _textSize, osg::Vec3(_rowHeight + _boarder, -2, -_rowHeight / 2.0), _textColor);
 
-    //osg::BoundingBox bb = _text->getBound();
+    //osg::BoundingBox bb = _text->getBoundingBox();
     _width = mb->getWidth();
     //mg->height = bb.zMax() - bb.zMin();
     //_height = _rowHeight;
@@ -271,7 +271,7 @@ BoardMenuTextButtonSetGeometry::TextButtonGeometry * BoardMenuTextButtonSetGeome
             osgText::Text::CENTER_CENTER);
     tbg->textSelected->addDrawable(textd);
 
-    osg::BoundingBox bb = getBound(textd);
+    osg::BoundingBox bb = getBoundingBox(textd);
     osg::Vec3 scale, trans;
     float scalef;
     if((_buttonWidth * 0.85) / (bb.xMax() - bb.xMin())
