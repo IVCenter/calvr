@@ -101,7 +101,7 @@ void BoardMenuListGeometry::createGeometry(MenuItem * item)
 
     _geodeSelected->addDrawable(_valuesSelected[margin]);
 
-    osg::BoundingBox bb = getBound(_valuesSelected[margin]);
+    osg::BoundingBox bb = getBoundingBox(_valuesSelected[margin]);
     _width = bb.xMax() - bb.xMin() + _iconHeight * 2 + _border;
     _height = _iconHeight;
 
@@ -138,7 +138,7 @@ void BoardMenuListGeometry::updateGeometry()
         float maxWidth = 0;
         for(int i = 0; i < valueCount; i++)
         {
-            osg::BoundingBox bb = getBound(_valuesSelected[i]);
+            osg::BoundingBox bb = getBoundingBox(_valuesSelected[i]);
             float width = bb.xMax() - bb.xMin() + _iconHeight + _border;
             if(width > maxWidth)
                 maxWidth = width;
@@ -177,7 +177,7 @@ void BoardMenuListGeometry::updateGeometry()
     {
         _geodeSelected->addDrawable(_valuesSelected[valueCount / 2]);
 
-        osg::BoundingBox bb = getBound(_value);
+        osg::BoundingBox bb = getBoundingBox(_value);
         _width = bb.xMax() - bb.xMin() + _iconHeight * 2 + _border;
     }
 }
