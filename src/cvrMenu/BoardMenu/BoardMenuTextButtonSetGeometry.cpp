@@ -271,7 +271,7 @@ BoardMenuTextButtonSetGeometry::TextButtonGeometry * BoardMenuTextButtonSetGeome
             osgText::Text::CENTER_CENTER);
     tbg->textSelected->addDrawable(textd);
 
-    osg::BoundingBox bb = getBoundingBox(textd);
+    osg::BoundingBox bb = cvr::getBound(textd);
     osg::Vec3 scale, trans;
     float scalef;
     if((_buttonWidth * 0.85) / (bb.xMax() - bb.xMin())
