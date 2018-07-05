@@ -107,10 +107,10 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     _geodeSelected->addDrawable(_currentValue.get());
 
     osg::BoundingBox bb;
-    bb = getBoundingBox(_label);
+    bb = cvr::getBound(_label);
     _widthLabel += bb.xMax() - bb.xMin();
 
-    bb = getBoundingBox(_currentValue);
+    bb = cvr::getBound(_currentValue);
     _widthValue += bb.xMax() - bb.xMin();
 
     _height = _iconHeight;
@@ -142,7 +142,7 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
 
     _geodeSelected->addDrawable(_currentValue.get());
 
-    osg::BoundingBox bb = getBoundingBox(_currentValue);
+    osg::BoundingBox bb = cvr::getBound(_currentValue);
     _widthValue = bb.xMax() - bb.xMin() + _border + _iconHeight;
 
     _width = std::max(_widthLabel,_widthValue);
