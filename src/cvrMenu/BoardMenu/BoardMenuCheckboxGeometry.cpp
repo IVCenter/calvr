@@ -63,7 +63,7 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
      textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
      textNode->setText(checkbox->getText());*/
 
-    osg::BoundingBox bb = getBoundingBox(textNode);
+    osg::BoundingBox bb = cvr::getBound(textNode);
     _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
     //mg->height = bb.zMax() - bb.zMin();
     _height = _iconHeight;
@@ -132,7 +132,7 @@ void BoardMenuCheckboxGeometry::updateGeometry()
             if(text->getText().createUTF8EncodedString() != checkbox->getText())
             {
                 text->setText(checkbox->getText());
-                osg::BoundingBox bb = getBoundingBox(text);
+                osg::BoundingBox bb = cvr::getBound(text);
                 _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
                 text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
                         0));
