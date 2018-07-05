@@ -48,7 +48,7 @@ void BoardMenuTextGeometry::createGeometry(MenuItem * item)
 
     _text->setMaximumWidth(mb->getMaxWidth());
 
-    osg::BoundingBox bb = getBoundingBox(_text);
+    osg::BoundingBox bb = cvr::getBound(_text);
     _width = bb.xMax() - bb.xMin(); // + _iconHeight + _border;
     if(mb->getIndent())
     {
@@ -86,7 +86,7 @@ void BoardMenuTextGeometry::updateGeometry()
         }
         _text->setPosition(pos);
 
-        osg::BoundingBox bb = getBoundingBox(_text);
+        osg::BoundingBox bb = cvr::getBound(_text);
         _width = bb.xMax() - bb.xMin(); // + _iconHeight + _border;
 
         if(mb->getIndent())
