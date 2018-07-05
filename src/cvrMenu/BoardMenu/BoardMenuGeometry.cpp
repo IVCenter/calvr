@@ -271,7 +271,7 @@ void BoardMenuGeometry::calibrateTextSize(float textSize)
     textNode->setText("A");
 
     osg::BoundingBox bb;
-    bb = getBound(textNode);
+    bb = cvr::getBound(textNode);
 
     float height = bb.zMax() - bb.zMin();
 
