@@ -116,7 +116,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
 
     float width2;
 
-    osg::BoundingBox bbmin = getBoundingBox(_minValue);
+    osg::BoundingBox bbmin = cvr::getBound(_minValue);
 
     width2 = bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -142,7 +142,7 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bbmin = getBoundingBox(_currentValue);
+    bbmin = cvr::getBound(_currentValue);
 
     width2 += bbmin.xMax() - bbmin.xMin() + _border;
 
@@ -168,12 +168,12 @@ void BoardMenuRangeValueGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(_maxValue.get());
     _geodeSelected->addDrawable(_maxValue.get());
 
-    bbmin = getBoundingBox(_maxValue);
+    bbmin = cvr::getBound(_maxValue);
     width2 += bbmin.xMax() - bbmin.xMin();
 
     _height = _iconHeight * 2.0 + _border;
 
-    osg::BoundingBox bb = getBoundingBox(_label);
+    osg::BoundingBox bb = cvr::getBound(_label);
     _width = std::max(bb.xMax() - bb.xMin() + _iconHeight + _border,width2);
 }
 
@@ -184,11 +184,11 @@ void BoardMenuRangeValueGeometry::updateGeometry()
 
     float width1 = 0.0;
 
-    osg::BoundingBox bb = getBoundingBox(_label);
+    osg::BoundingBox bb = cvr::getBound(_label);
     width1 = bb.xMax() - bb.xMin() + _iconHeight + _border;
 
     float width2 = 0.0;
-    bb = getBoundingBox(_label);
+    bb = cvr::getBound(_label);
     width2 = bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
     char buffer[7];
@@ -211,10 +211,10 @@ void BoardMenuRangeValueGeometry::updateGeometry()
     _geode->addDrawable(_currentValue.get());
     _geodeSelected->addDrawable(_currentValue.get());
 
-    bb = getBoundingBox(_currentValue);
+    bb = cvr::getBound(_currentValue);
     width2 += bb.xMax() - bb.xMin() + _border + _iconHeight + _border;
 
-    bb = getBoundingBox(_maxValue);
+    bb = cvr::getBound(_maxValue);
     width2 += bb.xMax() - bb.xMin();
 
     _width = std::max(width1,width2);
