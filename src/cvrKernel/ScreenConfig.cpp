@@ -75,7 +75,7 @@ bool ScreenConfig::init()
     }
     putenv(gsyncenv);
 
-    char * displayptr = getenv("DISPLAY");
+    const char * displayptr = getenv("DISPLAY");
     std::string displayenv;
 
     if(displayptr)

@@ -369,12 +369,14 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator()(
             (int)screen->_myInfo->myChannel->width,
             (int)screen->_myInfo->myChannel->height);
 
+#ifndef __ANDROID__
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
+#endif
 
     //GLint activeTexture,bindtex;
     //glGetIntegerv(GL_ACTIVE_TEXTURE,&activeTexture);
@@ -412,10 +414,10 @@ void ScreenInterlacedTopBottom::InterlaceCallback::operator()(
      glVertex2f(1.0,-1.0);
 
      glEnd();*/
-
+#ifndef __ANDROID__
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-
+#endif
     //glPopAttrib();
 }

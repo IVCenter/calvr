@@ -520,6 +520,7 @@ class ScreenMVStencil : public ScreenBase
         void fullscreenQuad(const osg::Vec3f &p0, const osg::Vec3f &p1,
                 const osg::Vec3f &p2, const osg::Vec3f &p3) const
         {
+#ifndef __ANDROID__
             GLint currentMatrixMode;
             glGetIntegerv(GL_MATRIX_MODE,&currentMatrixMode);
 
@@ -540,11 +541,13 @@ class ScreenMVStencil : public ScreenBase
             glPopMatrix();
 
             glMatrixMode(currentMatrixMode);
+#endif
         }
 
         void fullscreenTriangle(const osg::Vec3f &p0, const osg::Vec3f &p1,
                 const osg::Vec3f &p2) const
         {
+#ifndef __ANDROID__
             GLint currentMatrixMode;
             glGetIntegerv(GL_MATRIX_MODE,&currentMatrixMode);
 
@@ -564,6 +567,7 @@ class ScreenMVStencil : public ScreenBase
             glPopMatrix();
 
             glMatrixMode(currentMatrixMode);
+#endif
         }
         ScreenMVStencil();
         virtual ~ScreenMVStencil();

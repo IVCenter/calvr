@@ -16,6 +16,11 @@
 #include <cstdio>
 #include <cstdlib>
 
+#ifdef __ANDROID__
+#include <cvrUtil/AndroidGetenv.h>
+#include <cvrUtil/AndroidStdio.h>
+#endif
+
 #ifndef WIN32
 #include <unistd.h>
 #else

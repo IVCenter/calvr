@@ -32,6 +32,11 @@
 #pragma comment(lib, "wsock32.lib")
 #endif
 
+#ifdef __ANDROID__
+#include <cvrUtil/AndroidGetenv.h>
+#include <cvrUtil/AndroidStdio.h>
+#endif
+
 using namespace cvr;
 
 CalVR * CalVR::_myPtr = NULL;
@@ -130,7 +135,7 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     if(!args.read("--host-name",_hostName))
     {
-        char * chostname = getenv("CALVR_HOST_NAME");
+        const char * chostname = getenv("CALVR_HOST_NAME");
         if(chostname)
         {
             _hostName = chostname;
@@ -315,7 +320,7 @@ void CalVR::run()
 
 bool CalVR::setupDirectories()
 {
-    char * env;
+    const char * env;
 
     env = getenv("CALVR_CONFIG_DIR");
     if(env)

@@ -96,7 +96,7 @@ void ScreenMVStencil::computeScreenInfoXZ()
 void ScreenMVStencil::createCameras(unsigned int quantity)
 {
     std::string shaderDir;
-    char * cvrHome = getenv("CALVR_HOME");
+    const char * cvrHome = getenv("CALVR_HOME");
     if(cvrHome)
     {
         shaderDir = cvrHome;
@@ -617,6 +617,7 @@ bool ScreenMVStencil::handleCameraScreenIntersection(const CameraOrient & cam,
 // 3 - both of them have views overlapping
 void ScreenMVStencil::setupZones(CameraOrient & cam0, CameraOrient & cam1) const
 {
+#ifndef __ANDROID__
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
     if(!_debug_mode->getValue())
@@ -651,6 +652,7 @@ void ScreenMVStencil::setupZones(CameraOrient & cam0, CameraOrient & cam1) const
                 osg::Vec3f(1,-1,-1),osg::Vec3f(1,1,-1));
     }
     glPopAttrib();
+#endif
 
     static bool init_menu = true;
 

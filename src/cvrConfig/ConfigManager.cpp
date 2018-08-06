@@ -33,7 +33,7 @@ ConfigManager::~ConfigManager()
 
 bool ConfigManager::init()
 {
-    char * confDir = getenv("CALVR_CONFIG_DIR");
+    const char * confDir = getenv("CALVR_CONFIG_DIR");
     if(confDir)
     {
         _configDir = confDir;
@@ -44,7 +44,7 @@ bool ConfigManager::init()
     }
 
     std::string file;
-    char * confFile = getenv("CALVR_CONFIG_FILE");
+    const char * confFile = getenv("CALVR_CONFIG_FILE");
     if(confFile)
     {
         file = confFile;

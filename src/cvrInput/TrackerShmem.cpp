@@ -44,19 +44,22 @@ bool TrackerShmem::init(std::string tag)
     int shmKey = ConfigManager::getInt(tag + ".SHMEM.TrackerID",4126);
 
 #ifndef WIN32
-    int shmID = shmget(shmKey,sizeof(struct tracker_header),0);
-    if(shmID == -1)
-    {
-    }
-    else
-    {
-        _tracker = (tracker_header *)shmat(shmID,NULL,0);
-        if(_tracker == (tracker_header *)-1)
+    #ifndef __ANDROID__
+        int shmID = shmget(shmKey,sizeof(struct tracker_header),0);
+        if(shmID == -1)
         {
-            _tracker = NULL;
         }
-    }
-
+        else
+        {
+            _tracker = (tracker_header *)shmat(shmID,NULL,0);
+            if(_tracker == (tracker_header *)-1)
+            {
+                _tracker = NULL;
+            }
+        }
+    #else
+        //TODO: ANDROID?
+    #endif
 #else
     HANDLE shmID;
     std::stringstream cKey;
@@ -92,19 +95,22 @@ bool TrackerShmem::init(std::string tag)
     shmKey = ConfigManager::getInt(tag + ".SHMEM.ControllerID",4127);
 
 #ifndef WIN32
-    shmID = shmget(shmKey,sizeof(struct control_header),0);
-    if(shmID == -1)
-    {
-    }
-    else
-    {
-        _controller = (control_header *)shmat(shmID,NULL,0);
-        if(_controller == (control_header *)-1)
+    #ifndef __ANDROID__
+        shmID = shmget(shmKey,sizeof(struct control_header),0);
+        if(shmID == -1)
         {
-            _controller = NULL;
         }
-    }
-
+        else
+        {
+            _controller = (control_header *)shmat(shmID,NULL,0);
+            if(_controller == (control_header *)-1)
+            {
+                _controller = NULL;
+            }
+        }
+    #else
+        //TODO:android?
+    #endif
 #else
     cKey = std::stringstream();
     cKey << shmKey;

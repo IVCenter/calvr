@@ -1196,7 +1196,7 @@ void ScreenMVShader::PreDrawCallback::operator()(osg::RenderInfo & ri) const
     }
 
 #endif
-
+#ifndef __ANDROID__
     //std::cerr << "PreDraw." << std::endl;
     glMatrixMode(GL_TEXTURE);
 
@@ -1225,7 +1225,7 @@ void ScreenMVShader::PreDrawCallback::operator()(osg::RenderInfo & ri) const
 
     glActiveTexture(GL_TEXTURE0);
     glMatrixMode(GL_MODELVIEW);
-
+#endif
     if(_indexState == TOGGLE)
     {
         if(_index)
