@@ -41,7 +41,14 @@ const char* Environment::getVar(const char* name ) {
   return it->second.c_str();
 }
 
+void Environment::setVar(std::string key, std::string value) {
+    _instance->_env[key] = value;
+}
+
 const char * __android_getenv(const char * name){
     return Environment::getInstance()->getVar(name);
+}
+void __android_setenv(std::string key, std::string value){
+    Environment::getInstance()->setVar(key, value);
 }
 #undef let
