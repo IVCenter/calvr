@@ -129,7 +129,7 @@ bool SceneManager::init()
             "ContextMenus.DefaultOpenButton",1);
 
     _wallWidth = _wallHeight = 2000.0;
-
+#ifndef __ANDROID__
     std::string typestr = ConfigManager::getEntry("value","TiledWall.Type",
             "PLANAR");
     if(typestr == "PLANAR")
@@ -162,6 +162,9 @@ bool SceneManager::init()
     //std::cerr << "WallWidth: " << _wallWidth << " WallHeight: " << _wallHeight << std::endl;
 
     initPointers();
+    bool b = ConfigManager::getBool("HidePointer",false);
+    setHidePointer(b);
+#endif
     initLights();
     initSceneState();
     initAxis();
@@ -170,8 +173,7 @@ bool SceneManager::init()
 
     setAxis(b);
 
-    b = ConfigManager::getBool("HidePointer",false);
-    setHidePointer(b);
+
 
     return true;
 }

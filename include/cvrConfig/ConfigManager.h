@@ -50,6 +50,11 @@ class CVRCONFIG_EXPORT ConfigManager
         bool init();
 
         /**
+         * Get pointer to static class instance
+         */
+        static ConfigManager * instance();
+
+        /**
          * @brief Looks for a text config file value in tag path, with the default attribute
          *        "value"
          * @param path Tag to search for in the Tag1.Tag2.Tag3.Tag4 format, where Tag3
@@ -326,6 +331,7 @@ class CVRCONFIG_EXPORT ConfigManager
         static std::vector<ConfigFileReader*> _configFileList; ///< list of all loaded config files
         static std::string _configDir; ///< CalVR config file directory
         static bool _debugOutput;
+        static ConfigManager * _myPtr;
 };
 
 /**

@@ -44,7 +44,7 @@ bool MenuSystem::init()
     if(menuType == "BOARDMENU")
     {
         _type = BOARDMENU;
-        _menu = new BoardMenu();
+        _menu = new BoardMenu(true);
     }
     else if(menuType == "BUBBLEMENU")
     {

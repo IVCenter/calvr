@@ -282,7 +282,7 @@ class CVRKERNEL_EXPORT SceneManager
 
         bool getPointOnTiledWall(const osg::Matrix & mat,
                 osg::Vec3 & wallPoint);
-
+        osg::ref_ptr<osg::Group> getSceneRoot(){ return  _actualRoot;}
     protected:
         SceneManager();
 

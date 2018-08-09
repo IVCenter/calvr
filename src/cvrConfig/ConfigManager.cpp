@@ -2,6 +2,10 @@
 #include <cvrConfig/XMLReader.h>
 #include <cvrKernel/CalVR.h>
 
+#ifdef __ANDROID__
+#include <cvrUtil/AndroidGetenv.h>
+#endif
+
 #include <iostream>
 #include <sstream>
 
@@ -10,13 +14,12 @@
 #include <stack>
 #include <algorithm>
 
-#include <mxml.h>
-
 using namespace cvr;
 
 std::vector<ConfigFileReader*> ConfigManager::_configFileList;
 std::string ConfigManager::_configDir;
 bool ConfigManager::_debugOutput = false;
+ConfigManager * ConfigManager::_myPtr = NULL;
 
 ConfigManager::ConfigManager()
 {
@@ -153,6 +156,15 @@ bool ConfigManager::init()
     }
 
     return true;
+}
+
+ConfigManager * ConfigManager::instance()
+{
+    if(!_myPtr)
+    {
+        _myPtr = new ConfigManager();
+    }
+    return _myPtr;
 }
 
 std::string ConfigManager::getEntry(std::string path, std::string def,

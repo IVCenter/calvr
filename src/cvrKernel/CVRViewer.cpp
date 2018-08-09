@@ -318,6 +318,7 @@ struct printOperation : public osg::Operation
 CVRViewer::CVRViewer() :
         osgViewer::Viewer()
 {
+#ifndef __ANDROID__
     std::string threadModel = ConfigManager::getEntry("value","MultiThreaded",
             "SingleThreaded");
     if(threadModel == "CullThreadPerCameraDrawThreadPerContext")
@@ -359,7 +360,9 @@ CVRViewer::CVRViewer() :
         ComController::instance()->readMaster(&_programStartTime,
                 sizeof(osg::Timer_t));
     }
-
+#else
+    setThreadingModel(SingleThreaded);
+#endif
     std::string cmode = ConfigManager::getEntry("value","CullingMode","CALVR");
     if(cmode == "CALVR")
     {
@@ -610,6 +613,10 @@ void CVRViewer::defaultUpdateTraversal()
 
 void CVRViewer::eventTraversal()
 {
+#ifdef __ANDROID__
+    osgViewer::Viewer::eventTraversal();
+    return;
+#endif
     if(_done || ComController::instance()->getIsSyncError())
         return;
 
@@ -1146,6 +1153,10 @@ void CVRViewer::eventTraversal()
 
 void CVRViewer::renderingTraversals()
 {
+#ifdef __ANDROID__
+    osgViewer::Viewer::renderingTraversals();
+    return;
+#endif
     if(ComController::instance()->getIsSyncError())
     {
         return;
@@ -1413,9 +1424,9 @@ void CVRViewer::renderingTraversals()
         startTime = osg::Timer::instance()->delta_s(getStartTick(),
                 osg::Timer::instance()->tick());
     }
-
+#ifndef __ANDROID__
     ComController::instance()->sync();
-
+#endif
     if(stats)
     {
         endTime = osg::Timer::instance()->delta_s(getStartTick(),
@@ -1896,12 +1907,13 @@ void CVRViewer::startThreading()
 
 void CVRViewer::frameStart()
 {
+    FrameUpdate frameUp;
+#ifndef __ANDROID__
     if(ComController::instance()->getIsSyncError())
     {
         return;
     }
 
-    FrameUpdate frameUp;
     if(ComController::instance()->isMaster())
     {
         frameUp.currentTime = osg::Timer::instance()->tick();
@@ -1913,7 +1925,9 @@ void CVRViewer::frameStart()
         ComController::instance()->readMaster(&frameUp,
                 sizeof(struct FrameUpdate));
     }
-
+#else
+    frameUp.currentTime = osg::Timer::instance()->tick();
+#endif
     _lastFrameStartTime = _frameStartTime;
     _frameStartTime = frameUp.currentTime;
 

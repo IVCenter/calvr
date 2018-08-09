@@ -34,6 +34,7 @@ class BoardMenu : public MenuBase
         friend class BoardMenuGeometry;
     public:
         BoardMenu();
+        BoardMenu(bool android);
         virtual ~BoardMenu();
 
         /**
