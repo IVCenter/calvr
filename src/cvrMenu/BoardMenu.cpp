@@ -60,17 +60,20 @@ BoardMenu::BoardMenu(bool android) {
     std::string fontfile;
 
     _iconDir = getenv("CALVR_RESOURCE_DIR");
+    //todo:icon in icon not resource
     BoardMenuGeometry::_iconDir = _iconDir;
     fontfile = _iconDir;
 
-    fontfile = fontfile + "/resources/ArenaCondensed.ttf";
+    fontfile = fontfile + "ArenaCondensed.ttf";
 
 //    struct stat buffer;
 //    if(stat(fontfile.c_str(), &buffer) ==0)
 //        LOGE("===============FONT FILE EXIST===================");
     std::ifstream font_stream(fontfile.c_str());
     osgText::Font * font = osgText::readFontStream(font_stream);
-    if(font)
+    osgText::Font * tfont = osgText::readRefFontFile(fontfile);
+
+    if(tfont)
     {
         BoardMenuGeometry::_font = font;
     }
@@ -79,9 +82,9 @@ BoardMenu::BoardMenu(bool android) {
         std::cerr << "Warning: font file: " << fontfile << " not found."
                   << std::endl;
     }
-    BoardMenuGeometry::calibrateTextSize(65.0);
+    BoardMenuGeometry::calibrateTextSize(45.0);
     osg::Matrix m;
-    m.makeTranslate(osg::Vec3f(-50,800,100));
+    m.makeTranslate(osg::Vec3f(-80,900,200));
     _menuRoot->setMatrix(m);
     SceneManager::instance()->getMenuRoot()->addChild(
             _menuRoot);
