@@ -152,8 +152,10 @@ void InteractionManager::handleEvent(InteractionEvent * event)
     {
         return;
     }
-
+    //TODO: FIGURE OUT WHETHER NAVIGATION AND TRACKING NECESSARY TO ANDROID
+#ifndef __ANDROID__
     Navigation::instance()->processEvent(event);
+#endif
 }
 
 void InteractionManager::addEvent(InteractionEvent * event)

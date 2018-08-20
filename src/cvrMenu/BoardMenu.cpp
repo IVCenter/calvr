@@ -28,14 +28,8 @@ using namespace cvr;
 BoardMenu::BoardMenu(bool android) {
     _myMenu = nullptr;
     _border = 10.0;
-    _distance = 1.0f;
     _scale = 1.0f;
-
     _activeHand = -1;
-    _distance = 800;
-    _primaryButton = 0;
-    _secondaryButton = 1;
-    _menuActive = true;
     _activeItem = NULL;
     _clickActive = false;
 
@@ -48,7 +42,6 @@ BoardMenu::BoardMenu(bool android) {
 
     osg::StateSet * stateset = _menuRoot->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
 
     // TODO: read values from config file
     BoardMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0);
@@ -83,11 +76,19 @@ BoardMenu::BoardMenu(bool android) {
                   << std::endl;
     }
     BoardMenuGeometry::calibrateTextSize(45.0);
-    osg::Matrix m;
-    m.makeTranslate(osg::Vec3f(-80,900,200));
-    _menuRoot->setMatrix(m);
-    SceneManager::instance()->getMenuRoot()->addChild(
-            _menuRoot);
+
+
+    ///////
+    _distance = 1000;
+    _menuActive = false;
+    _trigger = DOUBLECLICK;
+    _primaryButton = 0;
+    _secondaryButton = 1;
+//    osg::Matrix m;
+//    m.makeTranslate(osg::Vec3f(-80,_distance,200));
+//    _menuRoot->setMatrix(m);
+//    SceneManager::instance()->getMenuRoot()->addChild(
+//            _menuRoot);
 }
 
 BoardMenu::BoardMenu()
@@ -257,7 +258,11 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
                     osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
                     menuPoint = menuPoint * tie->getTransform();
-
+#ifdef __ANDROID__
+                    osg::Matrix m;
+                    m.makeTranslate(menuPoint);
+                    _menuRoot->setMatrix(m);
+#else
                     if(event->asMouseEvent())
                     {
                         osg::Vec3 menuOffset = osg::Vec3(
@@ -269,6 +274,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                     else if(event->asPointerEvent())
                     {
                         //TODO add rotation
+
                         SceneManager::instance()->getPointOnTiledWall(
                                 tie->getTransform(),menuPoint);
                         osg::Vec3 menuOffset = osg::Vec3(
@@ -294,7 +300,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                                 osg::Matrix::translate(-menuOffset) * menuRot
                                         * osg::Matrix::translate(menuPoint));
                     }
-
+#endif
                     _menuActive = true;
                     SceneManager::instance()->closeOpenObjectMenu();
                     return true;
