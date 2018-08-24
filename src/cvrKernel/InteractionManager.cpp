@@ -89,13 +89,13 @@ void InteractionManager::update()
                 osg::Timer::instance()->tick());
         stats->setAttribute(
                 CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
-                "Interaction begin time",startTime);
+                "Interaction begin time", startTime);
         stats->setAttribute(
                 CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
-                "Interaction end time",endTime);
+                "Interaction end time", endTime);
         stats->setAttribute(
                 CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
-                "Interaction time taken",endTime - startTime);
+                "Interaction time taken", endTime - startTime);
     }
 }
 
@@ -152,10 +152,9 @@ void InteractionManager::handleEvent(InteractionEvent * event)
     {
         return;
     }
-    //TODO: FIGURE OUT WHETHER NAVIGATION AND TRACKING NECESSARY TO ANDROID
-#ifndef __ANDROID__
+
+    //TODO:ANDROID MAY NOT NEED NAVIGATION?
     Navigation::instance()->processEvent(event);
-#endif
 }
 
 void InteractionManager::addEvent(InteractionEvent * event)

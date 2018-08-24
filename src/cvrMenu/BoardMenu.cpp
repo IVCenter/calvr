@@ -25,72 +25,6 @@
 #endif
 
 using namespace cvr;
-BoardMenu::BoardMenu(bool android) {
-    _myMenu = nullptr;
-    _border = 10.0;
-    _scale = 1.0f;
-    _activeHand = -1;
-    _activeItem = NULL;
-    _clickActive = false;
-
-    _menuRoot = new osg::MatrixTransform();
-    _menuScale = new osg::MatrixTransform();
-    osg::Matrix scale;
-    scale.makeScale(osg::Vec3(_scale,_scale,_scale));
-    _menuScale->setMatrix(scale);
-    _menuRoot->addChild(_menuScale);
-
-    osg::StateSet * stateset = _menuRoot->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-    // TODO: read values from config file
-    BoardMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0);
-    BoardMenuGeometry::_textColorSelected = osg::Vec4(0.0,1.0,0.0,1.0);
-    BoardMenuGeometry::_backgroundColor = osg::Vec4(0.0,0.0,0.0,1.0);
-    BoardMenuGeometry::_border = 0.0;
-    BoardMenuGeometry::_iconHeight = 30.0;
-
-    std::string fontfile;
-
-    _iconDir = getenv("CALVR_RESOURCE_DIR");
-    //todo:icon in icon not resource
-    BoardMenuGeometry::_iconDir = _iconDir;
-    fontfile = _iconDir;
-
-    fontfile = fontfile + "ArenaCondensed.ttf";
-
-//    struct stat buffer;
-//    if(stat(fontfile.c_str(), &buffer) ==0)
-//        LOGE("===============FONT FILE EXIST===================");
-    std::ifstream font_stream(fontfile.c_str());
-    osgText::Font * font = osgText::readFontStream(font_stream);
-    osgText::Font * tfont = osgText::readRefFontFile(fontfile);
-
-    if(tfont)
-    {
-        BoardMenuGeometry::_font = font;
-    }
-    else
-    {
-        std::cerr << "Warning: font file: " << fontfile << " not found."
-                  << std::endl;
-    }
-    BoardMenuGeometry::calibrateTextSize(45.0);
-
-
-    ///////
-    _distance = 1000;
-    _menuActive = false;
-    _trigger = DOUBLECLICK;
-    _primaryButton = 0;
-    _secondaryButton = 1;
-//    osg::Matrix m;
-//    m.makeTranslate(osg::Vec3f(-80,_distance,200));
-//    _menuRoot->setMatrix(m);
-//    SceneManager::instance()->getMenuRoot()->addChild(
-//            _menuRoot);
-}
-
 BoardMenu::BoardMenu()
 {
     _myMenu = NULL;
@@ -157,11 +91,14 @@ BoardMenu::BoardMenu()
 
     std::string fontfile;
 
-    _iconDir = CalVR::instance()->getResourceDir();
-    BoardMenuGeometry::_iconDir = _iconDir;
-    fontfile = _iconDir;
+    //_iconDir = CalVR::instance()->getResourceDir();
+    //fontfile = _iconDir;
+    //fontfile = fontfile + "/resources/ArenaCondensed.ttf";
 
-    fontfile = fontfile + "/resources/ArenaCondensed.ttf";
+    _iconDir = getenv("CALVR_ICON_DIR");
+    BoardMenuGeometry::_iconDir = _iconDir;
+    fontfile = getenv("CALVR_RESOURCE_DIR");
+    fontfile += "ArenaCondensed.ttf";
 
     osgText::Font * font = osgText::readFontFile(fontfile);
     if(font)

@@ -86,7 +86,6 @@ void MenuManager::update()
     {
         (*it)->updateStart();
     }
-#ifndef __ANDROID__
     osgUtil::IntersectVisitor iv;
     iv.setTraversalMask(cvr::INTERSECT_MASK);
 
@@ -144,7 +143,6 @@ void MenuManager::update()
             }
         }
     }
-#endif
     updateEnd();
 
     if(stats)

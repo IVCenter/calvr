@@ -34,6 +34,9 @@
 #include <cvrInput/TrackerOculus.h>
 #endif
 
+#ifdef __ANDROID__
+#include <cvrInput/TrackerAndroid.h>
+#endif
 using namespace cvr;
 
 struct TrackingSystemInit
@@ -182,6 +185,12 @@ bool TrackingManager::init()
 			{
 				tracker = new TrackerOculus();
 			}
+#endif
+#ifdef __ANDROID__
+            else if(systemName == "MOUSE")
+            {
+                tracker = new TrackerAndroid();
+            }
 #endif
             else if(systemName == "MOUSE")
             {

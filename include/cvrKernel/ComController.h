@@ -40,7 +40,7 @@ class CVRKERNEL_EXPORT ComController
          * @brief Sets up node sockets based on command line arguments
          * @param ap The arguments from the command line
          */
-        bool init(osg::ArgumentParser * ap);
+        bool init(osg::ArgumentParser * ap = nullptr);
 
         /**
          * @brief Send a block of data to the slave nodes

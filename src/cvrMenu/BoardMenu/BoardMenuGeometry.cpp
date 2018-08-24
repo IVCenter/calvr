@@ -214,7 +214,7 @@ osg::Texture2D * BoardMenuGeometry::loadIcon(std::string name)
         }
     }
 
-    std::string file = _iconDir + "/icons/" + name;
+    std::string file = _iconDir + name;
     //std::cerr << "Trying to load icon: " << file << std::endl;
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(file);
     if(image)

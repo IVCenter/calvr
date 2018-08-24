@@ -60,7 +60,7 @@ ComController * ComController::instance()
 
 bool ComController::init(osg::ArgumentParser * ap)
 {
-    if(ap->read("--node-number",_slaveNum))
+    if(ap!= nullptr && ap->read("--node-number",_slaveNum))
     {
         if(!ap->read("--master-interface",_masterInterface))
         {
@@ -88,8 +88,13 @@ bool ComController::init(osg::ArgumentParser * ap)
     bool ret;
     if(_isMaster)
     {
+#ifndef __ANDROID__
         _masterInterface = ConfigManager::getEntry("value",
                 "MultiPC.MasterInterface",CalVR::instance()->getHostName());
+#else
+        _masterInterface = ConfigManager::getEntry("value",
+                                                   "MultiPC.MasterInterface", getenv("CALVR_HOST_NAME"));
+#endif
         std::cerr << "Starting up as Master." << std::endl;
         ret = setupConnections();
     }

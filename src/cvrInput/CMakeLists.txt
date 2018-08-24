@@ -14,6 +14,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/TrackerShmem.h
     ${HEADER_PATH}/TrackerSlave.h
     ${HEADER_PATH}/TrackerMouse.h
+    ${HEADER_PATH}/TrackerAndroid.h
     ${HEADER_PATH}/TrackerPlugin.h
     ${HEADER_PATH}/Export.h
 )
@@ -53,6 +54,7 @@ SET(LIB_SRC_FILES
     TrackerShmem.cpp
     TrackerSlave.cpp
     TrackerMouse.cpp
+    TrackerAndroid.cpp
     TrackerPlugin.cpp
 )
 
