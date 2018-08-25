@@ -369,7 +369,11 @@ void InteractionManager::createMouseDragEvents(bool single)
         }
     }
 }
+void InteractionManager::setMouseInteraction(int button, osg::Vec3f pos){
+    _mouseMat.makeTranslate(pos);
+    createMouseDoubleClickEvent(button);
 
+}
 void InteractionManager::createMouseDoubleClickEvent(int button)
 {
     if(!_mouseActive)
@@ -404,8 +408,8 @@ void InteractionManager::createMouseDoubleClickEvent(int button)
             dcEvent->setHand(-1);
             dcEvent->setMasterScreenNum(
                     CVRViewer::instance()->getActiveMasterScreen());
-            _mouseQueue.push(dcEvent);
-
+//            _mouseQueue.push(dcEvent);
+            addEvent(dcEvent);
             _mouseButtonMask |= button;
             _lastMouseButtonMask |= button;
             return;

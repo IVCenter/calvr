@@ -86,6 +86,7 @@ void MenuManager::update()
     {
         (*it)->updateStart();
     }
+
     osgUtil::IntersectVisitor iv;
     iv.setTraversalMask(cvr::INTERSECT_MASK);
 

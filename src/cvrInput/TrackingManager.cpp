@@ -190,6 +190,7 @@ bool TrackingManager::init()
             else if(systemName == "MOUSE")
             {
                 tracker = new TrackerAndroid();
+                _touchEventMat = osg::Matrix();
             }
 #endif
             else if(systemName == "MOUSE")
@@ -926,12 +927,16 @@ int TrackingManager::getNumHeads()
 
 osg::Matrix & TrackingManager::getHandMat(int hand)
 {
+#ifndef __ANDROID__
     if(hand < 0 || hand >= _handMatList.size())
     {
         static osg::Matrix m;
         return m;
     }
     return _handMatList[hand];
+#else
+    return _touchEventMat;
+#endif
 }
 
 osg::Matrix & TrackingManager::getHeadMat(int head)

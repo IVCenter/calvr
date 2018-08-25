@@ -173,8 +173,100 @@ void BoardMenu::updateEnd()
     }
 }
 
+bool BoardMenu::showBoardMenu(InteractionEvent * event){
+    if(!_tie || _tie->getButton() != _secondaryButton)
+        return false;
+    SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
+    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
+    menuPoint = menuPoint * _tie->getTransform();
+    osg::Matrix m;
+    m.makeTranslate(menuPoint);
+    _menuRoot->setMatrix(m);
+    _menuActive = true;
+    SceneManager::instance()->closeOpenObjectMenu();
+    return true;
+}
+void BoardMenu::processClickedItem(InteractionEvent * event){
+    BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+    if(smg && smg->isMenuHead())
+        updateMovement(_tie);
+    _activeItem->processEvent(event);
+    if(_tie->getInteraction() == BUTTON_DOWN)
+        _clickActive = false;
+}
+
+bool BoardMenu::processToClickItem(InteractionEvent * event){
+    if(!_activeItem)
+        return false;
+    BoardMenuSubMenuGeometry * smg = dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+    if(smg){
+        if(smg->isMenuHead()){
+            osg::Vec3 ray;
+            ray = _currentPoint[_tie->getHand()]
+                  - _tie->getTransform().getTrans();
+
+            if(!_tie->asPointerEvent())
+                _moveDistance = ray.length();
+            else
+                _moveDistance = ray.y();
+
+            _menuPoint = _currentPoint[_tie->getHand()]
+                         * osg::Matrix::inverse(_menuRoot->getMatrix());
+            updateMovement(_tie);
+        }else{
+            if(smg->isMenuOpen())
+                closeMenu((SubMenu*)smg->getMenuItem());
+            else
+                openMenu(smg);
+        }
+    }
+
+    _clickActive = true;
+    _activeItem->processEvent(event);
+    return true;
+}
+
+bool BoardMenu::debugFunc(InteractionEvent * event){
+    _tie = event->asTrackedButtonEvent();
+    if(!_myMenu || !event->asTrackedButtonEvent())
+        return false;
+
+    if(!_menuActive){
+        if(_trigger != DOUBLECLICK || event->getInteraction() != BUTTON_DOUBLE_CLICK)
+            return false;
+        return showBoardMenu(event);
+    }else{
+        // second-button-single: close menu
+        if(_tie->getButton() == _secondaryButton
+           && _tie->getInteraction() == BUTTON_DOWN){
+            close();
+            return true;
+        }
+
+        //first-button:
+        if(_tie->getHand() == _activeHand){
+            if(_clickActive){
+                if(_tie->getButton() == _primaryButton
+                   &&(_tie->getInteraction() == BUTTON_DRAG
+                   || _tie->getInteraction() == BUTTON_DOWN))
+                    processClickedItem(event);
+                return true;
+            }else{
+                if(_tie->getButton() == _primaryButton
+                   &&(_tie->getInteraction() == BUTTON_DOWN
+                   || _tie->getInteraction() == BUTTON_DOUBLE_CLICK))
+                    return processToClickItem(event);
+            }
+        }
+    }
+    return false;
+}
+
 bool BoardMenu::processEvent(InteractionEvent * event)
 {
+#ifdef __ANDROID__
+    return debugFunc(event);
+#else
     if(!_myMenu || !event->asTrackedButtonEvent())
     {
         return false;
@@ -195,11 +287,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
                     osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
                     menuPoint = menuPoint * tie->getTransform();
-#ifdef __ANDROID__
-                    osg::Matrix m;
-                    m.makeTranslate(menuPoint);
-                    _menuRoot->setMatrix(m);
-#else
+
                     if(event->asMouseEvent())
                     {
                         osg::Vec3 menuOffset = osg::Vec3(
@@ -237,7 +325,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                                 osg::Matrix::translate(-menuOffset) * menuRot
                                         * osg::Matrix::translate(menuPoint));
                     }
-#endif
+
                     _menuActive = true;
                     SceneManager::instance()->closeOpenObjectMenu();
                     return true;
@@ -340,6 +428,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
         }
     }
     return false;
+#endif
 }
 
 void BoardMenu::itemDelete(MenuItem * item)

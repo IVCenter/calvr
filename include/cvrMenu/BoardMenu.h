@@ -44,7 +44,11 @@ class BoardMenu : public MenuBase
         {
             DOUBLECLICK, UPCLICK
         };
-
+        TrackedButtonInteractionEvent * _tie;
+        bool debugFunc(InteractionEvent * event);
+        bool showBoardMenu(InteractionEvent * event);
+        void processClickedItem(InteractionEvent * event);
+        bool processToClickItem(InteractionEvent * event);
         /**
          * @brief Set the root SubMenu for this menu
          */

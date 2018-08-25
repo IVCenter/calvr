@@ -85,7 +85,9 @@ bool MenuSystem::processEvent(InteractionEvent * event)
 {
     if(_menu)
     {
-        return _menu->processEvent(event);
+        cvr::BoardMenu* menu = dynamic_cast< cvr::BoardMenu *>(_menu);
+        return menu->debugFunc(event);
+//        return menu->processEvent(event);
     }
     return false;
 }

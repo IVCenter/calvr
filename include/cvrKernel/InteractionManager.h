@@ -122,6 +122,8 @@ class CVRKERNEL_EXPORT InteractionManager
             return _mouseWheel;
         }
 
+        void setMouseInteraction(int button, osg::Vec3f pos);
+
     protected:
         InteractionManager();
         virtual ~InteractionManager();

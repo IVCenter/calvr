@@ -613,10 +613,6 @@ void CVRViewer::defaultUpdateTraversal()
 
 void CVRViewer::eventTraversal()
 {
-#ifdef __ANDROID__
-    osgViewer::Viewer::eventTraversal();
-    return;
-#endif
     if(_done || ComController::instance()->getIsSyncError())
         return;
 
@@ -1908,7 +1904,6 @@ void CVRViewer::startThreading()
 void CVRViewer::frameStart()
 {
     FrameUpdate frameUp;
-#ifndef __ANDROID__
     if(ComController::instance()->getIsSyncError())
     {
         return;
@@ -1925,9 +1920,6 @@ void CVRViewer::frameStart()
         ComController::instance()->readMaster(&frameUp,
                 sizeof(struct FrameUpdate));
     }
-#else
-    frameUp.currentTime = osg::Timer::instance()->tick();
-#endif
     _lastFrameStartTime = _frameStartTime;
     _frameStartTime = frameUp.currentTime;
 
