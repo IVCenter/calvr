@@ -17,7 +17,6 @@
 #include <osg/Image>
 #include <osgDB/ReadFile>
 #include <osg/LineWidth>
-#include <sys/stat.h>
 
 #ifdef __ANDROID__
 #include <cvrUtil/AndroidStdio.h>
@@ -25,6 +24,7 @@
 #endif
 
 using namespace cvr;
+
 BoardMenu::BoardMenu()
 {
     _myMenu = NULL;
@@ -90,15 +90,16 @@ BoardMenu::BoardMenu()
     //BoardMenuGeometry::_textSize = 65.0;
 
     std::string fontfile;
-
-    //_iconDir = CalVR::instance()->getResourceDir();
-    //fontfile = _iconDir;
-    //fontfile = fontfile + "/resources/ArenaCondensed.ttf";
-
+#ifndef __ANDROID__
+    _iconDir = CalVR::instance()->getResourceDir();
+    fontfile = _iconDir;
+    fontfile = fontfile + "/resources/ArenaCondensed.ttf";
+#else
     _iconDir = getenv("CALVR_ICON_DIR");
-    BoardMenuGeometry::_iconDir = _iconDir;
     fontfile = getenv("CALVR_RESOURCE_DIR");
     fontfile += "ArenaCondensed.ttf";
+#endif
+    BoardMenuGeometry::_iconDir = _iconDir;
 
     osgText::Font * font = osgText::readFontFile(fontfile);
     if(font)
@@ -172,7 +173,6 @@ void BoardMenu::updateEnd()
         }
     }
 }
-
 bool BoardMenu::showBoardMenu(InteractionEvent * event){
     if(!_tie || _tie->getButton() != _secondaryButton)
         return false;
@@ -191,7 +191,7 @@ void BoardMenu::processClickedItem(InteractionEvent * event){
     if(smg && smg->isMenuHead())
         updateMovement(_tie);
     _activeItem->processEvent(event);
-    if(_tie->getInteraction() == BUTTON_DOWN)
+    if(_tie->getInteraction() == BUTTON_UP)
         _clickActive = false;
 }
 
@@ -248,25 +248,21 @@ bool BoardMenu::debugFunc(InteractionEvent * event){
             if(_clickActive){
                 if(_tie->getButton() == _primaryButton
                    &&(_tie->getInteraction() == BUTTON_DRAG
-                   || _tie->getInteraction() == BUTTON_DOWN))
+                      || _tie->getInteraction() == BUTTON_UP))
                     processClickedItem(event);
                 return true;
             }else{
                 if(_tie->getButton() == _primaryButton
                    &&(_tie->getInteraction() == BUTTON_DOWN
-                   || _tie->getInteraction() == BUTTON_DOUBLE_CLICK))
+                      || _tie->getInteraction() == BUTTON_DOUBLE_CLICK))
                     return processToClickItem(event);
             }
         }
     }
     return false;
 }
-
 bool BoardMenu::processEvent(InteractionEvent * event)
 {
-#ifdef __ANDROID__
-    return debugFunc(event);
-#else
     if(!_myMenu || !event->asTrackedButtonEvent())
     {
         return false;
@@ -299,7 +295,6 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                     else if(event->asPointerEvent())
                     {
                         //TODO add rotation
-
                         SceneManager::instance()->getPointOnTiledWall(
                                 tie->getTransform(),menuPoint);
                         osg::Vec3 menuOffset = osg::Vec3(
@@ -428,7 +423,6 @@ bool BoardMenu::processEvent(InteractionEvent * event)
         }
     }
     return false;
-#endif
 }
 
 void BoardMenu::itemDelete(MenuItem * item)
