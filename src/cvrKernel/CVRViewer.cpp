@@ -1420,9 +1420,7 @@ void CVRViewer::renderingTraversals()
         startTime = osg::Timer::instance()->delta_s(getStartTick(),
                 osg::Timer::instance()->tick());
     }
-#ifndef __ANDROID__
     ComController::instance()->sync();
-#endif
     if(stats)
     {
         endTime = osg::Timer::instance()->delta_s(getStartTick(),

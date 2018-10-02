@@ -153,7 +153,6 @@ void InteractionManager::handleEvent(InteractionEvent * event)
         return;
     }
 
-    //TODO:ANDROID MAY NOT NEED NAVIGATION?
     Navigation::instance()->processEvent(event);
 }
 

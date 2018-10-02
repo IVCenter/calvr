@@ -65,7 +65,7 @@ BoardMenu::BoardMenu()
             "MenuSystem.BoardMenu.Buttons",1);
 
     _scale = ConfigManager::getFloat("MenuSystem.BoardMenu.Scale",1.0);
-
+//    _scale = 1.5f;
     _menuScale = new osg::MatrixTransform();
     osg::Matrix scale;
     scale.makeScale(osg::Vec3(_scale,1.0,_scale));
@@ -177,7 +177,7 @@ bool BoardMenu::showBoardMenu(InteractionEvent * event){
     if(!_tie || _tie->getButton() != _secondaryButton)
         return false;
     SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
-    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
+    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
     menuPoint = menuPoint * _tie->getTransform();
     osg::Matrix m;
     m.makeTranslate(menuPoint);
@@ -286,11 +286,11 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
                     if(event->asMouseEvent())
                     {
-                        osg::Vec3 menuOffset = osg::Vec3(
-                                _widthMap[_myMenu] / 2.0,0,0);
-                        osg::Matrix m;
-                        m.makeTranslate(menuPoint);
-                        _menuRoot->setMatrix(m);
+//                        osg::Vec3 menuOffset = osg::Vec3(
+//                                _widthMap[_myMenu] / 2.0,0,0);
+                        osg::Matrix menuTransMat;
+                        menuTransMat.makeTranslate(menuPoint);
+                        _menuRoot->setMatrix(TrackingManager::instance()->getCameraRotation() * menuTransMat);
                     }
                     else if(event->asPointerEvent())
                     {
