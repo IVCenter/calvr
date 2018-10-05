@@ -14,6 +14,10 @@
 #include <Windows.h>
 #endif
 
+#if __ANDROID__
+#include <cvrUtil/AndroidPreloadPlugins.h>
+#endif
+
 using namespace cvr;
 
 PluginManager * PluginManager::_myPtr = NULL;
@@ -37,6 +41,61 @@ PluginManager * PluginManager::instance()
         _myPtr = new PluginManager();
     }
     return _myPtr;
+}
+
+bool PluginManager::init(bool android){
+    std::vector<std::string> plugins;
+    ConfigManager::getChildren("Plugin",plugins);
+
+    for(int i = 0; i < plugins.size(); i++)
+    {
+        if(_pluginMap.find(plugins[i]) != _pluginMap.end())
+        {
+            continue;
+        }
+        _pluginMap[plugins[i]] = ConfigManager::getBool(
+                std::string("Plugin") + "." + plugins[i], false);
+    }
+
+    // default nav buttons
+    _pluginMap["MenuBasics"] = ConfigManager::getBool("Plugin.MenuBasics",true);
+    for(std::map<std::string,bool>::iterator it = _pluginMap.begin();
+        it != _pluginMap.end(); it++)
+    {
+        if(it->second)
+        {
+            CVRPlugin * pluginPtr = ClassFactory::getInstance(it->first);
+            if(!pluginPtr) {
+                it->second = false;
+                continue;
+            }
+
+            int priority = pluginPtr->getPriority();
+            PluginInfo * pi = new PluginInfo;
+            pi->priority = priority;
+            pi->name = it->first;
+            pi->ptr = pluginPtr;
+            pi->path = "";
+
+            _loadedPluginList.push_back(pi);
+        }
+    }
+
+    std::sort(_loadedPluginList.begin(),_loadedPluginList.end(),PrioritySort());
+
+    for(std::vector<PluginInfo *>::iterator it = _loadedPluginList.begin();
+        it != _loadedPluginList.end();)
+    {
+        if(!(*it)->ptr->init())
+        {
+            _pluginMap[(*it)->name] = false;
+            delete (*it);
+            it = _loadedPluginList.erase(it);
+            continue;
+        }
+        it++;
+    }
+    return true;
 }
 
 bool PluginManager::init()
