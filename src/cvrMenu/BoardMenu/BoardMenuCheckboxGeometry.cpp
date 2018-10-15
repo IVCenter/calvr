@@ -4,6 +4,7 @@
 
 #include <osg/Geometry>
 #include <osg/Version>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -48,11 +49,11 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
     _node->addChild(_geodeIcon);
 
     osg::Geometry * geo = makeQuad(_iconHeight,-_iconHeight,
-            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
+            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,0));
     _geodeIcon->addDrawable(geo);
 
     osgText::Text * textNode = makeText(checkbox->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),_textColor);
     /*osgText::Text * textNode = new osgText::Text();
      textNode->setCharacterSize(_textSize);
      textNode->setAlignment(osgText::Text::LEFT_CENTER);
@@ -71,7 +72,7 @@ void BoardMenuCheckboxGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(textNode);
 
     textNode = makeText(checkbox->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),
             _textColorSelected);
     /*textNode = new osgText::Text();
      textNode->setCharacterSize(_textSize);

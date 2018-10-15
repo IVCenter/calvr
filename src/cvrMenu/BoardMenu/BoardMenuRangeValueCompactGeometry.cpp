@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cstring>
+#include <cvrConfig/ConfigManager.h>
 
 #ifdef WIN32
 #define snprintf _snprintf
@@ -64,7 +65,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     _node->addChild(_group);
 
     osg::Geometry * geo = makeQuad(_iconHeight,-_iconHeight,
-            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
+            osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,0));
     _geodeIcon->addDrawable(geo);
 
     _rvIcon = loadIcon("left-right.rgb");
@@ -92,7 +93,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
     }
 
     _label = makeText(mrv->getLabel(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),_textColor);
 
     _geode->addDrawable(_label.get());
 
@@ -102,7 +103,7 @@ void BoardMenuRangeValueCompactGeometry::createGeometry(MenuItem * item)
 
     snprintf(buffer,7,printstr,mrv->getValue());
     _currentValue = makeText(buffer,_textSize,
-            osg::Vec3(_widthValue,-2,-_iconHeight / 2.0),_textColorSelected);
+            osg::Vec3(_widthValue,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),_textColorSelected);
 
     _geodeSelected->addDrawable(_currentValue.get());
 
@@ -138,7 +139,7 @@ void BoardMenuRangeValueCompactGeometry::updateGeometry()
 
     snprintf(buffer,7,printstr,mrv->getValue());
     _currentValue = makeText(buffer,_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),_textColor);
 
     _geodeSelected->addDrawable(_currentValue.get());
 

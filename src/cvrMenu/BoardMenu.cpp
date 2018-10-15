@@ -770,7 +770,8 @@ void BoardMenu::updateMenus()
 
         }
 
-        float board_height = _border;
+        float board_width = width + 2.0 * _border, board_height = _border;
+
         for(int j = 0; j < geoList.size(); j++)
         {
             osg::Matrix m;
@@ -783,7 +784,6 @@ void BoardMenu::updateMenus()
 
         // create menu board geometry
         osg::Geode * geode = new osg::Geode();
-        float board_width = width + 2.0 * _border;
 
         //Draw outline of the background board
         geode->addDrawable(
