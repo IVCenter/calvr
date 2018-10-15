@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -245,7 +246,7 @@ osgText::Text * BoardMenuGeometry::makeText(std::string text, float size,
         osg::Vec3 pos, osg::Vec4 color, osgText::Text::AlignmentType align)
 {
     osgText::Text * textNode = new osgText::Text();
-    textNode->setCharacterSize(size);
+    textNode->setCharacterSize(size * ConfigManager::UNIT_ALIGN_FACTOR);
     textNode->setAlignment(align);
     textNode->setPosition(pos);
     textNode->setColor(color);

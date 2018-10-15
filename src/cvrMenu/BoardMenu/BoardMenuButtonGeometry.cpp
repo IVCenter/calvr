@@ -3,6 +3,7 @@
 #include <cvrUtil/Bounds.h>
 
 #include <osg/Version>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -44,11 +45,11 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
     MenuButton * mb = dynamic_cast<MenuButton*>(item);
 
     osgText::Text * textNode = makeText(mb->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),_textColor);
 
     if(!mb->getIndent())
     {
-	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+	textNode->setPosition(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
     }
 
     osg::BoundingBox bb = cvr::getBound(textNode);
@@ -58,14 +59,14 @@ void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
     _geode->addDrawable(textNode);
 
     textNode = makeText(mb->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
+            osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),
             _textColorSelected);
 
     _geodeSelected->addDrawable(textNode);
 
     if(!mb->getIndent())
     {
-	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+	textNode->setPosition(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
 	_width = bb.xMax() - bb.xMin();
     }
 }
@@ -91,12 +92,12 @@ void BoardMenuButtonGeometry::updateGeometry()
 
 		if(button->getIndent())
 		{
-		    text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
+		    text->setPosition(osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
 		    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
 		}
 		else
 		{
-		    text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+		    text->setPosition(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
 		    _width = bb.xMax() - bb.xMin();
 		}
 
@@ -108,11 +109,11 @@ void BoardMenuButtonGeometry::updateGeometry()
 
 		    if(button->getIndent())
 		    {
-			text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
+			text->setPosition(osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
 		    }
 		    else
 		    {
-			text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
+			text->setPosition(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0));
 		    }
 		}
             }

@@ -29,8 +29,10 @@ BoardMenu::BoardMenu()
 {
     _myMenu = NULL;
 
-    _border = 10.0;
-
+    _border = 10.0 * ConfigManager::UNIT_ALIGN_FACTOR;
+    BoardMenuGeometry::_border = 10.0 * ConfigManager::UNIT_ALIGN_FACTOR;
+//    _border = 0;
+//    BoardMenuGeometry::_border = 0;
     _menuRoot = new osg::MatrixTransform();
 
     _activeHand = -1;
@@ -38,7 +40,7 @@ BoardMenu::BoardMenu()
     std::string s;
 
     _distance = ConfigManager::getFloat("distance",
-            "MenuSystem.BoardMenu.Position",2000.0);
+            "MenuSystem.BoardMenu.Position", 2000.0) * ConfigManager::UNIT_ALIGN_FACTOR;
 
     s = ConfigManager::getEntry("value","MenuSystem.BoardMenu.Trigger",
             "DOUBLECLICK");
@@ -65,7 +67,7 @@ BoardMenu::BoardMenu()
             "MenuSystem.BoardMenu.Buttons",1);
 
     _scale = ConfigManager::getFloat("MenuSystem.BoardMenu.Scale",1.0);
-//    _scale = 1.5f;
+
     _menuScale = new osg::MatrixTransform();
     osg::Matrix scale;
     scale.makeScale(osg::Vec3(_scale,1.0,_scale));
@@ -85,8 +87,8 @@ BoardMenu::BoardMenu()
     BoardMenuGeometry::_textColor = osg::Vec4(1.0,1.0,1.0,1.0);
     BoardMenuGeometry::_textColorSelected = osg::Vec4(0.0,1.0,0.0,1.0);
     BoardMenuGeometry::_backgroundColor = osg::Vec4(0.0,0.0,0.0,1.0);
-    BoardMenuGeometry::_border = 10.0;
-    BoardMenuGeometry::_iconHeight = 30.0;
+
+    BoardMenuGeometry::_iconHeight = 30.0* ConfigManager::UNIT_ALIGN_FACTOR;
     //BoardMenuGeometry::_textSize = 65.0;
 
     std::string fontfile;
@@ -177,8 +179,7 @@ bool BoardMenu::showBoardMenu(InteractionEvent * event){
     if(!_tie || _tie->getButton() != _secondaryButton)
         return false;
     SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
-    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
-    menuPoint = menuPoint * _tie->getTransform();
+    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)* TrackingManager::instance()->getCameraRotation();
     osg::Matrix m;
     m.makeTranslate(menuPoint);
     _menuRoot->setMatrix(m);
@@ -769,37 +770,40 @@ void BoardMenu::updateMenus()
 
         }
 
-        float offset = _border;
+        float board_height = _border;
         for(int j = 0; j < geoList.size(); j++)
         {
             osg::Matrix m;
-            m.makeTranslate(osg::Vec3(_border,0,-offset));
+            m.makeTranslate(osg::Vec3(_border,0,-board_height));
             geoList[j]->getNode()->setMatrix(m);
-            offset += geoList[j]->getHeight() + _border;
+            board_height += geoList[j]->getHeight() + _border;
             _menuMap[foundList[i]]->addChild(geoList[j]->getNode());
             _intersectMap[geoList[j]->getIntersect()] = geoList[j];
         }
 
         // create menu board geometry
         osg::Geode * geode = new osg::Geode();
+        float board_width = width + 2.0 * _border;
+
+        //Draw outline of the background board
         geode->addDrawable(
-                BoardMenuGeometry::makeQuad(width + 2.0 * _border,-offset,
-                        BoardMenuGeometry::_backgroundColor));
+                BoardMenuGeometry::makeQuad(board_width, -board_height,
+                                            BoardMenuGeometry::_backgroundColor));
         geode->addDrawable(
-                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,0),
-                        osg::Vec3(width + 2.0 * _border,-2,0),
+                BoardMenuGeometry::makeLine(osg::Vec3(0, ConfigManager::CONTENT_BOARD_DIST, 0),
+                        osg::Vec3(board_width, ConfigManager::CONTENT_BOARD_DIST, 0),
                         BoardMenuGeometry::_textColor));
         geode->addDrawable(
-                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,0),
-                        osg::Vec3(0,-2,-offset),BoardMenuGeometry::_textColor));
+                BoardMenuGeometry::makeLine(osg::Vec3(0, ConfigManager::CONTENT_BOARD_DIST, 0),
+                        osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-board_height),BoardMenuGeometry::_textColor));
         geode->addDrawable(
-                BoardMenuGeometry::makeLine(osg::Vec3(0,-2,-offset),
-                        osg::Vec3(width + 2.0 * _border,-2,-offset),
+                BoardMenuGeometry::makeLine(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-board_height),
+                        osg::Vec3(board_width, ConfigManager::CONTENT_BOARD_DIST, -board_height),
                         BoardMenuGeometry::_textColor));
         geode->addDrawable(
                 BoardMenuGeometry::makeLine(
-                        osg::Vec3(width + 2.0 * _border,-2,0),
-                        osg::Vec3(width + 2.0 * _border,-2,-offset),
+                        osg::Vec3(board_width, ConfigManager::CONTENT_BOARD_DIST, 0),
+                        osg::Vec3(board_width, ConfigManager::CONTENT_BOARD_DIST, -board_height),
                         BoardMenuGeometry::_textColor));
         //scaleMT->addChild(geode);
         _menuMap[foundList[i]]->addChild(geode);

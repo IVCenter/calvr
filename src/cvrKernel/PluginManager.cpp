@@ -59,6 +59,7 @@ bool PluginManager::init(bool android){
 
     // default nav buttons
     _pluginMap["MenuBasics"] = ConfigManager::getBool("Plugin.MenuBasics",true);
+
     for(std::map<std::string,bool>::iterator it = _pluginMap.begin();
         it != _pluginMap.end(); it++)
     {

@@ -763,6 +763,7 @@ void SceneObject::setBoundingBox(osg::BoundingBox bb)
 
 const osg::BoundingBox & SceneObject::getOrComputeBoundingBox()
 {
+    _boundsDirty = true;
     if(_boundsCalcMode == MANUAL)
     {
         return _bb;
