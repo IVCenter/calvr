@@ -175,14 +175,18 @@ void BoardMenu::updateEnd()
         }
     }
 }
+
 bool BoardMenu::showBoardMenu(InteractionEvent * event){
     if(!_tie || _tie->getButton() != _secondaryButton)
         return false;
     SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
-    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)* TrackingManager::instance()->getCameraRotation();
-    osg::Matrix m;
-    m.makeTranslate(menuPoint);
-    _menuRoot->setMatrix(m);
+    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)*TrackingManager::instance()->getCameraRotation();
+    osg::Matrix transMat, rotMat, cam_y_cali_Mat;
+    transMat.makeTranslate(menuPoint);
+    cam_y_cali_Mat.makeRotate(-TrackingManager::instance()->getCameraYRotation(), osg::Vec3f(.0f,1.0,.0f));
+
+    rotMat = TrackingManager::instance()->getCameraRotation() * cam_y_cali_Mat;
+    _menuRoot->setMatrix(rotMat * transMat);
     _menuActive = true;
     SceneManager::instance()->closeOpenObjectMenu();
     return true;
