@@ -43,7 +43,7 @@ PluginManager * PluginManager::instance()
     return _myPtr;
 }
 
-bool PluginManager::init(bool android){
+bool PluginManager::init(AAssetManager*const assetManager){
     std::vector<std::string> plugins;
     ConfigManager::getChildren("Plugin",plugins);
 
@@ -70,7 +70,7 @@ bool PluginManager::init(bool android){
                 it->second = false;
                 continue;
             }
-
+            pluginPtr->setAssetManager(assetManager);
             int priority = pluginPtr->getPriority();
             PluginInfo * pi = new PluginInfo;
             pi->priority = priority;
