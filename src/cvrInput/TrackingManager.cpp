@@ -1974,6 +1974,10 @@ void TrackingManager::printInitDebug()
     std::cerr << "-----End Tracking Init Info-----" << std::endl;
 }
 
+bool TrackingManager::getIsPoint(osg::Vec3f & isPoint){
+    if(isIntersect){isIntersect = false;  isPoint = _isPoint * ConfigManager::UNIT_ALIGN_FACTOR; return true;}
+    return false;}
+
 GenComplexTrackingEvents::GenComplexTrackingEvents()
 {
 
@@ -2038,3 +2042,4 @@ void GenComplexTrackingEvents::processEvent(TrackedButtonInteractionEvent * tie)
                 tie);
     }
 }
+
