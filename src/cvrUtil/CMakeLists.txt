@@ -30,8 +30,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
-    ${HEADER_PATH}/AndroidGetenv.h
-    ${HEADER_PATH}/AndroidStdio.h
+    ${HEADER_PATH}/AndroidHelper.h
     ${HEADER_PATH}/AndroidPreloadPlugins.h
     )
 ENDIF(ANDROID)
@@ -44,8 +43,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(EXTRA_SOURCE ${EXTRA_SOURCE}
-    AndroidGetenv.cpp
-    AndroidStdio.cpp
+    AndroidHelper.cpp
     AndroidPreloadPlugins.cpp
     )
 ENDIF(ANDROID)

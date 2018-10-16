@@ -19,8 +19,7 @@
 #include <osg/LineWidth>
 
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidStdio.h>
-#include <cvrUtil/AndroidGetenv.h>
+#include <cvrUtil/AndroidHelper.h>
 #endif
 
 using namespace cvr;

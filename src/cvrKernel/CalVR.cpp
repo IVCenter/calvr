@@ -33,8 +33,7 @@
 #endif
 
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidGetenv.h>
-#include <cvrUtil/AndroidStdio.h>
+#include <cvrUtil/AndroidHelper.h>
 #endif
 
 using namespace cvr;

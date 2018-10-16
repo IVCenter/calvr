@@ -3,7 +3,7 @@
 #include <cvrKernel/CalVR.h>
 
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidGetenv.h>
+#include <cvrUtil/AndroidHelper.h>
 #endif
 
 #include <iostream>

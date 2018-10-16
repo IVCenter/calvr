@@ -1,26 +1,18 @@
-#ifndef ANDROID_GETENV_H
-#define ANDROID_GETENV_H
+#ifndef ANDROID_HELPER
+#define ANDROID_HELPER
 
 #include <string>
 #include <map>
 
-
-//std::map<std::string, std::string> env_var;
-
 class Environment {
 private:
-
-  static Environment* _instance;
-
+  static Environment* _ptr;
   std::map<std::string, std::string> _env;
-
   Environment();
 
 public:
-  static Environment * getInstance();
-
+  static Environment * instance();
   const char * getVar(const char* name);
-
   void setVar(std::string key, std::string value);
 };
 
