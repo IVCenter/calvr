@@ -325,6 +325,9 @@ class CVRCONFIG_EXPORT ConfigManager
         static void getChildren(std::string path,
                 std::vector<std::string> & destList);
 
+        static const float UNIT_ALIGN_FACTOR;
+        static const float CONTENT_BOARD_DIST;
+
     protected:
         virtual ~ConfigManager();
 

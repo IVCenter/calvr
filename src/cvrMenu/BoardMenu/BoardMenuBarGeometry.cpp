@@ -2,6 +2,7 @@
 #include <cvrMenu/MenuBar.h>
 
 #include <iostream>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -34,7 +35,7 @@ void BoardMenuBarGeometry::createGeometry(MenuItem * item)
     _mb = mb;
 
     _geo = makeQuad(1.0,1.0,osg::Vec4(1.0,1.0,1.0,1.0),
-            osg::Vec3(0,-2,-1.0));
+            osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-1.0));
 
     _geode->addDrawable(_geo);
 

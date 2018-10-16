@@ -222,7 +222,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
                 int & hand, int & handButton);
         void setTouchEventMatrix(osg::Matrix mat){_touchEventMat = mat;}
         osg::Matrix getCameraRotation(){return _cameraRotMat;}
-        void setCameraRotation(osg::Matrix rot){_cameraRotMat = rot;}
+        double getCameraYRotation(){return cam_eu_y;}
+        void setCameraRotation(osg::Matrix rot, double x=0, double y=0, double z=0){_cameraRotMat = rot;cam_eu_x = x; cam_eu_y=y; cam_eu_z = z;}
     protected:
         TrackingManager();
         virtual ~TrackingManager();
@@ -372,6 +373,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         std::vector<std::vector<int> > _headToHandsMap; ///< map of head number to hand numbers
         osg::Matrix _touchEventMat;
         osg::Matrix _cameraRotMat;
+        double cam_eu_x, cam_eu_y, cam_eu_z;
 };
 
 /**

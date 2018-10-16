@@ -3,6 +3,7 @@
 #include <cvrUtil/Bounds.h>
 
 #include <osg/Geometry>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -102,16 +103,8 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
         _node->addChild(_geodeLine);
 
         osgText::Text * textNode = makeText(submenu->getTitle(),
-                1.15 * _textSize,osg::Vec3(0,-2,0),_textColor,
+                1.15f * _textSize, osg::Vec3(0, ConfigManager::CONTENT_BOARD_DIST, 0),_textColor,
                 osgText::Text::LEFT_TOP);
-        /*osgText::Text * textNode = new osgText::Text();
-         textNode->setCharacterSize(75);
-         textNode->setAlignment(osgText::Text::LEFT_TOP);
-         textNode->setPosition(osg::Vec3(0, -2, 0));
-         textNode->setColor(_textColor);
-         textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
-         textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
-         textNode->setText(submenu->getTitle());*/
 
         _geode->addDrawable(textNode);
 
@@ -119,18 +112,9 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
         _width = bb.xMax() - bb.xMin();
         _height = bb.zMax() - bb.zMin() + _border;
 
-        //smg->geode->addDrawable(makeLine(osg::Vec3(0,-2,-(smg->height + _border)), osg::Vec3(smg->width,-2,-(smg->height + _border)),submenu->getTextColor()));
 
         textNode = makeText(submenu->getTitle(),1.15 * _textSize,
-                osg::Vec3(0,-2,0),_textColorSelected,osgText::Text::LEFT_TOP);
-        /*textNode = new osgText::Text();
-         textNode->setCharacterSize(75);
-         textNode->setAlignment(osgText::Text::LEFT_TOP);
-         textNode->setPosition(osg::Vec3(0, -2, 0));
-         textNode->setColor(_textColorSelected);
-         textNode->setBackdropColor(osg::Vec4(0, 0, 0, 0));
-         textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
-         textNode->setText(submenu->getTitle());*/
+                osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,0),_textColorSelected,osgText::Text::LEFT_TOP);
 
         _geodeSelected->addDrawable(textNode);
     }
@@ -140,11 +124,11 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
         _node->addChild(_geodeIcon);
 
         osg::Geometry * geo = makeQuad(_iconHeight,-_iconHeight,
-                osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,-2,0));
+                osg::Vec4(1.0,1.0,1.0,1.0),osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,0));
         _geodeIcon->addDrawable(geo);
 
         osgText::Text * textNode = makeText(submenu->getName(),_textSize,
-                osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
+                osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),
                 _textColor);
         /*osgText::Text * textNode = new osgText::Text();
          textNode->setCharacterSize(_textSize);
@@ -164,7 +148,7 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
         _geode->addDrawable(textNode);
 
         textNode = makeText(submenu->getName(),_textSize,
-                osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
+                osg::Vec3(_iconHeight + _border,ConfigManager::CONTENT_BOARD_DIST,-_iconHeight / 2.0),
                 _textColorSelected);
         /*textNode = new osgText::Text();
          textNode->setCharacterSize(_textSize);
@@ -216,6 +200,7 @@ void BoardMenuSubMenuGeometry::resetMenuLine(float width)
 {
     _geodeLine->removeDrawables(0,_geodeLine->getNumDrawables());
     _geodeLine->addDrawable(
-            makeLine(osg::Vec3(0,-2,-(_height)),osg::Vec3(width,-2,-(_height)),
+            makeLine(osg::Vec3(0,ConfigManager::CONTENT_BOARD_DIST,-(_height)),
+                     osg::Vec3(width,ConfigManager::CONTENT_BOARD_DIST,-(_height)),
                     _textColor));
 }
