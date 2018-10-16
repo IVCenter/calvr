@@ -30,6 +30,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+    ${HEADER_PATH}/glesDrawable.h
     ${HEADER_PATH}/AndroidHelper.h
     ${HEADER_PATH}/AndroidPreloadPlugins.h
     )
@@ -43,6 +44,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(EXTRA_SOURCE ${EXTRA_SOURCE}
+    glesDrawable.cpp
     AndroidHelper.cpp
     AndroidPreloadPlugins.cpp
     )
