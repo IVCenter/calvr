@@ -22,7 +22,7 @@ bool ConfigManager::_debugOutput = false;
 ConfigManager * ConfigManager::_myPtr = NULL;
 
 #ifdef __ANDROID__
-    const float ConfigManager::UNIT_ALIGN_FACTOR = 0.01;
+    const float ConfigManager::UNIT_ALIGN_FACTOR = 0.001f;
 #else
     const float ConfigManager::UNIT_ALIGN_FACTOR = 1;
 #endif
