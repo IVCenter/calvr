@@ -5,7 +5,7 @@
 #include <map>
 #include <android/asset_manager.h>
 #include <osgDB/ReadFile>
-
+#include <cvrUtil/AndroidStdio.h>
 class Environment {
 private:
   static Environment* _ptr;
@@ -28,16 +28,18 @@ void __android_setenv(std::string key, std::string value);
 
 ////////////////////////////////////////////////////
 
-#define  LOG_TAG    "project"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-
 USE_OSGPLUGIN(osg2)
 USE_OSGPLUGIN(rgb)
 USE_OSGPLUGIN(tiff)
 USE_SERIALIZER_WRAPPER_LIBRARY(osg)
 
 namespace cvr{
+    typedef struct glState_S {
+        GLboolean depthTest, blend, cullFace;
+        GLboolean dither, colorLogicOp, polygonOffsetLine, polygonOffsetFill;
+        GLboolean polygonOffsetPoint, polygonSmooth, scissorTest, stencilTest;
+    } glState;
+
     class assetLoader{
     private:
         AAssetManager * const _asset_manager;
@@ -51,6 +53,10 @@ namespace cvr{
 
         osg::Program* createShaderProgramFromFile(const char* vertex_shader_file_name,
                                      const char* fragment_shader_file_name);
+        bool getShaderSourceFromFile(const char* vertex_shader_file_name,
+                                     const char* fragment_shader_file_name,
+                                     std::string & VertexShaderContent,
+                                     std::string & FragmentShaderContent);
     };
 }
 

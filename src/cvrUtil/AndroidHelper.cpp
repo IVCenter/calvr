@@ -82,18 +82,25 @@ Program *assetLoader::createShaderProgram(const char *vertShader, const char *fr
 Program* assetLoader::createShaderProgramFromFile(const char* vertex_shader_file_name,
                                           const char* fragment_shader_file_name){
     std::string VertexShaderContent;
-    if (!LoadTextFileFromAssetManager(vertex_shader_file_name, &VertexShaderContent)) {
-//        LOGE("Failed to load file: %s", vertex_shader_file_name);
-        return nullptr;
-    }
-
     std::string FragmentShaderContent;
-    if (!LoadTextFileFromAssetManager(fragment_shader_file_name, &FragmentShaderContent)) {
-//        LOGE("Failed to load file: %s", fragment_shader_file_name);
-        return nullptr;
-    }
-    return createShaderProgram(VertexShaderContent.c_str(), FragmentShaderContent.c_str());
+    if(getShaderSourceFromFile(vertex_shader_file_name, fragment_shader_file_name, VertexShaderContent, FragmentShaderContent))
+        return createShaderProgram(VertexShaderContent.c_str(), FragmentShaderContent.c_str());
+    return nullptr;
 }
 
+bool assetLoader:: getShaderSourceFromFile(const char* vertex_shader_file_name,
+                                                       const char* fragment_shader_file_name,
+                                                       std::string & VertexShaderContent,
+                                                       std::string & FragmentShaderContent){
+    if (!LoadTextFileFromAssetManager(vertex_shader_file_name, &VertexShaderContent)) {
+        LOGE("Failed to load file: %s", vertex_shader_file_name);
+        return false;
+    }
 
+    if (!LoadTextFileFromAssetManager(fragment_shader_file_name, &FragmentShaderContent)) {
+        LOGE("Failed to load file: %s", fragment_shader_file_name);
+        return false;
+    }
+    return true;
+}
 

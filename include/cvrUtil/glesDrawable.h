@@ -4,26 +4,42 @@
 #include <osg/Drawable>
 #include <osg/Geode>
 #include <stack>
-
+#include <cvrUtil/AndroidHelper.h>
 namespace cvr{
-    typedef struct glState_S {
-        GLboolean depthTest, blend, cullFace;
-        GLboolean dither, colorLogicOp, polygonOffsetLine, polygonOffsetFill;
-        GLboolean polygonOffsetPoint, polygonSmooth, scissorTest, stencilTest;
-    } glState;
+    static void checkGlError(const char* op) {
+        for (GLint error = glGetError(); error; error
+                                                        = glGetError()) {
+            LOGI("after %s() glError (0x%x)\n", op, error);
+        }
+    }
+    extern GLuint CreateProgram(const char* pVertexSource, const char* pFragmentSource);
 
     class glesDrawable: public osg::Drawable {
     protected:
-        std::stack<glState>* _stateStack;
+        std::stack<cvr::glState>* _stateStack;
         bool PushAllState() const;
         bool PopAllState() const;
         osg::ref_ptr<osg::Geode> glNode;
+        GLuint _shader_program;
+
+        void _init(assetLoader* loader,
+                            const char* vshader_file, const char* fshader_file){
+
+            std::string vshader, fshader;
+            if(loader->getShaderSourceFromFile(vshader_file,fshader_file,vshader,fshader))
+                _shader_program = CreateProgram(vshader.c_str(), fshader.c_str());
+            else
+                LOGE("Fail to load shader or create shader program");
+        }
     public:
-        virtual void Initialization(std::stack<glState>* stateStack){
+        virtual void Initialization(assetLoader * loader, std::stack<cvr::glState>*& stateStack){
             _stateStack = stateStack;
         }
-        osg::ref_ptr<osg::Geode> createDrawableNode(std::stack<glState>* stateStack){
-            Initialization(stateStack);
+
+
+        osg::ref_ptr<osg::Geode> createDrawableNode(assetLoader * loader,
+                                                    std::stack<cvr::glState>* stateStack){
+            Initialization(loader, stateStack);
             glNode = new osg::Geode;
             glNode->addDrawable(this);
             setUseDisplayList(false);
