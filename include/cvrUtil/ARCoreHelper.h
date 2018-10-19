@@ -31,20 +31,23 @@ namespace cvr{
         void setMVPmat(glm::mat4 mvp){ mvp_mat = mvp;}
 
         glm::mat4 getMVPMatrix(){return mvp_mat;}
-        void setPointCloudActiveState(bool active){_isActive = active;}
-        bool getActiveState(){return _isActive;}
+        void setPointCloudActiveState(bool active){_pointcloud_on = active;}
+//        bool getActiveState(){return _isActive;}
         bool getPointCloudStatus(){return _pointcloud_on;}
         void changePointCloudStatus(){_pointcloud_on = !_pointcloud_on;}
+
         bool getPlaneStatus(){return _plane_on;}
         void changePlaneStatus(){_plane_on = !_plane_on;}
         void turnOnPlane(){_plane_on = true;}
-        void updatePlaneData(const osg::Vec3f plane_center, int i){
+
+        void updatePlaneData(const glm::vec3 plane_center, int i){
             if(i>=_plane_centers.size())
                 _plane_centers.push_back(plane_center);
             else
                 _plane_centers[i] = plane_center;
         }
-        std::vector<osg::Vec3f> getPlaneCenters(){return _plane_centers;}
+
+        std::vector<glm::vec3> getPlaneCenters(){return _plane_centers;}
         glm::vec3 getRandomPointPos(){
             return _randomPoints[std::rand() % _randomPoints.size()];
         }
@@ -53,9 +56,9 @@ namespace cvr{
         static ARcoreHelper * _myPtr;
         // Point Cloud
         const float* _pointCloudData;
-        std::vector<osg::Vec3f> _plane_centers;
+        std::vector<glm::vec3> _plane_centers;
         int32_t _num_of_points = 0;
-        bool _isActive = false;
+//        bool _isActive = false;
         bool _pointcloud_on = true;
         bool _plane_on = false;
         std::vector<glm::vec3> _randomPoints;
