@@ -6,10 +6,10 @@
 #include <glm.hpp>
 #include <vector>
 #include <osg/Vec3>
+#include <cvrUtil/arcore_c_api.h>
 namespace cvr{
     class ARcoreHelper{
     public:
-
         static ARcoreHelper * instance();
         void getPointCloudData(const float*& pointData, int32_t& pointNum){
             pointNum = _num_of_points;
@@ -53,14 +53,15 @@ namespace cvr{
         }
 
     private:
+
         static ARcoreHelper * _myPtr;
         // Point Cloud
         const float* _pointCloudData;
         std::vector<glm::vec3> _plane_centers;
         int32_t _num_of_points = 0;
 //        bool _isActive = false;
-        bool _pointcloud_on = true;
-        bool _plane_on = false;
+        bool _pointcloud_on = false;
+        bool _plane_on = true;
         std::vector<glm::vec3> _randomPoints;
 
         glm::mat4 view_mat;

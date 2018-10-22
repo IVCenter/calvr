@@ -10,7 +10,10 @@
 #include <osg/ArgumentParser>
 
 #include <string>
-
+#ifdef __ANDROID__
+#include <cvrUtil/AndroidHelper.h>
+#include <cvrUtil/ARCoreManager.h>
+#endif
 namespace cvr
 {
 
@@ -27,7 +30,6 @@ class MenuManager;
 class FileHandler;
 class PluginManager;
 class ThreadedLoader;
-
 /**
  * @addtogroup kernel cvrKernel
  * @{
@@ -41,6 +43,7 @@ class CVRKERNEL_EXPORT CalVR
 {
     public:
         CalVR();
+
         virtual ~CalVR();
 
         /**
@@ -54,9 +57,19 @@ class CVRKERNEL_EXPORT CalVR
         bool init(osg::ArgumentParser & args, std::string home);
 
         /**
+        * @brief Initialization For Android
+        */
+        bool init(const char* home, AAssetManager *assetManager);
+
+        /**
          * @brief main run loop, does not return util quit is signaled
          */
         void run();
+
+        /**
+        * @brief Run Loop, do update per frame
+        */
+        void frame();
 
         /**
          * @brief returns the set home directory for the CalVR install
@@ -88,6 +101,11 @@ class CVRKERNEL_EXPORT CalVR
         {
             return _hostName;
         }
+        void onViewChanged(int rot, int width, int height);
+        void onPause();
+        void onResume(void *env, void *context, void *activity);
+        osg::ref_ptr<osg::Group> getSceneRoot();
+        void setSceneData(osg::ref_ptr<osg::Group> root);
 
     protected:
         static CalVR * _myPtr; ///< static self pointer
@@ -121,6 +139,12 @@ class CVRKERNEL_EXPORT CalVR
         FileHandler * _file;
         PluginManager * _plugins;
         ThreadedLoader * _threadedLoader;
+
+        assetLoader * _assetLoader;
+        ARCoreManager * _arcore;
+
+
+
 };
 
 /**

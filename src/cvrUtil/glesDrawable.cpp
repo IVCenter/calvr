@@ -62,6 +62,20 @@ namespace cvr {
         return program;
     }
 }
+glesDrawable::glesDrawable(std::stack<cvr::glState>* stateStack):
+        _stateStack(stateStack){}
+void glesDrawable::Initialization() {}
+osg::ref_ptr<osg::Geode> glesDrawable::createDrawableNode(){}
+glesDrawable::~glesDrawable() = default;
+
+void glesDrawable::createShaderProgram(const char* vshader_file, const char* fshader_file){
+    std::string vshader, fshader;
+    if(assetLoader::instance()->getShaderSourceFromFile(vshader_file,fshader_file,vshader,fshader))
+        _shader_program = CreateProgram(vshader.c_str(), fshader.c_str());
+    else
+        LOGE("Fail to load shader or create shader program");
+}
+
 bool glesDrawable::PushAllState() const
 {
     cvr::glState state;

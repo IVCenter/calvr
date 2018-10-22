@@ -7,6 +7,7 @@ using namespace osg;
 Environment::Environment() = default;
 
 Environment* Environment::_ptr = nullptr;
+assetLoader* assetLoader::_myPtr = nullptr;
 
 Environment* Environment::instance() {
   if (!_ptr) {
@@ -24,7 +25,7 @@ Environment* Environment::instance() {
   }
   return _ptr;
 }
-
+assetLoader*assetLoader::instance() {return _myPtr;}
 const char* Environment::getVar(const char* name ) {
   const auto it = _ptr->_env.find(name);
   if (it == _ptr->_env.end()) {
@@ -45,7 +46,9 @@ void __android_setenv(std::string key, std::string value){
 }
 
 assetLoader::assetLoader(AAssetManager * const assetManager):
-_asset_manager(assetManager){}
+_asset_manager(assetManager){
+    _myPtr = this;
+}
 
 bool assetLoader::LoadTextFileFromAssetManager(const char* file_name,std::string* out_file_text_string) {
     AAsset* asset =

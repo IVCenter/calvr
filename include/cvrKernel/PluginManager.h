@@ -52,7 +52,6 @@ class CVRKERNEL_EXPORT PluginManager
          */
         bool init();
 
-        
         bool init(AAssetManager*const assetManager);
         /**
          * @brief Do preFrame callback on all loaded plugins

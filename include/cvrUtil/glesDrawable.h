@@ -22,29 +22,14 @@ namespace cvr{
         osg::ref_ptr<osg::Geode> glNode;
         GLuint _shader_program;
 
-        void _init(assetLoader* loader,
-                            const char* vshader_file, const char* fshader_file){
-
-            std::string vshader, fshader;
-            if(loader->getShaderSourceFromFile(vshader_file,fshader_file,vshader,fshader))
-                _shader_program = CreateProgram(vshader.c_str(), fshader.c_str());
-            else
-                LOGE("Fail to load shader or create shader program");
-        }
+        virtual void Initialization();
+        void createShaderProgram(const char* vshader_file, const char* fshader_file);
     public:
-        virtual void Initialization(assetLoader * loader, std::stack<cvr::glState>*& stateStack){
-            _stateStack = stateStack;
-        }
+        glesDrawable(std::stack<cvr::glState>* stateStack);
+        ~glesDrawable();
 
+        virtual osg::ref_ptr<osg::Geode> createDrawableNode();
 
-        osg::ref_ptr<osg::Geode> createDrawableNode(assetLoader * loader,
-                                                    std::stack<cvr::glState>* stateStack){
-            Initialization(loader, stateStack);
-            glNode = new osg::Geode;
-            glNode->addDrawable(this);
-            setUseDisplayList(false);
-            return glNode.get();
-        }
         osg::ref_ptr<osg::Geode> getGLNode(){return glNode;}
     };
 }

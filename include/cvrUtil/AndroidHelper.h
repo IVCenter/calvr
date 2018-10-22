@@ -42,11 +42,13 @@ namespace cvr{
 
     class assetLoader{
     private:
+        static assetLoader* _myPtr;
         AAssetManager * const _asset_manager;
 
         bool LoadTextFileFromAssetManager(const char* file_name, std::string* out_file_text_string);
 
     public:
+        static assetLoader * instance();
         assetLoader(AAssetManager * assetManager);
 
         osg::Program *createShaderProgram(const char *vertShader, const char *fragShader);
