@@ -33,6 +33,7 @@
 #endif
 
 using namespace cvr;
+using namespace osg;
 
 CalVR * CalVR::_myPtr = NULL;
 
@@ -308,9 +309,24 @@ void CalVR::onPause(){cvr::ARCoreManager::instance()->onPause();}
 void CalVR::onResume(void *env, void *context, void *activity){
     cvr::ARCoreManager::instance()->onResume(env, context, activity);
 }
-osg::ref_ptr<osg::Group> CalVR::getSceneRoot(){return _scene->getSceneRoot();}
-void CalVR::setSceneData(osg::ref_ptr<osg::Group> root){_viewer->setSceneData(root.get());}
-
+ref_ptr<Group> CalVR::getSceneRoot(){return _scene->getSceneRoot();}
+void CalVR::setSceneData(ref_ptr<Group> root){_viewer->setSceneData(root.get());}
+void CalVR::setMouseEvent(cvr::MouseInteractionEvent * mie,
+                   int pointer_num, float x, float y){
+    mie->setButton(pointer_num - 1);
+    mie->setHand(0);
+    mie->setX(x);
+    mie->setY(y);
+    const float* camera_pos = _arcore->getCameraPose();
+    Matrixf rotMat = cvr::rawRotation2OsgMatrix(camera_pos);
+    Matrixf transMat = rawTrans2OsgMatrix(camera_pos+4);
+    mie->setTransform( rotMat* transMat);
+    float roll, pitch, yaw;
+    quat2OSGEuler(camera_pos, roll, pitch, yaw);
+    _tracking->setCameraRotation(rotMat, roll, pitch, yaw);
+    _tracking->setTouchEventMatrix(rotMat*transMat);
+    _interaction->addEvent(mie);
+}
 void CalVR::run()
 {
     if(!_viewer->isRealized())

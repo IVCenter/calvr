@@ -36,6 +36,7 @@ IF(ANDROID)
     ${HEADER_PATH}/glesDrawable.h
     ${HEADER_PATH}/ARCoreManager.h
     ${HEADER_PATH}/arcore_c_api.h
+    ${HEADER_PATH}/OsgGlesMath.h
     )
 ENDIF(ANDROID)
 
@@ -52,6 +53,7 @@ IF(ANDROID)
     AndroidPreloadPlugins.cpp
     glesDrawable.cpp
     ARCoreManager.cpp
+    OsgGlesMath.cpp
     )
 ENDIF(ANDROID)
 

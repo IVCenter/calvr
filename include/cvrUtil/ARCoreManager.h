@@ -49,10 +49,8 @@ namespace cvr{
 
         osg::Matrixf* getViewMatrix(){return view_mat;}
 
-        float * getTransformedUVs(){
-            if(geometry_changed) return transformed_camera_uvs;
-            return nullptr;
-        }
+        const float * getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
+        const float* getCameraPose(){return camera_pose_raw;}
     };
 }
 

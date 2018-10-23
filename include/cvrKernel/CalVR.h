@@ -6,13 +6,14 @@
 #define CALVR_MAIN_H
 
 #include <cvrKernel/Export.h>
-
+#include <cvrKernel/InteractionEvent.h>
 #include <osg/ArgumentParser>
 
 #include <string>
 #ifdef __ANDROID__
 #include <cvrUtil/AndroidHelper.h>
 #include <cvrUtil/ARCoreManager.h>
+#include <cvrUtil/OsgGlesMath.h>
 #endif
 namespace cvr
 {
@@ -106,6 +107,8 @@ class CVRKERNEL_EXPORT CalVR
         void onResume(void *env, void *context, void *activity);
         osg::ref_ptr<osg::Group> getSceneRoot();
         void setSceneData(osg::ref_ptr<osg::Group> root);
+        void setMouseEvent(cvr::MouseInteractionEvent * mie,
+                           int pointer_num, float x, float y);
 
     protected:
         static CalVR * _myPtr; ///< static self pointer
