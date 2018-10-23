@@ -84,3 +84,25 @@ void ARCoreManager::onDrawFrame() {
                                          transformed_camera_uvs);
     ArCamera_release(camera);
 }
+
+bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_num){
+    ArPointCloud * pointCloud;
+    ArStatus  pointcloud_Status = ArFrame_acquirePointCloud(_ar_session, _ar_frame, &pointCloud);
+    if(pointcloud_Status != AR_SUCCESS)
+        return false;
+
+    ArPointCloud_getNumberOfPoints(_ar_session, pointCloud, &point_num);
+    if(point_num <= 0)
+        return false;
+    const float* _pointCloudData;
+    //point cloud data with 4 params (x,y,z, confidence)
+    ArPointCloud_getData(_ar_session, pointCloud, &_pointCloudData);
+
+    ArPointCloud_release(pointCloud);
+    size_t memsize = 4 * sizeof(float) * point_num;
+    pointCloudData = (float*)malloc(memsize);
+    memcpy(pointCloudData, _pointCloudData, memsize);
+    return true;
+}
+osg::Matrixf ARCoreManager::getMVPMatrix(){Matrixf mat = (*view_mat) * (*  proj_mat);
+    return mat;}

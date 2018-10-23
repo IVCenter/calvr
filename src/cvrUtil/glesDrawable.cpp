@@ -17,7 +17,7 @@ bool glesDrawable::PushAllState() const
     state.scissorTest = glIsEnabled(GL_SCISSOR_TEST);
     state.stencilTest = glIsEnabled(GL_STENCIL_TEST);
 
-    _stateStack->push(state);
+//    _stateStack->push(state);
     return true;
 }
 bool glesDrawable::PopAllState() const
@@ -33,7 +33,7 @@ bool glesDrawable::PopAllState() const
         if (state.scissorTest) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
         if (state.stencilTest) glEnable(GL_STENCIL_TEST); else glDisable(GL_STENCIL_TEST);
 
-        _stateStack->pop();
+//        _stateStack->pop();
     }
     return true;
 }

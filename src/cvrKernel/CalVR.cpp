@@ -237,6 +237,8 @@ bool CalVR::init(const char *home,AAssetManager *assetManager) {
     setenv("CALVR_RESOURCE_DIR", homeDir+"resources/");
     setenv("CALVR_CONFIG_FILE", homeDir+"config/config.xml");
 
+    _assetLoader = new assetLoader(assetManager);
+
     _config = cvr::ConfigManager::instance();
     if(!_config->init()){
         LOGE("Fail to initialize config manager");
@@ -297,7 +299,7 @@ bool CalVR::init(const char *home,AAssetManager *assetManager) {
         LOGE("Fail to initialize plugin manager");
         return false;
     }
-    _assetLoader = new assetLoader(assetManager);
+
     _arcore = cvr::ARCoreManager::instance();
     return true;
 }

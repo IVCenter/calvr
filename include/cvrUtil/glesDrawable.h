@@ -25,6 +25,7 @@ namespace cvr{
             setUseDisplayList(false);
             return glNode.get();
         }
+//        virtual void updateOnFrame();
         osg::ref_ptr<osg::Geode> getGLNode(){return glNode;}
     };
 }

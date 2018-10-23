@@ -45,9 +45,13 @@ namespace cvr{
 
         void onDrawFrame();
 
+        bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
+
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
         osg::Matrixf* getViewMatrix(){return view_mat;}
+        osg::Matrixf* getProjMatrix(){return proj_mat;}
+        osg::Matrixf  getMVPMatrix();
 
         const float * getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
