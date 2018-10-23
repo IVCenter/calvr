@@ -1,80 +1,9 @@
-#include <cvrUtil/glesDrawable.h>
+//
+// Created by menghe on 8/1/2018.
+//
+
+#include<cvrUtil/glesDrawable.h>
 using namespace cvr;
-namespace cvr {
-    GLuint LoadShader(GLenum shaderType, const char *pSource) {
-        GLuint shader = glCreateShader(shaderType);
-        if (shader) {
-            glShaderSource(shader, 1, &pSource, NULL);
-            glCompileShader(shader);
-            GLint compiled = 0;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-            if (!compiled) {
-                GLint infoLen = 0;
-                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-                if (infoLen) {
-                    char *buf = (char *) malloc(infoLen);
-                    if (buf) {
-                        glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                        free(buf);
-                    }
-                    glDeleteShader(shader);
-                    shader = 0;
-                }
-            }
-        }
-        return shader;
-    }
-
-    GLuint CreateProgram(const char *pVertexSource, const char *pFragmentSource) {
-        GLuint vertexShader = LoadShader(GL_VERTEX_SHADER, pVertexSource);
-        if (!vertexShader) {
-            return 0;
-        }
-
-        GLuint pixelShader = LoadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-        if (!pixelShader) {
-            return 0;
-        }
-
-        GLuint program = glCreateProgram();
-        if (program) {
-            glAttachShader(program, vertexShader);
-
-            glAttachShader(program, pixelShader);
-
-            glLinkProgram(program);
-            GLint linkStatus = GL_FALSE;
-            glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-            if (linkStatus != GL_TRUE) {
-                GLint bufLength = 0;
-                glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-                if (bufLength) {
-                    char *buf = (char *) malloc(bufLength);
-                    if (buf) {
-                        glGetProgramInfoLog(program, bufLength, NULL, buf);
-                        free(buf);
-                    }
-                }
-                glDeleteProgram(program);
-                program = 0;
-            }
-        }
-        return program;
-    }
-}
-glesDrawable::glesDrawable(std::stack<cvr::glState>* stateStack):
-        _stateStack(stateStack){}
-void glesDrawable::Initialization() {}
-osg::ref_ptr<osg::Geode> glesDrawable::createDrawableNode(){}
-glesDrawable::~glesDrawable() = default;
-
-void glesDrawable::createShaderProgram(const char* vshader_file, const char* fshader_file){
-    std::string vshader, fshader;
-    if(assetLoader::instance()->getShaderSourceFromFile(vshader_file,fshader_file,vshader,fshader))
-        _shader_program = CreateProgram(vshader.c_str(), fshader.c_str());
-    else
-        LOGE("Fail to load shader or create shader program");
-}
 
 bool glesDrawable::PushAllState() const
 {
