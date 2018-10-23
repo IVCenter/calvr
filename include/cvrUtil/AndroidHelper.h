@@ -46,11 +46,13 @@ namespace cvr{
         AAssetManager * const _asset_manager;
 
         bool LoadTextFileFromAssetManager(const char* file_name, std::string* out_file_text_string);
-
+        GLuint _LoadGLShader(GLenum shaderType, const char *pSource);
+        GLuint _CreateGLProgramFromSource(const char *pVertexSource, const char *pFragmentSource);
     public:
         static assetLoader * instance();
         assetLoader(AAssetManager * assetManager);
 
+        GLuint createGLShaderProgramFromFile(const char* vert_file, const char *_frag_file);
         osg::Program *createShaderProgram(const char *vertShader, const char *fragShader);
 
         osg::Program* createShaderProgramFromFile(const char* vertex_shader_file_name,
