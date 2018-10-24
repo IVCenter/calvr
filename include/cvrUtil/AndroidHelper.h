@@ -5,7 +5,8 @@
 #include <map>
 #include <android/asset_manager.h>
 #include <osgDB/ReadFile>
-#include <cvrUtil/AndroidStdio.h>
+//#include <cvrUtil/AndroidStdio.h>
+#include <cvrUtil/ARCoreManager.h>
 #include <stack>
 class Environment {
 private:
@@ -49,6 +50,14 @@ namespace cvr{
         static glStateStack* instance();
         bool PushAllState() const;
         bool PopAllState() const;
+    };
+
+    class mvpCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){
+            uf->set(cvr::ARCoreManager::instance()->getMVPMatrix());
+            uf->dirty();
+        }
     };
 
     class assetLoader{

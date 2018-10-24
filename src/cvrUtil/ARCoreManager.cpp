@@ -1,5 +1,7 @@
 #include <cvrUtil/ARCoreManager.h>
 #include <cvrUtil/AndroidStdio.h>
+
+
 using namespace cvr;
 using namespace osg;
 ARCoreManager::ARCoreManager(){

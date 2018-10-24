@@ -8,16 +8,15 @@
 #include <cvrKernel/Export.h>
 #include <cvrKernel/InteractionEvent.h>
 #include <osg/ArgumentParser>
-
+#include <osg/Group>
 #include <string>
+
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidHelper.h>
-#include <cvrUtil/ARCoreManager.h>
-#include <cvrUtil/OsgGlesMath.h>
+#include <android/asset_manager.h>
 #endif
+
 namespace cvr
 {
-
 class ConfigManager;
 class ComController;
 class TrackingManager;
@@ -31,6 +30,9 @@ class MenuManager;
 class FileHandler;
 class PluginManager;
 class ThreadedLoader;
+class assetLoader;
+class ARCoreManager;
+
 /**
  * @addtogroup kernel cvrKernel
  * @{
@@ -58,19 +60,9 @@ class CVRKERNEL_EXPORT CalVR
         bool init(osg::ArgumentParser & args, std::string home);
 
         /**
-        * @brief Initialization For Android
-        */
-        bool init(const char* home, AAssetManager *assetManager);
-
-        /**
          * @brief main run loop, does not return util quit is signaled
          */
         void run();
-
-        /**
-        * @brief Run Loop, do update per frame
-        */
-        void frame();
 
         /**
          * @brief returns the set home directory for the CalVR install
@@ -102,6 +94,16 @@ class CVRKERNEL_EXPORT CalVR
         {
             return _hostName;
         }
+#ifdef __ANDROID__
+        /**
+            * @brief Initialization For Android
+            */
+        bool init(const char* home, AAssetManager *assetManager);
+
+        /**
+        * @brief Run Loop, do update per frame
+        */
+        void frame();
         void onViewChanged(int rot, int width, int height);
         void onPause();
         void onResume(void *env, void *context, void *activity);
@@ -110,6 +112,7 @@ class CVRKERNEL_EXPORT CalVR
         void setMouseEvent(cvr::MouseInteractionEvent * mie,
                            int pointer_num, float x, float y);
 
+#endif
     protected:
         static CalVR * _myPtr; ///< static self pointer
 
@@ -145,9 +148,6 @@ class CVRKERNEL_EXPORT CalVR
 
         assetLoader * _assetLoader;
         ARCoreManager * _arcore;
-
-
-
 };
 
 /**

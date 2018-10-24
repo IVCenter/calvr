@@ -1,12 +1,8 @@
 #ifndef CVR_GLESDRAWALBE_H
 #define CVR_GLESDRAWALBE_H
 
-
-#include <osg/Drawable>
 #include <osg/Geode>
-#include <stack>
-#include <android/asset_manager.h>
-#include <cvrUtil/AndroidHelper.h>
+
 namespace cvr{
     class glesDrawable: public osg::Drawable {
     protected:

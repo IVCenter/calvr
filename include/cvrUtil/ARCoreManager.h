@@ -2,7 +2,8 @@
 #define ARCORE_MANAGER_H
 
 #include <cvrUtil/arcore_c_api.h>
-#include <cvrUtil/glesDrawable.h>
+#include <osg/Matrixf>
+#include <GLES3/gl3.h>
 
 namespace {
     const GLfloat kUVs[] = {

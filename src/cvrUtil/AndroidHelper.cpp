@@ -1,5 +1,5 @@
 #include <cvrUtil/AndroidHelper.h>
-#include <android/log.h>
+#include <cvrUtil/AndroidStdio.h>
 
 using namespace cvr;
 using namespace osg;
