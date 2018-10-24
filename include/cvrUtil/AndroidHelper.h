@@ -6,6 +6,7 @@
 #include <android/asset_manager.h>
 #include <osgDB/ReadFile>
 #include <cvrUtil/AndroidStdio.h>
+#include <stack>
 class Environment {
 private:
   static Environment* _ptr;
@@ -39,6 +40,16 @@ namespace cvr{
         GLboolean dither, colorLogicOp, polygonOffsetLine, polygonOffsetFill;
         GLboolean polygonOffsetPoint, polygonSmooth, scissorTest, stencilTest;
     } glState;
+    class glStateStack{
+    private:
+        static glStateStack * _myPtr;
+        std::stack<glState> _glStateStack;
+        std::stack<cvr::glState>* _stateStack = &_glStateStack;
+    public:
+        static glStateStack* instance();
+        bool PushAllState() const;
+        bool PopAllState() const;
+    };
 
     class assetLoader{
     private:

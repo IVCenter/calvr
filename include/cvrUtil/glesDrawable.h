@@ -10,22 +10,17 @@
 namespace cvr{
     class glesDrawable: public osg::Drawable {
     protected:
-        std::stack<cvr::glState>* _stateStack;
-        bool PushAllState() const;
-        bool PopAllState() const;
         osg::ref_ptr<osg::Geode> glNode;
     public:
-        virtual void Initialization(std::stack<cvr::glState>* stateStack){
-            _stateStack = stateStack;
-        }
-        virtual osg::ref_ptr<osg::Geode> createDrawableNode(std::stack<cvr::glState>* stateStack){
-            Initialization(stateStack);
+        virtual void Initialization(){}
+        virtual osg::ref_ptr<osg::Geode> createDrawableNode(){
+            Initialization();
             glNode = new osg::Geode;
             glNode->addDrawable(this);
             setUseDisplayList(false);
             return glNode.get();
         }
-//        virtual void updateOnFrame();
+        virtual void updateOnFrame(){}
         osg::ref_ptr<osg::Geode> getGLNode(){return glNode;}
     };
 }

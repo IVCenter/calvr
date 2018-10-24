@@ -8,6 +8,7 @@ Environment::Environment() = default;
 
 Environment* Environment::_ptr = nullptr;
 assetLoader* assetLoader::_myPtr = nullptr;
+glStateStack* glStateStack::_myPtr = nullptr;
 
 Environment* Environment::instance() {
   if (!_ptr) {
@@ -26,6 +27,10 @@ Environment* Environment::instance() {
   return _ptr;
 }
 assetLoader*assetLoader::instance() {return _myPtr;}
+glStateStack*glStateStack::instance() {
+    if(!_myPtr) _myPtr=new glStateStack;
+    return _myPtr;
+}
 const char* Environment::getVar(const char* name ) {
   const auto it = _ptr->_env.find(name);
   if (it == _ptr->_env.end()) {
@@ -181,4 +186,36 @@ GLuint assetLoader::createGLShaderProgramFromFile(const char* vert_file, const c
     }
 
     return _CreateGLProgramFromSource(VertexShaderContent.c_str(), FragmentShaderContent.c_str());
+}
+bool glStateStack::PushAllState() const
+{
+    cvr::glState state;
+
+    state.blend = glIsEnabled(GL_BLEND);
+    state.depthTest = glIsEnabled(GL_DEPTH_TEST);
+    state.cullFace = glIsEnabled(GL_CULL_FACE);
+    state.dither = glIsEnabled(GL_DITHER);
+    state.polygonOffsetFill = glIsEnabled(GL_POLYGON_OFFSET_FILL);
+    state.scissorTest = glIsEnabled(GL_SCISSOR_TEST);
+    state.stencilTest = glIsEnabled(GL_STENCIL_TEST);
+
+    _stateStack->push(state);
+    return true;
+}
+bool glStateStack::PopAllState() const
+{
+    if (!_stateStack->empty()) {
+        cvr::glState state = _stateStack->top();
+
+        if (state.blend) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+        if (state.depthTest) glEnable(GL_DEPTH_TEST); else glDisable(GL_DEPTH_TEST);
+        if (state.cullFace) glEnable(GL_CULL_FACE); else glDisable(GL_CULL_FACE);
+        if (state.dither) glEnable(GL_DITHER); else glDisable(GL_DITHER);
+        if (state.polygonOffsetFill) glEnable(GL_POLYGON_OFFSET_FILL); else glDisable(GL_POLYGON_OFFSET_FILL);
+        if (state.scissorTest) glEnable(GL_SCISSOR_TEST); else glDisable(GL_SCISSOR_TEST);
+        if (state.stencilTest) glEnable(GL_STENCIL_TEST); else glDisable(GL_STENCIL_TEST);
+
+        _stateStack->pop();
+    }
+    return true;
 }
