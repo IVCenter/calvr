@@ -33,6 +33,7 @@ void __android_setenv(std::string key, std::string value);
 USE_OSGPLUGIN(osg2)
 USE_OSGPLUGIN(rgb)
 USE_OSGPLUGIN(tiff)
+USE_OSGPLUGIN(png)
 USE_SERIALIZER_WRAPPER_LIBRARY(osg)
 
 namespace cvr{
@@ -60,6 +61,21 @@ namespace cvr{
         }
     };
 
+    class viewMatrixCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){
+            uf->set(*cvr::ARCoreManager::instance()->getViewMatrix());
+            uf->dirty();
+        }
+    };
+
+    class projMatrixCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){
+            uf->set(*cvr::ARCoreManager::instance()->getProjMatrix());
+            uf->dirty();
+        }
+    };
     class assetLoader{
     private:
         static assetLoader* _myPtr;
