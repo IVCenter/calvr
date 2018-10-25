@@ -107,7 +107,8 @@ bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_nu
     return true;
 }
 bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
-                                 Matrixf& modelMat, int32_t& vertice_num){
+                                 Matrixf& modelMat, osg::Vec3f& normal_vec,
+                                 int32_t& vertice_num){
     int32_t polygon_length;
     //get the number of elements(2*#vertives)
     ArPlane_getPolygonSize(_ar_session, plane, &polygon_length);
@@ -128,6 +129,14 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     ArPlane_getCenterPose(_ar_session, plane, arPose);
     ArPose_getMatrix(_ar_session, arPose, modelMat.ptr());
 
+    //get normal vector
+    float plane_pose_raw[7] = {.0f};
+    ArPose_getPoseRaw(_ar_session, arPose, plane_pose_raw);
+    osg::Quat plane_quaternion(plane_pose_raw[3], plane_pose_raw[0],
+                          plane_pose_raw[1], plane_pose_raw[2]);
+    // Get normal vector, normal is defined to be positive Y-position in local
+    // frame.
+    normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
     return true;
 }
 //void ARCoreManager::doLightEstimation(){

@@ -63,7 +63,8 @@ namespace cvr{
         bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
 
         bool getPlaneData(ArPlane* plane, float*& plane_data,
-                          osg::Matrixf& modelMat, int32_t& vertice_num);
+                          osg::Matrixf& modelMat, osg::Vec3f& normal_vec,
+                          int32_t& vertice_num);
 
         planeMap getPlaneMap();
 
