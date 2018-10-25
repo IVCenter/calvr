@@ -33,18 +33,19 @@
 #endif
 
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidGetenv.h>
-#include <cvrUtil/AndroidStdio.h>
+    #include <cvrUtil/AndroidStdio.h>
+    #include <cvrUtil/AndroidHelper.h>
+    #include <cvrUtil/ARCoreManager.h>
+    #include <cvrUtil/OsgGlesMath.h>
 #endif
 
 using namespace cvr;
+using namespace osg;
 
 CalVR * CalVR::_myPtr = NULL;
 
-CalVR::CalVR()
-{
+CalVR::CalVR(){
     _initStatus = INIT_OK;
-
     _config = NULL;
     _communication = NULL;
     _tracking = NULL;
@@ -58,69 +59,27 @@ CalVR::CalVR()
     _file = NULL;
     _plugins = NULL;
     _threadedLoader = NULL;
+    _assetLoader = nullptr;
     _myPtr = this;
 }
 
-CalVR::~CalVR()
-{
-    if(_plugins)
-    {
-        delete _plugins;
-    }
-    if(_file)
-    {
-        delete _file;
-    }
-    if(_menu)
-    {
-        delete _menu;
-    }
-    if(_threadedLoader)
-    {
-        delete _threadedLoader;
-    }
-    if(_collaborative)
-    {
-        delete _collaborative;
-    }
-    if(_scene)
-    {
-        delete _scene;
-    }
-    if(_screens)
-    {
-        delete _screens;
-    }
-    if(_viewer)
-    {
-        delete _viewer;
-    }
-    if(_navigation)
-    {
-        delete _navigation;
-    }
-    if(_interaction)
-    {
-        delete _interaction;
-    }
-    if(_tracking)
-    {
-        delete _tracking;
-    }
-    if(_communication)
-    {
-        delete _communication;
-    }
-    if(_config)
-    {
-        delete _config;
-    }
+CalVR::~CalVR(){
+    if(_plugins) delete _plugins;
+    if(_file)   delete _file;
+    if(_menu)   delete _menu;
+    if(_threadedLoader) delete _threadedLoader;
+    if(_collaborative)  delete _collaborative;
+    if(_scene)  delete _scene;
+    if(_screens) delete _screens;
+    if(_viewer) delete _viewer;
+    if(_navigation) delete _navigation;
+    if(_interaction) delete _interaction;
+    if(_tracking) delete _tracking;
+    if(_communication) delete _communication;
+    if(_config) delete _config;
 }
 
-CalVR * CalVR::instance()
-{
-    return _myPtr;
-}
+CalVR * CalVR::instance(){return _myPtr;}
 
 bool CalVR::init(osg::ArgumentParser & args, std::string home)
 {
@@ -505,3 +464,143 @@ bool CalVR::syncClusterInitStatus()
 
     return initOK;
 }
+
+#ifdef __ANDROID__
+
+bool CalVR::init(const char *home,AAssetManager *assetManager) {
+    //setupDefaultEnvironment
+    std::string homeDir = std::string(home) + "/";
+    setenv("CALVR_HOST_NAME", "calvrHost");
+    setenv("CALVR_HOME", homeDir);
+    setenv("CALVR_ICON_DIR", homeDir+"icons/");
+    setenv("CALVR_CONFIG_DIR", homeDir+"config/");
+    setenv("CALVR_RESOURCE_DIR", homeDir+"resources/");
+    setenv("CALVR_CONFIG_FILE", homeDir+"config/config.xml");
+
+    _assetLoader = new assetLoader(assetManager);
+
+    _config = cvr::ConfigManager::instance();
+    if(!_config->init()){
+        LOGE("Fail to initialize config manager");
+        return false;
+    }
+
+    _communication = cvr::ComController::instance();
+    if(!_communication->init()){
+        LOGE("Fail to initialize communication");
+        return false;
+    }
+
+    _tracking = TrackingManager::instance();
+    if(!_tracking->init()){
+        LOGE("Fail to initialize tracking manager");
+        return false;
+    }
+
+    _interaction = cvr::InteractionManager::instance();
+    if(!_interaction->init()){
+        LOGE("Fail to initialize interaction manager");
+        return false;
+    }
+    _navigation = cvr::Navigation::instance();
+    if(!_navigation->init()){
+        LOGE("Fail to initialize Navigation system");
+        return false;
+    }
+
+    _viewer = new cvr::CVRViewer();
+    _viewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
+
+    osg::ref_ptr<osg::Camera> mainCam = _viewer->getCamera();
+    mainCam->setClearColor(osg::Vec4f(0.81, 0.77, 0.75,1.0));
+    osg::Vec3d eye = osg::Vec3d(0,-10,0);
+    osg::Vec3d center = osg::Vec3d(0,0,.0);
+    osg::Vec3d up = osg::Vec3d(0,0,1);
+    mainCam->setViewMatrixAsLookAt(eye,center,up); // usual up vector
+    mainCam->setRenderOrder(osg::Camera::NESTED_RENDER);
+    mainCam->setCullingMode( osg::CullSettings::NO_CULLING );
+
+    _scene = cvr::SceneManager::instance();
+    if(!_scene->init()){
+        LOGE("Fail to initialize scenes");
+        return false;
+    }
+    _scene->setViewerScene(_viewer);
+    _viewer->setReleaseContextAtEndOfFrameHint(false);
+
+    _menu =  cvr::MenuManager::instance();
+    if(!_menu->init()){
+        LOGE("Fail to menu system");
+        return false;
+    }
+
+    _plugins = cvr::PluginManager::instance();
+    if(!_plugins->init(nullptr)){
+        LOGE("Fail to initialize plugin manager");
+        return false;
+    }
+
+    _arcore = cvr::ARCoreManager::instance();
+    return true;
+}
+
+void CalVR::onViewChanged(int rot, int width, int height) {
+    _viewer->setUpViewerAsEmbeddedInWindow(0, 0, width, height);
+    cvr::ARCoreManager::instance()->onViewChanged(rot, width, height);
+}
+
+void CalVR::onPause(){cvr::ARCoreManager::instance()->onPause();}
+
+void CalVR::onResume(void *env, void *context, void *activity){
+    cvr::ARCoreManager::instance()->onResume(env, context, activity);
+}
+
+ref_ptr<Group> CalVR::getSceneRoot(){
+    return _scene->getSceneRoot();
+}
+
+void CalVR::setSceneData(ref_ptr<Group> root){
+    _viewer->setSceneData(root.get());
+}
+
+void CalVR::setMouseEvent(cvr::MouseInteractionEvent * mie,
+                          int pointer_num, float x, float y){
+    mie->setButton(pointer_num - 1);
+    mie->setHand(0);
+    mie->setX(x);
+    mie->setY(y);
+    const float* camera_pos = _arcore->getCameraPose();
+    Matrixf rotMat = cvr::rawRotation2OsgMatrix(camera_pos);
+    Matrixf transMat = rawTrans2OsgMatrix(camera_pos+4);
+    mie->setTransform( rotMat* transMat);
+    float roll, pitch, yaw;
+    quat2OSGEuler(camera_pos, roll, pitch, yaw);
+    _tracking->setCameraRotation(rotMat, roll, pitch, yaw);
+    _tracking->setTouchEventMatrix(rotMat*transMat);
+    _interaction->addEvent(mie);
+}
+void CalVR::frame() {
+    _arcore->onDrawFrame();
+    ////update scene camera
+        osg::Vec3d eye, center, up;
+        _arcore->getViewMatrix()->getLookAt(eye, center, up);
+        _viewer->getCamera()->setViewMatrixAsLookAt(osg::Vec3d(eye.x(), -eye.z(), eye.y()),
+                                                    osg::Vec3d(center.x(), -center.z(), center.y()),
+                                                    osg::Vec3d(up.x(), -up.z(), up.y()));
+    _viewer->frameStart();
+    _viewer->advance(USE_REFERENCE_TIME);
+    _tracking->update();
+    _scene->update();
+    _menu->update();
+    _interaction->update();
+    _navigation->update();
+    _scene->postEventUpdate();
+    _plugins->preFrame();
+    _viewer->updateTraversal();
+    _viewer->renderingTraversals();
+    if(_communication->getIsSyncError())
+        LOGE("Sync error");
+    _plugins->postFrame();
+}
+
+#endif

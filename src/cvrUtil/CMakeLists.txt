@@ -30,9 +30,13 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
-    ${HEADER_PATH}/AndroidGetenv.h
-    ${HEADER_PATH}/AndroidStdio.h
+    ${HEADER_PATH}/ARCoreHelper.h
+    ${HEADER_PATH}/AndroidHelper.h
     ${HEADER_PATH}/AndroidPreloadPlugins.h
+    ${HEADER_PATH}/glesDrawable.h
+    ${HEADER_PATH}/ARCoreManager.h
+    ${HEADER_PATH}/arcore_c_api.h
+    ${HEADER_PATH}/OsgGlesMath.h
     )
 ENDIF(ANDROID)
 
@@ -44,9 +48,12 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(EXTRA_SOURCE ${EXTRA_SOURCE}
-    AndroidGetenv.cpp
-    AndroidStdio.cpp
+    ARCoreHelper.cpp
+    AndroidHelper.cpp
     AndroidPreloadPlugins.cpp
+    glesDrawable.cpp
+    ARCoreManager.cpp
+    OsgGlesMath.cpp
     )
 ENDIF(ANDROID)
 
@@ -78,3 +85,11 @@ SET(LIB_EXTERNAL_LIBRARIES
 #)
 
 SETUP_CORE_LIBRARY(${LIB_NAME})
+
+IF(ANDROID)
+#include_directories(${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
+
+target_include_directories(${LIB_NAME} PRIVATE
+            ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
+ENDIF(ANDROID)
+

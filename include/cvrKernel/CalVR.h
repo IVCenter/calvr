@@ -6,14 +6,17 @@
 #define CALVR_MAIN_H
 
 #include <cvrKernel/Export.h>
-
+#include <cvrKernel/InteractionEvent.h>
 #include <osg/ArgumentParser>
-
+#include <osg/Group>
 #include <string>
+
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+#endif
 
 namespace cvr
 {
-
 class ConfigManager;
 class ComController;
 class TrackingManager;
@@ -27,6 +30,8 @@ class MenuManager;
 class FileHandler;
 class PluginManager;
 class ThreadedLoader;
+class assetLoader;
+class ARCoreManager;
 
 /**
  * @addtogroup kernel cvrKernel
@@ -41,6 +46,7 @@ class CVRKERNEL_EXPORT CalVR
 {
     public:
         CalVR();
+
         virtual ~CalVR();
 
         /**
@@ -88,7 +94,25 @@ class CVRKERNEL_EXPORT CalVR
         {
             return _hostName;
         }
+#ifdef __ANDROID__
+        /**
+            * @brief Initialization For Android
+            */
+        bool init(const char* home, AAssetManager *assetManager);
 
+        /**
+        * @brief Run Loop, do update per frame
+        */
+        void frame();
+        void onViewChanged(int rot, int width, int height);
+        void onPause();
+        void onResume(void *env, void *context, void *activity);
+        osg::ref_ptr<osg::Group> getSceneRoot();
+        void setSceneData(osg::ref_ptr<osg::Group> root);
+        void setMouseEvent(cvr::MouseInteractionEvent * mie,
+                           int pointer_num, float x, float y);
+
+#endif
     protected:
         static CalVR * _myPtr; ///< static self pointer
 
@@ -121,6 +145,9 @@ class CVRKERNEL_EXPORT CalVR
         FileHandler * _file;
         PluginManager * _plugins;
         ThreadedLoader * _threadedLoader;
+
+        assetLoader * _assetLoader;
+        ARCoreManager * _arcore;
 };
 
 /**

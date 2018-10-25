@@ -19,8 +19,7 @@
 #include <osg/LineWidth>
 
 #ifdef __ANDROID__
-#include <cvrUtil/AndroidStdio.h>
-#include <cvrUtil/AndroidGetenv.h>
+#include <cvrUtil/AndroidHelper.h>
 #endif
 
 using namespace cvr;
@@ -180,7 +179,7 @@ bool BoardMenu::showBoardMenu(InteractionEvent * event){
     if(!_tie || _tie->getButton() != _secondaryButton)
         return false;
     SceneManager::instance()->getMenuRoot()->addChild(_menuRoot);
-    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)*TrackingManager::instance()->getCameraRotation();
+    osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)* _tie->getTransform();
     osg::Matrix transMat, rotMat, cam_y_cali_Mat;
     transMat.makeTranslate(menuPoint);
     cam_y_cali_Mat.makeRotate(-TrackingManager::instance()->getCameraYRotation(), osg::Vec3f(.0f,1.0,.0f));
@@ -288,18 +287,22 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 
                     osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
                     menuPoint = menuPoint * tie->getTransform();
+#ifdef __ANDROID__
+                    osg::Matrix transMat, rotMat, cam_y_cali_Mat;
+                    transMat.makeTranslate(menuPoint);
+                    cam_y_cali_Mat.makeRotate(-TrackingManager::instance()->getCameraYRotation(), osg::Vec3f(.0f,1.0,.0f));
 
+                    rotMat = TrackingManager::instance()->getCameraRotation() * cam_y_cali_Mat;
+                    _menuRoot->setMatrix(rotMat * transMat);
+#else
                     if(event->asMouseEvent())
                     {
-//                        osg::Vec3 menuOffset = osg::Vec3(
-//                                _widthMap[_myMenu] / 2.0,0,0);
                         osg::Matrix menuTransMat;
                         menuTransMat.makeTranslate(menuPoint);
                         _menuRoot->setMatrix(TrackingManager::instance()->getCameraRotation() * menuTransMat);
                     }
                     else if(event->asPointerEvent())
                     {
-                        //TODO add rotation
                         SceneManager::instance()->getPointOnTiledWall(
                                 tie->getTransform(),menuPoint);
                         osg::Vec3 menuOffset = osg::Vec3(
@@ -325,7 +328,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
                                 osg::Matrix::translate(-menuOffset) * menuRot
                                         * osg::Matrix::translate(menuPoint));
                     }
-
+#endif
                     _menuActive = true;
                     SceneManager::instance()->closeOpenObjectMenu();
                     return true;
@@ -875,6 +878,7 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
     else if(_clickActive)
     {
         _currentPoint[hand] = isect.point;
+        TrackingManager::instance()->setIntersectPoint(isect.point);
         return true;
     }
 
@@ -896,6 +900,7 @@ bool BoardMenu::processIsect(IsectInfo & isect, int hand)
         selectItem(_intersectMap[isect.geode]);
         _foundItem = true;
         _currentPoint[hand] = isect.point;
+        TrackingManager::instance()->setIntersectPoint(isect.point);
         return true;
     }
 

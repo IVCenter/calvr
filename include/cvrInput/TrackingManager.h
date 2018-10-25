@@ -224,6 +224,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         osg::Matrix getCameraRotation(){return _cameraRotMat;}
         double getCameraYRotation(){return cam_eu_y;}
         void setCameraRotation(osg::Matrix rot, double x=0, double y=0, double z=0){_cameraRotMat = rot;cam_eu_x = x; cam_eu_y=y; cam_eu_z = z;}
+        void setIntersectPoint(osg::Vec3f point){_isPoint = point;isIntersect = true;}
+        bool getIsPoint(osg::Vec3f & isPoint);
     protected:
         TrackingManager();
         virtual ~TrackingManager();
@@ -374,6 +376,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         osg::Matrix _touchEventMat;
         osg::Matrix _cameraRotMat;
         double cam_eu_x, cam_eu_y, cam_eu_z;
+        osg::Vec3f _isPoint;
+        bool isIntersect = false;
 };
 
 /**

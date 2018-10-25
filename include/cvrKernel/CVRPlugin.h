@@ -8,7 +8,9 @@
 #include <cvrKernel/InteractionEvent.h>
 
 #include <osg/Matrix>
-
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+#endif
 namespace cvr
 {
 
@@ -22,6 +24,10 @@ namespace cvr
  */
 class CVRPlugin
 {
+#ifdef __ANDROID__
+    protected:
+        AAssetManager * _asset_manager;
+#endif
     public:
         CVRPlugin()
         {
@@ -97,6 +103,9 @@ class CVRPlugin
         {
             return 50;
         }
+#ifdef __ANDROID__
+        void setAssetManager(AAssetManager*const manager){_asset_manager = manager;}
+#endif
 };
 
 /**

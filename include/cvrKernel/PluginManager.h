@@ -12,7 +12,9 @@
 #include <vector>
 //#include <queue>
 #include <map>
-
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+#endif
 namespace cvr
 {
 
@@ -50,8 +52,7 @@ class CVRKERNEL_EXPORT PluginManager
          */
         bool init();
 
-        
-        bool init(bool android);
+        bool init(AAssetManager*const assetManager);
         /**
          * @brief Do preFrame callback on all loaded plugins
          */
