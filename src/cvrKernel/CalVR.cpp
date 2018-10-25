@@ -547,7 +547,6 @@ bool CalVR::init(const char *home,AAssetManager *assetManager) {
 void CalVR::onViewChanged(int rot, int width, int height) {
     _viewer->setUpViewerAsEmbeddedInWindow(0, 0, width, height);
     cvr::ARCoreManager::instance()->onViewChanged(rot, width, height);
-    _tracking->setWindowsShape(width, height);
 }
 
 void CalVR::onPause(){cvr::ARCoreManager::instance()->onPause();}

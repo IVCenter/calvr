@@ -226,10 +226,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         void setCameraRotation(osg::Matrix rot, double x=0, double y=0, double z=0){_cameraRotMat = rot;cam_eu_x = x; cam_eu_y=y; cam_eu_z = z;}
         void setIntersectPoint(osg::Vec3f point){_isPoint = point;isIntersect = true;}
         bool getIsPoint(osg::Vec3f & isPoint);
-        void setWindowsShape(int width, int height){_screenWidth = width; _screenHeight= height;}
-        void setTouchMovePosition(float x, float y){_touchX = x; _touchY = y;}
-        void getTouchOffset(osg::Vec2f & offset){offset = osg::Vec2f(2*(_touchX - _screenWidth/2) / _screenWidth,
-                                                                     2*(_screenHeight/2 - _touchY) / _screenHeight);}
     protected:
         TrackingManager();
         virtual ~TrackingManager();
@@ -382,8 +378,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         double cam_eu_x, cam_eu_y, cam_eu_z;
         osg::Vec3f _isPoint;
         bool isIntersect = false;
-        int _screenWidth, _screenHeight;
-        float _touchX, _touchY;
 };
 
 /**
