@@ -46,6 +46,7 @@ namespace cvr{
 
         /**Plane Factors***/
         planeMap plane_color_map;
+        std::vector<ArAnchor*> _hittedAnchors;
 
     public:
         static ARCoreManager * instance();
@@ -66,7 +67,13 @@ namespace cvr{
                           osg::Matrixf& modelMat, osg::Vec3f& normal_vec,
                           int32_t& vertice_num);
 
+        bool updatePlaneHittest(float x, float y);
+
         planeMap getPlaneMap();
+
+        size_t getAnchorSize(){return _hittedAnchors.size();}
+
+        bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc);
 
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 

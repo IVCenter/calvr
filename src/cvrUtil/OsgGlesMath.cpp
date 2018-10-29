@@ -42,4 +42,19 @@ namespace cvr {
         std::swap(pitch, yaw);
         pitch = -pitch;
     }
+
+    float calculateDistanceToPlane(float* plane_pose, float* camera_pose) {
+
+        osg::Vec3f plane_position(plane_pose[4], plane_pose[5], plane_pose[6]);
+        osg::Vec3f camera_P_plane(camera_pose[4] - plane_position.x(),
+                                  camera_pose[5] - plane_position.y(),
+                                  camera_pose[6] - plane_position.z());
+
+        osg::Quat plane_quaternion(plane_pose[0],plane_pose[1], plane_pose[2],plane_pose[3]);
+        // Get normal vector, normal is defined to be positive Y-position in local
+        // frame.
+        osg::Vec3f normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
+
+        return normal_vec * camera_P_plane;
+    }
 }

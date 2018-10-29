@@ -16,5 +16,10 @@ namespace cvr{
 
     CVRUTIL_EXPORT void quat2OSGEuler(const float* q, float& roll, float& pitch, float& yaw);
 
+    // Calculate the normal distance to plane from cameraPose, the given planePose
+    // should have y axis parallel to plane's normal, for example plane's center
+    // pose or hit test pose.
+    CVRUTIL_EXPORT float calculateDistanceToPlane(float* plane_pose, float* camera_pose);
+
 }
 #endif

@@ -1,5 +1,6 @@
 #include <cvrUtil/ARCoreManager.h>
 #include <cvrUtil/AndroidStdio.h>
+#include <cvrUtil/OsgGlesMath.h>
 
 
 using namespace cvr;
@@ -132,8 +133,7 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     //get normal vector
     float plane_pose_raw[7] = {.0f};
     ArPose_getPoseRaw(_ar_session, arPose, plane_pose_raw);
-    osg::Quat plane_quaternion(plane_pose_raw[3], plane_pose_raw[0],
-                          plane_pose_raw[1], plane_pose_raw[2]);
+    osg::Quat plane_quaternion(plane_pose_raw[0],plane_pose_raw[1], plane_pose_raw[2],plane_pose_raw[3]);
     // Get normal vector, normal is defined to be positive Y-position in local
     // frame.
     normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
@@ -194,6 +194,110 @@ planeMap ARCoreManager::getPlaneMap(){
     ArTrackableList_destroy(plane_list);
     plane_list = nullptr;
     return plane_color_map;
+}
+
+bool ARCoreManager::updatePlaneHittest(float x, float y){
+    if(!_ar_frame || !_ar_session) return false;
+    ArHitResultList* hit_result_list = nullptr;
+    ArHitResultList_create(_ar_session, &hit_result_list);
+    CHECK(hit_result_list);
+    ArFrame_hitTest(_ar_session, _ar_frame, x, y, hit_result_list);
+
+    int32_t hit_result_list_size = 0;
+    ArHitResultList_getSize(_ar_session, hit_result_list,
+                            &hit_result_list_size);
+
+    ArHitResult* ar_hit_result = nullptr;
+
+    for (int32_t i = 0; i < hit_result_list_size; ++i) {
+        ArHitResult *ar_hit = nullptr;
+        ArHitResult_create(_ar_session, &ar_hit);
+        ArHitResultList_getItem(_ar_session, hit_result_list, i, ar_hit);
+
+        if (ar_hit == nullptr) {
+            LOGE("HelloArApplication::OnTouched ArHitResultList_getItem error");
+            return false;
+        }
+
+        ArTrackable *ar_trackable = nullptr;
+        ArHitResult_acquireTrackable(_ar_session, ar_hit, &ar_trackable);
+        ArTrackableType ar_trackable_type = AR_TRACKABLE_NOT_VALID;
+        ArTrackable_getType(_ar_session, ar_trackable, &ar_trackable_type);
+        ///////////////ONLY CHECK PLANE/////////////////////////////
+        if(ar_trackable_type != AR_TRACKABLE_PLANE)
+            continue;
+
+        ArPose* hit_pose = nullptr;
+        ArPose_create(_ar_session, nullptr, &hit_pose);
+        ArHitResult_getHitPose(_ar_session, ar_hit, hit_pose);
+        int32_t in_polygon = 0;
+        ArPlane* ar_plane = ArAsPlane(ar_trackable);
+        ArPlane_isPoseInPolygon(_ar_session, ar_plane, hit_pose, &in_polygon);
+
+        // Use hit pose and camera pose to check if hittest is from the
+        // back of the plane, if it is, no need to create the anchor.
+        ArPose* camera_pose = nullptr;
+        ArPose_create(_ar_session, nullptr, &camera_pose);
+        ArCamera* ar_camera;
+        ArFrame_acquireCamera(_ar_session, _ar_frame, &ar_camera);
+        ArCamera_getPose(_ar_session, ar_camera, camera_pose);
+        ArCamera_release(ar_camera);
+
+        float plane_pose_raw[7] = {0.f};
+        ArPose_getPoseRaw(_ar_session, hit_pose, plane_pose_raw);
+        float camera_pose_raw[7] = {0.f};
+        ArPose_getPoseRaw(_ar_session, camera_pose, camera_pose_raw);
+
+        ArPose_destroy(hit_pose);
+        ArPose_destroy(camera_pose);
+
+        if (!in_polygon || calculateDistanceToPlane(plane_pose_raw, camera_pose_raw) < 0)
+            continue;
+
+        ar_hit_result = ar_hit;
+        break;
+    }
+    ////////////////////////////
+    if(ar_hit_result){
+        ArAnchor* anchor = nullptr;
+        if (ArHitResult_acquireNewAnchor(_ar_session, ar_hit_result, &anchor) !=
+            AR_SUCCESS) {
+            LOGE(
+                    "HelloArApplication::OnTouched ArHitResult_acquireNewAnchor error");
+            return false;
+        }
+
+        ArTrackingState tracking_state = AR_TRACKING_STATE_STOPPED;
+        ArAnchor_getTrackingState(_ar_session, anchor, &tracking_state);
+        if (tracking_state != AR_TRACKING_STATE_TRACKING) {
+            ArAnchor_release(anchor);
+            return false;
+        }
+
+        _hittedAnchors.push_back(anchor);
+        ArHitResult_destroy(ar_hit_result);
+        ar_hit_result = nullptr;
+
+        ArHitResultList_destroy(hit_result_list);
+        hit_result_list = nullptr;
+    }
+    return true;
+}
+
+bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc){
+    if(loc>=_hittedAnchors.size())
+        return false;
+    ArTrackingState tracking_state = AR_TRACKING_STATE_STOPPED;
+    ArAnchor_getTrackingState(_ar_session, _hittedAnchors[loc],
+                              &tracking_state);
+    if (tracking_state == AR_TRACKING_STATE_TRACKING) {
+        ArPose* pose_;
+        ArPose_create(_ar_session, nullptr, &pose_);
+        ArAnchor_getPose(_ar_session, _hittedAnchors[loc], pose_);
+        ArPose_getMatrix(_ar_session, pose_, modelMat.ptr());
+        ArPose_destroy(pose_);
+    }
+    return true;
 }
 osg::Matrixf ARCoreManager::getMVPMatrix(){Matrixf mat = (*view_mat) * (*  proj_mat);
     return mat;}
