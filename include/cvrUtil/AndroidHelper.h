@@ -98,6 +98,19 @@ namespace cvr{
                                      const char* fragment_shader_file_name,
                                      std::string & VertexShaderContent,
                                      std::string & FragmentShaderContent);
+
+        // Load obj file from assets folder from the app.
+        // @param file_name, name of the obj file.
+        // @param out_vertices, output vertices.
+        // @param out_normals, output normals.
+        // @param out_uv, output texture UV coordinates.
+        // @param out_indices, output triangle indices.
+        // @return true if obj is loaded correctly, otherwise false.
+        bool LoadObjFile( const char* file_name,
+                          std::vector<GLfloat>* out_vertices,
+                          std::vector<GLfloat>* out_normals,
+                          std::vector<GLfloat>* out_uv,
+                          std::vector<GLushort>* out_indices);
     };
 }
 
