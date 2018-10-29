@@ -114,10 +114,8 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     //get the number of elements(2*#vertives)
     ArPlane_getPolygonSize(_ar_session, plane, &polygon_length);
 
-    if(polygon_length == 0){
-        LOGE("NO valid plane polygon found");
+    if(polygon_length == 0)
         return false;
-    }
     vertice_num = polygon_length/2;
 
     plane_data = (float*)malloc(sizeof(float) * polygon_length);
@@ -139,20 +137,21 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
     return true;
 }
-//void ARCoreManager::doLightEstimation(){
-//    ArLightEstimate* ar_light_estimate;
-//    ArLightEstimateState ar_light_estimate_state;
-//    ArLightEstimate_create(_ar_session, &ar_light_estimate);
-//
-//    ArFrame_getLightEstimate(_ar_session, _ar_frame, ar_light_estimate);
-//    ArLightEstimate_getState(_ar_session, ar_light_estimate, &ar_light_estimate_state);
-//    if(ar_light_estimate_state == AR_LIGHT_ESTIMATE_STATE_VALID){
-//        ArLightEstimate_getColorCorrection(_ar_session, ar_light_estimate, _light.color_correction);
-//        ArLightEstimate_getPixelIntensity(_ar_session, ar_light_estimate, &_light.intensity);
-//    }
-//
-//    ArLightEstimate_destroy(ar_light_estimate);
-//}
+LightSrc ARCoreManager::getLightEstimation(){
+    ArLightEstimate* ar_light_estimate;
+    ArLightEstimateState ar_light_estimate_state;
+    ArLightEstimate_create(_ar_session, &ar_light_estimate);
+
+    ArFrame_getLightEstimate(_ar_session, _ar_frame, ar_light_estimate);
+    ArLightEstimate_getState(_ar_session, ar_light_estimate, &ar_light_estimate_state);
+    if(ar_light_estimate_state == AR_LIGHT_ESTIMATE_STATE_VALID){
+        ArLightEstimate_getColorCorrection(_ar_session, ar_light_estimate,  _envLight.color_correction);
+        ArLightEstimate_getPixelIntensity(_ar_session, ar_light_estimate, &_envLight.intensity);
+    }
+
+    ArLightEstimate_destroy(ar_light_estimate);
+    return _envLight;
+}
 
 planeMap ARCoreManager::getPlaneMap(){
     int detectedPlaneNum;

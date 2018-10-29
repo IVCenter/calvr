@@ -19,10 +19,13 @@ namespace {
                          ((colorRgba >> 16) & 0xff) / 255.0f,
                          ((colorRgba >> 8) & 0xff) / 255.0f);
     }
+
 }
 
 namespace cvr{
     typedef std::unordered_map<ArPlane*, osg::Vec3f> planeMap;
+    typedef  struct{float intensity = 0.8f;float color_correction[4] = {1.f, 1.f, 1.f, 1.f};} LightSrc;
+
     class ARCoreManager{
     private:
         static ARCoreManager* _myPtr;
@@ -47,7 +50,8 @@ namespace cvr{
         /**Plane Factors***/
         planeMap plane_color_map;
         std::vector<ArAnchor*> _hittedAnchors;
-
+        /*** Lighting ***/
+        LightSrc _envLight;
     public:
         static ARCoreManager * instance();
         ARCoreManager();
@@ -60,6 +64,8 @@ namespace cvr{
         void onResume(void *env, void *context, void *activity);
 
         void onDrawFrame();
+
+        LightSrc getLightEstimation();
 
         bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
 
