@@ -70,7 +70,15 @@ namespace cvr{
             uf->dirty();
         }
     };
-
+    class modelViewCallBack:public osg::UniformCallback{
+        osg::Matrixf _modelMat;
+    public:
+        modelViewCallBack(osg::Matrixf modelMat):_modelMat(modelMat){}
+        virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){
+            uf->set(_modelMat * (*cvr::ARCoreManager::instance()->getViewMatrix()));
+            uf->dirty();
+        }
+    };
     class viewMatrixCallback:public osg::UniformCallback{
     public:
         virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){
