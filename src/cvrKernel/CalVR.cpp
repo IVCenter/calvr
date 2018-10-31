@@ -588,6 +588,7 @@ void CalVR::frame() {
         _viewer->getCamera()->setViewMatrixAsLookAt(osg::Vec3d(eye.x(), -eye.z(), eye.y()),
                                                     osg::Vec3d(center.x(), -center.z(), center.y()),
                                                     osg::Vec3d(up.x(), -up.z(), up.y()));
+        _viewer->getCamera()->setProjectionMatrix(*ARCoreManager::instance()->getProjMatrix());
     _viewer->frameStart();
     _viewer->advance(USE_REFERENCE_TIME);
     _tracking->update();
