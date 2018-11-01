@@ -283,7 +283,7 @@ bool ARCoreManager::updatePlaneHittest(float x, float y){
     return true;
 }
 
-bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc){
+bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc, bool realCoord){
     if(loc>=_hittedAnchors.size())
         return false;
     ArTrackingState tracking_state = AR_TRACKING_STATE_STOPPED;
@@ -293,7 +293,14 @@ bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc){
         ArPose* pose_;
         ArPose_create(_ar_session, nullptr, &pose_);
         ArAnchor_getPose(_ar_session, _hittedAnchors[loc], pose_);
-        ArPose_getMatrix(_ar_session, pose_, modelMat.ptr());
+
+        if(!realCoord){
+            float pose_raw[7];
+            ArPose_getPoseRaw(_ar_session, pose_, pose_raw);
+            modelMat = cvr::rawRotation2OsgMatrix(pose_raw)* rawTrans2OsgMatrix(pose_raw+4);
+        }else
+            ArPose_getMatrix(_ar_session, pose_, modelMat.ptr());
+
         ArPose_destroy(pose_);
     }
     return true;

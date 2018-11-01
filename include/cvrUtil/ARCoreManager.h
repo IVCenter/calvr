@@ -6,6 +6,9 @@
 #include <GLES3/gl3.h>
 #include <unordered_map>
 
+//[x, y, z, w] -> [x, -z, y, w]
+#define REAL_TO_OSG_COORD osg::Matrixf(1,0,0,0,0,0,-1,0,0,1,0,0,0,0,0,1);
+
 namespace {
     const GLfloat kUVs[] = {
             0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -79,7 +82,7 @@ namespace cvr{
 
         size_t getAnchorSize(){return _hittedAnchors.size();}
 
-        bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc);
+        bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc, bool realCoord = false);
 
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
