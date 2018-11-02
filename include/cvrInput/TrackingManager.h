@@ -230,6 +230,8 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         void setTouchMovePosition(float x, float y){_touchX = x; _touchY = y;}
         void getTouchOffset(osg::Vec2f & offset){offset = osg::Vec2f(2*(_touchX - _screenWidth/2) / _screenWidth,
                                                                      2*(_screenHeight/2 - _touchY) / _screenHeight);}
+        void getScreenToClientPos(osg::Vec2f & pos){pos = osg::Vec2f(2*(pos.x() - _screenWidth/2) / _screenWidth,
+                                                                        2*(_screenHeight/2 - pos.y()) / _screenHeight);}
     protected:
         TrackingManager();
         virtual ~TrackingManager();
