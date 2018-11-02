@@ -570,25 +570,19 @@ void CalVR::setMouseEvent(cvr::MouseInteractionEvent * mie,
     mie->setHand(0);
     mie->setX(x);
     mie->setY(y);
-    const float* camera_pos = _arcore->getCameraPose();
-    Matrixf rotMat = cvr::rawRotation2OsgMatrix(camera_pos);
-    Matrixf transMat = rawTrans2OsgMatrix(camera_pos+4);
-    mie->setTransform( rotMat* transMat);
-    float roll, pitch, yaw;
-    quat2OSGEuler(camera_pos, roll, pitch, yaw);
-    _tracking->setCameraRotation(rotMat, roll, pitch, yaw);
-    _tracking->setTouchEventMatrix(rotMat*transMat);
+    mie->setTransform( _tracking->getHandMat(0));
     _interaction->addEvent(mie);
 }
 void CalVR::frame() {
     _arcore->onDrawFrame();
     ////update scene camera
-        osg::Vec3d eye, center, up;
-        _arcore->getViewMatrix()->getLookAt(eye, center, up);
-        _viewer->getCamera()->setViewMatrixAsLookAt(osg::Vec3d(eye.x(), -eye.z(), eye.y()),
+    osg::Vec3d eye, center, up;
+    _arcore->getViewMatrix()->getLookAt(eye, center, up);
+    _viewer->getCamera()->setViewMatrixAsLookAt(osg::Vec3d(eye.x(), -eye.z(), eye.y()),
                                                     osg::Vec3d(center.x(), -center.z(), center.y()),
                                                     osg::Vec3d(up.x(), -up.z(), up.y()));
-        _viewer->getCamera()->setProjectionMatrix(*ARCoreManager::instance()->getProjMatrix());
+    _viewer->getCamera()->setProjectionMatrix(*ARCoreManager::instance()->getProjMatrix());
+
     _viewer->frameStart();
     _viewer->advance(USE_REFERENCE_TIME);
     _tracking->update();
@@ -603,6 +597,7 @@ void CalVR::frame() {
     if(_communication->getIsSyncError())
         LOGE("Sync error");
     _plugins->postFrame();
+    _arcore->postFrame();
 }
 
 #endif

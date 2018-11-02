@@ -87,7 +87,12 @@ void ARCoreManager::onDrawFrame() {
                                          transformed_camera_uvs);
     ArCamera_release(camera);
 }
-
+void ARCoreManager::postFrame(){
+    if(_consumeEvent){
+        _consumeEvent = false;
+        _event_queue.pop();
+    }
+}
 bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_num){
     ArPointCloud * pointCloud;
     ArStatus  pointcloud_Status = ArFrame_acquirePointCloud(_ar_session, _ar_frame, &pointCloud);
@@ -196,6 +201,7 @@ planeMap ARCoreManager::getPlaneMap(){
 }
 
 bool ARCoreManager::updatePlaneHittest(float x, float y){
+    _event_queue.push(Vec2f(x,y));
     if(!_ar_frame || !_ar_session) return false;
     ArHitResultList* hit_result_list = nullptr;
     ArHitResultList_create(_ar_session, &hit_result_list);

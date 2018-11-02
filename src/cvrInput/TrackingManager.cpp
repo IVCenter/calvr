@@ -36,6 +36,9 @@
 
 #ifdef __ANDROID__
 #include <cvrInput/TrackerAndroid.h>
+#include <cvrUtil/ARCoreManager.h>
+#include <cvrUtil/OsgGlesMath.h>
+
 #endif
 using namespace cvr;
 
@@ -822,6 +825,16 @@ void TrackingManager::update()
                 CVRViewer::instance()->getViewerFrameStamp()->getFrameNumber(),
                 "Tracking time taken",endTime - startTime);
     }
+#if __ANDROID__
+    const float* camera_pos = ARCoreManager::instance()->getCameraPose();
+    osg::Matrixf rotMat = cvr::rawRotation2OsgMatrix(camera_pos);
+    osg::Matrixf transMat = rawTrans2OsgMatrix(camera_pos+4);
+
+    float roll, pitch, yaw;
+    quat2OSGEuler(camera_pos, roll, pitch, yaw);
+    setCameraRotation(rotMat, roll, pitch, yaw);
+    setTouchEventMatrix(rotMat*transMat);
+#endif
 }
 
 void TrackingManager::run()

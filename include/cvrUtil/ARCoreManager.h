@@ -5,7 +5,7 @@
 #include <osg/Matrixf>
 #include <GLES3/gl3.h>
 #include <unordered_map>
-
+#include <queue>
 //[x, y, z, w] -> [x, -z, y, w]
 #define REAL_TO_OSG_COORD osg::Matrixf(1,0,0,0,0,0,-1,0,0,1,0,0,0,0,0,1);
 
@@ -55,6 +55,9 @@ namespace cvr{
         std::vector<ArAnchor*> _hittedAnchors;
         /*** Lighting ***/
         LightSrc _envLight;
+        /****** touch detection ******/
+        std::queue<osg::Vec2f> _event_queue;
+        bool _consumeEvent = false;
     public:
         static ARCoreManager * instance();
         ARCoreManager();
@@ -68,6 +71,8 @@ namespace cvr{
 
         void onDrawFrame();
 
+        void postFrame();
+
         LightSrc getLightEstimation();
 
         bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
@@ -77,6 +82,13 @@ namespace cvr{
                           int32_t& vertice_num);
 
         bool updatePlaneHittest(float x, float y);
+
+        bool getHitPosition(osg::Vec2f & event){
+            if(_event_queue.empty()) return false;
+            event = _event_queue.front();
+            _consumeEvent = true;
+            return true;
+        }
 
         planeMap getPlaneMap();
 
@@ -90,7 +102,7 @@ namespace cvr{
         osg::Matrixf* getProjMatrix(){return proj_mat;}
         osg::Matrixf  getMVPMatrix();
 
-        const float * getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
+        const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
     };
 }
