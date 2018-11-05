@@ -272,6 +272,11 @@ bool BoardMenu::processEvent(InteractionEvent * event)
         return false;
     }
 
+#ifdef __ANDROID__
+    AndroidInteractionEvent * aie = event->asAndroidEvent();
+    if(aie->getButton() == _primaryButton && aie->getTouchType() != FT_BUTTON)
+        return false;
+#endif
     TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
 
     if(!_menuActive)

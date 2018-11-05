@@ -42,6 +42,7 @@ enum InteractionEventType
 {
     TRACKED_BUTTON_INTER_EVENT = 0,
     MOUSE_INTER_EVENT,
+    ANDROID_INTER_EVENT,
     POINTER_INTER_EVENT,
     VALUATOR_INTER_EVENT,
     KEYBOARD_INTER_EVENT,
@@ -51,13 +52,23 @@ enum InteractionEventType
     NUM_INTER_EVENT_TYPES
 // must be last item
 };
-
+/**
+ * @brief Touch Type For Android
+ *
+ * There is a unique value for each type of touch
+ */
+enum TouchType{
+    LEFT = 0,
+    RIGHT,
+    FT_BUTTON
+};
 /**
  * @}
  */
 
 class TrackedButtonInteractionEvent;
 class MouseInteractionEvent;
+class AndroidInteractionEvent;
 class PointerInteractionEvent;
 class ValuatorInteractionEvent;
 class KeyboardInteractionEvent;
@@ -133,6 +144,11 @@ class InteractionEvent
          * @return NULL is returned if this class can not be cast to a MouseInteractionEvent
          */
         virtual MouseInteractionEvent * asMouseEvent()
+        {
+            return NULL;
+        }
+
+        virtual AndroidInteractionEvent * asAndroidEvent()
         {
             return NULL;
         }
@@ -402,6 +418,57 @@ class MouseInteractionEvent : public TrackedButtonInteractionEvent
         int _x; ///< viewport x coord
         int _y; ///< viewport y coord
         int _masterScreenNum; ///< screen on the master when this event was generated
+};
+
+class AndroidInteractionEvent : public TrackedButtonInteractionEvent{
+public:
+    AndroidInteractionEvent() : TrackedButtonInteractionEvent(), _x(0), _y(0), _touchType(LEFT){}
+    int getX(){return _x;}
+
+    void setX(float x){_x = x;}
+
+    int getY(){return _y;}
+
+    void setY(float y){_y = y;}
+
+    void setTouchType(TouchType type){
+        _touchType = type;
+        setHand(0);
+        if(_touchType == LEFT || _touchType == RIGHT)
+            setButton(static_cast<int>(_touchType));
+        else
+            setButton(0);
+    }
+    void setInteractionEvent(TouchType type, float x, float y){
+        setX(x);
+        setY(y);
+        setTouchType(type);
+    }
+    TouchType getTouchType(){return _touchType;}
+
+    virtual InteractionEventType getEventType()
+    {
+        return ANDROID_INTER_EVENT;
+    }
+
+    virtual const char * getEventName()
+    {
+        return "AndroidInteractionEvent";
+    }
+
+    virtual void printValues(){
+        TrackedButtonInteractionEvent::printValues();
+    }
+
+    virtual AndroidInteractionEvent * asAndroidEvent()
+    {
+        return this;
+    }
+protected:
+    float _x;
+    float _y;
+    TouchType _touchType;
+
 };
 
 class PointerInteractionEvent : public TrackedButtonInteractionEvent

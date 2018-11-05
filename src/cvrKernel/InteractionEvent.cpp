@@ -100,6 +100,9 @@ void storeEvent(InteractionEvent * event, void * des)
         case MOUSE_INTER_EVENT:
             *((MouseInteractionEvent*)des) = *event->asMouseEvent();
             break;
+        case ANDROID_INTER_EVENT:
+            *((AndroidInteractionEvent*)des) = *event->asAndroidEvent();
+            break;
         case POINTER_INTER_EVENT:
             *((PointerInteractionEvent*)des) = *event->asPointerEvent();
             break;

@@ -109,8 +109,8 @@ class CVRKERNEL_EXPORT CalVR
         void onResume(void *env, void *context, void *activity);
         osg::ref_ptr<osg::Group> getSceneRoot();
         void setSceneData(osg::ref_ptr<osg::Group> root);
-        void setMouseEvent(cvr::MouseInteractionEvent * mie,
-                           int pointer_num, float x, float y);
+        void setTouchEvent(cvr::AndroidInteractionEvent * aie,
+                           cvr::TouchType type, float x, float y);
 
 #endif
     protected:

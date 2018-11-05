@@ -564,15 +564,13 @@ void CalVR::setSceneData(ref_ptr<Group> root){
     _viewer->setSceneData(root.get());
 }
 
-void CalVR::setMouseEvent(cvr::MouseInteractionEvent * mie,
-                          int pointer_num, float x, float y){
-    mie->setButton(pointer_num - 1);
-    mie->setHand(0);
-    mie->setX(x);
-    mie->setY(y);
-    mie->setTransform( _tracking->getHandMat(0));
-    _interaction->addEvent(mie);
+void CalVR::setTouchEvent(cvr::AndroidInteractionEvent * aie,
+                          cvr::TouchType type, float x, float y){
+    aie->setInteractionEvent(type, x, y);
+    aie->setTransform( _tracking->getHandMat(0));
+    _interaction->addEvent(aie);
 }
+
 void CalVR::frame() {
     _arcore->onDrawFrame();
     ////update scene camera
