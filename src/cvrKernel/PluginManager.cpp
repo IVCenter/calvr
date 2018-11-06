@@ -21,6 +21,7 @@
 using namespace cvr;
 
 PluginManager * PluginManager::_myPtr = NULL;
+std::queue<std::string> PluginManager::_callbackQueue;
 
 PluginManager::PluginManager()
 {
@@ -330,6 +331,18 @@ bool PluginManager::processEvent(InteractionEvent * event)
         }
     }
     return false;
+}
+
+bool PluginManager::getCallBackRequest(std::string& funcName){
+    if(_callbackQueue.empty())
+        return false;
+    funcName = _callbackQueue.front();
+    _callbackQueue.pop();
+    return true;
+}
+
+void PluginManager::setCallBackRequest(std::string funcName){
+    _callbackQueue.push(funcName);
 }
 
 void PluginManager::sendMessageByName(std::string plugin, int type, char * data)

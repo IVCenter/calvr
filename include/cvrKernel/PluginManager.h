@@ -10,7 +10,7 @@
 
 #include <string>
 #include <vector>
-//#include <queue>
+#include <queue>
 #include <map>
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
@@ -102,6 +102,9 @@ class CVRKERNEL_EXPORT PluginManager
          */
         std::string getPathOfPlugin(std::string plugin_name);
 
+        static bool getCallBackRequest(std::string& funcName);
+
+        static void setCallBackRequest(std::string funcName);
     protected:
         PluginManager();
 
@@ -139,7 +142,7 @@ class CVRKERNEL_EXPORT PluginManager
         //std::priority_queue<std::pair<int,CVRPlugin*>,std::vector<std::pair<int,CVRPlugin*> >,PrioritySort<int,CVRPlugin*> > _pluginList;
         std::vector<PluginInfo *> _loadedPluginList; ///< list of loaded plugins
         std::map<std::string,bool> _pluginMap; ///< map containing all plugin names in the config file and if they are on
-
+        static std::queue<std::string> _callbackQueue;
 };
 
 /**
