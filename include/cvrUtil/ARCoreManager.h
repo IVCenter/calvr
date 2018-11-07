@@ -46,6 +46,8 @@ namespace cvr{
         osg::Matrixf *view_mat, *proj_mat;
         ArTrackingState cam_track_state;
         float camera_pose_raw[7] = {0.f};
+        osg::Matrixf cameraMatrix;
+
         float transformed_camera_uvs[8] = {.0f};
         GLuint bgTextureId = 0;
         int32_t geometry_changed = 0;
@@ -104,6 +106,7 @@ namespace cvr{
 
         const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
+        osg::Matrixf getCameraMatrix(){return cameraMatrix;}
     };
 }
 

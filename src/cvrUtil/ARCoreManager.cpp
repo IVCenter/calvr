@@ -78,6 +78,7 @@ void ARCoreManager::onDrawFrame() {
     ArCamera_getPose(_ar_session, camera, camera_pose);
 
     ArPose_getPoseRaw(_ar_session, camera_pose, camera_pose_raw);
+    ArPose_getMatrix(_ar_session, camera_pose, cameraMatrix.ptr());
 
     ArCamera_getTrackingState(_ar_session, camera, &cam_track_state);
 
@@ -239,22 +240,10 @@ bool ARCoreManager::updatePlaneHittest(float x, float y){
         ArPlane* ar_plane = ArAsPlane(ar_trackable);
         ArPlane_isPoseInPolygon(_ar_session, ar_plane, hit_pose, &in_polygon);
 
-        // Use hit pose and camera pose to check if hittest is from the
-        // back of the plane, if it is, no need to create the anchor.
-        ArPose* camera_pose = nullptr;
-        ArPose_create(_ar_session, nullptr, &camera_pose);
-        ArCamera* ar_camera;
-        ArFrame_acquireCamera(_ar_session, _ar_frame, &ar_camera);
-        ArCamera_getPose(_ar_session, ar_camera, camera_pose);
-        ArCamera_release(ar_camera);
-
         float plane_pose_raw[7] = {0.f};
         ArPose_getPoseRaw(_ar_session, hit_pose, plane_pose_raw);
-        float camera_pose_raw[7] = {0.f};
-        ArPose_getPoseRaw(_ar_session, camera_pose, camera_pose_raw);
 
         ArPose_destroy(hit_pose);
-        ArPose_destroy(camera_pose);
 
         if (!in_polygon || calculateDistanceToPlane(plane_pose_raw, camera_pose_raw) < 0)
             continue;
