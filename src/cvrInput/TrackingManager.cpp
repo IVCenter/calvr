@@ -1988,7 +1988,7 @@ void TrackingManager::printInitDebug()
 }
 
 bool TrackingManager::getIsPoint(osg::Vec3f & isPoint){
-    if(isIntersect){isIntersect = false;  isPoint = _isPoint * ConfigManager::UNIT_ALIGN_FACTOR; return true;}
+    if(isIntersect){isIntersect = false;  isPoint = _isPoint; return true;}
     return false;}
 
 GenComplexTrackingEvents::GenComplexTrackingEvents()
