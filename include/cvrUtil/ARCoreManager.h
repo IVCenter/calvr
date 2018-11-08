@@ -107,6 +107,7 @@ namespace cvr{
         const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
         osg::Matrixf getCameraMatrix(){return cameraMatrix;}
+        osg::Vec3f getRealWorldPositionFromScreen(float x, float y, float z = -1.0f);
     };
 }
 

@@ -300,5 +300,13 @@ bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc, bool real
     }
     return true;
 }
+
 osg::Matrixf ARCoreManager::getMVPMatrix(){Matrixf mat = (*view_mat) * (*  proj_mat);
     return mat;}
+osg::Vec3f ARCoreManager::getRealWorldPositionFromScreen(float x, float y, float z){
+    if(x > 1 || x < -1 || y>1 || y<-1){LOGE("Position should within [-1, 1]"); return osg::Vec3f(.0,.0,.0);}
+    Matrixf invMat = Matrixf::inverse(getMVPMatrix());
+    Vec4f nearPlanePos = Vec4f(x,y, z, 1.0f) * invMat;
+    float inv_w = 1.0f / nearPlanePos.w();
+    return Vec3f(nearPlanePos.x() * inv_w, nearPlanePos.y()*inv_w, nearPlanePos.z()*inv_w);
+}
