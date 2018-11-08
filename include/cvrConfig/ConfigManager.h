@@ -327,7 +327,7 @@ class CVRCONFIG_EXPORT ConfigManager
 
         static const float UNIT_ALIGN_FACTOR;
         static const float CONTENT_BOARD_DIST;
-
+        static const float TOUCH_SENSITIVE;
     protected:
         virtual ~ConfigManager();
 
