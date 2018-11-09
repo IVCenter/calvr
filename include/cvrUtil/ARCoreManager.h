@@ -54,6 +54,8 @@ namespace cvr{
 
         /**Plane Factors***/
         planeMap plane_color_map;
+        std::vector<ArPlane*> _planes;
+
         std::vector<ArAnchor*> _hittedAnchors;
         /*** Lighting ***/
         LightSrc _envLight;
@@ -93,6 +95,11 @@ namespace cvr{
         }
 
         planeMap getPlaneMap();
+
+        ArSession * getArSession(){ return _ar_session; }
+        std::vector<ArPlane*> getPlanePointers() {
+            return _planes;
+        }
 
         size_t getAnchorSize(){return _hittedAnchors.size();}
 

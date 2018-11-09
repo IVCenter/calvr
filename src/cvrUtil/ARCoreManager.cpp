@@ -193,6 +193,7 @@ planeMap ARCoreManager::getPlaneMap(){
                 plane_color_map[ar_plane] = osg::Vec3f(1.0f, 1.0f, 1.0f);
             else
                 plane_color_map[ar_plane] = GetRandomPlaneColor();
+            _planes.push_back(ar_plane);
         }
         ArTrackable_release(ar_trackable);
     }
