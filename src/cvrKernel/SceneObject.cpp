@@ -4,12 +4,17 @@
 #include <cvrUtil/ComputeBoundingBoxVisitor.h>
 #include <cvrMenu/MenuCheckbox.h>
 #include <cvrMenu/MenuRangeValue.h>
+#include <cvrConfig/ConfigManager.h>
 
 #include <osg/ShapeDrawable>
 #include <osg/PolygonMode>
 #include <osg/Geometry>
 
 #include <iostream>
+
+#ifdef __ANDROID__
+#include <cvrUtil/AndroidStdio.h>
+#endif
 
 using namespace cvr;
 
@@ -656,11 +661,14 @@ bool SceneObject::processEvent(InteractionEvent * ie)
                             }
                         }
                     }
-
                     dist = std::min(dist,
                             SceneManager::instance()->_menuMaxDistance);
                     dist = std::max(dist,
                             SceneManager::instance()->_menuMinDistance);
+
+#ifdef __ANDROID__
+                    dist *= ConfigManager::UNIT_ALIGN_FACTOR;
+#endif
 
                     osg::Vec3 menuPoint(0,dist,0);
                     menuPoint = menuPoint * tie->getTransform();
