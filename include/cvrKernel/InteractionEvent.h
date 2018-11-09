@@ -60,7 +60,9 @@ enum InteractionEventType
 enum TouchType{
     LEFT = 0,
     RIGHT,
-    FT_BUTTON
+    FT_BUTTON,
+    TRANS_BUTTON,
+    ROT_BUTTON
 };
 /**
  * @}

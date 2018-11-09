@@ -26,7 +26,7 @@ ConfigManager * ConfigManager::_myPtr = NULL;
 #else
     const float ConfigManager::UNIT_ALIGN_FACTOR = 1;
 #endif
-
+const float ConfigManager::TOUCH_SENSITIVE = 1.5f;
 const float ConfigManager::CONTENT_BOARD_DIST = -2 * UNIT_ALIGN_FACTOR;
 
 

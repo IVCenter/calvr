@@ -46,12 +46,16 @@ namespace cvr{
         osg::Matrixf *view_mat, *proj_mat;
         ArTrackingState cam_track_state;
         float camera_pose_raw[7] = {0.f};
+        osg::Matrixf cameraMatrix;
+
         float transformed_camera_uvs[8] = {.0f};
         GLuint bgTextureId = 0;
         int32_t geometry_changed = 0;
 
         /**Plane Factors***/
         planeMap plane_color_map;
+        std::vector<ArPlane*> _planes;
+
         std::vector<ArAnchor*> _hittedAnchors;
         /*** Lighting ***/
         LightSrc _envLight;
@@ -92,6 +96,11 @@ namespace cvr{
 
         planeMap getPlaneMap();
 
+        ArSession * getArSession(){ return _ar_session; }
+        std::vector<ArPlane*> getPlanePointers() {
+            return _planes;
+        }
+
         size_t getAnchorSize(){return _hittedAnchors.size();}
 
         bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc, bool realCoord = false);
@@ -104,6 +113,8 @@ namespace cvr{
 
         const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
+        osg::Matrixf getCameraMatrix(){return cameraMatrix;}
+        osg::Vec3f getRealWorldPositionFromScreen(float x, float y, float z = -1.0f);
     };
 }
 
