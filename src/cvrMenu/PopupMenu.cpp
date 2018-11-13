@@ -41,8 +41,12 @@ PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
         r = ConfigManager::getFloat("r",configTag,0.0);
         scale = ConfigManager::getFloat("scale",configTag,1.0);
     }
-
+#ifdef __ANDROID__
+    osg::Vec3 pos(0, 1000, 0);
+    pos = pos * ConfigManager::UNIT_ALIGN_FACTOR;
+#else
     osg::Vec3 pos(x,y,z);
+#endif
     osg::Quat rot(r,osg::Vec3(0,1,0),p,osg::Vec3(1,0,0),h,osg::Vec3(0,0,1));
     _menu->setPosition(pos);
     _menu->setRotation(rot);
