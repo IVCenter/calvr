@@ -63,6 +63,18 @@ namespace cvr{
             uf->dirty();
         }
     };
+
+    class envSHLightCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform* uf, osg::NodeVisitor*nv){
+            float *params = ARCoreManager::instance()->getLightEstimation_SH();
+            for(int i=0; i<9; i++){
+                uf->setElement(i, osg::Vec3f(params[3*i], params[3*i+1], params[3*i+2]));
+            }
+            uf->dirty();
+        }
+    };
+
     class mvpCallback:public osg::UniformCallback{
     public:
         virtual void operator()(osg::Uniform *uf, osg::NodeVisitor *nv){

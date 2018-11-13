@@ -62,6 +62,8 @@ namespace cvr{
         /****** touch detection ******/
         std::queue<osg::Vec2f> _event_queue;
         bool _consumeEvent = false;
+        /*******Image**********/
+        const AImage* bg_image = nullptr;
     public:
         static ARCoreManager * instance();
         ARCoreManager();
@@ -78,6 +80,8 @@ namespace cvr{
         void postFrame();
 
         LightSrc getLightEstimation();
+
+        float* getLightEstimation_SH();
 
         bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
 

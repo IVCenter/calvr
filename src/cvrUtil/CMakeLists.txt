@@ -30,6 +30,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+    ${HEADER_PATH}/LightingEstimator.h
     ${HEADER_PATH}/AndroidHelper.h
     ${HEADER_PATH}/AndroidPreloadPlugins.h
     ${HEADER_PATH}/glesDrawable.h
@@ -47,6 +48,7 @@ ENDIF(WIN32)
 
 IF(ANDROID)
     SET(EXTRA_SOURCE ${EXTRA_SOURCE}
+    LightingEstimator.cpp
     AndroidHelper.cpp
     AndroidPreloadPlugins.cpp
     glesDrawable.cpp
@@ -83,11 +85,4 @@ SET(LIB_EXTERNAL_LIBRARIES
 #)
 
 SETUP_CORE_LIBRARY(${LIB_NAME})
-
-IF(ANDROID)
-#include_directories(${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
-
-target_include_directories(${LIB_NAME} PRIVATE
-            ${ANDROID_NDK}/sources/third_party/vulkan/src/libs/glm)
-ENDIF(ANDROID)
 

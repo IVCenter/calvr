@@ -1,7 +1,10 @@
 #include <cvrUtil/ARCoreManager.h>
 #include <cvrUtil/AndroidStdio.h>
 #include <cvrUtil/OsgGlesMath.h>
-
+#include <media/NdkMediaFormat.h>
+#include <media/NdkImage.h>
+#include <cvrUtil/LightingEstimator.h>
+#include <osg/Image>
 
 using namespace cvr;
 using namespace osg;
@@ -69,7 +72,12 @@ void ARCoreManager::onDrawFrame() {
     }
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
-
+    ArImage * ar_image;
+    ArStatus status = ArFrame_acquireCameraImage(_ar_session, _ar_frame, &ar_image);
+    if(status == AR_SUCCESS){
+        ArImage_getNdkImage(ar_image, &bg_image);
+        ArImage_release(ar_image);
+    }
     ArCamera_getViewMatrix(_ar_session, camera, (*view_mat).ptr());
     ArCamera_getProjectionMatrix(_ar_session,camera, 0.1f, 100.0f, (*proj_mat).ptr());
 
@@ -157,6 +165,26 @@ LightSrc ARCoreManager::getLightEstimation(){
 
     ArLightEstimate_destroy(ar_light_estimate);
     return _envLight;
+}
+float* ARCoreManager::getLightEstimation_SH() {
+    uint8_t * _image;
+    int length = 0;
+    media_status_t status =
+            AImage_getPlaneData(bg_image, 0, &_image, &length);
+    if (status != AMEDIA_OK)
+        return nullptr;
+    AImageCropRect srcRect;
+    AImage_getCropRect(bg_image, &srcRect);
+    int32_t height = srcRect.bottom - srcRect.top;
+    int32_t width = srcRect.right - srcRect.left;
+    int32_t format;
+    AImage_getFormat(bg_image, &format);
+    osg::Image *image= new osg::Image();
+
+    image->setImage(width, height, 1,
+                   format,format,GL_UNSIGNED_INT,
+                   _image, osg::Image::USE_NEW_DELETE);
+    return LightingEstimator::instance()->getSHLightingParams(image);
 }
 
 planeMap ARCoreManager::getPlaneMap(){
