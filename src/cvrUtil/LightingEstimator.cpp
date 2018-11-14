@@ -10,6 +10,58 @@ LightingEstimator* LightingEstimator::instance() {
     if(!_myPtr) _myPtr = new LightingEstimator;
     return _myPtr;
 }
+LightingEstimator::LightingEstimator(){setuplegendre();}
+float fact(float m)
+{
+    // Computes sqrt[2m!/(2^m m!)^2]
+    float retval = sqrt((2 * m + 1) / (4 * M_PI));
+    for (int i = 1; i <= 2 * m - 1; i += 2)
+        retval *= -sqrt((float)i / (float)(i + 1));
+    return retval;
+}
+
+void LightingEstimator::setuplegendre()
+{
+    //  simpsonflag = 1 ;
+    int i, j, p, q, k, l, m, n, s;
+    for (i = 0; i < maxtheta; i++) {
+        theta[i] = M_PI*i / maxtheta;
+        costheta[i] = cos(theta[i]);
+        sintheta[i] = sin(theta[i]);
+        sinthetafull[i] = sin(theta[i] / 2.0);
+        sintheta2[i] = sin(theta[i] / 4.0);
+    }
+    for (i = 0; i < maxphi; i++)
+    {
+        phi[i] = 2.0*M_PI*i / (maxphi);
+        cosphi[i] = cos(phi[i]);
+        sinphi[i] = sin(phi[i]);
+        complex<float> z(cosphi[i], sinphi[i]);
+        complex<float> zstar(cosphi[i], -sinphi[i]);
+        expphi[i] = z;
+        expphistar[i] = zstar;
+        for (l = -maxl; l <= maxl; l++)
+            expphim[i][l + maxl] = complex<float>(cos(l*phi[i]), sin(l*phi[i]));
+    }
+    for (m = 0; m <= maxl; m++)
+    {
+        float fac = fact(m);
+        for (i = 0; i < maxtheta; i++)
+        {
+            plm[m][m][i] = fac*pow(sintheta[i], m);
+            if (m < maxl) plm[m + 1][m][i] = sqrt(2 * m + 3) / (2 * m + 1)*costheta[i] * (2 * m + 1)*plm[m][m][i];
+        }
+        for (l = m + 2; l <= maxl; l++)
+        {
+            for (i = 0; i < maxtheta; i++)
+            {
+                float v1 = sqrt((2 * l + 1.0)*(2 * l - 1.0)*(l - m) / ((float)(l + m))) * costheta[i];
+                float v2 = sqrt((2 * l + 1.0) / (2 * l - 3.0)*(l - m) / ((float)(l + m))*(l - m - 1.0)*(l + m - 1.0));
+                plm[l][m][i] = (v1*plm[l - 1][m][i] - v2*plm[l - 2][m][i]) / (l - m);
+            }
+        }
+    }
+}
 
 float LightingEstimator::plmvalreal(int l, int m, float i)
 {
@@ -63,6 +115,7 @@ float LightingEstimator::expreal(int m, float j)
         if (m >= 0) t = (1 - fraci)*expphim[iint][m + maxl].real() + fraci *expphim[(iint + 1) % maxphi][m + maxl].real();
         else		t = (1 - fraci)*expphim[iint][-m + maxl].imag() + fraci *expphim[(iint + 1) % maxphi][-m + maxl].imag();
     }
+    LOGE("===expreal: %f", t);
     return t;
 }
 float LightingEstimator::integratephi(int channel, int m, int ii)
@@ -85,7 +138,7 @@ float LightingEstimator::integratephi(int channel, int m, int ii)
         }
         retval += expreal(m, i)*mulfac*arrayval_phi(channel, ii, iposn)*simpsons;
     }
-
+    LOGE("===integratephi: %f", retval);
     return retval;
 }
 
@@ -137,15 +190,22 @@ void LightingEstimator::findcoeffslm_async()
     it->get();
     for (int channel = 0; channel < ch; channel++)
         for (l = 0; l <= maxl; l++)
-            for (int m = -l; m <= l; m++)
+            for (int m = -l; m <= l; m++){
+                LOGE("===fnt: %f", fnt[channel][m + maxl]);
                 lightcoeffs[channel][l][m + maxl] = SCALE * integratetheta(l, m, fnt[channel][m + maxl]);
+            }
+
 }
 
 float* LightingEstimator::getSHLightingParams(osg::Image* image){
     image->scaleImage(32,64,image->r());
-    DATA = (float*) image->data();
     _size_x = image->t(); _size_y = image->s();
+    DATA = new float[_size_x * _size_y * 3];
+    for(int i=0; i<_size_x * _size_y * 3; i++)
+        DATA[i] = (float)image->data()[i];
+
     LOGE("===size: %d, %d", _size_x, _size_y);
+
     findcoeffslm_async();
     float back[]={LSR00*lightcoeffs[0][0][2], LSG00*lightcoeffs[1][0][2], LSB00*lightcoeffs[2][0][2], //L00
     LSR*lightcoeffs[0][1][1], LSG*lightcoeffs[1][1][1], LSB*lightcoeffs[2][1][1], //L1m1
@@ -156,6 +216,8 @@ float* LightingEstimator::getSHLightingParams(osg::Image* image){
     LSR*lightcoeffs[0][2][2], LSG*lightcoeffs[1][2][2], LSB*lightcoeffs[2][2][2], //L20
     LSR*lightcoeffs[0][2][3], LSG*lightcoeffs[1][2][3], LSB*lightcoeffs[2][2][3], //L21
     LSR*lightcoeffs[0][2][4], LSG*lightcoeffs[1][2][4], LSB*lightcoeffs[2][2][4]};
+
+    LOGE("===%f,%f,%f",lightcoeffs[0][0][2],lightcoeffs[1][0][2],lightcoeffs[2][0][2]);
     return &back[0];
 }
 

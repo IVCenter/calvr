@@ -55,7 +55,7 @@ namespace cvr{
 //        dim3 lightcoeffs;
         float lightcoeffs[ch][maxl + 1][2 * maxl + 1];
 //        float * lightcoeffs;
-
+        void setuplegendre();
         float integratephi(int channel, int m, int ii);
         float integratetheta(int l, int m, float fn[maxsize]);
         float arrayval_phi(int channel, int ii, float index);
@@ -65,6 +65,7 @@ namespace cvr{
         void findcoeffslm_async();
     public:
         static LightingEstimator* instance();
+        LightingEstimator();
 //        float* getSHBasis(osg::Vec3f, int band=4);
         float* getSHLightingParams(osg::Image* image);
         float* getSHLightingParams();

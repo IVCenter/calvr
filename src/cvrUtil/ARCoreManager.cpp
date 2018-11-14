@@ -200,9 +200,9 @@ float* ARCoreManager::getLightEstimation_SH() {
             int idx = y * width + x;
             const int32_t uv_offset = (x >> 1) * uvPixelStride;
             Vec4f rgb = yuv2rgb*Vec4f(pY[x], pU[uv_offset], pV[uv_offset], .0);
-            _image[3* idx] = (uint8_t)rgb.x() ;//r
-            _image[3*idx + 1] =(uint8_t)rgb.y() ;
-            _image[3*idx + 2] = (uint8_t)rgb.z();
+            _image[3* idx] = (uint8_t)rgb.x() * 255;//r
+            _image[3*idx + 1] =(uint8_t)rgb.y() * 255;
+            _image[3*idx + 2] = (uint8_t)rgb.z() * 255;
         }
     }
 
