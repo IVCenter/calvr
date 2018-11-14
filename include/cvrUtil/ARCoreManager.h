@@ -31,7 +31,12 @@ namespace {
 
 namespace cvr{
     typedef std::unordered_map<ArPlane*, osg::Vec3f> planeMap;
-    typedef  struct{float intensity = 0.8f;float color_correction[4] = {1.f, 1.f, 1.f, 1.f};} LightSrc;
+    typedef  struct{
+        float intensity = 0.8f;
+        float max_intensity = .0f;
+        float color_correction[4] = {1.f, 1.f, 1.f, 1.f};
+        osg::Vec3f lightSrc = osg::Vec3f(0,0,1);
+    } LightSrc;
 
     class ARCoreManager{
     private:

@@ -54,6 +54,14 @@ namespace cvr{
         bool PopAllState() const;
     };
 
+    class lightSrcCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform* uf, osg::NodeVisitor*nv){
+            uf->set(cvr::ARCoreManager::instance()->getLightEstimation().lightSrc);
+            uf->dirty();
+        }
+    };
+
     class envLightCallback:public osg::UniformCallback{
     public:
         virtual void operator()(osg::Uniform* uf, osg::NodeVisitor*nv){

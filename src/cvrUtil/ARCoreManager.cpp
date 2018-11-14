@@ -162,6 +162,11 @@ LightSrc ARCoreManager::getLightEstimation(){
     if(ar_light_estimate_state == AR_LIGHT_ESTIMATE_STATE_VALID){
         ArLightEstimate_getColorCorrection(_ar_session, ar_light_estimate,  _envLight.color_correction);
         ArLightEstimate_getPixelIntensity(_ar_session, ar_light_estimate, &_envLight.intensity);
+        _envLight.max_intensity*=0.98f;
+        if(_envLight.intensity > _envLight.max_intensity){
+            _envLight.max_intensity = _envLight.intensity;
+            _envLight.lightSrc = -(Vec3f(.0, 1.0, .0) * (*view_mat));
+        }
     }
 
     ArLightEstimate_destroy(ar_light_estimate);
