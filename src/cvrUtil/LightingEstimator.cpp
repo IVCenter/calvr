@@ -115,7 +115,6 @@ float LightingEstimator::expreal(int m, float j)
         if (m >= 0) t = (1 - fraci)*expphim[iint][m + maxl].real() + fraci *expphim[(iint + 1) % maxphi][m + maxl].real();
         else		t = (1 - fraci)*expphim[iint][-m + maxl].imag() + fraci *expphim[(iint + 1) % maxphi][-m + maxl].imag();
     }
-    LOGE("===expreal: %f", t);
     return t;
 }
 float LightingEstimator::integratephi(int channel, int m, int ii)
@@ -138,7 +137,6 @@ float LightingEstimator::integratephi(int channel, int m, int ii)
         }
         retval += expreal(m, i)*mulfac*arrayval_phi(channel, ii, iposn)*simpsons;
     }
-    LOGE("===integratephi: %f", retval);
     return retval;
 }
 
@@ -190,10 +188,8 @@ void LightingEstimator::findcoeffslm_async()
     it->get();
     for (int channel = 0; channel < ch; channel++)
         for (l = 0; l <= maxl; l++)
-            for (int m = -l; m <= l; m++){
-                LOGE("===fnt: %f", fnt[channel][m + maxl]);
+            for (int m = -l; m <= l; m++)
                 lightcoeffs[channel][l][m + maxl] = SCALE * integratetheta(l, m, fnt[channel][m + maxl]);
-            }
 
 }
 
@@ -203,9 +199,6 @@ float* LightingEstimator::getSHLightingParams(osg::Image* image){
     DATA = new float[_size_x * _size_y * 3];
     for(int i=0; i<_size_x * _size_y * 3; i++)
         DATA[i] = (float)image->data()[i];
-
-    LOGE("===size: %d, %d", _size_x, _size_y);
-
     findcoeffslm_async();
     float back[]={LSR00*lightcoeffs[0][0][2], LSG00*lightcoeffs[1][0][2], LSB00*lightcoeffs[2][0][2], //L00
     LSR*lightcoeffs[0][1][1], LSG*lightcoeffs[1][1][1], LSB*lightcoeffs[2][1][1], //L1m1
@@ -217,7 +210,6 @@ float* LightingEstimator::getSHLightingParams(osg::Image* image){
     LSR*lightcoeffs[0][2][3], LSG*lightcoeffs[1][2][3], LSB*lightcoeffs[2][2][3], //L21
     LSR*lightcoeffs[0][2][4], LSG*lightcoeffs[1][2][4], LSB*lightcoeffs[2][2][4]};
 
-    LOGE("===%f,%f,%f",lightcoeffs[0][0][2],lightcoeffs[1][0][2],lightcoeffs[2][0][2]);
     return &back[0];
 }
 
