@@ -22,6 +22,10 @@ namespace {
                          ((colorRgba >> 16) & 0xff) / 255.0f,
                          ((colorRgba >> 8) & 0xff) / 255.0f);
     }
+    const osg::Matrixf yuv2rgb = osg::Matrixf(1,0,1,13983,
+                                              0,1,-0.39465,-0.58060,
+                                              0,1,2.03211,0,
+                                              0,0,0,0);
 
 }
 
@@ -32,6 +36,7 @@ namespace cvr{
     class ARCoreManager{
     private:
         static ARCoreManager* _myPtr;
+        int _frame = 0;
         ArSession * _ar_session = nullptr;
         ArFrame * _ar_frame = nullptr;//get frame state
 

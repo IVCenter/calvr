@@ -1,6 +1,7 @@
 #include <cvrUtil/LightingEstimator.h>
 #include <math.h>
 #include <cvrUtil/ARCoreManager.h>
+#include <cvrUtil/AndroidStdio.h>
 
 using namespace cvr;
 using namespace std;
@@ -143,7 +144,8 @@ void LightingEstimator::findcoeffslm_async()
 float* LightingEstimator::getSHLightingParams(osg::Image* image){
     image->scaleImage(32,64,image->r());
     DATA = (float*) image->data();
-    _size_x = image->t(); _size_y =image->s();
+    _size_x = image->t(); _size_y = image->s();
+    LOGE("===size: %d, %d", _size_x, _size_y);
     findcoeffslm_async();
     float back[]={LSR00*lightcoeffs[0][0][2], LSG00*lightcoeffs[1][0][2], LSB00*lightcoeffs[2][0][2], //L00
     LSR*lightcoeffs[0][1][1], LSG*lightcoeffs[1][1][1], LSB*lightcoeffs[2][1][1], //L1m1
@@ -154,5 +156,18 @@ float* LightingEstimator::getSHLightingParams(osg::Image* image){
     LSR*lightcoeffs[0][2][2], LSG*lightcoeffs[1][2][2], LSB*lightcoeffs[2][2][2], //L20
     LSR*lightcoeffs[0][2][3], LSG*lightcoeffs[1][2][3], LSB*lightcoeffs[2][2][3], //L21
     LSR*lightcoeffs[0][2][4], LSG*lightcoeffs[1][2][4], LSB*lightcoeffs[2][2][4]};
+    return &back[0];
+}
+
+float* LightingEstimator::getSHLightingParams(){
+    float back[]={LSR00*lightcoeffs[0][0][2], LSG00*lightcoeffs[1][0][2], LSB00*lightcoeffs[2][0][2], //L00
+                  LSR*lightcoeffs[0][1][1], LSG*lightcoeffs[1][1][1], LSB*lightcoeffs[2][1][1], //L1m1
+                  LSR*lightcoeffs[0][1][2], LSG*lightcoeffs[1][1][2], LSB*lightcoeffs[2][1][2], //L10
+                  LSR*lightcoeffs[0][1][3], LSG*lightcoeffs[1][1][3], LSB*lightcoeffs[2][1][3], //L11
+                  LSR*lightcoeffs[0][2][0], LSG*lightcoeffs[1][2][0], LSB*lightcoeffs[2][2][0], //L2m2
+                  LSR*lightcoeffs[0][2][1], LSG*lightcoeffs[1][2][1], LSB*lightcoeffs[2][2][1], //L2m1
+                  LSR*lightcoeffs[0][2][2], LSG*lightcoeffs[1][2][2], LSB*lightcoeffs[2][2][2], //L20
+                  LSR*lightcoeffs[0][2][3], LSG*lightcoeffs[1][2][3], LSB*lightcoeffs[2][2][3], //L21
+                  LSR*lightcoeffs[0][2][4], LSG*lightcoeffs[1][2][4], LSB*lightcoeffs[2][2][4]};
     return &back[0];
 }

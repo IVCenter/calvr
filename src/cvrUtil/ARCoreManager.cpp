@@ -65,6 +65,7 @@ void ARCoreManager::onResume(void *env, void *context, void *activity){
 void ARCoreManager::onDrawFrame() {
     if(_ar_session == nullptr)
         return;
+    _frame++;
     ArSession_setCameraTextureName(_ar_session, bgTextureId);
     // Update session to get current frame and render camera background.
     if (ArSession_update(_ar_session, _ar_frame) != AR_SUCCESS) {
@@ -167,22 +168,49 @@ LightSrc ARCoreManager::getLightEstimation(){
     return _envLight;
 }
 float* ARCoreManager::getLightEstimation_SH() {
+    if(_frame!=0 && _frame %100!=0)
+        return LightingEstimator::instance()->getSHLightingParams();
     uint8_t * _image;
-    int length = 0;
-    media_status_t status =
-            AImage_getPlaneData(bg_image, 0, &_image, &length);
-    if (status != AMEDIA_OK)
-        return nullptr;
     AImageCropRect srcRect;
     AImage_getCropRect(bg_image, &srcRect);
+
+    int32_t yStride, uvStride;
+    uint8_t *yPixel, *uPixel, *vPixel;
+    int32_t yLen, uLen, vLen;
+    AImage_getPlaneRowStride(bg_image, 0, &yStride);
+    AImage_getPlaneRowStride(bg_image, 1, &uvStride);
+    AImage_getPlaneData(bg_image, 0, &yPixel, &yLen);
+    AImage_getPlaneData(bg_image, 1, &vPixel, &vLen);
+    AImage_getPlaneData(bg_image, 2, &uPixel, &uLen);
+    int32_t uvPixelStride;
+    AImage_getPlanePixelStride(bg_image, 1, &uvPixelStride);
+
     int32_t height = srcRect.bottom - srcRect.top;
     int32_t width = srcRect.right - srcRect.left;
-    int32_t format;
-    AImage_getFormat(bg_image, &format);
+
+    _image = new uint8_t[3*width*height];
+    for (int32_t y = 0; y < height; y++) {
+        const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
+
+        int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
+        const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
+        const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+
+        for (int32_t x = 0; x < width; x++) {
+            int idx = y * width + x;
+            const int32_t uv_offset = (x >> 1) * uvPixelStride;
+            Vec4f rgb = yuv2rgb*Vec4f(pY[x], pU[uv_offset], pV[uv_offset], .0);
+            _image[3* idx] = (uint8_t)rgb.x() ;//r
+            _image[3*idx + 1] =(uint8_t)rgb.y() ;
+            _image[3*idx + 2] = (uint8_t)rgb.z();
+        }
+    }
+
     osg::Image *image= new osg::Image();
 
     image->setImage(width, height, 1,
-                   format,format,GL_UNSIGNED_INT,
+                    GL_RGB, GL_RGB,
+                    GL_UNSIGNED_BYTE,
                    _image, osg::Image::USE_NEW_DELETE);
     return LightingEstimator::instance()->getSHLightingParams(image);
 }
