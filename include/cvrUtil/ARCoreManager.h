@@ -72,8 +72,10 @@ namespace cvr{
         /****** touch detection ******/
         std::queue<osg::Vec2f> _event_queue;
         bool _consumeEvent = false;
+        bool _setTexture = false;
         /*******Image**********/
         const AImage* bg_image = nullptr;
+        ArConfig * _config = nullptr;
     public:
         static ARCoreManager * instance();
         ARCoreManager();

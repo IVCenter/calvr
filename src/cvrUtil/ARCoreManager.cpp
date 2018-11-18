@@ -57,7 +57,30 @@ void ARCoreManager::onResume(void *env, void *context, void *activity){
         ArFrame_create(_ar_session, &_ar_frame);
         CHECK(_ar_frame);
         ArSession_setDisplayGeometry(_ar_session, _displayRotation, _width, _height);
+
+
+        ArCloudAnchorMode out_cloud_anchor_mode;
+        ArFocusMode focus_mode;
+        ArPlaneFindingMode plane_finding_mode;
+        ArUpdateMode update_mode;
+
+        ArConfig_create(_ar_session, &_config);
+        CHECK(_config);
+        ArConfig_getCloudAnchorMode(_ar_session, _config, &out_cloud_anchor_mode);
+        ArConfig_getFocusMode(_ar_session, _config, &focus_mode);
+        ArConfig_getPlaneFindingMode(_ar_session, _config, &plane_finding_mode);
+        ArConfig_getUpdateMode(_ar_session, _config, &update_mode);
+
+
+        //ArConfig_setCloudAnchorMode(_ar_session, _config, out_cloud_anchor_mode);
+        ArConfig_setFocusMode(_ar_session, _config, AR_FOCUS_MODE_AUTO);
+        //ArConfig_setPlaneFindingMode(_ar_session, _config, plane_finding_mode);
+        ArConfig_setUpdateMode(_ar_session, _config, AR_UPDATE_MODE_LATEST_CAMERA_IMAGE);
+        CHECK(ArSession_configure(_ar_session, _config) == AR_SUCCESS);
+
+        //LOGE("===============================temp++++++++");
     }
+
     const ArStatus status = ArSession_resume(_ar_session);
     CHECK(status == AR_SUCCESS);
 }
@@ -66,11 +89,18 @@ void ARCoreManager::onDrawFrame() {
     if(_ar_session == nullptr)
         return;
     _frame++;
-    ArSession_setCameraTextureName(_ar_session, bgTextureId);
+    if(!_setTexture){
+        ArSession_setCameraTextureName(_ar_session, bgTextureId);
+        _setTexture = true;
+    }
+    //ArSession_setCameraTextureName(_ar_session, bgTextureId);
     // Update session to get current frame and render camera background.
     if (ArSession_update(_ar_session, _ar_frame) != AR_SUCCESS) {
         LOGE("OnDrawFrame ArSession_update error");
     }
+
+
+
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
     ArImage * ar_image;
