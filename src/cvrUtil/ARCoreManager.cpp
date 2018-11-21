@@ -153,19 +153,27 @@ static inline uint32_t YUV2RGB(int nY, int nU, int nV, uint8_t&r, uint8_t&g, uin
 }
 
 void ARCoreManager::update_ndk_image(){
-    int32_t format = 0, num_plane = 0, stride = 0, strideuv=0;
-//    bool is_valid_cpu_image = false;
+    int32_t format = 0, width, height, num_plane = 0, stride = 0, strideuv=0;
     if (bg_image != nullptr) {
-        if (GetNdkImageProperties(bg_image, &format, &_ndk_image_width, &_ndk_image_height, &num_plane,
+        if (GetNdkImageProperties(bg_image, &format, &width, &height, &num_plane,
                                   &stride, &strideuv)) {
+            if(_ndk_image_height == 0){
+                _ndk_image_height = height;
+                _ndk_image_width = width;
+                _rgb_image  = new uint8_t[3*_ndk_image_width*_ndk_image_height];
+                _warp_img = new uint8_t[3*_ndk_image_width*_ndk_image_height];
+                camera_intri.ptr()[2] = _ndk_image_width/2;
+                camera_intri.ptr()[6] = _ndk_image_height/2;
+            }
             if (format == AIMAGE_FORMAT_YUV_420_888) {
                 if (_ndk_image_width > 0 || _ndk_image_height > 0 || num_plane > 0 || stride > 0) {
-                    _rgb_image  = new uint8_t[3*_ndk_image_width*_ndk_image_height];
-                    camera_intri.ptr()[2] = _ndk_image_width/2;
-                    camera_intri.ptr()[6] = _ndk_image_height/2;
-
+                    memset(_warp_img,(uint8_t)0,3*_ndk_image_width*_ndk_image_height);
                     uint8_t *yPixel, *uPixel, *vPixel;
                     int32_t yLen, uLen, vLen;
+
+                    float cx = width / 2.0f, cy = height/2.0f;
+                    float theta, h;
+                    float f = camera_intri.ptr()[0];
 
                     int32_t uvPixelStride;
                     AImage_getPlanePixelStride(bg_image, 1, &uvPixelStride);
@@ -190,6 +198,26 @@ void ARCoreManager::update_ndk_image(){
                                     _rgb_image[3* idx], _rgb_image[3* idx+1],_rgb_image[3* idx+2]);
                         }
                     }
+
+//                    for(int y=0; y<height; y++){
+//                        for(int x=0; x<width; x++){
+//                            theta = (x-cx)/f;
+//                            h = (y-cy)/f;
+//                            osg::Vec4f X=osg::Vec4f(sin(theta), h, cos(theta), 1.0);
+//                            X = camera_intri*X;
+//                            float x_im = X.x() / X.z();
+//                            if(x_im < 0 || x_im >= width)
+//                                continue;
+//                            float y_im = X.y()/X.z();
+//                            if(y_im < 0 || y_im >= height)
+//                                continue;
+//                            int idx = y * width + x;
+//                            int idx_ori = int(y_im) * width + int(x_im);
+//                            _warp_img[3*idx] = _rgb_image[3*idx_ori];
+//                            _warp_img[3*idx + 1] = _rgb_image[3*idx_ori + 1];
+//                            _warp_img[3*idx + 2] = _rgb_image[3*idx_ori + 2];
+//                        }
+//                    }
                 }
             } else {
                 LOGE("Expected image in YUV_420_888 format.");
@@ -337,15 +365,17 @@ float* ARCoreManager::getLightEstimation_SH() {
     if(_frame!=0 && _frame %100!=0)
         return LightingEstimator::instance()->getSHLightingParams();
     update_ndk_image();
-//    osg::Image * imageOSG= new osg::Image();
-//
-//    imageOSG->setImage(_ndk_image_width, _ndk_image_height, 1,
-//                    GL_RGB, GL_RGB,
-//                    GL_UNSIGNED_BYTE,
-//                   _rgb_image, osg::Image::USE_NEW_DELETE);
-//
-//    return LightingEstimator::instance()->getSHLightingParams(imageOSG);
-    return LightingEstimator::instance()->getSHLightingParams();
+    int size = _ndk_image_width * _ndk_image_height * 3;
+    uint8_t * image = new uint8_t[size];
+    memcpy(image, _rgb_image, size * sizeof(uint8_t));
+        osg::Image * imageOSG= new osg::Image();
+        imageOSG->setImage(_ndk_image_width, _ndk_image_height, 1,
+                    GL_RGB, GL_RGB,
+                    GL_UNSIGNED_BYTE, image, osg::Image::USE_NEW_DELETE);
+
+        return LightingEstimator::instance()->getSHLightingParams(imageOSG);
+
+//    return LightingEstimator::instance()->getSHLightingParams();
 }
 
 planeMap ARCoreManager::getPlaneMap(){

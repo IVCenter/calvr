@@ -6,6 +6,7 @@
 #include <GLES3/gl3.h>
 #include <unordered_map>
 #include <queue>
+#include <cvrUtil/osgMath.h>
 //[x, y, z, w] -> [x, -z, y, w]
 #define REAL_TO_OSG_COORD osg::Matrixf(1,0,0,0,0,0,-1,0,0,1,0,0,0,0,0,1);
 
@@ -74,6 +75,7 @@ namespace cvr{
         /*******Image**********/
         const AImage* bg_image = nullptr;
         uint8_t *_rgb_image = nullptr;
+        uint8_t *_warp_img = nullptr;
         int _ndk_image_width = 0, _ndk_image_height = 0;
         ArConfig * _config = nullptr;
 
@@ -126,7 +128,7 @@ namespace cvr{
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
         void setPixelSize(float x, float y);
-        uint8_t* getImageData(){return _rgb_image;}
+        uint8_t* getImageData(){return _warp_img;}//{return cvr::cylindricalWarpImage(_rgb_image, camera_intri, _ndk_image_width, _ndk_image_height);}
         osg::Matrixf* getViewMatrix(){return view_mat;}
         osg::Matrixf* getProjMatrix(){return proj_mat;}
         osg::Matrixf  getMVPMatrix();
