@@ -23,7 +23,45 @@ ARCoreManager::~ARCoreManager() {
     if(_ar_session){
         ArSession_destroy(_ar_session);
         ArFrame_destroy(_ar_frame);
+        ArCameraIntrinsics_destroy(camera_intrinsics);
     }
+}
+
+bool GetNdkImageProperties(const AImage* ndk_image, int32_t* out_format,
+                           int32_t* out_width, int32_t* out_height,
+                           int32_t* out_plane_num, int32_t* out_stride,int32_t* out_strideuv) {
+    if (ndk_image == nullptr) {
+        return false;
+    }
+    media_status_t status = AImage_getFormat(ndk_image, out_format);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+
+    status = AImage_getWidth(ndk_image, out_width);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+
+    status = AImage_getHeight(ndk_image, out_height);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+
+    status = AImage_getNumberOfPlanes(ndk_image, out_plane_num);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+
+    status = AImage_getPlaneRowStride(ndk_image, 0, out_stride);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+    status = AImage_getPlaneRowStride(ndk_image, 1, out_strideuv);
+    if (status != AMEDIA_OK) {
+        return false;
+    }
+    return true;
 }
 
 void ARCoreManager::onViewChanged(int rot, int width, int height){
@@ -71,18 +109,94 @@ void ARCoreManager::onResume(void *env, void *context, void *activity){
         ArConfig_getPlaneFindingMode(_ar_session, _config, &plane_finding_mode);
         ArConfig_getUpdateMode(_ar_session, _config, &update_mode);
 
-
-        //ArConfig_setCloudAnchorMode(_ar_session, _config, out_cloud_anchor_mode);
         ArConfig_setFocusMode(_ar_session, _config, AR_FOCUS_MODE_AUTO);
-        //ArConfig_setPlaneFindingMode(_ar_session, _config, plane_finding_mode);
         ArConfig_setUpdateMode(_ar_session, _config, AR_UPDATE_MODE_LATEST_CAMERA_IMAGE);
         CHECK(ArSession_configure(_ar_session, _config) == AR_SUCCESS);
 
-        //LOGE("===============================temp++++++++");
+        ArCameraIntrinsics_create(_ar_session, &camera_intrinsics);
+        CHECK(camera_intrinsics);
     }
 
     const ArStatus status = ArSession_resume(_ar_session);
     CHECK(status == AR_SUCCESS);
+}
+
+static inline uint32_t YUV2RGB(int nY, int nU, int nV, uint8_t&r, uint8_t&g, uint8_t&b) {
+    nY -= 16;
+    nU -= 128;
+    nV -= 128;
+    if (nY < 0) nY = 0;
+
+    // This is the floating point equivalent. We do the conversion in integer
+    // because some Android devices do not have floating point in hardware.
+    // nR = (int)(1.164 * nY + 1.596 * nV);
+    // nG = (int)(1.164 * nY - 0.813 * nV - 0.391 * nU);
+    // nB = (int)(1.164 * nY + 2.018 * nU);
+
+    int nR = (int)(1192 * nY + 1634 * nV);
+    int nG = (int)(1192 * nY - 833 * nV - 400 * nU);
+    int nB = (int)(1192 * nY + 2066 * nU);
+
+    nR = std::min(262143, std::max(0, nR));
+    nG = std::min(262143, std::max(0, nG));
+    nB = std::min(262143, std::max(0, nB));
+
+    nR = (nR >> 10) & 0xff;
+    nG = (nG >> 10) & 0xff;
+    nB = (nB >> 10) & 0xff;
+
+    r = (uint8_t)nB;
+    g = (uint8_t)nG;
+    b = (uint8_t)nR;
+
+    return 0xff000000 | (nR << 16) | (nG << 8) | nB;
+}
+
+void ARCoreManager::update_ndk_image(){
+    int32_t format = 0, num_plane = 0, stride = 0, strideuv=0;
+//    bool is_valid_cpu_image = false;
+    if (bg_image != nullptr) {
+        if (GetNdkImageProperties(bg_image, &format, &_ndk_image_width, &_ndk_image_height, &num_plane,
+                                  &stride, &strideuv)) {
+            if (format == AIMAGE_FORMAT_YUV_420_888) {
+                if (_ndk_image_width > 0 || _ndk_image_height > 0 || num_plane > 0 || stride > 0) {
+                    _rgb_image  = new uint8_t[3*_ndk_image_width*_ndk_image_height];
+                    camera_intri.ptr()[2] = _ndk_image_width/2;
+                    camera_intri.ptr()[6] = _ndk_image_height/2;
+
+                    uint8_t *yPixel, *uPixel, *vPixel;
+                    int32_t yLen, uLen, vLen;
+
+                    int32_t uvPixelStride;
+                    AImage_getPlanePixelStride(bg_image, 1, &uvPixelStride);
+                    AImageCropRect srcRect;
+                    AImage_getCropRect(bg_image, &srcRect);
+
+                    AImage_getPlaneData(bg_image, 0, &yPixel, &yLen);
+                    AImage_getPlaneData(bg_image, 1, &vPixel, &vLen);
+                    AImage_getPlaneData(bg_image, 2, &uPixel, &uLen);
+
+                    for (int32_t y = 0; y < _ndk_image_height; y++) {
+                        const uint8_t *pY = yPixel + stride * (y + srcRect.top) + srcRect.left;
+
+                        int32_t uv_row_start = strideuv * ((y + srcRect.top) >> 1);
+                        const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
+                        const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
+
+                        for (int32_t x = 0; x < _ndk_image_width; x++) {
+                            int idx = y * _ndk_image_width + x;
+                            const int32_t uv_offset = (x >> 1) * uvPixelStride;
+                            YUV2RGB(pY[x], pU[uv_offset], pV[uv_offset],
+                                    _rgb_image[3* idx], _rgb_image[3* idx+1],_rgb_image[3* idx+2]);
+                        }
+                    }
+                }
+            } else {
+                LOGE("Expected image in YUV_420_888 format.");
+            }
+        }
+    }
+
 }
 
 void ARCoreManager::onDrawFrame() {
@@ -99,14 +213,13 @@ void ARCoreManager::onDrawFrame() {
         LOGE("OnDrawFrame ArSession_update error");
     }
 
-
-
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
     ArImage * ar_image;
     ArStatus status = ArFrame_acquireCameraImage(_ar_session, _ar_frame, &ar_image);
     if(status == AR_SUCCESS){
         ArImage_getNdkImage(ar_image, &bg_image);
+//        update_ndk_image();
         ArImage_release(ar_image);
     }
     ArCamera_getViewMatrix(_ar_session, camera, (*view_mat).ptr());
@@ -125,6 +238,23 @@ void ARCoreManager::onDrawFrame() {
     if (geometry_changed != 0)
         ArFrame_transformDisplayUvCoords(_ar_session, _ar_frame, 8, kUVs,
                                          transformed_camera_uvs);
+    ArCamera_release(camera);
+}
+void ARCoreManager::setPixelSize(float sc_x, float sc_y) {
+    ArCamera* camera;
+    ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
+
+    ArCamera_getTextureIntrinsics(_ar_session, camera,
+                                  camera_intrinsics);
+    ArCameraIntrinsics_getFocalLength(_ar_session, camera_intrinsics, &focal_length.x(), &focal_length.y());
+    focal_length = Vec2f(focal_length.x()/sc_x * 1000, focal_length.y()/sc_y * 1000);
+
+    float f = (focal_length.x() + focal_length.y())/2;
+
+    camera_intri= osg::Matrixf(f,0,0,0,
+                               0,f,0,0,
+                               0,0,1,0,
+                               0,0,0,0);
     ArCamera_release(camera);
 }
 void ARCoreManager::postFrame(){
@@ -202,52 +332,20 @@ LightSrc ARCoreManager::getLightEstimation(){
     ArLightEstimate_destroy(ar_light_estimate);
     return _envLight;
 }
+
 float* ARCoreManager::getLightEstimation_SH() {
     if(_frame!=0 && _frame %100!=0)
         return LightingEstimator::instance()->getSHLightingParams();
-    uint8_t * _image;
-    AImageCropRect srcRect;
-    AImage_getCropRect(bg_image, &srcRect);
-
-    int32_t yStride, uvStride;
-    uint8_t *yPixel, *uPixel, *vPixel;
-    int32_t yLen, uLen, vLen;
-    AImage_getPlaneRowStride(bg_image, 0, &yStride);
-    AImage_getPlaneRowStride(bg_image, 1, &uvStride);
-    AImage_getPlaneData(bg_image, 0, &yPixel, &yLen);
-    AImage_getPlaneData(bg_image, 1, &vPixel, &vLen);
-    AImage_getPlaneData(bg_image, 2, &uPixel, &uLen);
-    int32_t uvPixelStride;
-    AImage_getPlanePixelStride(bg_image, 1, &uvPixelStride);
-
-    int32_t height = srcRect.bottom - srcRect.top;
-    int32_t width = srcRect.right - srcRect.left;
-
-    _image = new uint8_t[3*width*height];
-    for (int32_t y = 0; y < height; y++) {
-        const uint8_t *pY = yPixel + yStride * (y + srcRect.top) + srcRect.left;
-
-        int32_t uv_row_start = uvStride * ((y + srcRect.top) >> 1);
-        const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
-        const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
-
-        for (int32_t x = 0; x < width; x++) {
-            int idx = y * width + x;
-            const int32_t uv_offset = (x >> 1) * uvPixelStride;
-            Vec4f rgb = yuv2rgb*Vec4f(pY[x], pU[uv_offset], pV[uv_offset], .0);
-            _image[3* idx] = (uint8_t)rgb.x() * 255;//r
-            _image[3*idx + 1] =(uint8_t)rgb.y() * 255;
-            _image[3*idx + 2] = (uint8_t)rgb.z() * 255;
-        }
-    }
-
-    osg::Image *image= new osg::Image();
-
-    image->setImage(width, height, 1,
-                    GL_RGB, GL_RGB,
-                    GL_UNSIGNED_BYTE,
-                   _image, osg::Image::USE_NEW_DELETE);
-    return LightingEstimator::instance()->getSHLightingParams(image);
+    update_ndk_image();
+//    osg::Image * imageOSG= new osg::Image();
+//
+//    imageOSG->setImage(_ndk_image_width, _ndk_image_height, 1,
+//                    GL_RGB, GL_RGB,
+//                    GL_UNSIGNED_BYTE,
+//                   _rgb_image, osg::Image::USE_NEW_DELETE);
+//
+//    return LightingEstimator::instance()->getSHLightingParams(imageOSG);
+    return LightingEstimator::instance()->getSHLightingParams();
 }
 
 planeMap ARCoreManager::getPlaneMap(){
@@ -402,3 +500,4 @@ osg::Vec3f ARCoreManager::getRealWorldPositionFromScreen(float x, float y, float
     float inv_w = 1.0f / nearPlanePos.w();
     return Vec3f(nearPlanePos.x() * inv_w, nearPlanePos.y()*inv_w, nearPlanePos.z()*inv_w);
 }
+

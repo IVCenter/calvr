@@ -22,11 +22,6 @@ namespace {
                          ((colorRgba >> 16) & 0xff) / 255.0f,
                          ((colorRgba >> 8) & 0xff) / 255.0f);
     }
-    const osg::Matrixf yuv2rgb = osg::Matrixf(1,0,1,13983,
-                                              0,1,-0.39465,-0.58060,
-                                              0,1,2.03211,0,
-                                              0,0,0,0);
-
 }
 
 namespace cvr{
@@ -44,6 +39,7 @@ namespace cvr{
         int _frame = 0;
         ArSession * _ar_session = nullptr;
         ArFrame * _ar_frame = nullptr;//get frame state
+        ArCameraIntrinsics * camera_intrinsics = nullptr;
 
         int _displayRotation = 0;
         int _width = 1;
@@ -57,10 +53,12 @@ namespace cvr{
         ArTrackingState cam_track_state;
         float camera_pose_raw[7] = {0.f};
         osg::Matrixf cameraMatrix;
+        osg::Matrixf camera_intri;
 
         float transformed_camera_uvs[8] = {.0f};
         GLuint bgTextureId = 0;
         int32_t geometry_changed = 0;
+        osg::Vec2f focal_length;
 
         /**Plane Factors***/
         planeMap plane_color_map;
@@ -75,7 +73,11 @@ namespace cvr{
         bool _setTexture = false;
         /*******Image**********/
         const AImage* bg_image = nullptr;
+        uint8_t *_rgb_image = nullptr;
+        int _ndk_image_width = 0, _ndk_image_height = 0;
         ArConfig * _config = nullptr;
+
+        void update_ndk_image();
     public:
         static ARCoreManager * instance();
         ARCoreManager();
@@ -123,6 +125,8 @@ namespace cvr{
 
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
+        void setPixelSize(float x, float y);
+        uint8_t* getImageData(){return _rgb_image;}
         osg::Matrixf* getViewMatrix(){return view_mat;}
         osg::Matrixf* getProjMatrix(){return proj_mat;}
         osg::Matrixf  getMVPMatrix();
