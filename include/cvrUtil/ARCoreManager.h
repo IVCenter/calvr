@@ -75,6 +75,7 @@ namespace cvr{
         /*******Image**********/
         const AImage* bg_image = nullptr;
         uint8_t *_rgb_image = nullptr;
+        std::vector<uint8_t *> _envImgs;
         uint8_t *_warp_img = nullptr;
         int _ndk_image_width = 0, _ndk_image_height = 0;
         ArConfig * _config = nullptr;
@@ -128,7 +129,10 @@ namespace cvr{
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
         void setPixelSize(float x, float y);
-        uint8_t* getImageData(){return _warp_img;}//{return cvr::cylindricalWarpImage(_rgb_image, camera_intri, _ndk_image_width, _ndk_image_height);}
+        uint8_t* getImageData(){return _rgb_image;}//{return cvr::cylindricalWarpImage(_rgb_image, camera_intri, _ndk_image_width, _ndk_image_height);}
+        uint8_t* getImageData(int id){
+            if(_envImgs.empty()) return nullptr;
+            return _envImgs[id];}
         osg::Matrixf* getViewMatrix(){return view_mat;}
         osg::Matrixf* getProjMatrix(){return proj_mat;}
         osg::Matrixf  getMVPMatrix();

@@ -5,7 +5,7 @@
 #include <media/NdkImage.h>
 #include <cvrUtil/LightingEstimator.h>
 #include <osg/Image>
-
+#define TEX_SIZE 256
 using namespace cvr;
 using namespace osg;
 ARCoreManager::ARCoreManager(){
@@ -23,7 +23,6 @@ ARCoreManager::~ARCoreManager() {
     if(_ar_session){
         ArSession_destroy(_ar_session);
         ArFrame_destroy(_ar_frame);
-        ArCameraIntrinsics_destroy(camera_intrinsics);
     }
 }
 
@@ -112,9 +111,6 @@ void ARCoreManager::onResume(void *env, void *context, void *activity){
         ArConfig_setFocusMode(_ar_session, _config, AR_FOCUS_MODE_AUTO);
         ArConfig_setUpdateMode(_ar_session, _config, AR_UPDATE_MODE_LATEST_CAMERA_IMAGE);
         CHECK(ArSession_configure(_ar_session, _config) == AR_SUCCESS);
-
-        ArCameraIntrinsics_create(_ar_session, &camera_intrinsics);
-        CHECK(camera_intrinsics);
     }
 
     const ArStatus status = ArSession_resume(_ar_session);
@@ -152,28 +148,101 @@ static inline uint32_t YUV2RGB(int nY, int nU, int nV, uint8_t&r, uint8_t&g, uin
     return 0xff000000 | (nR << 16) | (nG << 8) | nB;
 }
 
+void convert_xyz_to_cube_uv(float x, float y, float z, float *u, float *v, int *index) {
+    float absX = fabs(x);
+    float absY = fabs(y);
+    float absZ = fabs(z);
+
+    int isXPositive = x > 0 ? 1 : 0;
+    int isYPositive = y > 0 ? 1 : 0;
+    int isZPositive = z > 0 ? 1 : 0;
+
+    float maxAxis, uc = 0, vc = 0;
+
+    // POSITIVE X
+    if (isXPositive && absX >= absY && absX >= absZ) {
+        // u (0 to 1) goes from +z to -z
+        // v (0 to 1) goes from -y to +y
+        maxAxis = absX;
+        uc = -z;
+        vc = y;
+        *index = 0;
+    }
+    // NEGATIVE X
+    if (!isXPositive && absX >= absY && absX >= absZ) {
+        // u (0 to 1) goes from -z to +z
+        // v (0 to 1) goes from -y to +y
+        maxAxis = absX;
+        uc = z;
+        vc = y;
+        *index = 1;
+    }
+    // POSITIVE Y
+    if (isYPositive && absY >= absX && absY >= absZ) {
+        // u (0 to 1) goes from -x to +x
+        // v (0 to 1) goes from +z to -z
+        maxAxis = absY;
+        uc = x;
+        vc = -z;
+        *index = 2;
+    }
+    // NEGATIVE Y
+    if (!isYPositive && absY >= absX && absY >= absZ) {
+        // u (0 to 1) goes from -x to +x
+        // v (0 to 1) goes from -z to +z
+        maxAxis = absY;
+        uc = x;
+        vc = z;
+        *index = 3;
+    }
+    // POSITIVE Z
+    if (isZPositive && absZ >= absX && absZ >= absY) {
+        // u (0 to 1) goes from -x to +x
+        // v (0 to 1) goes from -y to +y
+        maxAxis = absZ;
+        uc = x;
+        vc = y;
+        *index = 4;
+    }
+    // NEGATIVE Z
+    if (!isZPositive && absZ >= absX && absZ >= absY) {
+        // u (0 to 1) goes from +x to -x
+        // v (0 to 1) goes from -y to +y
+        maxAxis = absZ;
+        uc = -x;
+        vc = y;
+        *index = 5;
+    }
+
+    // Convert range from -1 to 1 to 0 to 1
+    *u = 0.5f * (uc / maxAxis + 1.0f);
+    *v = 0.5f * (vc / maxAxis + 1.0f);
+}
+
 void ARCoreManager::update_ndk_image(){
     int32_t format = 0, width, height, num_plane = 0, stride = 0, strideuv=0;
     if (bg_image != nullptr) {
         if (GetNdkImageProperties(bg_image, &format, &width, &height, &num_plane,
                                   &stride, &strideuv)) {
-            if(_ndk_image_height == 0){
-                _ndk_image_height = height;
-                _ndk_image_width = width;
+            if(!_ndk_image_width){
+                _ndk_image_width = width; _ndk_image_height = height;
                 _rgb_image  = new uint8_t[3*_ndk_image_width*_ndk_image_height];
-                _warp_img = new uint8_t[3*_ndk_image_width*_ndk_image_height];
-                camera_intri.ptr()[2] = _ndk_image_width/2;
-                camera_intri.ptr()[6] = _ndk_image_height/2;
+//                _warp_img = new uint8_t[3*_ndk_image_width*_ndk_image_height];
+                for(int i=0;i<6;i++){
+                    uint8_t * img = new uint8_t[3*TEX_SIZE*TEX_SIZE];
+                    memset(img, (uint8_t)0, 3*TEX_SIZE*TEX_SIZE* sizeof(uint8_t));
+                    _envImgs.push_back(img);
+                }
             }
             if (format == AIMAGE_FORMAT_YUV_420_888) {
                 if (_ndk_image_width > 0 || _ndk_image_height > 0 || num_plane > 0 || stride > 0) {
-                    memset(_warp_img,(uint8_t)0,3*_ndk_image_width*_ndk_image_height);
+//                    memset(_warp_img,(uint8_t)0,3*_ndk_image_width*_ndk_image_height* sizeof(uint8_t));
                     uint8_t *yPixel, *uPixel, *vPixel;
                     int32_t yLen, uLen, vLen;
 
-                    float cx = width / 2.0f, cy = height/2.0f;
-                    float theta, h;
-                    float f = camera_intri.ptr()[0];
+                    float halfWidth = width / 2.0f, halfHeight = height/2.0f;
+//                    float theta, h;
+//                    float f = camera_intri.ptr()[0];
 
                     int32_t uvPixelStride;
                     AImage_getPlanePixelStride(bg_image, 1, &uvPixelStride);
@@ -184,18 +253,47 @@ void ARCoreManager::update_ndk_image(){
                     AImage_getPlaneData(bg_image, 1, &vPixel, &vLen);
                     AImage_getPlaneData(bg_image, 2, &uPixel, &uLen);
 
+                    Matrixf invMat = Matrixf::inverse(getMVPMatrix());
+
+
                     for (int32_t y = 0; y < _ndk_image_height; y++) {
                         const uint8_t *pY = yPixel + stride * (y + srcRect.top) + srcRect.left;
 
                         int32_t uv_row_start = strideuv * ((y + srcRect.top) >> 1);
                         const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
                         const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
-
+//                        float imgy = (halfHeight-y) / halfHeight;
                         for (int32_t x = 0; x < _ndk_image_width; x++) {
                             int idx = y * _ndk_image_width + x;
                             const int32_t uv_offset = (x >> 1) * uvPixelStride;
                             YUV2RGB(pY[x], pU[uv_offset], pV[uv_offset],
                                     _rgb_image[3* idx], _rgb_image[3* idx+1],_rgb_image[3* idx+2]);
+
+//                            float imgx = (x-halfWidth) / halfWidth;
+                            float imgx = (float)(x + halfWidth) / halfWidth;
+                            float imgy = (float) (-y + halfHeight) / halfHeight;
+
+                            Vec4f farPlanePos = Vec4f(imgx,imgy, 1.0, 1.0f) * invMat;
+                            float inv_w = 1.0f / farPlanePos.w();
+                            Vec3f pxDir =  Vec3f(farPlanePos.x() * inv_w, farPlanePos.y()*inv_w, farPlanePos.z()*inv_w);
+                            pxDir-= Vec3f(camera_pose_raw[4], camera_pose_raw[5], camera_pose_raw[6]);
+                            pxDir.normalize();
+                            float fu, fv;
+                            int faceIdx;
+                            convert_xyz_to_cube_uv(pxDir.x(), pxDir.y(), pxDir.z(), &fu, &fv, &faceIdx);
+                            if(x==0 && y==0)
+                                LOGE("===face to %d", faceIdx);
+                            int realX = (int)(fu * TEX_SIZE);
+                            int realY = (int)(fv * TEX_SIZE);
+                            int realIdx = realY * TEX_SIZE + realX;
+                            if(_envImgs[faceIdx][3*realIdx] == 0 &&
+                                    _envImgs[faceIdx][3*realIdx+1] ==0 &&
+                                    _envImgs[faceIdx][3*realIdx+2] ==0){
+                                _envImgs[faceIdx][3*realIdx] = _rgb_image[3*idx];
+                                _envImgs[faceIdx][3*realIdx+1] = _rgb_image[3*idx+1];
+                                _envImgs[faceIdx][3*realIdx+2] = _rgb_image[3*idx+2];
+                            }
+
                         }
                     }
 
@@ -243,13 +341,6 @@ void ARCoreManager::onDrawFrame() {
 
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
-    ArImage * ar_image;
-    ArStatus status = ArFrame_acquireCameraImage(_ar_session, _ar_frame, &ar_image);
-    if(status == AR_SUCCESS){
-        ArImage_getNdkImage(ar_image, &bg_image);
-//        update_ndk_image();
-        ArImage_release(ar_image);
-    }
     ArCamera_getViewMatrix(_ar_session, camera, (*view_mat).ptr());
     ArCamera_getProjectionMatrix(_ar_session,camera, 0.1f, 100.0f, (*proj_mat).ptr());
 
@@ -266,23 +357,31 @@ void ARCoreManager::onDrawFrame() {
     if (geometry_changed != 0)
         ArFrame_transformDisplayUvCoords(_ar_session, _ar_frame, 8, kUVs,
                                          transformed_camera_uvs);
+    ArImage * ar_image;
+    ArStatus status = ArFrame_acquireCameraImage(_ar_session, _ar_frame, &ar_image);
+    if(status == AR_SUCCESS){
+        ArImage_getNdkImage(ar_image, &bg_image);
+        update_ndk_image();
+        ArImage_release(ar_image);
+    }
     ArCamera_release(camera);
 }
 void ARCoreManager::setPixelSize(float sc_x, float sc_y) {
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
 
+    ArCameraIntrinsics_create(_ar_session, &camera_intrinsics);
     ArCamera_getTextureIntrinsics(_ar_session, camera,
                                   camera_intrinsics);
-    ArCameraIntrinsics_getFocalLength(_ar_session, camera_intrinsics, &focal_length.x(), &focal_length.y());
-    focal_length = Vec2f(focal_length.x()/sc_x * 1000, focal_length.y()/sc_y * 1000);
-
-    float f = (focal_length.x() + focal_length.y())/2;
-
-    camera_intri= osg::Matrixf(f,0,0,0,
-                               0,f,0,0,
+    float fx, fy, x0, y0;
+    //get focal length in pixels
+    ArCameraIntrinsics_getFocalLength(_ar_session, camera_intrinsics, &fx, &fy);
+    ArCameraIntrinsics_getPrincipalPoint(_ar_session, camera_intrinsics, &x0, &y0);
+    camera_intri= osg::Matrixf(fx,0,x0,0,
+                               0,fy,y0,0,
                                0,0,1,0,
                                0,0,0,0);
+    ArCameraIntrinsics_destroy(camera_intrinsics);
     ArCamera_release(camera);
 }
 void ARCoreManager::postFrame(){
@@ -365,17 +464,24 @@ float* ARCoreManager::getLightEstimation_SH() {
     if(_frame!=0 && _frame %100!=0)
         return LightingEstimator::instance()->getSHLightingParams();
     update_ndk_image();
-    int size = _ndk_image_width * _ndk_image_height * 3;
-    uint8_t * image = new uint8_t[size];
-    memcpy(image, _rgb_image, size * sizeof(uint8_t));
-        osg::Image * imageOSG= new osg::Image();
-        imageOSG->setImage(_ndk_image_width, _ndk_image_height, 1,
-                    GL_RGB, GL_RGB,
-                    GL_UNSIGNED_BYTE, image, osg::Image::USE_NEW_DELETE);
-
-        return LightingEstimator::instance()->getSHLightingParams(imageOSG);
-
-//    return LightingEstimator::instance()->getSHLightingParams();
+    return LightingEstimator::instance()->getSHLightingParams();
+//    int size = TEX_SIZE * TEX_SIZE * 12;
+//    uint8_t * image = new uint8_t[size];
+//    for(int y=0; y<TEX_SIZE; y++){
+//        int lineOff =y* 12*TEX_SIZE;
+//        for(int i=0; i<4; i++){
+//            memcpy(image + lineOff+ 3*i*TEX_SIZE, _envImgs[i]+lineOff, 3*TEX_SIZE * sizeof(uint8_t));
+//        }
+//    }
+//
+//
+//
+//        osg::Image * imageOSG= new osg::Image();
+//        imageOSG->setImage(_ndk_image_width, _ndk_image_height, 1,
+//                    GL_RGB, GL_RGB,
+//                    GL_UNSIGNED_BYTE, image, osg::Image::USE_NEW_DELETE);
+//
+//        return LightingEstimator::instance()->getSHLightingParams(imageOSG);
 }
 
 planeMap ARCoreManager::getPlaneMap(){
