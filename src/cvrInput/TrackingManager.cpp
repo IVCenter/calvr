@@ -193,7 +193,6 @@ bool TrackingManager::init()
             else if(systemName == "MOUSE")
             {
                 tracker = new TrackerAndroid();
-                _touchEventMat = osg::Matrix();
             }
 #endif
             else if(systemName == "MOUSE")
@@ -826,14 +825,7 @@ void TrackingManager::update()
                 "Tracking time taken",endTime - startTime);
     }
 #if __ANDROID__
-    const float* camera_pos = ARCoreManager::instance()->getCameraPose();
-    osg::Matrixf rotMat = cvr::rawRotation2OsgMatrix(camera_pos);
-    osg::Matrixf transMat = rawTrans2OsgMatrix(camera_pos+4);
-
-    float roll, pitch, yaw;
-    quat2OSGEuler(camera_pos, roll, pitch, yaw);
-    setCameraRotation(rotMat, roll, pitch, yaw);
-    setTouchEventMatrix(rotMat*transMat);
+    _touchEventMat = ARCoreManager::instance()->getCameraMatrixOSG();
 #endif
 }
 

@@ -182,9 +182,9 @@ bool BoardMenu::showBoardMenu(InteractionEvent * event){
     osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0)* _tie->getTransform();
     osg::Matrix transMat, rotMat, cam_y_cali_Mat;
     transMat.makeTranslate(menuPoint);
-    cam_y_cali_Mat.makeRotate(-TrackingManager::instance()->getCameraYRotation(), osg::Vec3f(.0f,1.0,.0f));
+    cam_y_cali_Mat.makeRotate(ARCoreManager::instance()->getCameraRotationEuler()[2], osg::Vec3f(.0f,1.0,.0f));
 
-    rotMat = TrackingManager::instance()->getCameraRotation() * cam_y_cali_Mat;
+    rotMat = ARCoreManager::instance()->getCameraRotationMatrixOSG() * cam_y_cali_Mat;
     _menuRoot->setMatrix(rotMat * transMat);
     _menuActive = true;
     SceneManager::instance()->closeOpenObjectMenu();
@@ -295,9 +295,9 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 #ifdef __ANDROID__
                     osg::Matrix transMat, rotMat, cam_y_cali_Mat;
                     transMat.makeTranslate(menuPoint);
-                    cam_y_cali_Mat.makeRotate(-TrackingManager::instance()->getCameraYRotation(), osg::Vec3f(.0f,1.0,.0f));
+                    cam_y_cali_Mat.makeRotate(ARCoreManager::instance()->getCameraRotationEuler()[2], osg::Vec3f(.0f,1.0,.0f));
 
-                    rotMat = TrackingManager::instance()->getCameraRotation() * cam_y_cali_Mat;
+                    rotMat = ARCoreManager::instance()->getCameraRotationMatrixOSG() * cam_y_cali_Mat;
                     _menuRoot->setMatrix(rotMat * transMat);
 #else
                     if(event->asMouseEvent())

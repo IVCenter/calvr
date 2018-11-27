@@ -27,34 +27,35 @@ namespace {
 
 namespace cvr{
     typedef std::unordered_map<ArPlane*, osg::Vec3f> planeMap;
-    typedef  struct{
+    typedef struct{
         float intensity = 0.8f;
         float max_intensity = .0f;
         float color_correction[4] = {1.f, 1.f, 1.f, 1.f};
         osg::Vec3f lightSrc = osg::Vec3f(0,0,1);
     } LightSrc;
-
     class ARCoreManager{
     private:
         static ARCoreManager* _myPtr;
         int _frame = 0;
         ArSession * _ar_session = nullptr;
         ArFrame * _ar_frame = nullptr;//get frame state
-        ArCameraIntrinsics * camera_intrinsics = nullptr;
 
         int _displayRotation = 0;
         int _width = 1;
         int _height = 1;
         bool _install_requested = false;
 
-        /* Camera factors: pos, VP matrix, tracking state
-         * Update every frame
-         * **/
+        /*** Camera ***/
         osg::Matrixf *view_mat, *proj_mat;
         ArTrackingState cam_track_state;
         float camera_pose_raw[7] = {0.f};
-        osg::Matrixf cameraMatrix;
-        osg::Matrixf camera_intri;
+        float camera_rot_euler[3] = {.0f};//roll, pitch, yaw
+        float _camera_pose_col_major[16] = {.0f};
+        osg::Matrixf cameraMatrix_K;
+        std::queue<osg::Matrixf> camera_rot_Mat_queue;
+        std::queue<osg::Vec3f> camera_positions_queue;
+        osg::Matrixf camera_rot_Mat_osg, camera_trans_Mat_osg, cameraMatrix_osg;
+
 
         float transformed_camera_uvs[8] = {.0f};
         GLuint bgTextureId = 0;
@@ -68,19 +69,25 @@ namespace cvr{
         std::vector<ArAnchor*> _hittedAnchors;
         /*** Lighting ***/
         LightSrc _envLight;
+
         /****** touch detection ******/
         std::queue<osg::Vec2f> _event_queue;
         bool _consumeEvent = false;
         bool _setTexture = false;
+
         /*******Image**********/
         const AImage* bg_image = nullptr;
         uint8_t *_rgb_image = nullptr;
+        uint8_t * _full_image = nullptr;
         std::vector<uint8_t *> _envImgs;
-        uint8_t *_warp_img = nullptr;
+//        uint8_t *_warp_img = nullptr;
         int _ndk_image_width = 0, _ndk_image_height = 0;
         ArConfig * _config = nullptr;
 
+        const float* _pointCloudData;
+
         void update_ndk_image();
+
     public:
         static ARCoreManager * instance();
         ARCoreManager();
@@ -95,6 +102,8 @@ namespace cvr{
         void onDrawFrame();
 
         void postFrame();
+
+        void Estimate_Homography_From_PointCloud();
 
         LightSrc getLightEstimation();
 
@@ -131,6 +140,9 @@ namespace cvr{
         void setPixelSize(float x, float y);
         uint8_t* getImageData(){return _rgb_image;}//{return cvr::cylindricalWarpImage(_rgb_image, camera_intri, _ndk_image_width, _ndk_image_height);}
         uint8_t* getImageData(int id){
+            if(id == -1){
+                return _full_image;
+            }
             if(_envImgs.empty()) return nullptr;
             return _envImgs[id];}
         osg::Matrixf* getViewMatrix(){return view_mat;}
@@ -139,7 +151,9 @@ namespace cvr{
 
         const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
-        osg::Matrixf getCameraMatrix(){return cameraMatrix;}
+        const float* getCameraRotationEuler(){return camera_rot_euler;}
+        osg::Matrixf getCameraRotationMatrixOSG(){return camera_rot_Mat_osg;}
+        osg::Matrixf getCameraMatrixOSG(){return cameraMatrix_osg;}
         osg::Vec3f getRealWorldPositionFromScreen(float x, float y, float z = -1.0f);
     };
 }

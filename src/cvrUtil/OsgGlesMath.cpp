@@ -20,7 +20,7 @@ namespace cvr {
         return mat;
     }
 
-    void quat2OSGEuler(const float *q, float &roll, float &pitch, float &yaw) {
+    void quat2Euler(const float *q, float &roll, float &pitch, float &yaw) {
         // roll (x-axis rotation)
         double sinr_cosp = +2.0 * (q[3] * q[0] + q[1] * q[2]);
         double cosr_cosp = +1.0 - 2.0 * (q[0] * q[0] + q[1] * q[1]);
@@ -37,10 +37,6 @@ namespace cvr {
         double siny_cosp = +2.0 * (q[3] * q[2] + q[0] * q[1]);
         double cosy_cosp = +1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]);
         yaw = (float) atan2(siny_cosp, cosy_cosp);
-
-        //Change to OSG Coordinates
-        std::swap(pitch, yaw);
-        pitch = -pitch;
     }
 
     float calculateDistanceToPlane(float* plane_pose, float* camera_pose) {

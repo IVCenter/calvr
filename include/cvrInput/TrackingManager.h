@@ -220,10 +220,6 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
                 TrackerBase::TrackedBody * body);
         void getHandButtonFromSystemButton(int system, int systemButton,
                 int & hand, int & handButton);
-        void setTouchEventMatrix(osg::Matrix mat){_touchEventMat = mat;}
-        osg::Matrix getCameraRotation(){return _cameraRotMat;}
-        double getCameraYRotation(){return cam_eu_y;}
-        void setCameraRotation(osg::Matrix rot, double x=0, double y=0, double z=0){_cameraRotMat = rot;cam_eu_x = x; cam_eu_y=y; cam_eu_z = z;}
         void setIntersectPoint(osg::Vec3f point){_isPoint = point;isIntersect = true;}
         bool getIsPoint(osg::Vec3f & isPoint);
         void setWindowsShape(int width, int height){_screenWidth = width; _screenHeight= height;}

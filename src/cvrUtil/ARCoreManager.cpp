@@ -5,6 +5,7 @@
 #include <media/NdkImage.h>
 #include <cvrUtil/LightingEstimator.h>
 #include <osg/Image>
+
 #define TEX_SIZE 256
 using namespace cvr;
 using namespace osg;
@@ -227,6 +228,8 @@ void ARCoreManager::update_ndk_image(){
             if(!_ndk_image_width){
                 _ndk_image_width = width; _ndk_image_height = height;
                 _rgb_image  = new uint8_t[3*_ndk_image_width*_ndk_image_height];
+                _full_image = new uint8_t[6*_ndk_image_width*_ndk_image_height];
+                memset(_full_image,(uint8_t)0,6*_ndk_image_width*_ndk_image_height* sizeof(uint8_t));
 //                _warp_img = new uint8_t[3*_ndk_image_width*_ndk_image_height];
                 for(int i=0;i<6;i++){
                     uint8_t * img = new uint8_t[3*TEX_SIZE*TEX_SIZE];
@@ -264,7 +267,8 @@ void ARCoreManager::update_ndk_image(){
                         const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
 //                        float imgy = (halfHeight-y) / halfHeight;
                         for (int32_t x = 0; x < _ndk_image_width; x++) {
-                            int idx = y * _ndk_image_width + x;
+                            int idx = x * _ndk_image_width - y; //rotate image 90 clock-wise
+
                             const int32_t uv_offset = (x >> 1) * uvPixelStride;
                             YUV2RGB(pY[x], pU[uv_offset], pV[uv_offset],
                                     _rgb_image[3* idx], _rgb_image[3* idx+1],_rgb_image[3* idx+2]);
@@ -281,8 +285,6 @@ void ARCoreManager::update_ndk_image(){
                             float fu, fv;
                             int faceIdx;
                             convert_xyz_to_cube_uv(pxDir.x(), pxDir.y(), pxDir.z(), &fu, &fv, &faceIdx);
-                            if(x==0 && y==0)
-                                LOGE("===face to %d", faceIdx);
                             int realX = (int)(fu * TEX_SIZE);
                             int realY = (int)(fv * TEX_SIZE);
                             int realIdx = realY * TEX_SIZE + realX;
@@ -344,13 +346,19 @@ void ARCoreManager::onDrawFrame() {
     ArCamera_getViewMatrix(_ar_session, camera, (*view_mat).ptr());
     ArCamera_getProjectionMatrix(_ar_session,camera, 0.1f, 100.0f, (*proj_mat).ptr());
 
+    //update camera pose
     ArPose* camera_pose = nullptr;
     ArPose_create(_ar_session, nullptr, &camera_pose);
     ArCamera_getPose(_ar_session, camera, camera_pose);
 
     ArPose_getPoseRaw(_ar_session, camera_pose, camera_pose_raw);
-    ArPose_getMatrix(_ar_session, camera_pose, cameraMatrix.ptr());
+    ArPose_getMatrix(_ar_session, camera_pose, _camera_pose_col_major);
 
+    quat2Euler(camera_pose_raw, camera_rot_euler[0], camera_rot_euler[1], camera_rot_euler[2]);
+    camera_rot_Mat_osg = cvr::rawRotation2OsgMatrix(camera_pose_raw);
+    camera_trans_Mat_osg = rawTrans2OsgMatrix(camera_pose_raw+4);
+    cameraMatrix_osg = camera_rot_Mat_osg * camera_trans_Mat_osg;
+//    TrackingManager::instance()->setTouchEventMatrix(cameraMatrix_osg);
     ArCamera_getTrackingState(_ar_session, camera, &cam_track_state);
 
     ArFrame_getDisplayGeometryChanged(_ar_session, _ar_frame, &geometry_changed);
@@ -361,7 +369,7 @@ void ARCoreManager::onDrawFrame() {
     ArStatus status = ArFrame_acquireCameraImage(_ar_session, _ar_frame, &ar_image);
     if(status == AR_SUCCESS){
         ArImage_getNdkImage(ar_image, &bg_image);
-        update_ndk_image();
+//        update_ndk_image();
         ArImage_release(ar_image);
     }
     ArCamera_release(camera);
@@ -370,6 +378,7 @@ void ARCoreManager::setPixelSize(float sc_x, float sc_y) {
     ArCamera* camera;
     ArFrame_acquireCamera(_ar_session, _ar_frame, &camera);
 
+    ArCameraIntrinsics * camera_intrinsics;
     ArCameraIntrinsics_create(_ar_session, &camera_intrinsics);
     ArCamera_getTextureIntrinsics(_ar_session, camera,
                                   camera_intrinsics);
@@ -377,7 +386,7 @@ void ARCoreManager::setPixelSize(float sc_x, float sc_y) {
     //get focal length in pixels
     ArCameraIntrinsics_getFocalLength(_ar_session, camera_intrinsics, &fx, &fy);
     ArCameraIntrinsics_getPrincipalPoint(_ar_session, camera_intrinsics, &x0, &y0);
-    camera_intri= osg::Matrixf(fx,0,x0,0,
+    cameraMatrix_K= osg::Matrixf(fx,0,x0,0,
                                0,fy,y0,0,
                                0,0,1,0,
                                0,0,0,0);
@@ -390,7 +399,10 @@ void ARCoreManager::postFrame(){
         _event_queue.pop();
     }
 }
+
 bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_num){
+    if (cam_track_state != AR_TRACKING_STATE_TRACKING)
+        return false;
     ArPointCloud * pointCloud;
     ArStatus  pointcloud_Status = ArFrame_acquirePointCloud(_ar_session, _ar_frame, &pointCloud);
     if(pointcloud_Status != AR_SUCCESS)
@@ -399,7 +411,7 @@ bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_nu
     ArPointCloud_getNumberOfPoints(_ar_session, pointCloud, &point_num);
     if(point_num <= 0)
         return false;
-    const float* _pointCloudData;
+
     //point cloud data with 4 params (x,y,z, confidence)
     ArPointCloud_getData(_ar_session, pointCloud, &_pointCloudData);
 
@@ -409,9 +421,87 @@ bool ARCoreManager::getPointCouldData(float*& pointCloudData, int32_t & point_nu
     memcpy(pointCloudData, _pointCloudData, memsize);
     return true;
 }
+
+void ARCoreManager::Estimate_Homography_From_PointCloud(){
+    //plane estimation from a bunch of points
+    //construct matrix
+    if(!_pointCloudData)
+        return;
+    update_ndk_image();
+    camera_rot_Mat_queue.push(Matrixf(_camera_pose_col_major[0], _camera_pose_col_major[4], _camera_pose_col_major[8], .0f,
+                                      _camera_pose_col_major[1], _camera_pose_col_major[5], _camera_pose_col_major[9], .0f,
+                                      _camera_pose_col_major[2], _camera_pose_col_major[6], _camera_pose_col_major[10], .0f,
+                                                              0,0,0,1.0f));
+//    camera_rot_Mat_queue.push(Matrixf::rotate(Quat(camera_pose_raw[0], camera_pose_raw[1], camera_pose_raw[2], camera_pose_raw[3])));
+    camera_positions_queue.push(Vec3f(camera_pose_raw[4], camera_pose_raw[5], camera_pose_raw[6]));
+    if(camera_rot_Mat_queue.size()<3){
+        for(int y =0; y<_ndk_image_height; y++){
+            int base_old = y*_ndk_image_width;
+            int base_new = 2 * base_old;
+            for(int x=0; x<_ndk_image_width; x++){
+                int idx =  base_old + x;
+                int idxn = base_new + x;
+                _full_image[3*idxn] = _rgb_image[3*idx];
+                _full_image[3*idxn+1] = _rgb_image[3*idx+1];
+                _full_image[3*idxn+2] = _rgb_image[3*idx+2];
+            }
+        }
+        return;
+    }
+    camera_rot_Mat_queue.pop();
+    camera_positions_queue.pop();
+
+    Matrixf Ra = camera_rot_Mat_queue.front(), Rb = camera_rot_Mat_queue.back();
+    Vec3f ta = camera_positions_queue.front(), tb = camera_positions_queue.back();
+
+    Vec3f plane_normal = Vec3f(.0f, .0f, -1.0f) * Matrixf::rotate(Quat(camera_pose_raw[0], camera_pose_raw[1], camera_pose_raw[2], camera_pose_raw[3]));
+
+    float d_inv = -1.0f/(_pointCloudData[0] * plane_normal.x() + _pointCloudData[1] * plane_normal.y() + _pointCloudData[2] * plane_normal.z());
+    LOGE("===dist: %f", d_inv);
+    Vec3f tab = tb-ta;
+    Matrixf tab_mat = Matrixf(tab.x(),.0,.0,.0,tab.y(),.0,.0,.0,tab.z(),.0,.0,.0,.0,.0,.0,.0);
+    Matrixf n_mat = Matrixf(-plane_normal.x(), -plane_normal.y(), -plane_normal.z(), .0, .0, .0, .0, .0, .0, .0,.0, .0, .0, .0, .0, .0);
+    float* ptr = (tab_mat*n_mat*d_inv).ptr();
+    Matrixf identity_minus_scale_d = Matrixf(1-ptr[0],  -ptr[1], -ptr[2], .0,
+                                              -ptr[4], 1-ptr[5], -ptr[6], .0,
+                                              -ptr[8],  -ptr[9], 1-ptr[10], .0,
+                                                   .0,       .0,       .0,  .0);
+    Rb.transpose(Rb);
+    Matrixf Hab = Ra * identity_minus_scale_d *Rb;
+
+//    Matrixf Hab = Matrixf::inverse(Rb) * identity_minus_scale_d *  Ra;
+    for(int y =0; y<_ndk_image_height; y++){
+        for(int x=0; x<_ndk_image_width; x++){
+            Vec4f px = Hab * Vec4f(x, y, 1, 0);
+            Vec2f loc_a = Vec2f(px.x() / px.z(), px.y()/ px.z());
+            if(loc_a.x()<0 || loc_a.y()<0 || loc_a.x()>=2*_ndk_image_width || loc_a.y()>=_ndk_image_height)
+                continue;
+            int idx = y*_ndk_image_width + x;
+            int idxn = y*2*_ndk_image_width+x;
+            if(_full_image[3*idxn]==0){
+                _full_image[3*idxn] = _rgb_image[3*idx];
+                _full_image[3*idxn+1] = _rgb_image[3*idx+1];
+                _full_image[3*idxn+2] = _rgb_image[3*idx+2];
+            }
+        }
+    }
+
+    std::vector<Vec4f> testpoints;
+    testpoints.push_back(Hab * Vec4f(0,0,1,0));
+    testpoints.push_back(Hab * Vec4f(_ndk_image_width,0,1,0));
+    testpoints.push_back(Hab * Vec4f(_ndk_image_width,_ndk_image_height,1,0));
+    testpoints.push_back(Hab * Vec4f(0,_ndk_image_height,1,0));
+    for(int i=0; i< 4; i++){
+        testpoints[i] = Vec4f(testpoints[i].x()/testpoints[i].z(), testpoints[i].y()/testpoints[i].z(), 1,testpoints[i].w());
+        LOGE("===testpoints %d == %f, %f",i, testpoints[i].x(), testpoints[i].y() );
+    }
+
+}
 bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
                                  Matrixf& modelMat, osg::Vec3f& normal_vec,
                                  int32_t& vertice_num){
+    if (cam_track_state != AR_TRACKING_STATE_TRACKING)
+        return false;
     int32_t polygon_length;
     //get the number of elements(2*#vertives)
     ArPlane_getPolygonSize(_ar_session, plane, &polygon_length);
@@ -439,7 +529,10 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
     return true;
 }
+
 LightSrc ARCoreManager::getLightEstimation(){
+    if (cam_track_state != AR_TRACKING_STATE_TRACKING)
+        return _envLight;
     ArLightEstimate* ar_light_estimate;
     ArLightEstimateState ar_light_estimate_state;
     ArLightEstimate_create(_ar_session, &ar_light_estimate);
@@ -463,7 +556,7 @@ LightSrc ARCoreManager::getLightEstimation(){
 float* ARCoreManager::getLightEstimation_SH() {
     if(_frame!=0 && _frame %100!=0)
         return LightingEstimator::instance()->getSHLightingParams();
-    update_ndk_image();
+//    update_ndk_image();
     return LightingEstimator::instance()->getSHLightingParams();
 //    int size = TEX_SIZE * TEX_SIZE * 12;
 //    uint8_t * image = new uint8_t[size];
