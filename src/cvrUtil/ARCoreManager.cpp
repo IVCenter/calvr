@@ -529,6 +529,24 @@ bool ARCoreManager::getPlaneData(ArPlane* plane, float*& plane_data,
     normal_vec = plane_quaternion * osg::Vec3f(0,1.0f,0);
     return true;
 }
+void ARCoreManager::getPlaneCenter(ArPlane* plane, osg::Vec3f& center_pos, osg::Quat& orientation){
+
+    // get the model matrix for the plane
+    ArPose * arPose;
+    ArPose_create(_ar_session, nullptr,&arPose);
+    ArPlane_getCenterPose(_ar_session, plane, arPose);
+//    ArPose_getMatrix(_ar_session, arPose, modelMat.ptr());
+
+    // get center position and orientation of the plane
+    float plane_pose_raw[7] = {.0f};
+    // extract the rotation and translation from the pose object
+    ArPose_getPoseRaw(_ar_session, arPose, plane_pose_raw);
+
+    // first 4 are the quarternion, last 3 are the translations
+    osg::Quat plane_quaternion(plane_pose_raw[0],plane_pose_raw[1], plane_pose_raw[2],plane_pose_raw[3]);
+    orientation = plane_quaternion;
+    center_pos = osg::Vec3f(plane_pose_raw[4], plane_pose_raw[5], plane_pose_raw[6]);
+}
 
 LightSrc ARCoreManager::getLightEstimation(){
     if (cam_track_state != AR_TRACKING_STATE_TRACKING)

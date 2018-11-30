@@ -94,36 +94,32 @@ namespace cvr{
         ~ARCoreManager();
 
         void onViewChanged(int rot, int width, int height);
-
         void onPause();
-
         void onResume(void *env, void *context, void *activity);
 
         void onDrawFrame();
-
         void postFrame();
 
+
         void Estimate_Homography_From_PointCloud();
-
         LightSrc getLightEstimation();
-
         float* getLightEstimation_SH();
 
+        // Point Cloud
         bool getPointCouldData(float*& pointCloudData, int32_t & point_num);
 
+        // Plane
         bool getPlaneData(ArPlane* plane, float*& plane_data,
                           osg::Matrixf& modelMat, osg::Vec3f& normal_vec,
                           int32_t& vertice_num);
-
+        void getPlaneCenter(ArPlane* plane, osg::Vec3f& center_pos, osg::Quat& orientation);
         bool updatePlaneHittest(float x, float y);
-
         bool getHitPosition(osg::Vec2f & event){
             if(_event_queue.empty()) return false;
             event = _event_queue.front();
             _consumeEvent = true;
             return true;
         }
-
         planeMap getPlaneMap();
 
         ArSession * getArSession(){ return _ar_session; }
@@ -131,8 +127,8 @@ namespace cvr{
             return _planes;
         }
 
+        // Anchor
         size_t getAnchorSize(){return _hittedAnchors.size();}
-
         bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc, bool realCoord = false);
 
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
