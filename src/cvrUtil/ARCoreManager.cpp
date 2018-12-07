@@ -227,8 +227,8 @@ void ARCoreManager::update_ndk_image(){
         if (GetNdkImageProperties(bg_image, &format, &width, &height, &num_plane,
                                   &stride, &strideuv)) {
             if(!_ndk_image_width){
-                _ndk_image_width = width; _ndk_image_height = height;
-                _current_img = cv::Mat(_ndk_image_width, _ndk_image_height, CV_8UC3);
+                _ndk_image_width = height; _ndk_image_height = width;
+                _current_img = cv::Mat(_ndk_image_height, _ndk_image_width, CV_8UC3);
             }
             if (format == AIMAGE_FORMAT_YUV_420_888) {
                 if (_ndk_image_width > 0 || _ndk_image_height > 0 || num_plane > 0 || stride > 0) {
@@ -248,19 +248,19 @@ void ARCoreManager::update_ndk_image(){
                     Matrixf invMat = Matrixf::inverse(getMVPMatrix());
 
 
-                    for (int32_t y = 0; y < _ndk_image_height; y++) {
+                    for (int32_t y = 0; y < _ndk_image_width; y++) {
                         const uint8_t *pY = yPixel + stride * (y + srcRect.top) + srcRect.left;
 
                         int32_t uv_row_start = strideuv * ((y + srcRect.top) >> 1);
                         const uint8_t *pU = uPixel + uv_row_start + (srcRect.left >> 1);
                         const uint8_t *pV = vPixel + uv_row_start + (srcRect.left >> 1);
-                        for (int32_t x = 0; x < _ndk_image_width; x++) {
+                        for (int32_t x = 0; x < _ndk_image_height; x++) {
                             const int32_t uv_offset = (x >> 1) * uvPixelStride;
 
                             YUV2RGB(pY[x], pU[uv_offset], pV[uv_offset],
-                                    _current_img.at<cv::Vec3b>(x,_ndk_image_height-y)[2],
-                                    _current_img.at<cv::Vec3b>(x,_ndk_image_height-y)[1],
-                                    _current_img.at<cv::Vec3b>(x,_ndk_image_height-y)[0]);
+                                    _current_img.at<cv::Vec3b>(x,_ndk_image_width-y)[2],
+                                    _current_img.at<cv::Vec3b>(x,_ndk_image_width-y)[1],
+                                    _current_img.at<cv::Vec3b>(x,_ndk_image_width-y)[0]);
 
 //                            float imgx = (x-halfWidth) / halfWidth;
 //                            float imgx = (float)(x + halfWidth) / halfWidth;
@@ -634,8 +634,6 @@ bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc, bool real
     return true;
 }
 
-osg::Matrixf ARCoreManager::getMVPMatrix(){Matrixf mat = (*view_mat) * (*  proj_mat);
-    return mat;}
 osg::Vec3f ARCoreManager::getRealWorldPositionFromScreen(float x, float y, float z){
     if(x > 1 || x < -1 || y>1 || y<-1){LOGE("Position should within [-1, 1]"); return osg::Vec3f(.0,.0,.0);}
     Matrixf invMat = Matrixf::inverse(getMVPMatrix());
@@ -645,7 +643,7 @@ osg::Vec3f ARCoreManager::getRealWorldPositionFromScreen(float x, float y, float
 }
 unsigned char* ARCoreManager::getImageData(int& width, int& height){
     if(!_ndk_image_width) return nullptr;
-    width =_ndk_image_height ; height = _ndk_image_width;
+    width = _ndk_image_width; height =  _ndk_image_height;
     return _current_img.data;
 }
 void ARCoreManager::stitch_an_image() {

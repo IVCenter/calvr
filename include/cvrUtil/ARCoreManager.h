@@ -7,9 +7,13 @@
 #include <unordered_map>
 #include <queue>
 #include <cvrUtil/osgMath.h>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/stitching.hpp>
+#include <opencv2/imgcodecs.hpp>
+
 //[x, y, z, w] -> [x, -z, y, w]
 #define REAL_TO_OSG_COORD osg::Matrixf(1,0,0,0,0,0,-1,0,0,1,0,0,0,0,0,1);
-
 namespace {
     const GLfloat kUVs[] = {
             0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -77,12 +81,12 @@ namespace cvr{
 
         /*******Image**********/
         const AImage* bg_image = nullptr;
-        uint8_t *_rgb_image = nullptr;
-        uint8_t * _full_image = nullptr;
-        std::vector<uint8_t *> _envImgs;
-//        uint8_t *_warp_img = nullptr;
         int _ndk_image_width = 0, _ndk_image_height = 0;
         ArConfig * _config = nullptr;
+
+        cv::Mat _current_img;
+        cv::Mat _panoImg;
+        cv::Ptr<cv::Stitcher> _stitcher;
 
         const float* _pointCloudData;
 
@@ -134,16 +138,11 @@ namespace cvr{
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
         void setPixelSize(float x, float y);
-        uint8_t* getImageData(){return _rgb_image;}//{return cvr::cylindricalWarpImage(_rgb_image, camera_intri, _ndk_image_width, _ndk_image_height);}
-        uint8_t* getImageData(int id){
-            if(id == -1){
-                return _full_image;
-            }
-            if(_envImgs.empty()) return nullptr;
-            return _envImgs[id];}
+        unsigned char* getImageData(int&width, int&height);
+
         osg::Matrixf* getViewMatrix(){return view_mat;}
         osg::Matrixf* getProjMatrix(){return proj_mat;}
-        osg::Matrixf  getMVPMatrix();
+        osg::Matrixf  getMVPMatrix(){return (*view_mat) * (*  proj_mat);}
 
         const float* getCameraTransformedUVs(){return (geometry_changed)?transformed_camera_uvs:nullptr;}
         const float* getCameraPose(){return camera_pose_raw;}
@@ -151,6 +150,7 @@ namespace cvr{
         osg::Matrixf getCameraRotationMatrixOSG(){return camera_rot_Mat_osg;}
         osg::Matrixf getCameraMatrixOSG(){return cameraMatrix_osg;}
         osg::Vec3f getRealWorldPositionFromScreen(float x, float y, float z = -1.0f);
+        void stitch_an_image();
     };
 }
 
