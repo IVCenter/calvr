@@ -84,11 +84,16 @@ SET(LIB_EXTERNAL_LIBRARIES
 #SET(LIB_INTERNAL_LIBRARIES
 #)
 
+IF(ANDROID AND ${USE_OPENCV})
+      SET(LIB_EXTERNAL_INCLUDES ${LIB_EXTERNAL_INCLUDES} ${OpenCV_INCLUDE_DIR})
+      SET(LIB_EXTERNAL_LIBRARIES ${LIB_EXTERNAL_LIBRARIES} ${OpenCV_DIR})
+ENDIF()
+
 SETUP_CORE_LIBRARY(${LIB_NAME})
 
-IF(ANDROID AND ${USE_OPENCV})
-      set(OpenCV_DIR "${EXT_PROJ_DIR}/opencv-3.4.3/build/${ANDROID_ABI}/sdk/native/jni")
-      find_package(OpenCV REQUIRED)
-      message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
-      target_link_libraries(cvrUtil ${OpenCV_LIBS})
-ENDIF()
+#IF(ANDROID AND ${USE_OPENCV})
+#      set(OpenCV_DIR "${EXT_PROJ_DIR}/opencv-3.4.3/build/${ANDROID_ABI}/sdk/native/jni")
+#      find_package(OpenCV REQUIRED)
+#      message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+#      target_link_libraries(cvrUtil ${OpenCV_LIBS})
+#ENDIF()
