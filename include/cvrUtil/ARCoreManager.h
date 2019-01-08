@@ -43,6 +43,7 @@ namespace cvr{
         int _frame = 0;
         ArSession * _ar_session = nullptr;
         ArFrame * _ar_frame = nullptr;//get frame state
+        ArConfig * _config = nullptr;
 
         int _displayRotation = 0;
         int _width = 1;
@@ -81,10 +82,9 @@ namespace cvr{
 
         /*******Image**********/
         const AImage* bg_image = nullptr;
+        bool _image_updated = false;
         int _ndk_image_width = 0, _ndk_image_height = 0;
-        ArConfig * _config = nullptr;
-
-        cv::Mat _current_img;
+        cv::Mat _ndk_rgb_img, _ndk_gray_img;
         cv::Mat _panoImg;
         cv::Ptr<cv::Stitcher> _stitcher;
 
@@ -138,7 +138,10 @@ namespace cvr{
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
 
         void setPixelSize(float x, float y);
-        unsigned char* getImageData(int&width, int&height);
+
+        unsigned char* getRGBImageData();
+        unsigned char* getGrayscaleImageData();
+        void getNdkImageSize(int& width, int& height);
 
         osg::Matrixf* getViewMatrix(){return view_mat;}
         osg::Matrixf* getProjMatrix(){return proj_mat;}

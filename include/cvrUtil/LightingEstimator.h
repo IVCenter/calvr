@@ -66,8 +66,8 @@ namespace cvr{
     public:
         static LightingEstimator* instance();
         LightingEstimator();
-//        float* getSHBasis(osg::Vec3f, int band=4);
-        float* getSHLightingParams(osg::Image* image);
+        const static int IMG_WIDTH = 64, IMG_HEIGHT = 64;
+        float* getSHLightingParams(float * image_data);
         float* getSHLightingParams();
     };
 }
