@@ -57,8 +57,7 @@ namespace cvr{
         float camera_rot_euler[3] = {.0f};//roll, pitch, yaw
         float _camera_pose_col_major[16] = {.0f};
         osg::Matrixf cameraMatrix_K;
-        std::queue<osg::Matrixf> camera_rot_Mat_queue;
-        std::queue<osg::Vec3f> camera_positions_queue;
+
         osg::Matrixf camera_rot_Mat_osg, camera_trans_Mat_osg, cameraMatrix_osg;
 
 
@@ -85,8 +84,6 @@ namespace cvr{
         bool _image_updated = false;
         int _ndk_image_width = 0, _ndk_image_height = 0;
         cv::Mat _ndk_rgb_img, _ndk_gray_img;
-        cv::Mat _panoImg;
-        cv::Ptr<cv::Stitcher> _stitcher;
 
         const float* _pointCloudData;
 
@@ -139,7 +136,9 @@ namespace cvr{
 
         void setPixelSize(float x, float y);
 
+        cv::Mat getRGBImage();
         unsigned char* getRGBImageData();
+        cv::Mat getGrayscaleImage();
         unsigned char* getGrayscaleImageData();
         void getNdkImageSize(int& width, int& height);
 
@@ -153,7 +152,6 @@ namespace cvr{
         osg::Matrixf getCameraRotationMatrixOSG(){return camera_rot_Mat_osg;}
         osg::Matrixf getCameraMatrixOSG(){return cameraMatrix_osg;}
         osg::Vec3f getRealWorldPositionFromScreen(float x, float y, float z = -1.0f);
-        void stitch_an_image();
     };
 }
 

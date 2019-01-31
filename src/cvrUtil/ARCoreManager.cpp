@@ -434,8 +434,7 @@ osg::Vec3f ARCoreManager::getRealWorldPositionFromScreen(float x, float y, float
     float inv_w = 1.0f / nearPlanePos.w();
     return Vec3f(nearPlanePos.x() * inv_w, nearPlanePos.y()*inv_w, nearPlanePos.z()*inv_w);
 }
-
-unsigned char* ARCoreManager::getRGBImageData(){
+cv::Mat ARCoreManager::getRGBImage(){
     update_ndk_image();
 
     uint8_t *yPixel, *uPixel, *vPixel;
@@ -454,9 +453,13 @@ unsigned char* ARCoreManager::getRGBImageData(){
     cv::cvtColor(mYUV, _ndk_rgb_img, CV_YUV2RGB_NV21, 3);
 
     cv::rotate(_ndk_rgb_img, _ndk_rgb_img, cv::ROTATE_90_CLOCKWISE);
+    return _ndk_rgb_img;
+}
+unsigned char* ARCoreManager::getRGBImageData(){
+
     return _ndk_rgb_img.data;
 }
-unsigned char* ARCoreManager::getGrayscaleImageData(){
+cv::Mat ARCoreManager::getGrayscaleImage(){
     update_ndk_image();
 
     uint8_t *yPixel;
@@ -465,14 +468,12 @@ unsigned char* ARCoreManager::getGrayscaleImageData(){
 
     _ndk_gray_img = cv::Mat(_ndk_image_width, _ndk_image_height, CV_8UC1, yPixel);
     cv::rotate(_ndk_gray_img, _ndk_gray_img, cv::ROTATE_90_CLOCKWISE);
+    return _ndk_gray_img;
+}
+unsigned char* ARCoreManager::getGrayscaleImageData(){
+    getGrayscaleImage();
     return _ndk_gray_img.data;
 }
 
 void ARCoreManager::getNdkImageSize(int& width, int& height){width = _ndk_image_width; height=_ndk_image_height;}
-
-void ARCoreManager::stitch_an_image() {
-//    cv::Stitcher::Status status = _stitcher->stitch(_current_img,_panoImg);
-//    if(status != cv::Stitcher::OK)
-//        LOGE("Fail to stitch image error code = %d", int(status));
-}
 
