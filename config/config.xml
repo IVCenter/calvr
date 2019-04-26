@@ -4,10 +4,10 @@
    <Background g="0.0" a="0.0" />
 
    <Stencil value="true" />
-   <MultiThreaded value="CullDrawThreadPerContext" />
+   <MultiThreaded value="SingleThreaded" />
    <PreSwapOperation value="FINISH" />
-   <SyncToVBlank value="On" />
-   <Near value="100"/>
+   <SyncToVBlank value="Off" />
+   <Near value="10"/>
    <Far value="100000000" />
    <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
    <MultiSample value="4" />
@@ -33,15 +33,41 @@
        </Body0>
      </TrackingSystem0>
 
+      <TrackingSystem1 value="VRPN">
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="4" />
+       <NumValuators value="2" />
+
+       <VRPN>
+        <Server value="Vive0@localhost" />
+       </VRPN>
+
+       <Body0>
+        <Offset x="0" y="0" z="-1000" />
+        <Orientation h="0" p="0" r="0" />
+       </Body0>
+    </TrackingSystem1>
+
+
+
      <NumHeads value="0" />
      <Head0Address system="0" body="0" />
 
-     <NumHands value="1" />
+     <NumHands value="2" />
      <Hand0>
        <Address system="0" body="0" />
        <ButtonMask system0="0xF"  />
        <Valuator0 system="0" number="0" type="NON_ZERO" />
      </Hand0>
+     <Hand1>
+       <Address system="1" body="0" />
+       <ButtonMask system1="0xFFFF" />
+       <Valuator0 system="1" number="1" type="NON_ZERO" />
+       <ButtonMapping value="1,2,3,0" />
+    </Hand1>
+
    </Input>
     
    <Plugin>
@@ -50,14 +76,14 @@
 
    <ContextMenus>
      <Scale value="0.4" />
-     <MinDistance value="750" />
-     <MaxDistance value="1500" />
+     <MinDistance value="500" />
+     <MaxDistance value="1000" />
      <DefaultOpenButton value="1" />
    </ContextMenus>
 
    <MenuSystem type="BOARDMENU">
     <BoardMenu>
-     <Position distance="3000" />
+     <Position distance="500" />
      <Scale value="1.0" />
      <Buttons select="0" open="1" />
      <Trigger value="DOUBLECLICK" />
@@ -65,12 +91,12 @@
    </MenuSystem>
 
 
-   <ViewerPosition x="0" y="-2957" z="0" />
+   <ViewerPosition x="0" y="-250" z="0" />
    <SceneSize value="1000" />
 
-   <NumPipes value="1" />
-   <NumWindows value="1" />
-   <NumScreens value="1" />
+   <NumPipes value="2" />
+   <NumWindows value="2" />
+   <NumScreens value="2" />
 
    <PipeConfig>
     <Pipe server="0" screen="0" name="0" />
@@ -89,7 +115,7 @@
 
 
    <ScreenConfig>
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
+   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
    </ScreenConfig>
 

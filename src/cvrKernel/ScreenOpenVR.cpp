@@ -37,24 +37,95 @@ ScreenOpenVR::~ScreenOpenVR()
 void ScreenOpenVR::init(int mode)
 {
 	//Start up openvr - initialize system and compositor
-	vrDevice = new OpenVRDevice(0.01f, 10000000.0f, 1.0f, 4);
+	vrDevice = new OpenVRDevice(0.01f, 10000000.0f, 1000.0f, 4);
 
 	if (!vrDevice->hmdInitialized()) {
 		return;
 	}
 
-	_swapCallback = new OpenVRSwapCallback(vrDevice);
+	vrDevice->init();
+	//vrDevice->createRenderBuffers(_myInfo->myChannel->myWindow->gc->getState());
+	if (osgViewer::GraphicsWindow* win = dynamic_cast<osgViewer::GraphicsWindow*>(_myInfo->myChannel->myWindow->gc))
+	{
+		// Run wglSwapIntervalEXT(0) to force VSync Off
+		win->setSyncToVBlank(false);
+	}
 
-	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
+	uint32_t renderWidth = 0;
+	uint32_t renderHeight = 0;
+	vrDevice->vrSystem()->GetRecommendedRenderTargetSize(&renderWidth, &renderHeight);
 
-	_leftCamera = vrDevice->createRTTCamera(OpenVRDevice::LEFT, osg::Camera::ABSOLUTE_RF, osg::Vec4(0, 0, 0, 0), _myInfo->myChannel->myWindow->gc);
+
+	_leftCamera = new osg::Camera();
 	CVRViewer::instance()->addSlave(_leftCamera.get(), osg::Matrixd(), osg::Matrixd());
 	defaultCameraInit(_leftCamera.get());
+	_leftCamera->setAllowEventFocus(false);
+	_leftCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	_leftCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+	_leftCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
 
-	_rightCamera = vrDevice->createRTTCamera(OpenVRDevice::RIGHT, osg::Camera::ABSOLUTE_RF, osg::Vec4(0, 0, 0, 0), _myInfo->myChannel->myWindow->gc);
+	_leftCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::LEFT));
+
+
+
+	_rightCamera = new osg::Camera();
+	//_rightCamera = vrDevice->createRTTCamera(OpenVRDevice::RIGHT, osg::Camera::ABSOLUTE_RF, osg::Vec4(0, 0, 0, 0), _myInfo->myChannel->myWindow->gc);
 	CVRViewer::instance()->addSlave(_rightCamera.get(), osg::Matrixd(), osg::Matrixd());
 	defaultCameraInit(_rightCamera.get());
 
+	_rightCamera->setAllowEventFocus(false);
+	_rightCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	_rightCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+	_rightCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
+
+	_rightCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::RIGHT));
+
+
+	_swapCallback = new OpenVRSwapCallback(vrDevice);
+	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
+
+
+	/*
+	_previewCamera = new osg::Camera();
+
+	osg::DisplaySettings * ds = new osg::DisplaySettings();
+	_previewCamera->setDisplaySettings(ds);
+	_previewCamera->setRenderOrder(osg::Camera::POST_RENDER);
+	_previewCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+	_previewCamera->setCullingActive(false);
+
+	defaultCameraInit(_previewCamera.get());
+
+	osg::ref_ptr<osg::Vec2Array> quadArray = new osg::Vec2Array();
+	quadArray->push_back(osg::Vec2(-1.0, 1.0));
+	quadArray->push_back(osg::Vec2(-1.0, -1.0));
+	quadArray->push_back(osg::Vec2(1.0, 1.0));
+	quadArray->push_back(osg::Vec2(1.0, -1.0));
+
+	osg::ref_ptr<osg::Vec2Array> texArray = new osg::Vec2Array();
+	texArray->push_back(osg::Vec2(0, 0));
+	texArray->push_back(osg::Vec2(0, 1));
+	texArray->push_back(osg::Vec2(1, 0));
+	texArray->push_back(osg::Vec2(1, 1));
+
+	osg::ref_ptr<osg::Geometry> geom = new osg::Geometry();
+	geom->setVertexArray(quadArray);
+	geom->setTexCoordArray(0, texArray);
+	geom->setUseDisplayList(false);
+	geom->setUseVertexBufferObjects(true);
+	geom->setCullingActive(false);
+	geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP, 0, 4));
+
+	osg::ref_ptr<osg::Geode> geode = new osg::Geode();
+	geode->setCullingActive(false);
+	geode->addDrawable(geom);
+	_previewCamera->addChild(geode);
+
+	osg::StateSet * stateset = _previewCamera->getOrCreateStateSet();
+	stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+	*/
+
+	_init = true;
 }
 
 void ScreenOpenVR::computeViewProj()
@@ -69,20 +140,41 @@ void ScreenOpenVR::updateCamera()
 		return;
 	}
 
+	/*
+	if (_previewCamera->getNumParents() == 0) {
+		_leftCamera->addChild(_previewCamera);
+	}
+	*/
+
+	double temp;
+
 	osg::Vec3 position = vrDevice->position();
 	osg::Quat orientation = vrDevice->orientation();
+	temp = orientation[2];
+	orientation[2] = orientation[1];
+	orientation[1] = -temp;
 
 	osg::Matrix leftView = vrDevice->viewMatrixLeft();
 	leftView.preMultRotate(orientation);
-	leftView.setTrans(leftView.getTrans() + position);
+	osg::Vec3d lv = leftView.getTrans() + position;
+	temp = lv[2];
+	lv[2] = lv[1];
+	lv[1] = -temp;
+	leftView.setTrans(lv);
+
 
 	osg::Matrix rightView = vrDevice->viewMatrixRight();
 	rightView.preMultRotate(orientation);
-	rightView.setTrans(rightView.getTrans() + position);
+	osg::Vec3d rv = rightView.getTrans() + position;
+	temp = rv[2];
+	rv[2] = rv[1];
+	rv[1] = -temp;
+	rightView.setTrans(rv);
 
 
-	_leftCamera->setViewMatrix(leftView);
-	_rightCamera->setViewMatrix(rightView);
+
+	_leftCamera->setViewMatrix(leftView * _myInfo->transform);
+	_rightCamera->setViewMatrix(rightView * _myInfo->transform);
 
 
 	_leftCamera->setProjectionMatrix(vrDevice->projectionMatrixLeft());
@@ -107,10 +199,10 @@ ScreenInfo * ScreenOpenVR::findScreenInfo(osg::Camera * c)
 		return NULL;
 	}
 
-    // if(c == _cameraLeft.get() || c == _cameraRight.get())
-    // {
-    //     return _myInfo;
-    // }
+    if(c == _leftCamera.get() || c == _rightCamera.get())
+    {
+        return _myInfo;
+    }
     return NULL;
 }
 
