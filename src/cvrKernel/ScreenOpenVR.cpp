@@ -37,14 +37,13 @@ ScreenOpenVR::~ScreenOpenVR()
 void ScreenOpenVR::init(int mode)
 {
 	//Start up openvr - initialize system and compositor
-	vrDevice = new OpenVRDevice(0.01f, 10000000.0f, 1000.0f, 4);
+	vrDevice = new OpenVRDevice(_near, _far, 1000.0f, 4);
 
 	if (!vrDevice->hmdInitialized()) {
 		return;
 	}
 
 	vrDevice->init();
-	//vrDevice->createRenderBuffers(_myInfo->myChannel->myWindow->gc->getState());
 	if (osgViewer::GraphicsWindow* win = dynamic_cast<osgViewer::GraphicsWindow*>(_myInfo->myChannel->myWindow->gc))
 	{
 		// Run wglSwapIntervalEXT(0) to force VSync Off
@@ -55,6 +54,8 @@ void ScreenOpenVR::init(int mode)
 	uint32_t renderHeight = 0;
 	vrDevice->vrSystem()->GetRecommendedRenderTargetSize(&renderWidth, &renderHeight);
 
+	osg::CullFace * cf = new osg::CullFace(osg::CullFace::BACK);
+	osg::StateSet * stateset;
 
 	_leftCamera = new osg::Camera();
 	CVRViewer::instance()->addSlave(_leftCamera.get(), osg::Matrixd(), osg::Matrixd());
@@ -63,8 +64,24 @@ void ScreenOpenVR::init(int mode)
 	_leftCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	_leftCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
 	_leftCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
+	_leftCamera->setCullMask(CULL_MASK_LEFT);
+	stateset = _leftCamera->getOrCreateStateSet();
+	stateset->setAttributeAndModes(cf, osg::StateAttribute::ON);
 
 	_leftCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::LEFT));
+
+	osgViewer::Renderer * renderer =
+		dynamic_cast<osgViewer::Renderer*>(_leftCamera->getRenderer());
+	if (!renderer)
+	{
+		std::cerr << "Error getting renderer pointer." << std::endl;
+	}
+	else
+	{
+		osg::DisplaySettings * ds =
+			renderer->getSceneView(0)->getDisplaySettings();
+		ds->setStereo(false);
+	}
 
 
 
@@ -77,8 +94,25 @@ void ScreenOpenVR::init(int mode)
 	_rightCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	_rightCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
 	_rightCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
+	_rightCamera->setCullMask(CULL_MASK_RIGHT);
+	stateset = _rightCamera->getOrCreateStateSet();
+	stateset->setAttributeAndModes(cf, osg::StateAttribute::ON);
+
 
 	_rightCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::RIGHT));
+
+	renderer =
+		dynamic_cast<osgViewer::Renderer*>(_rightCamera->getRenderer());
+	if (!renderer)
+	{
+		std::cerr << "Error getting renderer pointer." << std::endl;
+	}
+	else
+	{
+		osg::DisplaySettings * ds =
+			renderer->getSceneView(0)->getDisplaySettings();
+		ds->setStereo(false);
+	}
 
 
 	_swapCallback = new OpenVRSwapCallback(vrDevice);
