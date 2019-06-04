@@ -403,7 +403,10 @@ bool ARCoreManager::updatePlaneHittest(float x, float y){
     }
     return true;
 }
-
+bool ARCoreManager::getLatestHitAnchorModelMat(Matrixf& modelMat, bool realCoord){
+    if(_hittedAnchors.size() == 0) return false;
+    return getAnchorModelMatrixAt(modelMat, _hittedAnchors.size()-1, realCoord);
+}
 bool ARCoreManager::getAnchorModelMatrixAt(Matrixf& modelMat, int loc, bool realCoord){
     if(loc>=_hittedAnchors.size())
         return false;

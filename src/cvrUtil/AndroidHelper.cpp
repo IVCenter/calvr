@@ -91,8 +91,10 @@ Program* assetLoader::createShaderProgramFromFile(const char* vertex_shader_file
                                           const char* fragment_shader_file_name){
     std::string VertexShaderContent;
     std::string FragmentShaderContent;
-    if(getShaderSourceFromFile(vertex_shader_file_name, fragment_shader_file_name, VertexShaderContent, FragmentShaderContent))
+    if(getShaderSourceFromFile(vertex_shader_file_name, fragment_shader_file_name, VertexShaderContent, FragmentShaderContent)){
+        _CreateGLProgramFromSource(VertexShaderContent.c_str(), FragmentShaderContent.c_str());
         return createShaderProgram(VertexShaderContent.c_str(), FragmentShaderContent.c_str());
+    }
     return nullptr;
 }
 
@@ -120,6 +122,7 @@ GLuint assetLoader::_LoadGLShader(GLenum shaderType, const char *pSource) {
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
         if (!compiled) {
+            LOGE("=====COMPILE SHADER FAILED");
             GLint infoLen = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
             if (infoLen) {

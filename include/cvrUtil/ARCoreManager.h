@@ -130,6 +130,7 @@ namespace cvr{
 
         // Anchor
         size_t getAnchorSize(){return _hittedAnchors.size();}
+        bool getLatestHitAnchorModelMat(osg::Matrixf& modelMat, bool realCoord = false);
         bool getAnchorModelMatrixAt(osg::Matrixf& modelMat, int loc, bool realCoord = false);
 
         void setCameraTextureTarget(GLuint id){bgTextureId = id;}
