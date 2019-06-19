@@ -119,17 +119,18 @@ void ScreenOpenVR::init(int mode)
 	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
 
 
-	/*
+	
 	_previewCamera = new osg::Camera();
 
 	osg::DisplaySettings * ds = new osg::DisplaySettings();
 	_previewCamera->setDisplaySettings(ds);
 	_previewCamera->setRenderOrder(osg::Camera::POST_RENDER);
-	_previewCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+	_previewCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
 	_previewCamera->setCullingActive(false);
 
 	defaultCameraInit(_previewCamera.get());
 
+	/*
 	osg::ref_ptr<osg::Vec2Array> quadArray = new osg::Vec2Array();
 	quadArray->push_back(osg::Vec2(-1.0, 1.0));
 	quadArray->push_back(osg::Vec2(-1.0, -1.0));
@@ -154,10 +155,11 @@ void ScreenOpenVR::init(int mode)
 	geode->setCullingActive(false);
 	geode->addDrawable(geom);
 	_previewCamera->addChild(geode);
-
-	osg::StateSet * stateset = _previewCamera->getOrCreateStateSet();
-	stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 	*/
+
+	stateset = _previewCamera->getOrCreateStateSet();
+	stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+	
 
 	_init = true;
 }
@@ -174,11 +176,11 @@ void ScreenOpenVR::updateCamera()
 		return;
 	}
 
-	/*
+	
 	if (_previewCamera->getNumParents() == 0) {
 		_leftCamera->addChild(_previewCamera);
 	}
-	*/
+	
 
 	double temp;
 

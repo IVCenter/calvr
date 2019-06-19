@@ -12,10 +12,12 @@
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuSubMenuClosableGeometry.h>
 #include <cvrMenu/BoardMenu/BoardMenuItemGroupGeometry.h>
+#include <cvrMenu/BoardMenu/BoardMenuRadialGeometry.h>
 #include <cvrMenu/MenuButton.h>
 #include <cvrMenu/MenuCheckbox.h>
 #include <cvrMenu/MenuList.h>
 #include <cvrMenu/MenuRangeValue.h>
+#include <cvrMenu/MenuRadial.h>
 #include <cvrMenu/SubMenu.h>
 #include <cvrUtil/Bounds.h>
 
@@ -120,16 +122,23 @@ BoardMenuGeometry * cvr::createGeometry(MenuItem * item, BoardMenu * menu, bool 
 
             return mg;
         }
-	case BAR:
-	{
-	    BoardMenuGeometry * mg = new BoardMenuBarGeometry();
-	    mg->createGeometry(item);
+        case BAR:
+        {
+            BoardMenuGeometry * mg = new BoardMenuBarGeometry();
+            mg->createGeometry(item);
 
-	    return mg;
-	}
+            return mg;
+        }
         case LIST:
         {
             BoardMenuGeometry * mg = new BoardMenuListGeometry();
+            mg->createGeometry(item);
+
+            return mg;
+        }
+        case RADIAL:
+        {
+            BoardMenuGeometry * mg = new BoardMenuRadialGeometry();
             mg->createGeometry(item);
 
             return mg;
@@ -173,6 +182,42 @@ osg::Geometry * BoardMenuGeometry::makeQuad(float width, float height,
     geo->setTexCoordArray(0,texcoords);
 
     return geo;
+}
+
+osg::Geometry * BoardMenuGeometry::makeArc(float startRatio, float endRatio, float width, float height, float startTheta, float endTheta, int numSteps,
+        osg::Vec4 color, osg::Vec3 pos)
+{
+    osg::Geometry * geo = new osg::Geometry();
+    geo->setUseDisplayList(false);
+	geo->setUseVertexBufferObjects(true);
+
+	osg::Vec3Array* verts = new osg::Vec3Array();
+	osg::Vec2Array* texcoords = new osg::Vec2Array();
+
+	for (int i = 0; i <= numSteps; ++i) {
+		float progress = (float)(i) / (float)(numSteps);
+		float currTheta = startTheta * (1.0f - progress) + endTheta * progress;
+
+        //Start from outside to get CCW order (facing outwards)
+		verts->push_back(pos + osg::Vec3(width * endRatio * cos(currTheta), 0, height * endRatio * sin(currTheta)));
+		verts->push_back(pos + osg::Vec3(width * startRatio * cos(currTheta), 0, height * startRatio * sin(currTheta)));
+
+		texcoords->push_back(osg::Vec2(endRatio * cos(currTheta), endRatio * sin(currTheta)));
+		texcoords->push_back(osg::Vec2(startRatio * cos(currTheta), startRatio * sin(currTheta)));
+	}
+
+	geo->setVertexArray(verts);
+
+	geo->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP, 0, (GLsizei)((numSteps+1) * 2)));
+
+	osg::Vec4Array* colors = new osg::Vec4Array;
+	colors->push_back(color);
+	geo->setColorArray(colors);
+	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+	geo->setTexCoordArray(0, texcoords);
+
+	return geo;
 }
 
 osg::Geometry * BoardMenuGeometry::makeLine(osg::Vec3 p1, osg::Vec3 p2,

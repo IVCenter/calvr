@@ -167,165 +167,183 @@ void BoardMenu::updateEnd()
 
 bool BoardMenu::processEvent(InteractionEvent * event)
 {
-    if(!_myMenu || !event->asTrackedButtonEvent())
+    if(!_myMenu)
     {
         return false;
     }
+	TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+	if (tie) {
 
-    TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+		if (!_menuActive)
+		{
+			if (_trigger == DOUBLECLICK)
+			{
+				if (event->getInteraction() == BUTTON_DOUBLE_CLICK)
+				{
+					if (tie->getButton() == _secondaryButton)
+					{
+						SceneManager::instance()->getMenuRoot()->addChild(
+							_menuRoot);
 
-    if(!_menuActive)
-    {
-        if(_trigger == DOUBLECLICK)
-        {
-            if(event->getInteraction() == BUTTON_DOUBLE_CLICK)
-            {
-                if(tie->getButton() == _secondaryButton)
-                {
-                    SceneManager::instance()->getMenuRoot()->addChild(
-                            _menuRoot);
+						osg::Vec3 menuPoint = osg::Vec3(0, _distance, 0);
+						menuPoint = menuPoint * tie->getTransform();
 
-                    osg::Vec3 menuPoint = osg::Vec3(0,_distance,0);
-                    menuPoint = menuPoint * tie->getTransform();
+						if (event->asMouseEvent())
+						{
+							osg::Vec3 menuOffset = osg::Vec3(
+								_widthMap[_myMenu] / 2.0, 0, 0);
+							osg::Matrix m;
+							m.makeTranslate(menuPoint);
+							_menuRoot->setMatrix(m);
+						}
+						else if (event->asPointerEvent())
+						{
+							//TODO add rotation
+							SceneManager::instance()->getPointOnTiledWall(
+								tie->getTransform(), menuPoint);
+							osg::Vec3 menuOffset = osg::Vec3(
+								_widthMap[_myMenu] / 2.0, 0, 0);
+							osg::Matrix m;
+							m.makeTranslate(menuPoint);
+							_menuRoot->setMatrix(m);
+						}
+						else
+						{
+							osg::Vec3 viewerPoint =
+								TrackingManager::instance()->getHeadMat(0).getTrans();
 
-                    if(event->asMouseEvent())
-                    {
-                        osg::Vec3 menuOffset = osg::Vec3(
-                                _widthMap[_myMenu] / 2.0,0,0);
-                        osg::Matrix m;
-                        m.makeTranslate(menuPoint);
-                        _menuRoot->setMatrix(m);
-                    }
-                    else if(event->asPointerEvent())
-                    {
-                        //TODO add rotation
-                        SceneManager::instance()->getPointOnTiledWall(
-                                tie->getTransform(),menuPoint);
-                        osg::Vec3 menuOffset = osg::Vec3(
-                                _widthMap[_myMenu] / 2.0,0,0);
-                        osg::Matrix m;
-                        m.makeTranslate(menuPoint);
-                        _menuRoot->setMatrix(m);
-                    }
-                    else
-                    {
-                        osg::Vec3 viewerPoint =
-                                TrackingManager::instance()->getHeadMat(0).getTrans();
+							osg::Vec3 viewerDir = viewerPoint - menuPoint;
+							viewerDir.z() = 0.0;
 
-                        osg::Vec3 viewerDir = viewerPoint - menuPoint;
-                        viewerDir.z() = 0.0;
+							osg::Matrix menuRot;
+							menuRot.makeRotate(osg::Vec3(0, -1, 0), viewerDir);
 
-                        osg::Matrix menuRot;
-                        menuRot.makeRotate(osg::Vec3(0,-1,0),viewerDir);
+							osg::Vec3 menuOffset = osg::Vec3(
+								_widthMap[_myMenu] * _scale / 2.0, 0, 0);
+							_menuRoot->setMatrix(
+								osg::Matrix::translate(-menuOffset) * menuRot
+								* osg::Matrix::translate(menuPoint));
+						}
 
-                        osg::Vec3 menuOffset = osg::Vec3(
-                                _widthMap[_myMenu] * _scale / 2.0,0,0);
-                        _menuRoot->setMatrix(
-                                osg::Matrix::translate(-menuOffset) * menuRot
-                                        * osg::Matrix::translate(menuPoint));
-                    }
+						_menuActive = true;
+						SceneManager::instance()->closeOpenObjectMenu();
+						return true;
+					}
+				}
+			}
+			else if (_trigger == UPCLICK)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (_clickActive)
+			{
+				if (tie->getHand() == _activeHand)
+				{
+					if (tie->getButton() == _primaryButton)
+					{
+						if (tie->getInteraction() == BUTTON_DRAG
+							|| tie->getInteraction() == BUTTON_UP)
+						{
+							BoardMenuSubMenuGeometry * smg =
+								dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+							if (smg && smg->isMenuHead())
+							{
+								updateMovement(tie);
+							}
+						}
 
-                    _menuActive = true;
-                    SceneManager::instance()->closeOpenObjectMenu();
-                    return true;
-                }
-            }
-        }
-        else if(_trigger == UPCLICK)
-        {
-            return false;
-        }
-    }
-    else
-    {
-        if(_clickActive)
-        {
-            if(tie->getHand() == _activeHand)
-            {
-                if(tie->getButton() == _primaryButton)
-                {
-                    if(tie->getInteraction() == BUTTON_DRAG
-                            || tie->getInteraction() == BUTTON_UP)
-                    {
-                        BoardMenuSubMenuGeometry * smg =
-                                dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-                        if(smg && smg->isMenuHead())
-                        {
-                            updateMovement(tie);
-                        }
-                    }
+						_activeItem->processEvent(event);
+						if (tie->getInteraction() == BUTTON_UP)
+						{
+							_clickActive = false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+			else if (tie->getHand() == _activeHand)
+			{
+				if (tie->getButton() == _primaryButton
+					&& (tie->getInteraction() == BUTTON_DOWN
+						|| tie->getInteraction() == BUTTON_DOUBLE_CLICK))
+				{
+					// do click
+					if (_activeItem)
+					{
+						BoardMenuSubMenuGeometry * smg =
+							dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+						if (smg && smg->isMenuHead())
+						{
+							osg::Vec3 ray;
+							ray = _currentPoint[tie->getHand()]
+								- tie->getTransform().getTrans();
 
-                    _activeItem->processEvent(event);
-                    if(tie->getInteraction() == BUTTON_UP)
-                    {
-                        _clickActive = false;
-                    }
-                }
-		return true;
-            }
-            return false;
-        }
-        else if(tie->getHand() == _activeHand)
-        {
-            if(tie->getButton() == _primaryButton
-                    && (tie->getInteraction() == BUTTON_DOWN
-                            || tie->getInteraction() == BUTTON_DOUBLE_CLICK))
-            {
-                // do click
-                if(_activeItem)
-                {
-                    BoardMenuSubMenuGeometry * smg =
-                            dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-                    if(smg && smg->isMenuHead())
-                    {
-                        osg::Vec3 ray;
-                        ray = _currentPoint[tie->getHand()]
-                                - tie->getTransform().getTrans();
+							if (!tie->asPointerEvent())
+							{
+								_moveDistance = ray.length();
+							}
+							else
+							{
+								_moveDistance = ray.y();
+							}
+							_menuPoint = _currentPoint[tie->getHand()]
+								* osg::Matrix::inverse(_menuRoot->getMatrix());
+							updateMovement(tie);
+						}
+						if (smg && !smg->isMenuHead())
+						{
+							if (smg->isMenuOpen())
+							{
+								closeMenu((SubMenu*)smg->getMenuItem());
+							}
+							else
+							{
+								openMenu(smg);
+							}
+						}
+						_clickActive = true;
+						_activeItem->processEvent(event);
+						return true;
+					}
+					return false;
+				}
+				else {
+					if (_activeItem)
+					{
+						_activeItem->processEvent(event);
+					}
+				}
+			}
 
-                        if(!tie->asPointerEvent())
-                        {
-                            _moveDistance = ray.length();
-                        }
-                        else
-                        {
-                            _moveDistance = ray.y();
-                        }
-                        _menuPoint = _currentPoint[tie->getHand()]
-                                * osg::Matrix::inverse(_menuRoot->getMatrix());
-                        updateMovement(tie);
-                    }
-                    if(smg && !smg->isMenuHead())
-                    {
-                        if(smg->isMenuOpen())
-                        {
-                            closeMenu((SubMenu*)smg->getMenuItem());
-                        }
-                        else
-                        {
-                            openMenu(smg);
-                        }
-                    }
-                    _clickActive = true;
-                    _activeItem->processEvent(event);
-                    return true;
-                }
-                return false;
-            }
-        }
+			if (tie->getButton() == _secondaryButton
+				&& tie->getInteraction() == BUTTON_DOWN)
+			{
+				/*if(_activeItem)
+					{
+					selectItem(NULL);
+					}
+					SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
+					_menuActive = false;*/
+				close();
+				return true;
+			}
+		}
+	}
+	ValuatorInteractionEvent * val = event->asValuatorEvent();
+	if(val){
+		if (_menuActive)
+		{
+			if (_activeItem)
+			{
+				_activeItem->processEvent(event);
+			}
+		}
+	}
 
-        if(tie->getButton() == _secondaryButton
-                && tie->getInteraction() == BUTTON_DOWN)
-        {
-            /*if(_activeItem)
-             {
-             selectItem(NULL);
-             }
-             SceneManager::instance()->getMenuRoot()->removeChild(_menuRoot);
-             _menuActive = false;*/
-            close();
-            return true;
-        }
-    }
     return false;
 }
 
