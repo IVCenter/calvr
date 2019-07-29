@@ -303,20 +303,21 @@ LightSrc ARCoreManager::getLightEstimation(){
 }
 
 float* ARCoreManager::getLightEstimation_SH() {
-    if(!_ndk_image_width || _frame %10 !=0) return LightingEstimator::instance()->getSHLightingParams();
+    if(_frame % 50 == 0){
+        getRGBImage();
+        cv::Mat image_sh, image_float;
+        int pixel_count = LightingEstimator::IMG_HEIGHT * LightingEstimator::IMG_WIDTH;
+        cv::resize(_ndk_rgb_img, image_sh, cv::Size(LightingEstimator::IMG_HEIGHT, LightingEstimator::IMG_WIDTH));
+        image_sh.convertTo(image_float, CV_32FC3);
+        std::vector<cv::Mat> chans;
+        cv::split(image_float, chans);
+        float * DATA = new float[pixel_count*3];
+        for(int i=0; i< chans.size(); i++)
+            memcpy(DATA + i*pixel_count, chans[i].data, pixel_count * sizeof(float));
+        LightingEstimator::instance()->getSHLightingParams(DATA);
+    }
 
-    getRGBImageData();
-
-    cv::Mat image_sh, image_float;
-    int pixel_count = LightingEstimator::IMG_HEIGHT * LightingEstimator::IMG_WIDTH;
-    cv::resize(_ndk_rgb_img, image_sh, cv::Size(LightingEstimator::IMG_HEIGHT, LightingEstimator::IMG_WIDTH));
-    image_sh.convertTo(image_float, CV_32FC3);
-    std::vector<cv::Mat> chans;
-    cv::split(image_float, chans);
-    float * DATA = new float[pixel_count*3];
-    for(int i=0; i< chans.size(); i++)
-        memcpy(DATA + i*pixel_count, chans[i].data, pixel_count * sizeof(float));
-    return LightingEstimator::instance()->getSHLightingParams(DATA);
+    return LightingEstimator::instance()->getSHLightingParams();
 }
 
 planeMap ARCoreManager::getPlaneMap(){

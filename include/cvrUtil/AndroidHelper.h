@@ -62,6 +62,16 @@ namespace cvr{
         }
     };
 
+    class eyePosCallback:public osg::UniformCallback{
+    public:
+        virtual void operator()(osg::Uniform* uf, osg::NodeVisitor*nv){
+            osg::Vec3d eye, center, up;
+            cvr::ARCoreManager::instance()->getViewMatrix()->getLookAt(eye, center, up);
+            uf->set(osg::Vec3d(eye.x(), -eye.z(), eye.y()));
+            uf->dirty();
+        }
+    };
+
     class envLightCallback:public osg::UniformCallback{
     public:
         virtual void operator()(osg::Uniform* uf, osg::NodeVisitor*nv){
