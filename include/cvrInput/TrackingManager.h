@@ -223,6 +223,7 @@ class CVRINPUT_EXPORT TrackingManager : public OpenThreads::Thread
         void setIntersectPoint(osg::Vec3f point){_isPoint = point;isIntersect = true;}
         bool getIsPoint(osg::Vec3f & isPoint);
         void setWindowsShape(int width, int height){_screenWidth = width; _screenHeight= height;}
+        //range 0-1
         void getScreenToClientPos(osg::Vec2f & pos){pos = osg::Vec2f(2.0f*(pos.x() - _screenWidth*0.5f) / _screenWidth,
                                                                         2.0f*(_screenHeight*0.5f - pos.y()) / _screenHeight);}
     protected:

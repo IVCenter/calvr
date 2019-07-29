@@ -96,6 +96,7 @@ namespace cvr{
 
         void onViewChanged(int rot, int width, int height);
         void onPause();
+        void onReset();
         void onResume(void *env, void *context, void *activity);
 
         void onDrawFrame();

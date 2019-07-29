@@ -18,6 +18,7 @@ namespace cvr{
         }
         virtual void updateOnFrame(){}
         osg::ref_ptr<osg::Geode> getGLNode(){return glNode;}
+        virtual void Reset(){}
     };
 }
 

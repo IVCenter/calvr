@@ -39,6 +39,40 @@ void ARCoreManager::onPause(){
     if(_ar_session) ArSession_pause(_ar_session);
 }
 
+void ARCoreManager::onReset() {
+//    int detectedPlaneNum;
+//    ArTrackableList* plane_list = nullptr;
+//    ArTrackableList_create(_ar_session, & plane_list);
+//    CHECK(plane_list!= nullptr);
+//
+//    ArSession_getAllTrackables(_ar_session, AR_TRACKABLE_PLANE, plane_list);
+//    ArTrackableList_getSize(_ar_session, plane_list, &detectedPlaneNum);
+//
+//    for(int i=0; i<detectedPlaneNum; i++) {
+//        ArTrackable *ar_trackable = nullptr;
+//        ArTrackableList_acquireItem(_ar_session, plane_list, i, &ar_trackable);
+//
+//        ArAnchorList *anchor_list = nullptr;
+//        ArAnchorList_create(_ar_session, &anchor_list);
+//        CHECK(anchor_list != nullptr);
+//        ArTrackable_getAnchors(_ar_session, ar_trackable, anchor_list);
+//
+//        int32_t  anchor_size;
+//        ArAnchorList_getSize(_ar_session, anchor_list, &anchor_size);
+//        for(int j=0; j<anchor_size; i++){
+//            ArAnchor* anchor = nullptr;
+//            ArAnchorList_acquireItem(_ar_session, anchor_list, j, &anchor);
+//            ArAnchor_detach(_ar_session, anchor);
+//        }
+//        ArAnchorList_destroy(anchor_list);
+//    }
+//    ArTrackableList_destroy(plane_list);
+//    plane_list = nullptr;
+//
+//    _planes.clear();
+    _hittedAnchors.clear();
+//    plane_color_map.clear();
+}
 void ARCoreManager::onResume(void *env, void *context, void *activity){
     if(nullptr == _ar_session){
         ArInstallStatus install_status;
@@ -269,7 +303,7 @@ LightSrc ARCoreManager::getLightEstimation(){
 }
 
 float* ARCoreManager::getLightEstimation_SH() {
-    if(!_ndk_image_width || _frame %50 !=0) return LightingEstimator::instance()->getSHLightingParams();
+    if(!_ndk_image_width || _frame %10 !=0) return LightingEstimator::instance()->getSHLightingParams();
 
     getRGBImageData();
 
