@@ -42,8 +42,10 @@ INCLUDE(CVRMacros)
 
 FIND_PACKAGE(Threads)
 FIND_PACKAGE(MXML)
-FIND_PACKAGE(OSG)
 FIND_PACKAGE(Interleaver)
+FIND_PACKAGE( OpenSceneGraph REQUIRED osgAnimation osgFX osgManipulator osgParticle osgPresentation osgShadow osgSim osgTerrain osgText osgViewer osgVolume osgWidget osgDB osgGA osgUtil)
+SET(OSG_INCLUDE_DIR ${OPENSCENEGRAPH_INCLUDE_DIR})
+SET(OSG_LIBRARIES ${OPENSCENEGRAPH_LIBRARIES})
 
 INCLUDE_DIRECTORIES(${MXML_INCLUDE_DIR})
 

@@ -704,6 +704,8 @@ void BoardMenu::updateMenus()
 
         // create menu board geometry
         osg::Geode * geode = new osg::Geode();
+		
+		
         geode->addDrawable(
                 BoardMenuGeometry::makeQuad(width + 2.0 * _border,-offset,
                         BoardMenuGeometry::_backgroundColor));
@@ -723,6 +725,8 @@ void BoardMenu::updateMenus()
                         osg::Vec3(width + 2.0 * _border,-2,0),
                         osg::Vec3(width + 2.0 * _border,-2,-offset),
                         BoardMenuGeometry::_textColor));
+						
+						
         //scaleMT->addChild(geode);
         _menuMap[foundList[i]]->addChild(geode);
 

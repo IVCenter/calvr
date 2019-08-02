@@ -62,15 +62,25 @@ class CVRMENU_EXPORT MenuRadial : public MenuItem
          */
         const std::vector<std::string> getLabels() const;
 
+		const std::vector<bool> getIsSymbols() const;
+
         /**
          * @brief Get the label for indicated slice
          */
         const std::string getText(const int index) const;
 
+		const bool getIsSymbol(const int index) const;
+
+
         /**
          * @brief Set the label for indicated slice
          */
         void setText(const int index, const std::string & text);
+
+
+		void setIsSymbol(const int index, const bool symbol);
+
+		void setLabels(const std::vector <std::string> & l, const std::vector<bool> & s);
 
         /**
          * @brief Create slices and set their labels
@@ -85,6 +95,7 @@ class CVRMENU_EXPORT MenuRadial : public MenuItem
 
     protected:
         std::vector<std::string> _labels; ///< checkbox label
+		std::vector<bool> _isSymbol;
         int _value; ///< current checkbox state
 };
 

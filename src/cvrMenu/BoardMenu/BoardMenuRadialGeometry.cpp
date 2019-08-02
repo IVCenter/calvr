@@ -4,6 +4,9 @@
 
 #include <osg/Geometry>
 #include <osg/Version>
+#include <osg/PositionAttitudeTransform>
+#include <osgDB/ReadFile>
+
 
 #define MIN_CENTER 0.2f
 #define MAX_CENTER 0.3f
@@ -44,12 +47,15 @@ void BoardMenuRadialGeometry::createGeometry(MenuItem * item)
 
     _radial = dynamic_cast<MenuRadial*>(item);
 	_selectedIndex = _radial->getValue();
+	std::vector<std::string> labels = _radial->getLabels();
 
 
-	_outerArcs = std::vector<osg::ref_ptr<osg::MatrixTransform>>();
-	_innerArcs = std::vector<osg::ref_ptr<osg::Geometry>>();
-	_text = std::vector<osg::ref_ptr<osgText::Text>>();
 
+	_outerArcs = std::vector<osg::ref_ptr<osg::MatrixTransform>>(labels.size());
+	_innerArcs = std::vector<osg::ref_ptr<osg::Geometry>>(labels.size());
+	_text = std::vector<osg::ref_ptr<osgText::Text>>(labels.size());
+	_symbols = std::vector<osg::ref_ptr<osg::Node>>(labels.size());
+	_pats = std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>>(labels.size());
 	generateRadial();
 }
 
@@ -59,6 +65,10 @@ void BoardMenuRadialGeometry::generateRadial()
 	_group->addChild(geode);
 
 	std::vector<std::string> labels = _radial->getLabels();
+	std::vector<bool> isSymbol = _radial->getIsSymbols();
+	_prevText = labels;
+	_prevIsSymbol = isSymbol;
+
 	float step = 2.0f * osg::PIf / (float)(labels.size());
 
 
@@ -68,13 +78,43 @@ void BoardMenuRadialGeometry::generateRadial()
 	{
 		float theta = step * (float)(i);
 
-		osgText::Text* text = makeText(labels[i], _textSize, osg::Vec3(0, 0, 0), _textColor, osgText::Text::AlignmentType::CENTER_CENTER);
-		osg::BoundingBox bb = cvr::getBound(text);
-		float r = bb.xMax() - bb.xMin();
-		r = r * 0.8f;
-		rmax = r > rmax ? r : rmax;
+		if (isSymbol[i]) 
+		{
+			osg::Node* modelNode = osgDB::readNodeFile(labels[i]);
+			if (modelNode == NULL)
+			{
+				std::cerr << "MenuRadial: Error reading file " << labels[i] << std::endl;
 
-		_text.push_back(text);
+				osgText::Text* text = makeText("Error", _textSize, osg::Vec3(0, 0, 0), _textColor, osgText::Text::AlignmentType::CENTER_CENTER);
+				osg::BoundingBox bb = cvr::getBound(text);
+				float r = bb.xMax() - bb.xMin();
+				r = r * 0.8f;
+				rmax = r > rmax ? r : rmax;
+
+				_text[i] = text;
+				continue;
+			}
+			else
+			{
+				osg::BoundingSphere bb = modelNode->getBound();
+				float r = bb.radius();
+				//r = r * 0.8f;
+				rmax = r > rmax ? r : rmax;
+
+				modelNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+				_symbols[i] = modelNode;
+			}
+		}
+		else
+		{
+			osgText::Text* text = makeText(labels[i], _textSize, osg::Vec3(0, 0, 0), _textColor, osgText::Text::AlignmentType::CENTER_CENTER);
+			osg::BoundingBox bb = cvr::getBound(text);
+			float r = bb.xMax() - bb.xMin();
+			r = r * 0.8f;
+			rmax = r > rmax ? r : rmax;
+
+			_text[i] = text;
+		}
 	}
 
 	//Find minimum circle radius that can hold text in each arc
@@ -107,7 +147,17 @@ void BoardMenuRadialGeometry::generateRadial()
 	for (int i = 0; i < labels.size(); ++i)
 	{
 		float theta = step * (float)(i)+(step * 0.5f);
-		_text[i]->setPosition(osg::Vec3((cos(theta) * centerRad) + _radius, -3, (sin(theta) * centerRad) - _radius));
+		if (_text[i])
+		{
+			_text[i]->setPosition(osg::Vec3((cos(theta) * centerRad) + _radius, -3, (sin(theta) * centerRad) - _radius));
+		}
+		else if (_symbols[i])
+		{
+			osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+			pat->setPosition(osg::Vec3((cos(theta) * centerRad) + _radius, -3, (sin(theta) * centerRad) - _radius));
+			pat->addChild(_symbols[i]);
+			_pats[i] = pat;
+		}
 	}
 
 	for (int i = 0; i < labels.size(); ++i) {
@@ -123,7 +173,7 @@ void BoardMenuRadialGeometry::generateRadial()
 			innerSlice = makeArc(0, _center, _radius, _radius, theta, theta + step, CIRCLE_STEPS / labels.size(), osg::Vec4(0.8, 0.8, 0.8, 1.0), osg::Vec3(_radius, -2, -_radius));
 		}
 		geode->addDrawable(innerSlice);
-		_innerArcs.push_back(innerSlice);
+		_innerArcs[i] = innerSlice;
 
 
 		osg::Geometry* outerSlice = makeArc(_center, 1.0f, _radius, _radius, theta, theta + step, CIRCLE_STEPS / labels.size(), osg::Vec4(0.3, 0.3, 0.3, 1.0), osg::Vec3(_radius, -2, -_radius));
@@ -131,9 +181,16 @@ void BoardMenuRadialGeometry::generateRadial()
 		osg::MatrixTransform* outerTransform = new osg::MatrixTransform();
 		outerGeode->addDrawable(outerSlice);
 		outerTransform->addChild(outerGeode);
-		outerTransform->addChild(_text[i]);
+		if (_text[i])
+		{
+			outerTransform->addChild(_text[i]);
+		}
+		else if (_pats[i])
+		{
+			outerTransform->addChild(_pats[i]);
+		}
 		_group->addChild(outerTransform);
-		_outerArcs.push_back(outerTransform);
+		_outerArcs[i] = outerTransform;
 
 		osg::Geometry* lineSegment = makeLine(osg::Vec3(_radius, -3, -_radius), osg::Vec3(_radius + cos(theta) * _radius, -3, -_radius + sin(theta) * _radius), osg::Vec4(0.0, 0.0, 0.0, 1.0));
 		geode->addDrawable(lineSegment);
@@ -145,11 +202,17 @@ void BoardMenuRadialGeometry::generateRadial()
 void BoardMenuRadialGeometry::updateGeometry()
 {
 	std::vector<std::string> labels = _radial->getLabels();
+	std::vector<bool> isSymbol = _radial->getIsSymbols();
+
 	bool changedText = false;
-	if (_text.size() == labels.size())
+	if (_prevText.size() == labels.size())
 	{
-		for (int i = 0; i < _text.size(); ++i) {
-			if(_text[i]->getText().createUTF8EncodedString().compare(labels[i]) != 0)
+		for (int i = 0; i < _prevText.size(); ++i) {
+			if (_prevIsSymbol[i] != isSymbol[i])
+			{
+				changedText = true;
+			}
+			else if(_prevText[i].compare(labels[i]) != 0)
 			{
 				changedText = true;
 			}
@@ -167,6 +230,8 @@ void BoardMenuRadialGeometry::updateGeometry()
 		_innerArcs.clear();
 		_outerArcs.clear();
 		_text.clear();
+		_symbols.clear();
+		_pats.clear();
 
 		generateRadial();
 	}

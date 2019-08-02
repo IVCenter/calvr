@@ -20,6 +20,7 @@
 #include <cvrMenu/MenuRadial.h>
 #include <cvrMenu/SubMenu.h>
 #include <cvrUtil/Bounds.h>
+#include <cvrKernel/NodeMask.h>
 
 #include <osg/Version>
 #include <osgText/Text>
@@ -198,12 +199,12 @@ osg::Geometry * BoardMenuGeometry::makeArc(float startRatio, float endRatio, flo
 		float progress = (float)(i) / (float)(numSteps);
 		float currTheta = startTheta * (1.0f - progress) + endTheta * progress;
 
-        //Start from outside to get CCW order (facing outwards)
-		verts->push_back(pos + osg::Vec3(width * endRatio * cos(currTheta), 0, height * endRatio * sin(currTheta)));
+        //Start from inside to get correct order
 		verts->push_back(pos + osg::Vec3(width * startRatio * cos(currTheta), 0, height * startRatio * sin(currTheta)));
+		verts->push_back(pos + osg::Vec3(width * endRatio * cos(currTheta), 0, height * endRatio * sin(currTheta)));
 
-		texcoords->push_back(osg::Vec2(endRatio * cos(currTheta), endRatio * sin(currTheta)));
 		texcoords->push_back(osg::Vec2(startRatio * cos(currTheta), startRatio * sin(currTheta)));
+		texcoords->push_back(osg::Vec2(endRatio * cos(currTheta), endRatio * sin(currTheta)));
 	}
 
 	geo->setVertexArray(verts);
@@ -294,13 +295,15 @@ osgText::Text * BoardMenuGeometry::makeText(std::string text, float size,
     textNode->setAlignment(align);
     textNode->setPosition(pos);
     textNode->setColor(color);
-    textNode->setBackdropColor(osg::Vec4(0,0,0,0));
+    //textNode->setBackdropColor(osg::Vec4(0,0,0,0));
+	//textNode->setBackdropType(osgText::Text::BackdropType::NONE);
     textNode->setAxisAlignment(osgText::Text::XZ_PLANE);
     if(_font.valid())
     {
         textNode->setFont(_font);
     }
     textNode->setText(text);
+	textNode->setEnableDepthWrites(false);
     return textNode;
 }
 
@@ -350,6 +353,7 @@ void BoardMenuGeometry::resetIntersect(float width)
     _intersect->addDrawable(
             makeQuad(width + 2.0 * _border,-(_height + _border),
                     osg::Vec4(0,0,0,0),osg::Vec3(-_border,0,_border / 2.0)));
+	_intersect->setNodeMask(cvr::INTERSECT_MASK);
 }
 
 osg::Geode * BoardMenuGeometry::getIntersect()

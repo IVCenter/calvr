@@ -110,9 +110,14 @@ namespace cvr
 
 			virtual void adjustViewportCoords(int & x, int & y);
 
+			static bool isInit()
+			{
+				return _init;
+			}
+
 		protected:
 
-			bool _init;
+			static bool _init;
 			OpenVRDevice * vrDevice;
 
 			OpenVRSwapCallback * _swapCallback;

@@ -5,15 +5,13 @@
 #include <cvrKernel/SceneManager.h>
 #include <cvrInput/TrackingManager.h>
 #include <cvrInput/TrackerBase.h>
+#include <cvrInput/TrackerOpenVR.h>
 #include <cvrConfig/ConfigManager.h>
 
 #include <osgViewer/Renderer>
 #include <osg/CullFace>
 #include <osg/Texture>
 #include <osg/Version>
-
-#include <openvr.h>
-#include <openvrdevice.h>
 
 #include <iostream>
 
@@ -23,6 +21,8 @@
 #endif
 
 using namespace cvr;
+
+bool ScreenOpenVR::_init = false;
 
 ScreenOpenVR::ScreenOpenVR() :
         ScreenBase()
@@ -37,13 +37,28 @@ ScreenOpenVR::~ScreenOpenVR()
 void ScreenOpenVR::init(int mode)
 {
 	//Start up openvr - initialize system and compositor
-	vrDevice = new OpenVRDevice(_near, _far, 1000.0f, 4);
+	if(TrackerOpenVR::isInit())
+	{
+		vrDevice = TrackerOpenVR::getDevice();
+		vrDevice->setNearClip(_near);
+		vrDevice->setFarClip(_far);
+		vrDevice->calculateProjectionMatrices();
 
-	if (!vrDevice->hmdInitialized()) {
-		return;
+		if (!vrDevice->hmdInitialized()) {
+			return;
+		}
+	}
+	else
+	{
+		vrDevice = new OpenVRDevice(_near, _far, 1000.0f, 1);
+
+		if (!vrDevice->hmdInitialized()) {
+			return;
+		}
+		vrDevice->init();
 	}
 
-	vrDevice->init();
+
 	if (osgViewer::GraphicsWindow* win = dynamic_cast<osgViewer::GraphicsWindow*>(_myInfo->myChannel->myWindow->gc))
 	{
 		// Run wglSwapIntervalEXT(0) to force VSync Off
@@ -119,7 +134,7 @@ void ScreenOpenVR::init(int mode)
 	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
 
 
-	
+	/*
 	_previewCamera = new osg::Camera();
 
 	osg::DisplaySettings * ds = new osg::DisplaySettings();
@@ -130,12 +145,12 @@ void ScreenOpenVR::init(int mode)
 
 	defaultCameraInit(_previewCamera.get());
 
-	/*
+	
 	osg::ref_ptr<osg::Vec2Array> quadArray = new osg::Vec2Array();
-	quadArray->push_back(osg::Vec2(-1.0, 1.0));
-	quadArray->push_back(osg::Vec2(-1.0, -1.0));
-	quadArray->push_back(osg::Vec2(1.0, 1.0));
-	quadArray->push_back(osg::Vec2(1.0, -1.0));
+	quadArray->push_back(osg::Vec2(-100.0, 100.0));
+	quadArray->push_back(osg::Vec2(-100.0, -100.0));
+	quadArray->push_back(osg::Vec2(100.0, 100.0));
+	quadArray->push_back(osg::Vec2(100.0, -100.0));
 
 	osg::ref_ptr<osg::Vec2Array> texArray = new osg::Vec2Array();
 	texArray->push_back(osg::Vec2(0, 0));
@@ -155,11 +170,11 @@ void ScreenOpenVR::init(int mode)
 	geode->setCullingActive(false);
 	geode->addDrawable(geom);
 	_previewCamera->addChild(geode);
-	*/
+	
 
 	stateset = _previewCamera->getOrCreateStateSet();
 	stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-	
+	*/
 
 	_init = true;
 }
@@ -176,11 +191,11 @@ void ScreenOpenVR::updateCamera()
 		return;
 	}
 
-	
+	/*
 	if (_previewCamera->getNumParents() == 0) {
 		_leftCamera->addChild(_previewCamera);
 	}
-	
+	*/
 
 	double temp;
 

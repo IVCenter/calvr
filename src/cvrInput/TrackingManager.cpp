@@ -34,6 +34,10 @@
 #include <cvrInput/TrackerOculus.h>
 #endif
 
+#ifdef WITH_OPENVR
+#include <cvrInput/TrackerOpenVR.h>
+#endif
+
 using namespace cvr;
 
 struct TrackingSystemInit
@@ -181,6 +185,12 @@ bool TrackingManager::init()
 			else if(systemName == "OCULUS")
 			{
 				tracker = new TrackerOculus();
+			}
+#endif
+#ifdef WITH_OPENVR
+			else if (systemName == "OPENVR")
+			{
+				tracker = new TrackerOpenVR();
 			}
 #endif
             else if(systemName == "MOUSE")

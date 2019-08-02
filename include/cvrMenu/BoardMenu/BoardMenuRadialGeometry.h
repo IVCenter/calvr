@@ -35,9 +35,16 @@ class BoardMenuRadialGeometry : public BoardMenuGeometry
     protected:
         osg::ref_ptr<osg::Group> _group;
 		osg::ref_ptr<osg::MatrixTransform> _selection;
+
 		std::vector<osg::ref_ptr<osg::Geometry>> _innerArcs;
 		std::vector<osg::ref_ptr<osg::MatrixTransform>> _outerArcs;
 		std::vector<osg::ref_ptr<osgText::Text>> _text;
+		std::vector<osg::ref_ptr<osg::Node>> _symbols;
+		std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>> _pats;
+
+		std::vector<std::string> _prevText;
+		std::vector<bool> _prevIsSymbol;
+
 
         float _lastX;
         float _lastY;

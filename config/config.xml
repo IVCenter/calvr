@@ -18,7 +18,6 @@
    <EventDebug value="false" />
 
    <Input>
-     <TrackingDebug value="false" />
      <TrackingSystem0 value="MOUSE">
        <Offset x="0" y="0" z="0" />
        <Orientation h="0" p="0" r="0" />
@@ -33,21 +32,22 @@
        </Body0>
      </TrackingSystem0>
 
-      <TrackingSystem1 value="VRPN">
-       <Orientation h="0" p="0" r="0" />
+    <TrackingSystem1 value="OPENVR">
+      <Orientation h="0" p="0" r="0" />
 
-       <NumBodies value="1" />
-       <NumButtons value="4" />
-       <NumValuators value="2" />
+      <NumControllers value="1" />
+      <NumTrackers value="0" />
 
-       <VRPN>
-        <Server value="Vive0@localhost" />
-       </VRPN>
+      <NumBodies value="1" />
+      <NumButtons value="4" />
+      <NumValuators value="3" />
 
-       <Body0>
-        <Offset x="0" y="0" z="-1000" />
-        <Orientation h="0" p="0" r="0" />
-       </Body0>
+      <TrackHead value="false" />
+
+      <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+      </Body0>
     </TrackingSystem1>
 
 
@@ -64,19 +64,65 @@
      <Hand1>
        <Address system="1" body="0" />
        <ButtonMask system1="0xFFFF" />
-       <Valuator0 system="1" number="1" type="NON_ZERO" />
+       <Valuator0 system="1" number="1" type="CHANGE" />
+       <Valuator1 system="1" number="2" type="CHANGE" />
        <ButtonMapping value="1,2,3,0" />
     </Hand1>
 
    </Input>
     
    <Plugin>
+    <ShaderToyCVR value="off">
+        <ShaderDir value="C:\local\kubernetes\calvr\calvr_plugins\calit2\ShaderToyCVR\shaders\" />
+        <ResourceDir value="C:\local\kubernetes\calvr\calvr_plugins\calit2\ShaderToyCVR\resources\" />
+    </ShaderToyCVR>
+    <ModelLoader value="off">
+      <ConfigDir value="" />
+      <Files>
+        <AreaM path="C:\Users\Glynn\Documents\KENData\updated_Area_M_Decimated2.obj" />
+        <Airboat path="C:\Users\Glynn\Documents\KENData\airboat.obj" />
+      </Files>
+    </ModelLoader>
+    <ArtifactVis value="off">
+      <TopoFile value="C:\Users\Glynn\Documents\KENData\updated_Area_M_Decimated2_Transformed2.obj" />
+        <Database value="C:\Users\Glynn\Documents\ArtifactVis\artifactslist.txt" />
+        <PicFolder value="C:\Users\Glynn\Documents\ArtifactVis\kyle\pictures\AllPics\" />
+        <DCInfoFile value="C:\Users\Glynn\Documents\ArtifactVis\kyle\DCCategories.txt" />
+        <LociFile value="C:\Users\Glynn\Documents\ArtifactVis\kyle\AreaMLociDepth.kml" />
+            
+        <Offset>
+          <X value="-3396591.862" />
+          <Y value="-733458.55" />
+          <Z value="-49.44" />
+        </Offset>
+        <Site>
+          <Longitude value="35.491239" />
+          <Latitude value="30.628039" />
+        </Site>
 
+		  <Tessellation value=".2" />
+		  <ArtifactPanel x="-200" y="1000" z="100" scale="1.0" />
+	    <SelectionStatsPanel x="500" y="1000" />
+    </ArtifactVis>
+    <HelmsleyVolume value="on">
+      <ShaderDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\shaders\" />
+      <ModelDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\models\" />
+      <Files>
+        <MG>
+          <25 value = "C:\Users\Glynn\Documents\DICOMS\MG\2.5mm Stnd CHEST_Series0002\" />
+          <375 value = "C:\Users\Glynn\Documents\DICOMS\MG\3.75 Stnd ABD_PEL_Series0003\" />
+        </MG>
+        <JH>
+          <25 value = "C:\Users\Glynn\Documents\DICOMS\JH\2.5mm Stnd CHEST_Series0002\" />
+          <375 value = "C:\Users\Glynn\Documents\DICOMS\JH\3.75 Stnd ABD_PEL_Series0003" />
+        </JH>
+      </Files>
+    </HelmsleyVolume>
    </Plugin>
 
    <ContextMenus>
      <Scale value="0.4" />
-     <MinDistance value="500" />
+     <MinDistance value="50" />
      <MaxDistance value="1000" />
      <DefaultOpenButton value="1" />
    </ContextMenus>
@@ -100,22 +146,22 @@
 
    <PipeConfig>
     <Pipe server="0" screen="0" name="0" />
-    <Pipe server="0" screen="1" name="1" />
+    <Pipe server="0" screen="0" name="1" />
    </PipeConfig>
 
    <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1" />
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" />
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="1"  name="1"  />
    </ChannelConfig>
    
    <WindowConfig>
-    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
-    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="1100" name="1" decoration="true" cudaDevice="0" />
+    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="1100" name="0" decoration="true" cudaDevice="0" />
+    <Window width="1024" comment="FRONT" pipeIndex="1" height="768" left="50" bottom="50" name="1" decoration="true" overrideRedirect="false" cudaDevice="0" />
    </WindowConfig>
 
 
    <ScreenConfig>
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="1" />
    </ScreenConfig>
 

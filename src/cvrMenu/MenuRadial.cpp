@@ -52,6 +52,19 @@ const std::vector<std::string> MenuRadial::getLabels() const
     return strings;
 }
 
+const std::vector<bool> MenuRadial::getIsSymbols() const
+{
+	std::vector<bool> isSymbol;
+
+	for (int i = 0; i < _labels.size(); ++i)
+	{
+		isSymbol.push_back(getIsSymbol(i));
+	}
+
+	return isSymbol;
+}
+
+
 const std::string MenuRadial::getText(const int index) const
 {
     if(index < 0 || index >= _labels.size())
@@ -62,6 +75,18 @@ const std::string MenuRadial::getText(const int index) const
         return "";
     }
     return _labels[index];
+}
+
+const bool MenuRadial::getIsSymbol(const int index) const
+{
+	if (index < 0 || index >= _isSymbol.size())
+	{
+		std::cerr
+			<< "(MenuList) Warning: Attempting to set the value of an invalid index."
+			<< std::endl;
+		return "";
+	}
+	return _isSymbol[index];
 }
 
 void MenuRadial::setText(const int index, const std::string & text)
@@ -77,11 +102,32 @@ void MenuRadial::setText(const int index, const std::string & text)
     setDirty(true);
 }
 
+void MenuRadial::setIsSymbol(const int index, const bool symbol)
+{
+	if (index < 0 || index >= _isSymbol.size())
+	{
+		std::cerr
+			<< "(MenuList) Warning: Attempting to set the value of an invalid index."
+			<< std::endl;
+		return;
+	}
+	_isSymbol[index] = symbol;
+	setDirty(true);
+}
+
+void MenuRadial::setLabels(const std::vector<std::string> & l, const std::vector<bool> & s)
+{
+	_value = 0;
+	_labels = l;
+	_isSymbol = s;
+	setDirty(true);
+}
+
+
 void MenuRadial::setLabels(const std::vector<std::string> & l)
 {
-    _value = 0;
-    _labels = l;
-    setDirty(true);
+	std::vector<bool> s = std::vector<bool>(l.size());
+	setLabels(l, s);
 }
 
 void MenuRadial::addLabel(const std::string & label, const int index)
