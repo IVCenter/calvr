@@ -315,6 +315,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 					if (_activeItem)
 					{
 						_activeItem->processEvent(event);
+						//return true;
 					}
 				}
 			}
@@ -340,6 +341,7 @@ bool BoardMenu::processEvent(InteractionEvent * event)
 			if (_activeItem)
 			{
 				_activeItem->processEvent(event);
+				//return true;
 			}
 		}
 	}

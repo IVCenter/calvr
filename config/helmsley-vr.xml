@@ -129,7 +129,6 @@
      <MinDistance value="50" />
      <MaxDistance value="1000" />
      <DefaultOpenButton value="1" />
-     <DefaultMoveButton value="2" />
    </ContextMenus>
 
    <MenuSystem type="BOARDMENU">

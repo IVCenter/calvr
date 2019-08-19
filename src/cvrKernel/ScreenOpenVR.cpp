@@ -36,6 +36,7 @@ ScreenOpenVR::~ScreenOpenVR()
 
 void ScreenOpenVR::init(int mode)
 {
+	OSG_NOTICE << "Setting up OpenVR screen" << std::endl;
 	//Start up openvr - initialize system and compositor
 	if(TrackerOpenVR::isInit())
 	{

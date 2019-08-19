@@ -52,6 +52,7 @@ SceneManager::SceneManager()
     _scale = 1.0;
     _menuOpenObject = NULL;
     _menuDefaultOpenButton = 1;
+	_moveDefaultButton = 0;
     _menuMaxDistance = 1500.0;
     _menuMinDistance = 750.0;
     _menuScale = 1.0;
@@ -127,6 +128,8 @@ bool SceneManager::init()
             "ContextMenus.MaxDistance",1500.0);
     _menuDefaultOpenButton = ConfigManager::getInt("value",
             "ContextMenus.DefaultOpenButton",1);
+	_moveDefaultButton = ConfigManager::getInt("value",
+			"ContextMenus.DefaultMoveButton", 0);
 
     _wallWidth = _wallHeight = 2000.0;
 

@@ -32,6 +32,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/PopupMenuBase.h
     ${HEADER_PATH}/BoardMenu.h
     ${HEADER_PATH}/MenuSystem.h
+    ${HEADER_PATH}/MenuSystemBase.h
     ${HEADER_PATH}/MenuManager.h
     ${HEADER_PATH}/PopupMenu.h
     ${HEADER_PATH}/DialogPanel.h

@@ -61,7 +61,7 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
         _root->addChild(_boundsTransform);
     }
 
-    _moveButton = 0;
+    _moveButton = SceneManager::instance()->_moveDefaultButton;
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
 
     _activeHand = -2;

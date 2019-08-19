@@ -38,86 +38,106 @@ void BoardPopupMenu::updateEnd()
 
 bool BoardPopupMenu::processEvent(InteractionEvent * event)
 {
-    if(!_menuActive || !_myMenu || !event->asTrackedButtonEvent())
+    if(!_menuActive || !_myMenu)
     {
         return false;
     }
 
     TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+	if (tie)
+	{
+		if (_clickActive)
+		{
+			if (tie->getHand() == _activeHand)
+			{
+				if (tie->getInteraction() == BUTTON_DRAG
+					|| tie->getInteraction() == BUTTON_UP)
+				{
+					if (tie->getButton() == _primaryButton)
+					{
+						BoardMenuSubMenuGeometry * smg =
+							dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+						if (smg && smg->isMenuHead())
+						{
+							updateMovement(tie);
+						}
 
-    if(_clickActive)
-    {
-        if(tie->getHand() == _activeHand)
-        {
-            if(tie->getInteraction() == BUTTON_DRAG
-                    || tie->getInteraction() == BUTTON_UP)
-            {
-                if(tie->getButton() == _primaryButton)
-                {
-                    BoardMenuSubMenuGeometry * smg =
-                            dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-                    if(smg && smg->isMenuHead())
-                    {
-                        updateMovement(tie);
-                    }
+						_activeItem->processEvent(event);
+						if (tie->getInteraction() == BUTTON_UP)
+						{
+							_clickActive = false;
+						}
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		else if (tie->getHand() == _activeHand)
+		{
+			if (tie->getButton() == _primaryButton
+				&& (tie->getInteraction() == BUTTON_DOWN
+					|| tie->getInteraction() == BUTTON_DOUBLE_CLICK))
+			{
+				if (_activeItem)
+				{
+					BoardMenuSubMenuGeometry * smg =
+						dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
+					if (smg && smg->isMenuHead())
+					{
+						osg::Vec3 ray;
+						ray = _currentPoint[tie->getHand()]
+							- tie->getTransform().getTrans();
 
-                    _activeItem->processEvent(event);
-                    if(tie->getInteraction() == BUTTON_UP)
-                    {
-                        _clickActive = false;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    else if(tie->getHand() == _activeHand && tie->getButton() == _primaryButton)
-    {
-        if(tie->getInteraction() == BUTTON_DOWN
-                || tie->getInteraction() == BUTTON_DOUBLE_CLICK)
-        {
-            if(_activeItem)
-            {
-                BoardMenuSubMenuGeometry * smg =
-                        dynamic_cast<BoardMenuSubMenuGeometry *>(_activeItem);
-                if(smg && smg->isMenuHead())
-                {
-                    osg::Vec3 ray;
-                    ray = _currentPoint[tie->getHand()]
-                            - tie->getTransform().getTrans();
+						if (!tie->asPointerEvent())
+						{
+							_moveDistance = ray.length();
+						}
+						else
+						{
+							_moveDistance = ray.y();
+						}
+						_menuPoint = _currentPoint[tie->getHand()]
+							* osg::Matrix::inverse(_menuRoot->getMatrix());
+						updateMovement(tie);
+					}
+					else if (smg && !smg->isMenuHead())
+					{
+						if (smg->isMenuOpen())
+						{
+							closeMenu((SubMenu*)smg->getMenuItem());
+						}
+						else
+						{
+							openMenu(smg);
+						}
+					}
+					_clickActive = true;
+					_activeItem->processEvent(event);
+					return true;
+				}
 
-                    if(!tie->asPointerEvent())
-                    {
-                        _moveDistance = ray.length();
-                    }
-                    else
-                    {
-                        _moveDistance = ray.y();
-                    }
-                    _menuPoint = _currentPoint[tie->getHand()]
-                            * osg::Matrix::inverse(_menuRoot->getMatrix());
-                    updateMovement(tie);
-                }
-                else if(smg && !smg->isMenuHead())
-                {
-                    if(smg->isMenuOpen())
-                    {
-                        closeMenu((SubMenu*)smg->getMenuItem());
-                    }
-                    else
-                    {
-                        openMenu(smg);
-                    }
-                }
-                _clickActive = true;
-                _activeItem->processEvent(event);
-                return true;
-            }
-
-            return false;
-        }
-    }
+				return false;
+			}
+			else if (_activeItem)
+			{
+				_activeItem->processEvent(event);
+				//return true;
+			}
+		}
+	}
+    
+	if (event->asValuatorEvent())
+	{
+		if (_menuActive)
+		{
+			if (_activeItem)
+			{
+				_activeItem->processEvent(event);
+				//return true;
+			}
+		}
+	}
 
     return false;
 }
