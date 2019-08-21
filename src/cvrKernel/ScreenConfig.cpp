@@ -429,6 +429,7 @@ bool ScreenConfig::readChannels()
             channelPtr->bottom = ConfigManager::getFloat("bottom",ss.str(),0);
             channelPtr->stereoMode = ConfigManager::getEntry("stereoMode",
                     ss.str(),"MONO");
+			channelPtr->swapStereoEyes = ConfigManager::getBool("swapStereoEyes", ss.str(), false);
             channelPtr->head = ConfigManager::getInt("head",ss.str(),0);
             if(channelPtr->head >= TrackingManager::instance()->getNumHeads())
             {

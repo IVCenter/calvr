@@ -66,6 +66,7 @@ struct ChannelInfo
         float bottom;           ///< bottom of channel in window space
         int windowIndex;        ///< index for window holding this channel
         std::string stereoMode; ///< name of stereo mode used for this channel
+		bool swapStereoEyes;    ///< should left and right eye be swapped?
         int head;               ///< head number to use for viewer position
         WindowInfo * myWindow;  ///< window params for this channel
 };
