@@ -74,6 +74,7 @@ void ScreenOpenVR::init(int mode)
 	osg::StateSet * stateset;
 
 	_leftCamera = new osg::Camera();
+	_leftCamera->setName("OpenVR left eye");
 	CVRViewer::instance()->addSlave(_leftCamera.get(), osg::Matrixd(), osg::Matrixd());
 	defaultCameraInit(_leftCamera.get());
 	_leftCamera->setAllowEventFocus(false);
@@ -102,6 +103,7 @@ void ScreenOpenVR::init(int mode)
 
 
 	_rightCamera = new osg::Camera();
+	_rightCamera->setName("OpenVR right eye");
 	//_rightCamera = vrDevice->createRTTCamera(OpenVRDevice::RIGHT, osg::Camera::ABSOLUTE_RF, osg::Vec4(0, 0, 0, 0), _myInfo->myChannel->myWindow->gc);
 	CVRViewer::instance()->addSlave(_rightCamera.get(), osg::Matrixd(), osg::Matrixd());
 	defaultCameraInit(_rightCamera.get());

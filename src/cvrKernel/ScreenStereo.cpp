@@ -41,6 +41,17 @@ void ScreenStereo::init(int mode)
                 renderer->getSceneView(0)->getDisplaySettings();
         ds->setStereo(true);
         ds->setStereoMode(_stereoMode);
+		if (_myInfo->myChannel->swapStereoEyes)
+		{
+			if (_stereoMode == osg::DisplaySettings::VERTICAL_SPLIT)
+			{
+				ds->setSplitStereoVerticalEyeMapping(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
+			}
+			else if (_stereoMode == osg::DisplaySettings::HORIZONTAL_SPLIT)
+			{
+				ds->setSplitStereoHorizontalEyeMapping(osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT);
+			}
+		}
         StereoCallback * sc = new StereoCallback;
         sc->screen = this;
         renderer->getSceneView(0)->setComputeStereoMatricesCallback(sc);
