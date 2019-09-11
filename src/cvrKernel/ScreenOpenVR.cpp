@@ -3,9 +3,12 @@
 #include <cvrKernel/CVRViewer.h>
 #include <cvrKernel/NodeMask.h>
 #include <cvrKernel/SceneManager.h>
+#include <cvrKernel/CVRCullVisitor.h>
+
 #include <cvrInput/TrackingManager.h>
 #include <cvrInput/TrackerBase.h>
 #include <cvrInput/TrackerOpenVR.h>
+
 #include <cvrConfig/ConfigManager.h>
 
 #include <osgViewer/Renderer>
@@ -51,7 +54,7 @@ void ScreenOpenVR::init(int mode)
 	}
 	else
 	{
-		vrDevice = new OpenVRDevice(_near, _far, 1000.0f, 1);
+		vrDevice = new OpenVRDevice(_near, _far, 1000.0f, 4);
 
 		if (!vrDevice->hmdInitialized()) {
 			return;
@@ -76,18 +79,69 @@ void ScreenOpenVR::init(int mode)
 	_leftCamera = new osg::Camera();
 	_leftCamera->setName("OpenVR left eye");
 	CVRViewer::instance()->addSlave(_leftCamera.get(), osg::Matrixd(), osg::Matrixd());
-	defaultCameraInit(_leftCamera.get());
-	_leftCamera->setAllowEventFocus(false);
-	_leftCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	_leftCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-	_leftCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
+
+	//Default init
+	_leftCamera->setGraphicsContext(_myInfo->myChannel->myWindow->gc);
+	_leftCamera->setViewport(
+		new osg::Viewport(0, 0, renderWidth, renderHeight));
+	GLenum buffer =
+		_myInfo->myChannel->myWindow->gc->getTraits()->doubleBuffer ?
+		GL_BACK : GL_FRONT;
+
+	_leftCamera->setDrawBuffer(buffer);
+	_leftCamera->setReadBuffer(buffer);
+
+	_leftCamera->setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
+
+	_leftCamera->setCullMask(CULL_MASK);
+	_leftCamera->setCullMaskLeft(CULL_MASK_LEFT);
+	_leftCamera->setCullMaskRight(CULL_MASK_RIGHT);
+
+	std::string cmode = ConfigManager::getEntry("value", "CullingMode", "CALVR");
+
+	osgViewer::Renderer * renderer =
+		dynamic_cast<osgViewer::Renderer*>(_leftCamera->getRenderer());
+	if (!renderer)
+	{
+		std::cerr << "Error getting renderer pointer." << std::endl;
+	}
+	else
+	{
+
+		renderer->getSceneView(0)->getDisplaySettings()->setSerializeDrawDispatch(
+			false);
+		renderer->getSceneView(1)->getDisplaySettings()->setSerializeDrawDispatch(
+			false);
+
+		if (cmode == "CALVR")
+		{
+			renderer->getSceneView(0)->setCullVisitor(new CVRCullVisitor());
+			renderer->getSceneView(0)->setCullVisitorLeft(new CVRCullVisitor());
+			renderer->getSceneView(0)->setCullVisitorRight(
+				new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitor(new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitorLeft(new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitorRight(
+				new CVRCullVisitor());
+		}
+	}
+
+
+	//Initialize frame buffer
+	frameBufferInit(_leftCamera.get(), renderWidth, renderHeight);
+	_leftFBO = _fbo;
+
+	//_leftCamera->setAllowEventFocus(false);
+	//_leftCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//_leftCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+	//_leftCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
 	_leftCamera->setCullMask(CULL_MASK_LEFT);
 	stateset = _leftCamera->getOrCreateStateSet();
 	stateset->setAttributeAndModes(cf, osg::StateAttribute::ON);
 
-	_leftCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::LEFT));
+	//_leftCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::LEFT));
 
-	osgViewer::Renderer * renderer =
+	renderer =
 		dynamic_cast<osgViewer::Renderer*>(_leftCamera->getRenderer());
 	if (!renderer)
 	{
@@ -106,18 +160,61 @@ void ScreenOpenVR::init(int mode)
 	_rightCamera->setName("OpenVR right eye");
 	//_rightCamera = vrDevice->createRTTCamera(OpenVRDevice::RIGHT, osg::Camera::ABSOLUTE_RF, osg::Vec4(0, 0, 0, 0), _myInfo->myChannel->myWindow->gc);
 	CVRViewer::instance()->addSlave(_rightCamera.get(), osg::Matrixd(), osg::Matrixd());
-	defaultCameraInit(_rightCamera.get());
 
-	_rightCamera->setAllowEventFocus(false);
-	_rightCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	_rightCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-	_rightCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
+	_rightCamera->setGraphicsContext(_myInfo->myChannel->myWindow->gc);
+	_rightCamera->setViewport(
+		new osg::Viewport(0, 0, renderWidth, renderHeight));
+
+	_rightCamera->setDrawBuffer(buffer);
+	_rightCamera->setReadBuffer(buffer);
+
+	_rightCamera->setComputeNearFarMode(osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR);
+
+	_rightCamera->setCullMask(CULL_MASK);
+	_rightCamera->setCullMaskLeft(CULL_MASK_LEFT);
+	_rightCamera->setCullMaskRight(CULL_MASK_RIGHT);
+
+	renderer =
+		dynamic_cast<osgViewer::Renderer*>(_rightCamera->getRenderer());
+	if (!renderer)
+	{
+		std::cerr << "Error getting renderer pointer." << std::endl;
+	}
+	else
+	{
+
+		renderer->getSceneView(0)->getDisplaySettings()->setSerializeDrawDispatch(
+			false);
+		renderer->getSceneView(1)->getDisplaySettings()->setSerializeDrawDispatch(
+			false);
+
+		if (cmode == "CALVR")
+		{
+			renderer->getSceneView(0)->setCullVisitor(new CVRCullVisitor());
+			renderer->getSceneView(0)->setCullVisitorLeft(new CVRCullVisitor());
+			renderer->getSceneView(0)->setCullVisitorRight(
+				new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitor(new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitorLeft(new CVRCullVisitor());
+			renderer->getSceneView(1)->setCullVisitorRight(
+				new CVRCullVisitor());
+		}
+	}
+
+
+	//Initialize frame buffer
+	frameBufferInit(_rightCamera.get(), renderWidth, renderHeight);
+	_rightFBO = _fbo;
+
+	//_rightCamera->setAllowEventFocus(false);
+	//_rightCamera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//_rightCamera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+	//_rightCamera->setViewport(new osg::Viewport(0, 0, renderWidth, renderHeight));
 	_rightCamera->setCullMask(CULL_MASK_RIGHT);
 	stateset = _rightCamera->getOrCreateStateSet();
 	stateset->setAttributeAndModes(cf, osg::StateAttribute::ON);
 
-
-	_rightCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::RIGHT));
+	//_rightCamera->setInitialDrawCallback(new SOVRInitialDrawCallback(vrDevice, OpenVRDevice::Eye::RIGHT));
 
 	renderer =
 		dynamic_cast<osgViewer::Renderer*>(_rightCamera->getRenderer());
@@ -133,7 +230,7 @@ void ScreenOpenVR::init(int mode)
 	}
 
 
-	_swapCallback = new OpenVRSwapCallback(vrDevice);
+	_swapCallback = new SOVRSwapCallback(_leftFBO, _rightFBO, _myInfo->myChannel->width, _myInfo->myChannel->height, OpenVRMirrorTexture::BOTH_EYES);
 	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
 
 
@@ -269,5 +366,82 @@ void ScreenOpenVR::adjustViewportCoords(int & x, int & y)
     x *= 2;
 
     return;
+}
+
+
+void SOVRSwapCallback::swapBuffersImplementation(osg::GraphicsContext* gc)
+{
+	//Submit frame
+
+	const osg::Texture* leftTex = m_left_fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+	const osg::Texture* rightTex = m_right_fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+
+	GLuint leftGL = leftTex->getTextureObject(gc->getState()->getContextID())->id();
+	GLuint rightGL = rightTex->getTextureObject(gc->getState()->getContextID())->id();
+
+
+	vr::Texture_t leftEyeTexture = { (void*)leftGL, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+	vr::Texture_t rightEyeTexture = { (void*)rightGL, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+
+	vr::EVRCompositorError lError = vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
+	vr::EVRCompositorError rError = vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
+
+	if (lError != vr::VRCompositorError_None || rError != vr::VRCompositorError_None)
+	{
+		OSG_WARN << "Error submitting frame to openvr!" << std::endl;
+	}
+
+
+	//Blit to window
+	const osg::GLExtensions* fbo_ext = gc->getState()->get<osg::GLExtensions>();
+
+	fbo_ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+
+
+	m_resolve_fbo->apply(*gc->getState(), osg::FrameBufferObject::DRAW_FRAMEBUFFER);
+
+	if (m_blit == OpenVRMirrorTexture::LEFT_EYE)
+	{
+		m_left_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
+		
+		fbo_ext->glBlitFramebuffer(0, 0, leftTex->getTextureWidth(), leftTex->getTextureHeight(),
+			0, 0, gc->getTraits()->width, gc->getTraits()->height,
+			GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+	else if (m_blit == OpenVRMirrorTexture::RIGHT_EYE)
+	{
+		m_right_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
+
+		fbo_ext->glBlitFramebuffer(0, 0, rightTex->getTextureWidth(), rightTex->getTextureHeight(),
+			0, 0, gc->getTraits()->width, gc->getTraits()->height,
+			GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+	else if (m_blit == OpenVRMirrorTexture::BOTH_EYES)
+	{
+		m_left_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
+
+		fbo_ext->glBlitFramebuffer(0, 0, leftTex->getTextureWidth(), leftTex->getTextureHeight(),
+			0, 0, gc->getTraits()->width / 2, gc->getTraits()->height,
+			GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+		m_right_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
+
+		fbo_ext->glBlitFramebuffer(0, 0, rightTex->getTextureWidth(), rightTex->getTextureHeight(),
+			gc->getTraits()->width / 2, 0, gc->getTraits()->width, gc->getTraits()->height,
+			GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+
+
+
+	m_resolve_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
+	fbo_ext->glBindFramebuffer(GL_DRAW_FRAMEBUFFER_EXT, 0);
+	fbo_ext->glBlitFramebuffer(0, 0, gc->getTraits()->width, gc->getTraits()->height,
+		0, 0, gc->getTraits()->width, gc->getTraits()->height,
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	fbo_ext->glBindFramebuffer(GL_READ_FRAMEBUFFER_EXT, 0);
+
+
+	//Default implementation
+	gc->swapBuffersImplementation();
 }
 
