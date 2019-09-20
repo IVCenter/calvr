@@ -16,6 +16,8 @@ using namespace cvr;
 #define M_PI 3.141592653589793238462643
 #endif
 
+std::map<osg::Camera*, osg::FrameBufferObject*> ScreenBase::framebuffers = std::map<osg::Camera*, osg::FrameBufferObject*>();
+
 ScreenBase::ScreenBase()
 {
 }
@@ -116,6 +118,38 @@ void ScreenBase::frameBufferInit(osg::Camera * cam, int width, int height)
 	//cam->setRenderOrder(osg::Camera::PRE_RENDER);
 	cam->getGraphicsContext()->setSwapCallback(new RTTSwapCallback(_fbo, _myInfo->myChannel->width, _myInfo->myChannel->height));
 	//cam->setPreDrawCallback(new RTTPreDrawCallback(_fbo));
+
+	addBuffer(cam, _fbo);
+}
+
+bool ScreenBase::resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state, GLbitfield buffers)
+{
+	if (framebuffers.find(c) == framebuffers.end()) {
+		return false;
+	}
+
+	osg::FrameBufferObject* fbo = framebuffers[c];
+	const osg::GLExtensions* fbo_ext = state->get<osg::GLExtensions>();
+	//Save current framebuffer state
+	GLint drawFBO = 0, readFBO = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &drawFBO);
+	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING_EXT, &readFBO);
+
+	const osg::Texture* src = fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+	const osg::Texture* tgt = resolve_fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+
+	//Blit framebuffer to resolve_fbo
+	resolve_fbo->apply(*state, osg::FrameBufferObject::DRAW_FRAMEBUFFER);
+	fbo->apply(*state, osg::FrameBufferObject::READ_FRAMEBUFFER);
+	fbo_ext->glBlitFramebuffer(0, 0, src->getTextureWidth(), src->getTextureHeight(),
+		0, 0, tgt->getTextureWidth(), tgt->getTextureHeight(),
+		buffers, GL_NEAREST);
+
+	//Restore prev framebuffer state
+	fbo_ext->glBindFramebuffer(GL_DRAW_FRAMEBUFFER_EXT, drawFBO);
+	fbo_ext->glBindFramebuffer(GL_READ_FRAMEBUFFER_EXT, readFBO);
+
+	return true;
 }
 
 osg::Matrix & ScreenBase::getCurrentHeadMatrix(int head)

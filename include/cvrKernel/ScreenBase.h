@@ -161,6 +161,20 @@ class CVRKERNEL_EXPORT ScreenBase
             _omniStereo = active;
         }
 
+		/**
+		 * @brief adds the given camera and buffer to the framebuffer map
+		 */
+		static void addBuffer(osg::Camera* c, osg::FrameBufferObject* fbo)
+		{
+			framebuffers[c] = fbo;
+		}
+
+		/**
+		 * @brief if it exists, resolves the buffer for camera c into resolve_fbo
+		 */
+		static bool resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state,
+			GLbitfield buffers = GL_COLOR_BUFFER_BIT);
+
         /**
          * @brief Applies some default settings to the camera
          *
@@ -197,6 +211,7 @@ class CVRKERNEL_EXPORT ScreenBase
         void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view,
                 osg::Matrix & proj);
 
+		/*
 		virtual void resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state, GLbitfield buffers = GL_COLOR_BUFFER_BIT)
 		{
 			if (!_fbo)
@@ -223,6 +238,7 @@ class CVRKERNEL_EXPORT ScreenBase
 			fbo_ext->glBindFramebuffer(GL_DRAW_FRAMEBUFFER_EXT, drawFBO);
 			fbo_ext->glBindFramebuffer(GL_READ_FRAMEBUFFER_EXT, readFBO);
 		};
+		*/
 
     protected:
         static double _separation; ///< eye separation
@@ -235,6 +251,8 @@ class CVRKERNEL_EXPORT ScreenBase
         ScreenInfo * _myInfo; ///< config information for this screen
 
 		osg::ref_ptr<osg::FrameBufferObject> _fbo;
+
+		static std::map<osg::Camera*, osg::FrameBufferObject*> framebuffers;
 };
 
 class RTTPreDrawCallback : public osg::Camera::DrawCallback

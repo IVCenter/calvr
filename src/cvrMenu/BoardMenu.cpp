@@ -30,6 +30,8 @@ BoardMenu::BoardMenu()
 
     _activeHand = -1;
 
+	setMovable(true);
+
     std::string s;
 
     _distance = ConfigManager::getFloat("distance",
@@ -397,21 +399,14 @@ void BoardMenu::itemDelete(MenuItem * item)
 
     updateMenus();
 
-    bool removedItem;
-    do
+    for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it =
+            _intersectMap.begin(); it != _intersectMap.end(); it++)
     {
-        removedItem = false;
-        for(std::map<osg::Geode *,BoardMenuGeometry*>::iterator it =
-                _intersectMap.begin(); it != _intersectMap.end(); it++)
+        if(it->second->getMenuItem() == item)
         {
-            if(it->second->getMenuItem() == item)
-            {
-                _intersectMap.erase(it);
-                removedItem = true;
-            }
+			it = _intersectMap.erase(it);
         }
     }
-    while(removedItem);
 
     if(_activeItem && item == _activeItem->getMenuItem())
     {
@@ -925,7 +920,11 @@ void BoardMenu::closeMenu(SubMenu * menu)
 
 void BoardMenu::updateMovement(TrackedButtonInteractionEvent * tie)
 {
-    if(!tie->asPointerEvent())
+	if (!_movable)
+	{
+		return;
+	}
+    else if(!tie->asPointerEvent())
     {
         osg::Vec3 menuPoint = osg::Vec3(0,_moveDistance,0);
         //std::cerr << "move dist: " << _moveDistance << std::endl;

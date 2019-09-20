@@ -143,6 +143,7 @@ namespace cvr
 				return _init;
 			}
 
+			/*
 			virtual void resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state, GLbitfield buffers = GL_COLOR_BUFFER_BIT)
 			{
 				//Choose correct framebuffer (left or right) depending on camera
@@ -180,7 +181,7 @@ namespace cvr
 				fbo_ext->glBindFramebuffer(GL_DRAW_FRAMEBUFFER_EXT, drawFBO);
 				fbo_ext->glBindFramebuffer(GL_READ_FRAMEBUFFER_EXT, readFBO);
 			};
-
+			*/
 
 		protected:
 

@@ -96,6 +96,20 @@ class BoardMenu : public MenuBase
          */
         virtual float getScale();
 
+		/**
+		 * @brief Set whether the menu should be movable
+		 */
+		virtual void setMovable(bool m) {
+			_movable = m;
+		}
+
+		/**
+		 * @brief Get whether the menu is movable
+		 */
+		virtual bool getMovable() {
+			return _movable;
+		}
+
         BoardMenuGeometry * getItemGeometry(MenuItem * item);
 
     protected:
@@ -135,8 +149,9 @@ class BoardMenu : public MenuBase
         BoardMenuGeometry * _activeItem; ///< menu item currently being interacted with
 
         bool _clickActive; ///< if a menu item is currently being clicked on
-
+		bool _movable; ///< set to false to lock the menu in place
         bool _foundItem; ///< if the isect checks have hit an item in this menu for the frame
+
 
         float _distance; ///< distance on the wand to spawn the menu
         float _scale; ///< menu scale

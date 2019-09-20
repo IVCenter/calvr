@@ -6,6 +6,7 @@
 #include <cvrKernel/InteractionManager.h>
 #include <cvrKernel/NodeMask.h>
 #include <cvrUtil/Intersection.h>
+#include <cvrConfig/ConfigManager.h>
 
 using namespace cvr;
 
@@ -14,6 +15,7 @@ MenuManager * MenuManager::_myPtr = NULL;
 MenuManager::MenuManager()
 {
     _inDestructor = false;
+	_allowSceneMenus = ConfigManager::getBool("AllowSceneMenus");
 }
 
 MenuManager::~MenuManager()
@@ -104,7 +106,16 @@ void MenuManager::update()
         iv.addLineSegment(handsegs.back().get());
     }
 
-    SceneManager::instance()->getMenuRoot()->accept(iv);
+	if (_allowSceneMenus)
+	{
+		//Allow objects other than the menu root to have menus. Takes more time to process intersections
+		//but allows for menus to be attached to objects in the scene
+		SceneManager::instance()->getScene()->accept(iv);
+	}
+	else
+	{
+		SceneManager::instance()->getMenuRoot()->accept(iv);
+	}
 
     for(int i = 0; i < TrackingManager::instance()->getNumHands(); i++)
     {

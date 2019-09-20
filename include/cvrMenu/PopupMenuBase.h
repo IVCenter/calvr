@@ -59,6 +59,11 @@ class PopupMenuBase : public MenuBase
          */
         virtual osg::Matrix getTransform() = 0;
 
+		/**
+		 * @Brief Get the full PopupMenu Implementation root object
+		 */
+		virtual osg::MatrixTransform* getRoot() = 0;
+
         /**
          * @brief Set if the menu should be visible
          */
@@ -68,6 +73,16 @@ class PopupMenuBase : public MenuBase
          * @brief Get if the menu is currently visible
          */
         virtual bool isVisible() = 0;
+
+		/**
+		 * @brief Set whether the menu should be movable
+		 */
+		virtual void setMovable(bool m) = 0;
+
+		/**
+		 * @brief Get whether the menu is movable
+		 */
+		virtual bool getMovable() = 0;
 };
 
 /**

@@ -119,6 +119,23 @@ void TrackerOpenVR::update(std::map<int,std::list<InteractionEvent*> > & eventMa
 	}
 	if (_head)
 	{
+		TrackedBody* body = &(_bodies[0]);
+
+		osg::Matrix m = osg::Matrix();
+		m.makeRotate(_device->orientation());
+		m.postMultTranslate(_device->position());
+		m = osg::Matrix::inverse(m); //Need to invert view matrix
+		osg::Vec3 pos = m.getTrans();
+		osg::Quat rot = m.getRotate();
+
+		body->x = pos.x();
+		body->y = -pos.z();
+		body->z = pos.y();
+		//std::cout << body->x << ", " << body->y << ", " << body->z << std::endl;
+		body->qx = rot.x();
+		body->qy = -rot.z();
+		body->qz = rot.y();
+		body->qw = rot.w();
 	}
 	if (_numControllers)
 	{

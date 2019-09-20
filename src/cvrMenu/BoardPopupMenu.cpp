@@ -201,6 +201,12 @@ osg::Matrix BoardPopupMenu::getTransform()
     return _menuRoot->getMatrix();
 }
 
+osg::MatrixTransform* BoardPopupMenu::getRoot()
+{
+	return _menuRoot;
+}
+
+
 void BoardPopupMenu::setVisible(bool v)
 {
     if(v == _menuActive)

@@ -15,7 +15,7 @@ PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
     //TODO: get from somewhere
     _type = BOARDMENU;
 
-    _menu = new BoardPopupMenu();
+	_menu = new BoardPopupMenu();
 
     if(closable)
     {
@@ -108,6 +108,16 @@ void PopupMenu::setScale(float scale)
 float PopupMenu::getScale()
 {
     return _menu->getScale();
+}
+
+void PopupMenu::setMovable(bool m)
+{
+	_menu->setMovable(m);
+}
+
+osg::MatrixTransform* PopupMenu::getRootObject()
+{
+	return _menu->getRoot();
 }
 
 void PopupMenu::setVisible(bool b)

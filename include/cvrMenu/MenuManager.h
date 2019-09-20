@@ -76,6 +76,7 @@ class CVRMENU_EXPORT MenuManager
 
         int _primaryHand;
         bool _inDestructor;
+		bool _allowSceneMenus;
 };
 
 /**

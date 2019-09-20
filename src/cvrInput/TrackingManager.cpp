@@ -485,6 +485,7 @@ bool TrackingManager::init()
         }
     }
 
+
     _totalBodies = 0;
     _totalButtons = 0;
     _totalValuators = 0;
