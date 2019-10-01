@@ -26,6 +26,7 @@ class BoardMenuSubMenuGeometry : public BoardMenuGeometry
         virtual void selectItem(bool on);
         virtual void openMenu(bool open);
         virtual void createGeometry(MenuItem * item);
+		virtual void updateGeometry();
 
         virtual void processEvent(InteractionEvent * event);
 

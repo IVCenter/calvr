@@ -41,7 +41,7 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
          * Looks for attibutes x,y,z,h,p,r,scale in configTag
          */
         PopupMenu(std::string title, std::string configTag = "", bool closable =
-                true);
+                true, bool displayTitle = true);
         virtual ~PopupMenu();
 
         /**
@@ -89,6 +89,8 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
 		 */
 		osg::MatrixTransform* getRootObject();
 
+		SubMenu* getRootSubMenu();
+
         /**
          * @brief Set the menu scale
          */
@@ -113,6 +115,8 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
 		 * @brief Set if the menu should be movable by the user
 		 */
 		void setMovable(bool m);
+
+		void setTitle(std::string title);
 
     protected:
         virtual bool init();

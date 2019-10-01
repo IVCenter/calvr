@@ -30,7 +30,7 @@ class CVRMENU_EXPORT MenuButton : public MenuItem
          * @brief Constructor
          * @param text label for button
          */
-        MenuButton(std::string text, bool indent = true);
+        MenuButton(std::string text, bool indent = true, std::string icon = "");
         virtual ~MenuButton();
 
         /**
@@ -40,10 +40,14 @@ class CVRMENU_EXPORT MenuButton : public MenuItem
 
         bool getIndent();
 
+		std::string & getIcon();
+
         /**
          * @brief set the text label for this button
          */
         void setText(std::string text);
+
+		void setIcon(std::string iconPath);
 
         void setIndent(bool b);
 
@@ -54,6 +58,7 @@ class CVRMENU_EXPORT MenuButton : public MenuItem
     protected:
         std::string _text; ///< button's text label
         bool _indent;
+		std::string _icon;
 };
 
 /**

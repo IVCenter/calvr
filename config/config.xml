@@ -59,7 +59,7 @@
      <NumHeads value="1" />
      <Head0Address system="1" body="0" />
 
-     <NumHands value="3" />
+     <NumHands value="2" />
      <Hand0>
        <Address system="0" body="0" />
        <ButtonMask system0="0xF"  />
@@ -88,6 +88,7 @@
       <ModelDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\models\" />
       <InteractButton value="0" />
       <PictureLocation value="C:\Users\Glynn\Documents\HelmsleyPictures" />
+      <BaseFolder value="C:\Users\Glynn\Documents\DICOMS" />
       <Files>
         <MG>
           <25 value = "C:\Users\Glynn\Documents\DICOMS\MG\2.5mm Stnd CHEST_Series0002\" />

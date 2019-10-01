@@ -291,6 +291,10 @@ osgText::Text * BoardMenuGeometry::makeText(std::string text, float size,
         osg::Vec3 pos, osg::Vec4 color, osgText::Text::AlignmentType align)
 {
     osgText::Text * textNode = new osgText::Text();
+	if (_item)
+	{
+		size = size * _item->getTextScale();
+	}
     textNode->setCharacterSize(size);
     textNode->setAlignment(align);
     textNode->setPosition(pos);

@@ -96,7 +96,7 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
     SubMenu * submenu = dynamic_cast<SubMenu*>(item);
 
-    if(_head)
+    if(_head && submenu->getDisplayTitle())
     {
         _geodeLine = new osg::Geode();
         _node->addChild(_geodeLine);
@@ -134,6 +134,11 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
 
         _geodeSelected->addDrawable(textNode);
     }
+	else if (_head && !submenu->getDisplayTitle())
+	{
+		_width = 0;
+		_height = _border;
+	}
     else
     {
         _geodeIcon = new osg::Geode();
@@ -190,6 +195,50 @@ void BoardMenuSubMenuGeometry::createGeometry(MenuItem * item)
     }
 }
 
+void BoardMenuSubMenuGeometry::updateGeometry()
+{
+	SubMenu * submenu = dynamic_cast<SubMenu*>(_item);
+
+	if (_head && submenu->getDisplayTitle())
+	{
+		_geode->removeDrawable(_geode->getDrawable(0));
+		_geodeSelected->removeDrawable(_geodeSelected->getDrawable(0));
+
+		osgText::Text * textNode = makeText(submenu->getTitle(),
+			1.15 * _textSize, osg::Vec3(0, -2, 0), _textColor,
+			osgText::Text::LEFT_TOP);
+		_geode->addDrawable(textNode);
+
+		osg::BoundingBox bb = getBound(textNode);
+		_width = bb.xMax() - bb.xMin();
+		_height = bb.zMax() - bb.zMin() + _border;
+
+		textNode = makeText(submenu->getTitle(), 1.15 * _textSize,
+			osg::Vec3(0, -2, 0), _textColorSelected, osgText::Text::LEFT_TOP);
+		_geodeSelected->addDrawable(textNode);
+
+	}
+	else if (!_head)
+	{
+		_geode->removeDrawable(_geode->getDrawable(0));
+		_geodeSelected->removeDrawable(_geodeSelected->getDrawable(0));
+
+		osgText::Text * textNode = makeText(submenu->getName(), _textSize,
+			osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0),
+			_textColor);
+		_geode->addDrawable(textNode);
+
+		osg::BoundingBox bb = getBound(textNode);
+		_width = bb.xMax() - bb.xMin() + _iconHeight + _border;
+		_height = _iconHeight;
+
+		textNode = makeText(submenu->getName(), _textSize,
+			osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0),
+			_textColorSelected);
+		_geodeSelected->addDrawable(textNode);
+	}
+}
+
 void BoardMenuSubMenuGeometry::processEvent(InteractionEvent * event)
 {
     if(event->getInteraction() == BUTTON_DOWN)
@@ -214,6 +263,8 @@ bool BoardMenuSubMenuGeometry::isMenuOpen()
 
 void BoardMenuSubMenuGeometry::resetMenuLine(float width)
 {
+	if (!_geodeLine) return;
+
     _geodeLine->removeDrawables(0,_geodeLine->getNumDrawables());
     _geodeLine->addDrawable(
             makeLine(osg::Vec3(0,-2,-(_height)),osg::Vec3(width,-2,-(_height)),

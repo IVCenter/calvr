@@ -3,11 +3,13 @@
 #include <cvrUtil/Bounds.h>
 
 #include <osg/Version>
+#include <osgDB/ReadFile>
+
 
 using namespace cvr;
 
 BoardMenuButtonGeometry::BoardMenuButtonGeometry() :
-        BoardMenuGeometry()
+	BoardMenuGeometry()
 {
 }
 
@@ -17,124 +19,143 @@ BoardMenuButtonGeometry::~BoardMenuButtonGeometry()
 
 void BoardMenuButtonGeometry::selectItem(bool on)
 {
-    if(on)
-    {
-        _node->removeChild(_geode);
-        _node->removeChild(_geodeSelected);
-        _node->addChild(_geodeSelected);
-    }
-    else
-    {
-        _node->removeChild(_geode);
-        _node->removeChild(_geodeSelected);
-        _node->addChild(_geode);
-    }
+	if (on)
+	{
+		_node->removeChild(_geode);
+		_node->removeChild(_geodeSelected);
+		_node->addChild(_geodeSelected);
+	}
+	else
+	{
+		_node->removeChild(_geode);
+		_node->removeChild(_geodeSelected);
+		_node->addChild(_geode);
+	}
 }
 
 void BoardMenuButtonGeometry::createGeometry(MenuItem * item)
 {
-    _node = new osg::MatrixTransform();
-    _geode = new osg::Geode();
-    _geodeSelected = new osg::Geode();
-    _intersect = new osg::Geode();
-    _node->addChild(_intersect);
-    _node->addChild(_geode);
-    _item = item;
+	_node = new osg::MatrixTransform();
+	_geode = new osg::Geode();
+	_geodeSelected = new osg::Geode();
+	_intersect = new osg::Geode();
+	_node->addChild(_intersect);
+	_node->addChild(_geode);
+	_item = item;
 
-    MenuButton * mb = dynamic_cast<MenuButton*>(item);
+	MenuButton * mb = dynamic_cast<MenuButton*>(item);
 
-    osgText::Text * textNode = makeText(mb->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),_textColor);
+	_geodeIcon = new osg::Geode();
+	_node->addChild(_geodeIcon);
 
-    if(!mb->getIndent())
-    {
-	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
-    }
 
-    osg::BoundingBox bb = cvr::getBound(textNode);
-    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
-    _height = _iconHeight;
+	osgText::Text * textNode = makeText(mb->getText(), _textSize,
+		osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0), _textColor);
 
-    _geode->addDrawable(textNode);
+	if (!mb->getIndent())
+	{
+		textNode->setPosition(osg::Vec3(0, -2, -_iconHeight / 2.0));
+	}
+	else
+	{
+		if (mb->getIcon().compare("") != 0)
+		{
+			osg::ref_ptr<osg::Texture2D> icon = loadIcon(mb->getIcon());
+			if (icon)
+			{
+				osg::Geometry* iconGeo = makeQuad(_iconHeight, -_iconHeight,
+					osg::Vec4(1.0, 1.0, 1.0, 1.0), osg::Vec3(0, -2, 0));
+				_geodeIcon->getOrCreateStateSet()->setTextureAttributeAndModes(0, icon, osg::StateAttribute::ON);
+				_geodeIcon->addDrawable(iconGeo);
+			}
+		}
+	}
 
-    textNode = makeText(mb->getText(),_textSize,
-            osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0),
-            _textColorSelected);
+	osg::BoundingBox bb = cvr::getBound(textNode);
+	_width = bb.xMax() - bb.xMin() + _iconHeight + _border;
+	_height = _iconHeight;
 
-    _geodeSelected->addDrawable(textNode);
+	_geode->addDrawable(textNode);
 
-    if(!mb->getIndent())
-    {
-	textNode->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
-	_width = bb.xMax() - bb.xMin();
-    }
+	textNode = makeText(mb->getText(), _textSize,
+		osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0),
+		_textColorSelected);
+
+	_geodeSelected->addDrawable(textNode);
+
+	if (!mb->getIndent())
+	{
+		textNode->setPosition(osg::Vec3(0, -2, -_iconHeight / 2.0));
+		_width = bb.xMax() - bb.xMin();
+	}
 }
 
 void BoardMenuButtonGeometry::updateGeometry()
 {
-    MenuButton * button = dynamic_cast<MenuButton*>(_item);
-    if(!button)
-    {
-        return;
-    }
+	MenuButton * button = dynamic_cast<MenuButton*>(_item);
+	if (!button)
+	{
+		return;
+	}
 
-    if(_geode->getNumDrawables())
-    {
-        osgText::Text * text = dynamic_cast<osgText::Text*>(_geode->getDrawable(
-                0));
-        if(text)
-        {
-            if(text->getText().createUTF8EncodedString() != button->getText())
-            {
-                text->setText(button->getText());
-        osg::BoundingBox bb = cvr::getBound(text);
-
-		if(button->getIndent())
+	if (_geode->getNumDrawables())
+	{
+		osgText::Text * text = dynamic_cast<osgText::Text*>(_geode->getDrawable(
+			0));
+		if (text)
 		{
-		    text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
-		    _width = bb.xMax() - bb.xMin() + _iconHeight + _border;
-		}
-		else
-		{
-		    text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
-		    _width = bb.xMax() - bb.xMin();
+			if (text->getText().createUTF8EncodedString() != button->getText())
+			{
+				text->setText(button->getText());
+				osg::BoundingBox bb = cvr::getBound(text);
+
+				if (button->getIndent())
+				{
+					text->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0));
+					_width = bb.xMax() - bb.xMin() + _iconHeight + _border;
+				}
+				else
+				{
+					text->setPosition(osg::Vec3(0, -2, -_iconHeight / 2.0));
+					_width = bb.xMax() - bb.xMin();
+				}
+
+				text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
+					0));
+				if (text)
+				{
+					text->setText(button->getText());
+
+					if (button->getIndent())
+					{
+						text->setPosition(osg::Vec3(_iconHeight + _border, -2, -_iconHeight / 2.0));
+					}
+					else
+					{
+						text->setPosition(osg::Vec3(0, -2, -_iconHeight / 2.0));
+					}
+				}
+			}
 		}
 
-                text = dynamic_cast<osgText::Text*>(_geodeSelected->getDrawable(
-                        0));
-                if(text)
-		{
-		    text->setText(button->getText());
 
-		    if(button->getIndent())
-		    {
-			text->setPosition(osg::Vec3(_iconHeight + _border,-2,-_iconHeight / 2.0));
-		    }
-		    else
-		    {
-			text->setPosition(osg::Vec3(0,-2,-_iconHeight / 2.0));
-		    }
-		}
-            }
-        }
-
-    }
+	}
 }
 
 void BoardMenuButtonGeometry::processEvent(InteractionEvent * event)
 {
-    switch(event->getInteraction())
-    {
-        case BUTTON_DOWN:
-        case BUTTON_DOUBLE_CLICK:
-            if(_item->getCallback())
-            {
-                _item->getCallback()->menuCallback(_item,
-                        event->asHandEvent() ?
-                                event->asHandEvent()->getHand() : 0);
-            }
-            break;
-        default:
-            break;
-    }
+	switch (event->getInteraction())
+	{
+	case BUTTON_DOWN:
+	case BUTTON_DOUBLE_CLICK:
+		if (_item->getCallback())
+		{
+			_item->getCallback()->menuCallback(_item,
+				event->asHandEvent() ?
+				event->asHandEvent()->getHand() : 0);
+		}
+		break;
+	default:
+		break;
+	}
 }

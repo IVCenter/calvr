@@ -32,6 +32,7 @@ class BoardMenuButtonGeometry : public BoardMenuGeometry
     protected:
         osg::ref_ptr<osg::Geode> _geode;
         osg::ref_ptr<osg::Geode> _geodeSelected;
+		osg::ref_ptr<osg::Geode> _geodeIcon;
 };
 
 /**
