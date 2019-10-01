@@ -67,6 +67,11 @@ osg::Matrix & PluginHelper::getHandMat(int hand)
     return TrackingManager::instance()->getHandMat(hand);
 }
 
+osg::MatrixTransform * PluginHelper::getHand(unsigned int hand)
+{
+	return SceneManager::instance()->getHandTransform(hand);
+}
+
 int PluginHelper::getNumHeads()
 {
     return TrackingManager::instance()->getNumHeads();

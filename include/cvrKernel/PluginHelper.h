@@ -105,6 +105,11 @@ class CVRKERNEL_EXPORT PluginHelper
          */
         static osg::Matrix & getHandMat(int hand = 0);
 
+		/**
+		 * @brief Get the hand object so that things may be attached/detached
+		 */
+		static osg::MatrixTransform * getHand(unsigned int hand = 0);
+
         /**
          * @brief Get the number of head targets being tracked
          */

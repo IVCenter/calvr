@@ -29,6 +29,10 @@
 #include <cvrKernel/ScreenOculus.h>
 #endif
 
+#ifdef WITH_OPENVR
+#include <cvrKernel/ScreenOpenVR.h>
+#endif
+
 #ifdef WIN32
 #define M_PI 3.141592653589793238462643
 #endif
@@ -799,6 +803,14 @@ bool ScreenConfig::makeScreens()
 		else if(_screenInfoList[i]->myChannel->stereoMode == "OCULUS")
         {
             screen = new ScreenOculus();
+            screen->_myInfo = _screenInfoList[i];
+            screen->init(-1);
+        }
+#endif
+#ifdef WITH_OPENVR
+        else if(_screenInfoList[i]->myChannel->stereoMode == "OPENVR")
+        {
+            screen = new ScreenOpenVR();
             screen->_myInfo = _screenInfoList[i];
             screen->init(-1);
         }

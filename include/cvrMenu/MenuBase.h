@@ -83,6 +83,10 @@ class MenuBase
          * @brief Get the scale for the menu geometry
          */
         virtual float getScale() = 0;
+
+
+protected:
+
 };
 
 /**

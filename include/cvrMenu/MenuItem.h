@@ -35,6 +35,7 @@ enum MenuItemType
     IMAGE,
     LIST,
     BAR,
+    RADIAL,
     OTHER
 };
 

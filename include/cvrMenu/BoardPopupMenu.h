@@ -48,9 +48,13 @@ class BoardPopupMenu : public PopupMenuBase, public BoardMenu
         virtual osg::Quat getRotation();
         virtual void setTransform(osg::Matrix m);
         virtual osg::Matrix getTransform();
+		virtual osg::MatrixTransform* getRoot();
 
         virtual void setVisible(bool v);
         virtual bool isVisible();
+
+		virtual void setMovable(bool m) { _movable = m; }
+		virtual bool getMovable() { return _movable; }
 
     protected:
 };

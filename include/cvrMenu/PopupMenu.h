@@ -84,6 +84,11 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
          */
         osg::Matrix getTransform();
 
+		/**
+		 * @Brief Get the root osg object containing this menu
+		 */
+		osg::MatrixTransform* getRootObject();
+
         /**
          * @brief Set the menu scale
          */
@@ -103,6 +108,11 @@ class CVRMENU_EXPORT PopupMenu : public MenuSystemBase, public MenuCallback
          * @brief Get if the menu is visible
          */
         bool isVisible();
+
+		/**
+		 * @brief Set if the menu should be movable by the user
+		 */
+		void setMovable(bool m);
 
     protected:
         virtual bool init();
