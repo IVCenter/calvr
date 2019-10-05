@@ -125,6 +125,7 @@ void MenuManager::update()
         {
             IsectInfo isect;
             isect.point = hitList.at(j).getWorldIntersectPoint();
+			isect.localpoint = hitList.at(j).getLocalIntersectPoint();
             isect.normal = hitList.at(j).getWorldIntersectNormal();
             isect.geode = hitList.at(j)._geode.get();
             if(_handLastMenuSystem[i])

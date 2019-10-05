@@ -69,6 +69,18 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BubbleMenu/BubbleMenuSubMenuClosableGeometry.h
     ${HEADER_PATH}/BubbleMenu/BubbleMenuImageGeometry.h
     ${HEADER_PATH}/BubbleMenu/Lerp.h
+    ${HEADER_PATH}/NewUI/UIElement.h
+    ${HEADER_PATH}/NewUI/UIEmptyElement.h
+    ${HEADER_PATH}/NewUI/UIList.h
+    ${HEADER_PATH}/NewUI/UIMenu.h
+    ${HEADER_PATH}/NewUI/UIUtil.h
+    ${HEADER_PATH}/NewUI/UIQuadElement.h
+    ${HEADER_PATH}/NewUI/UIPopup.h
+    ${HEADER_PATH}/NewUI/UIDial.h
+    ${HEADER_PATH}/NewUI/UIText.h
+    ${HEADER_PATH}/NewUI/UIButton.h
+    ${HEADER_PATH}/NewUI/UISlider.h
+    ${HEADER_PATH}/NewUI/UITexture.h
 )
 
 SET(LIB_SRC_FILES
@@ -127,6 +139,18 @@ SET(LIB_SRC_FILES
     BubbleMenu/BubbleMenuSubMenuGeometry.cpp
     BubbleMenu/BubbleMenuSubMenuClosableGeometry.cpp
     BubbleMenu/Lerp.cpp
+    NewUI/UIElement.cpp
+    NewUI/UIEmptyElement.cpp
+    NewUI/UIList.cpp
+    NewUI/UIMenu.cpp
+    NewUI/UIUtil.cpp
+    NewUI/UIQuadElement.cpp
+    NewUI/UIPopup.cpp
+    NewUI/UIDial.cpp
+    NewUI/UIText.cpp
+    NewUI/UIButton.cpp
+    NewUI/UISlider.cpp
+    NewUI/UITexture.cpp
 )
 
 
