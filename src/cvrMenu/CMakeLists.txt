@@ -81,6 +81,9 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/NewUI/UIButton.h
     ${HEADER_PATH}/NewUI/UISlider.h
     ${HEADER_PATH}/NewUI/UITexture.h
+    ${HEADER_PATH}/NewUI/UIToggle.h
+    ${HEADER_PATH}/NewUI/UISwitch.h
+    ${HEADER_PATH}/NewUI/UICheckbox.h
 )
 
 SET(LIB_SRC_FILES
@@ -151,6 +154,9 @@ SET(LIB_SRC_FILES
     NewUI/UIButton.cpp
     NewUI/UISlider.cpp
     NewUI/UITexture.cpp
+    NewUI/UIToggle.cpp
+    NewUI/UISwitch.cpp
+    NewUI/UICheckbox.cpp
 )
 
 

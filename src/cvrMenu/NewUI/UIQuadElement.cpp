@@ -8,13 +8,12 @@ void UIQuadElement::createGeometry()
 {
 	_transform = new osg::MatrixTransform();
 	_intersect = new osg::Geode();
-	_geode = new osg::Geode();
 
 	_group->addChild(_transform);
-	_transform->addChild(_intersect);
+	//_transform->addChild(_intersect);
 	_transform->addChild(_geode);
 
-	_intersect->setNodeMask(cvr::INTERSECT_MASK);
+	//_intersect->setNodeMask(cvr::INTERSECT_MASK);
 
 	osg::Geometry* drawable = UIUtil::makeQuad(1, 1, _color, osg::Vec3(0,0,0));
 	_geode->addDrawable(drawable);

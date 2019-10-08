@@ -1,5 +1,6 @@
 #include "cvrMenu/NewUI/UIElement.h"
 #include "cvrMenu/NewUI/UIUtil.h"
+#include <algorithm>
 
 using namespace cvr;
 
@@ -9,6 +10,9 @@ UIElement::UIElement()
 	_percentSize = osg::Vec3(1, 1, 1);
 	_absolutePos = osg::Vec3(0, -0.01f, 0);
 	_absoluteSize = osg::Vec3(0, 0, 0);
+
+	_aspect = osg::Vec3(1, 0, 1);
+	_useAspect = false;
 
 	_actualPos = osg::Vec3(0, 0, 0);
 	_actualSize = osg::Vec3(0, 0, 0);
@@ -34,8 +38,7 @@ void UIElement::updateElement(osg::Vec3 pos, osg::Vec3 size)
 	}
 	if (_dirty)
 	{
-		_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
-		_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
+		calculateBounds(pos, size);
 
 		updateGeometry();
 		for (int i = 0; i < _children.size(); ++i)
@@ -49,6 +52,35 @@ void UIElement::updateElement(osg::Vec3 pos, osg::Vec3 size)
 	{
 		_children[i]->updateElement(_actualPos, _actualSize);
 	}
+}
+
+void UIElement::calculateBounds(osg::Vec3 pos, osg::Vec3 size)
+{
+	_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
+	_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
+	/*
+	if (_useAspect)
+	{
+		float xmult = _actualSize.x() / _aspect.x();
+		if (_aspect.x() == 0)
+		{
+			xmult = 1e10;
+		}
+		float ymult = _actualSize.y() / _aspect.y();
+		if (_aspect.y() == 0)
+		{
+			ymult = 1e10;
+		}
+		float zmult = _actualSize.z() / _aspect.z();
+		if (_aspect.z() == 0)
+		{
+			zmult = 1e10;
+		}
+		float mult = std::min(xmult, std::min(ymult, zmult));
+		_actualSize = _aspect * mult;
+	}
+	*/
+
 }
 
 void UIElement::createGeometry()
@@ -101,6 +133,15 @@ void UIElement::removeChild(UIElement* e)
 	}
 }
 
+UIElement* UIElement::getChild(int index)
+{
+	if (index >= 0 && index < _children.size())
+	{
+		return _children[index].get();
+	}
+	return NULL;
+}
+
 void UIElement::setPercentPos(osg::Vec3 pos)
 {
 	if (_percentPos != pos)
@@ -133,6 +174,20 @@ void UIElement::setAbsoluteSize(osg::Vec3 size)
 	if (_absoluteSize != size)
 	{
 		_absoluteSize = size;
+		_dirty = true;
+	}
+}
+
+void UIElement::setAspect(osg::Vec3 aspect, bool useAspect)
+{
+	if (_useAspect != useAspect)
+	{
+		_useAspect = useAspect;
+		_dirty = true;
+	}
+	if (_aspect != aspect)
+	{
+		_aspect = aspect;
 		_dirty = true;
 	}
 }

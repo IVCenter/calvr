@@ -18,8 +18,7 @@ void UIEmptyElement::updateElement(osg::Vec3 pos, osg::Vec3 size)
 {
 	if (_dirty)
 	{
-		_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
-		_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
+		calculateBounds(pos, size);
 
 		for (int i = 0; i < _children.size(); ++i)
 		{

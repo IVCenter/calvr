@@ -4,6 +4,10 @@ using namespace cvr;
 
 bool UIToggle::onButtonPress(bool pressed)
 {
-	_on = !_on;
-	return onToggle();
+	if (pressed)
+	{
+		_on = !_on;
+		return onToggle();
+	}
+	return false;
 }

@@ -20,7 +20,7 @@ namespace cvr
 		//Called when the button is pressed using _button, or the button is released
 		virtual bool onButtonPress(bool pressed);
 
-		virtual bool onToggle() {};
+		virtual bool onToggle() { return true; }
 
 	protected:
 		bool _on;

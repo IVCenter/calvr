@@ -1,7 +1,38 @@
 #include "cvrMenu/NewUI/UISlider.h"
 #include "cvrKernel/NodeMask.h"
 
+#include <algorithm>
+
 using namespace cvr;
+
+
+UISlider::UISlider(std::string emptytexture, std::string filledtexture, std::string handletexture)
+	: UIElement()
+{
+	empty = new UITexture(emptytexture);
+	filled = new UITexture(filledtexture);
+	handle = new UITexture(handletexture);
+	handle->setAbsolutePos(handle->getAbsolutePos() + osg::Vec3(0, -0.1f, 0));
+	addChild(empty);
+	addChild(filled);
+	addChild(handle);
+	_button = 0;
+	_percent = 1e-9;
+}
+
+UISlider::UISlider(osg::Vec4 emptyColor, osg::Vec4 filledColor, osg::Vec4 handleColor)
+	: UIElement()
+{
+	empty = new UITexture(emptyColor);
+	filled = new UITexture(filledColor);
+	handle = new UITexture(handleColor);
+	handle->setAbsolutePos(handle->getAbsolutePos() + osg::Vec3(0, -0.1f, 0));
+	addChild(empty);
+	addChild(filled);
+	addChild(handle);
+	_button = 0;
+	_percent = 1e-9;
+}
 
 void UISlider::updateElement(osg::Vec3 pos, osg::Vec3 size)
 {
@@ -11,8 +42,7 @@ void UISlider::updateElement(osg::Vec3 pos, osg::Vec3 size)
 	}
 	if (_dirty)
 	{
-		_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
-		_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
+		calculateBounds(pos, size);
 
 		updateGeometry();
 		for (int i = 0; i < _children.size(); ++i)
@@ -85,8 +115,9 @@ bool UISlider::processEvent(InteractionEvent* event)
 		if (tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DRAG)
 		{
 			_percent = _lastHitPoint.x();
+			_percent = std::min(std::max(1e-9f, _percent), 1.0f - 1e-9f);
 			_dirty = true;
-			std::cerr << "<" << _lastHitPoint.x() << ", " << _lastHitPoint.y() << ", " << _lastHitPoint.z() << ">" << std::endl;
+			//std::cerr << "<" << _lastHitPoint.x() << ", " << _lastHitPoint.y() << ", " << _lastHitPoint.z() << ">" << std::endl;
 			return onPercentChange();
 		}
 	}

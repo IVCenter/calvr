@@ -38,9 +38,6 @@ namespace cvr
 
 
 	protected:
-		osg::ref_ptr<osg::MatrixTransform> _transform;
-		osg::ref_ptr<osg::Geode> _geode;
-
 		osg::ref_ptr<osg::Texture2D> _texture;
 	};
 }

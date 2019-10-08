@@ -86,6 +86,7 @@
     <HelmsleyVolume value="on">
       <ShaderDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\shaders\" />
       <ModelDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\models\" />
+      <ImageDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\icons\temp\" />
       <InteractButton value="0" />
       <PictureLocation value="C:\Users\Glynn\Documents\HelmsleyPictures" />
       <BaseFolder value="C:\Users\Glynn\Documents\DICOMS" />

@@ -1,5 +1,5 @@
-#ifndef CALVR_UI_EMPTY_ELEMENT_H
-#define CALVR_UI_EMPTY_ELEMENT_H
+#ifndef CALVR_UI_QUAD_ELEMENT_H
+#define CALVR_UI_QUAD_ELEMENT_H
 
 #include <cvrMenu/Export.h>
 #include <cvrMenu/NewUI/UIElement.h>
@@ -13,6 +13,7 @@ namespace cvr
 			: UIElement()
 		{
 			_color = color;
+			_geode = new osg::Geode();
 		}
 
 		virtual void createGeometry();

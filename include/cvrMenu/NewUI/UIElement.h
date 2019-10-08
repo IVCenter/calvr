@@ -62,6 +62,21 @@ namespace cvr
 		virtual osg::Vec3 getPercentSize() { return _percentSize; }
 		virtual osg::Vec3 getAbsoluteSize() { return _absoluteSize; }
 
+		virtual void setPos(osg::Vec3 percentPos, osg::Vec3 absolutePos)
+		{
+			setPercentPos(percentPos);
+			setAbsolutePos(absolutePos);
+		}
+
+		virtual void setSize(osg::Vec3 percentSize, osg::Vec3 absoluteSize)
+		{
+			setPercentSize(percentSize);
+			setAbsoluteSize(absoluteSize);
+		}
+
+		virtual void setAspect(osg::Vec3 aspect, bool useAspect = true);
+		virtual osg::Vec3 getAspect() { return _aspect; }
+
 
 		//Getter/setter for _handle property (determines if the item can be used to move the menu around
 		virtual void setIsHandle(bool h) { _handle = h; }
@@ -69,10 +84,14 @@ namespace cvr
 
 		virtual void addChild(UIElement* e);
 		virtual void removeChild(UIElement* e);
+		virtual UIElement* getChild(int index);
 
 		virtual osg::Group* getGroup() { return _group; }
 
 	protected:
+
+		virtual void calculateBounds(osg::Vec3 pos, osg::Vec3 size);
+
 		osg::ref_ptr<osg::Group> _group;
 		osg::ref_ptr<osg::Geode> _intersect;
 
@@ -80,6 +99,9 @@ namespace cvr
 		osg::Vec3 _absolutePos;
 		osg::Vec3 _percentSize;
 		osg::Vec3 _absoluteSize;
+
+		osg::Vec3 _aspect;
+		bool _useAspect;
 
 		osg::Vec3 _actualPos;
 		osg::Vec3 _actualSize;

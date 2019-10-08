@@ -35,10 +35,10 @@ osg::Geometry * UIUtil::makeQuad(float width, float height, osg::Vec4 color, osg
 	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 	osg::Vec2Array* texcoords = new osg::Vec2Array;
-	texcoords->push_back(osg::Vec2(0, 0));
 	texcoords->push_back(osg::Vec2(0, 1));
-	texcoords->push_back(osg::Vec2(1, 1));
+	texcoords->push_back(osg::Vec2(0, 0));
 	texcoords->push_back(osg::Vec2(1, 0));
+	texcoords->push_back(osg::Vec2(1, 1));
 
 	geo->setTexCoordArray(0, texcoords);
 
