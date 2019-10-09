@@ -46,8 +46,8 @@ namespace cvr
 		virtual void setMaxSize(float size);
 
 	protected:
-		osg::ref_ptr<osg::MatrixTransform> _transform;
-		osg::ref_ptr<osg::Geode> _geode;
+		//osg::ref_ptr<osg::MatrixTransform> _transform;
+		//osg::ref_ptr<osg::Geode> _geode;
 
 		float _minSize;
 		float _maxSize;

@@ -22,6 +22,8 @@ namespace cvr
 
 		virtual osg::MatrixTransform* getRoot() { return _menuRoot; }
 
+		virtual UIElement* getRootElement() { return _rootElement; }
+
 		virtual void setActive(bool active = true, bool attachToScene = true);
 
 		virtual bool isActive();

@@ -17,7 +17,7 @@ UIRadialButton::UIRadialButton(int button)
 
 bool UIRadialButton::onButtonPress(bool pressed)
 {
-	if (_parent.get())
+	if (pressed && _parent.get())
 	{
 		return _parent->onButtonPress(this);
 	}
@@ -85,6 +85,7 @@ void UIRadial::setCurrent(int current)
 		{
 			return;
 		}
+		_current = current;
 		onSelectionChange();
 	}
 }

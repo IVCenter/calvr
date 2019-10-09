@@ -14,13 +14,13 @@ namespace cvr
 	public:
 
 		UITexture(osg::Texture2D* texture)
-			: UIQuadElement()
+			: UIQuadElement(osg::Vec4(1,1,1,1))
 		{
 			_texture = texture;
 		}
 
 		UITexture(std::string texturePath)
-			: UIQuadElement()
+			: UIQuadElement(osg::Vec4(1, 1, 1, 1))
 		{
 			_texture = UIUtil::loadImage(texturePath);
 		}
@@ -31,7 +31,7 @@ namespace cvr
 
 		}
 
-		virtual void updateGeometry();
+		virtual void updateGeometry() override;
 
 		virtual void setTexture(osg::Texture2D* texture);
 		virtual void setTexture(std::string texturePath);

@@ -125,7 +125,7 @@ namespace cvr
 		osg::Vec3 _actualSize;
 
 		std::vector<std::shared_ptr<UIElement> > _children;
-		std::vector<std::shared_ptr<UIElement> > _parents;
+		UIElement* _parent;
 
 		bool _dirty;
 		bool _handle;

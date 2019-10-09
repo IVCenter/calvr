@@ -13,7 +13,7 @@ void UIQuadElement::createGeometry()
 	//_transform->addChild(_intersect);
 	_transform->addChild(_geode);
 
-	//_intersect->setNodeMask(cvr::INTERSECT_MASK);
+	_intersect->setNodeMask(cvr::INTERSECT_MASK);
 
 	osg::Geometry* drawable = UIUtil::makeQuad(1, 1, _color, osg::Vec3(0,0,0));
 	_geode->addDrawable(drawable);
@@ -41,11 +41,13 @@ void UIQuadElement::setColor(osg::Vec4 color)
 	if (_color != color)
 	{
 		_color = color;
-
+		_dirty = true;
+		/*
 		//No need to update children / set dirty when only color changes
 		osg::Vec4Array* colors = new osg::Vec4Array;
 		colors->push_back(_color);
 		((osg::Geometry*)_geode->getDrawable(0))->setColorArray(colors, osg::Array::BIND_OVERALL);
+		*/
 	}
 }
 

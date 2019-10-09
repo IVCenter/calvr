@@ -141,23 +141,23 @@
    </PipeConfig>
 
    <ChannelConfig>
-    <!-- <Channel width="1724" height="1912" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  /> -->
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" />
-    <Channel width="2160" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="1"  name="1"  />
+    <Channel width="2160" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />
+    <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" /> -->
+    <!-- <Channel width="2160" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="1"  name="1"  /> -->
     <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1" /> -->
    </ChannelConfig>
    
    <WindowConfig>
-    <!-- <Window width="1724" comment="FRONT" pipeIndex="0" height="1912" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" /> -->
-    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" cudaDevice="1" />
-    <Window width="2160" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="1" decoration="true" overrideRedirect="false" cudaDevice="0" />
+    <Window width="2160" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+    <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" cudaDevice="1" /> -->
+    <!-- <Window width="2160" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="1" decoration="true" overrideRedirect="false" cudaDevice="0" /> -->
     <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="1280" bottom="800" name="1" decoration="true" cudaDevice="1" /> -->
    </WindowConfig>
 
    <ScreenConfig>
-    <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" /> -->
-    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
-    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="1" />
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
+    <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" /> -->
+    <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="1" /> -->
     <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" /> -->
    </ScreenConfig>
 

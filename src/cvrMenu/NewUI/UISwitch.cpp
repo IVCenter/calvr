@@ -35,12 +35,14 @@ void UISwitch::setDisplayed(int index)
 		//If there is a currently displayed child, remove it
 		if (child = getChild(_index))
 		{
+			//child->getGroup()->setNodeMask(0x0);
 			_group->removeChild(child->getGroup());
 		}
 		//If a new child should be displayed, display it
 		if (child = getChild(index))
 		{
 			_group->addChild(child->getGroup());
+			//child->getGroup()->setNodeMask(0xffffffff);
 		}
 
 		_dirty = true;
@@ -56,4 +58,5 @@ int UISwitch::getDisplayed()
 void UISwitch::addChild(UIElement* e)
 {
 	_children.push_back(std::shared_ptr<UIElement>(e));
+	//e->getGroup()->setNodeMask(0x0);
 }

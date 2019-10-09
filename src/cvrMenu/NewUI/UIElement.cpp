@@ -19,6 +19,7 @@ UIElement::UIElement()
 	_actualSize = osg::Vec3(0, 0, 0);
 
 	_children = std::vector<std::shared_ptr<UIElement> >();
+	_parent = nullptr;
 
 	_group = new osg::Group();
 	_intersect = NULL;
@@ -60,27 +61,23 @@ void UIElement::calculateBounds(osg::Vec3 pos, osg::Vec3 size)
 	_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
 	_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
 	osg::Vec3 targetSize = _actualSize;
-	
+
 	if (_useAspect)
 	{
-		float xmult = _actualSize.x() / _aspect.x();
-		if (_aspect.x() == 0)
-		{
-			xmult = 1e10;
-		}
-		float ymult = _actualSize.y() / _aspect.y();
-		if (_aspect.y() == 0)
-		{
-			ymult = 1e10;
-		}
-		float zmult = _actualSize.z() / _aspect.z();
-		if (_aspect.z() == 0)
-		{
-			zmult = 1e10;
-		}
+		float xmult, ymult, zmult;
+		xmult = abs(_aspect.x()) > 1e-8 ? _actualSize.x() / _aspect.x() : 1e10;
+		ymult = abs(_aspect.y()) > 1e-8 ? _actualSize.y() / _aspect.y() : 1e10;
+		zmult = abs(_aspect.z()) > 1e-8 ? _actualSize.z() / _aspect.z() : 1e10;
+
 		float mult = std::min(xmult, std::min(ymult, zmult));
 		_actualSize = _aspect * mult;
 	}
+
+	//Can't let the scale of anything be truly zero (otherwise triangleintersect starts going 'SCREW U BUDDY U CANT DO THAT')
+	_actualSize.x() = abs(_actualSize.x()) < 1e-6 ? 1e-6 : _actualSize.x();
+	_actualSize.y() = abs(_actualSize.y()) < 1e-6 ? 1e-6 : _actualSize.y();
+	_actualSize.z() = abs(_actualSize.z()) < 1e-6 ? 1e-6 : _actualSize.z();
+
 	if (_alignment != NONE && _alignment != LEFT_TOP)
 	{
 		osg::Vec3 diff = targetSize - _actualSize;
@@ -162,6 +159,11 @@ void UIElement::addChild(UIElement* e)
 {
 	_children.push_back(std::shared_ptr<UIElement>(e));
 	_group->addChild(e->_group);
+	if (e->_parent)
+	{
+		e->_parent->removeChild(e);
+	}
+	e->_parent = this;
 }
 
 void UIElement::removeChild(UIElement* e)
