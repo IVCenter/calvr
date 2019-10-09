@@ -1,5 +1,4 @@
 #include "cvrMenu/NewUI/UIUtil.h"
-#include <osgDB/readFile>
 #include <iostream>
 
 using namespace cvr;

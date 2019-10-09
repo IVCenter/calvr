@@ -4,6 +4,8 @@
 #include <cvrMenu/Export.h>
 #include <cvrMenu/NewUI/UIElement.h>
 
+#include <limits>
+
 namespace cvr
 {
 	class CVRMENU_EXPORT UIList : public UIElement
