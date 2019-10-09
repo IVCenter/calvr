@@ -13,6 +13,7 @@ UIElement::UIElement()
 
 	_aspect = osg::Vec3(1, 0, 1);
 	_useAspect = false;
+	_alignment = NONE;
 
 	_actualPos = osg::Vec3(0, 0, 0);
 	_actualSize = osg::Vec3(0, 0, 0);
@@ -58,7 +59,8 @@ void UIElement::calculateBounds(osg::Vec3 pos, osg::Vec3 size)
 {
 	_actualPos = pos + UIUtil::multiplyComponents(size, _percentPos) + _absolutePos;
 	_actualSize = UIUtil::multiplyComponents(size, _percentSize) + _absoluteSize;
-	/*
+	osg::Vec3 targetSize = _actualSize;
+	
 	if (_useAspect)
 	{
 		float xmult = _actualSize.x() / _aspect.x();
@@ -79,7 +81,49 @@ void UIElement::calculateBounds(osg::Vec3 pos, osg::Vec3 size)
 		float mult = std::min(xmult, std::min(ymult, zmult));
 		_actualSize = _aspect * mult;
 	}
-	*/
+	if (_alignment != NONE && _alignment != LEFT_TOP)
+	{
+		osg::Vec3 diff = targetSize - _actualSize;
+		if (diff.length2() < 0.1f)
+		{
+			return;
+		}
+
+		switch (getAlign())
+		{
+		case LEFT_CENTER:
+			_actualPos.z() -= diff.z() / 2.0f;
+			break;
+		case LEFT_BOTTOM:
+			_actualPos.z() -= diff.z();
+			break;
+		case CENTER_TOP:
+			_actualPos.x() += diff.x() / 2.0f;
+			break;
+		case CENTER_CENTER:
+			_actualPos.x() += diff.x() / 2.0f;
+			_actualPos.z() -= diff.z() / 2.0f;
+			break;
+		case CENTER_BOTTOM:
+			_actualPos.x() += diff.x() / 2.0f;
+			_actualPos.z() -= diff.z();
+			break;
+		case RIGHT_TOP:
+			_actualPos.x() += diff.x();
+			break;
+		case RIGHT_CENTER:
+			_actualPos.x() += diff.x();
+			_actualPos.z() -= diff.z() / 2.0f;
+			break;
+		case RIGHT_BOTTOM:
+			_actualPos.x() += diff.x();
+			_actualPos.z() -= diff.z();
+			break;
+		default:
+			break;
+		}
+	}
+	
 
 }
 
@@ -188,6 +232,15 @@ void UIElement::setAspect(osg::Vec3 aspect, bool useAspect)
 	if (_aspect != aspect)
 	{
 		_aspect = aspect;
+		_dirty = true;
+	}
+}
+
+void UIElement::setAlign(Alignment align)
+{
+	if (_alignment != align)
+	{
+		_alignment = align;
 		_dirty = true;
 	}
 }

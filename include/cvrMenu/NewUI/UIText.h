@@ -22,8 +22,8 @@ namespace cvr
 		virtual void createGeometry() override;
 		virtual void updateGeometry() override;
 
-		virtual osgText::Text::AlignmentType getAlignment();
-		virtual void setAlignment(osgText::Text::AlignmentType);
+		virtual osgText::Text::AlignmentType getTextAlign();
+		virtual void setTextAlign(osgText::Text::AlignmentType);
 
 		virtual osgText::Font* getFont();
 		virtual void setFont(osgText::Font*);

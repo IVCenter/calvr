@@ -19,6 +19,20 @@ namespace cvr
 	class CVRMENU_EXPORT UIElement
 	{
 	public:
+
+		enum Alignment {
+			NONE,
+			LEFT_TOP,
+			LEFT_CENTER,
+			LEFT_BOTTOM,
+			CENTER_TOP,
+			CENTER_CENTER,
+			CENTER_BOTTOM,
+			RIGHT_TOP,
+			RIGHT_CENTER,
+			RIGHT_BOTTOM
+		};
+
 		UIElement();
 		virtual ~UIElement();
 
@@ -77,6 +91,9 @@ namespace cvr
 		virtual void setAspect(osg::Vec3 aspect, bool useAspect = true);
 		virtual osg::Vec3 getAspect() { return _aspect; }
 
+		virtual void setAlign(Alignment align);
+		virtual Alignment getAlign() { return _alignment; }
+
 
 		//Getter/setter for _handle property (determines if the item can be used to move the menu around
 		virtual void setIsHandle(bool h) { _handle = h; }
@@ -102,6 +119,7 @@ namespace cvr
 
 		osg::Vec3 _aspect;
 		bool _useAspect;
+		Alignment _alignment;
 
 		osg::Vec3 _actualPos;
 		osg::Vec3 _actualSize;

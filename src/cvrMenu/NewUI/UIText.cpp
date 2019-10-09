@@ -27,7 +27,7 @@ void UIText::updateGeometry()
 {
 	osg::Vec3 textPos = _actualPos;
 
-	switch (getAlignment()) 
+	switch (getTextAlign()) 
 	{
 	case osgText::Text::LEFT_TOP:
 		break;
@@ -67,14 +67,14 @@ void UIText::updateGeometry()
 	_text->setMaximumHeight(_actualSize.z());
 }
 
-osgText::Text::AlignmentType UIText::getAlignment()
+osgText::Text::AlignmentType UIText::getTextAlign()
 {
 	return _text->getAlignment();
 }
 
-void UIText::setAlignment(osgText::Text::AlignmentType alignment)
+void UIText::setTextAlign(osgText::Text::AlignmentType alignment)
 {
-	if (getAlignment() != alignment)
+	if (getTextAlign() != alignment)
 	{
 		_text->setAlignment(alignment);
 		_dirty = true;
