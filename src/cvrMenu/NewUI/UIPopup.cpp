@@ -9,6 +9,8 @@ using namespace cvr;
 UIPopup::UIPopup()
 {
 	_activeElement = NULL;
+	_interacting = false;
+	_foundItem = false;
 
 	_menuRoot = new osg::MatrixTransform();
 	_menuRoot->setMatrix(osg::Matrix::identity());
@@ -42,16 +44,26 @@ bool UIPopup::processEvent(InteractionEvent * event)
 {
 	if (_activeElement)
 	{
-		return _activeElement->processEvent(event);
+		_interacting = _activeElement->processEvent(event);
+		return _interacting;
 	}
 
+	_interacting = false;
 	return false;
 }
 
 bool UIPopup::processIsect(IsectInfo & isect, int hand)
 {
 	UIElement* e = _rootElement->processIsect(isect, hand);
-	if (e)
+	if (_interacting)
+	{
+		if (e)
+		{
+			return true;
+		}
+		return false;
+	}
+	else if (e)
 	{
 		if (_activeElement)
 		{
@@ -77,7 +89,7 @@ bool UIPopup::processIsect(IsectInfo & isect, int hand)
 
 void UIPopup::updateEnd()
 {
-	if (!_foundItem && _activeElement)
+	if (_activeElement && !_foundItem && !_interacting)
 	{
 		_activeElement->processHover(false);
 		_activeElement = NULL;

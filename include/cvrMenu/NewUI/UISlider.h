@@ -24,11 +24,14 @@ namespace cvr
 
 		virtual bool processEvent(InteractionEvent * event);
 
-		//Called when the button is pressed using _button, or the button is released
+		//Called when the slider is moved
 		virtual bool onPercentChange() { return true; }
 
 		//Called when pointer enters and exits the intersection geode of this element
 		virtual void processHover(bool enter);
+
+		virtual float getPercent() { return _percent; }
+		virtual void setPercent(float p);
 
 		UITexture* empty;
 		UITexture* filled;

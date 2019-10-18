@@ -31,6 +31,10 @@ namespace cvr
 		virtual const std::string& getText();
 		virtual void setText(const std::string& text);
 
+		osgText::Text* getTextObject() { return _text; }
+
+		virtual void setColor(osg::Vec4 color = osg::Vec4(1, 1, 1, 1));
+
 	protected:
 		osg::ref_ptr<osg::MatrixTransform> _transform;
 		osg::ref_ptr<osg::Geode> _geode;

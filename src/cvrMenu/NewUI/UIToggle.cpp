@@ -6,8 +6,13 @@ bool UIToggle::onButtonPress(bool pressed)
 {
 	if (pressed)
 	{
-		_on = !_on;
-		return onToggle();
+		toggle();
 	}
 	return false;
+}
+
+bool UIToggle::toggle()
+{
+	_on = !_on;
+	return onToggle();
 }

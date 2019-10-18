@@ -8,7 +8,7 @@ UIElement::UIElement()
 {
 	_percentPos = osg::Vec3(0, 0, 0);
 	_percentSize = osg::Vec3(1, 1, 1);
-	_absolutePos = osg::Vec3(0, -0.01f, 0);
+	_absolutePos = osg::Vec3(0, -0.1f, 0);
 	_absoluteSize = osg::Vec3(0, 0, 0);
 
 	_aspect = osg::Vec3(1, 0, 1);

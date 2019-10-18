@@ -52,6 +52,7 @@ namespace cvr
 
 		UIElement* _activeElement;
 		bool _foundItem; // Has the isect found anything this frame?
+		bool _interacting; // Is the last found active element being interacted with currently?
 	};
 
 }

@@ -1,5 +1,6 @@
 #include "cvrMenu/NewUI/UISlider.h"
 #include "cvrKernel/NodeMask.h"
+#include "cvrInput/TrackingManager.h"
 
 #include <algorithm>
 
@@ -107,6 +108,16 @@ void UISlider::updateGeometry()
 	_transform->setMatrix(mat);
 }
 
+void UISlider::setPercent(float p)
+{
+	p = std::min(std::max(1e-9f, p), 1.0f - 1e-9f);
+	if (_percent != p)
+	{
+		_percent = p;
+		_dirty = true;
+	}
+}
+
 bool UISlider::processEvent(InteractionEvent* event)
 {
 	TrackedButtonInteractionEvent* tie = event->asTrackedButtonEvent();
@@ -114,9 +125,34 @@ bool UISlider::processEvent(InteractionEvent* event)
 	{
 		if (tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DRAG)
 		{
-			_percent = _lastHitPoint.x();
-			_percent = std::min(std::max(1e-9f, _percent), 1.0f - 1e-9f);
-			_dirty = true;
+			osg::MatrixList ltw = _intersect->getWorldMatrices();
+			osg::Matrix m = ltw[0];//osg::Matrix::identity();
+			//for (int i = 0; i < ltw.size(); ++i)
+			//{
+			//	m.postMult(ltw[i]);
+			//}
+			osg::Matrix mi = osg::Matrix::inverse(m);
+
+			osg::Vec4d l4 = osg::Vec4(0, 1, 0, 0) * TrackingManager::instance()->getHandMat(tie->getHand());
+			osg::Vec3 l = osg::Vec3(l4.x(), l4.y(), l4.z());
+
+			osg::Vec4d l04 = osg::Vec4(0, 0, 0, 1) * TrackingManager::instance()->getHandMat(tie->getHand());
+			osg::Vec3 l0 = osg::Vec3(l04.x(), l04.y(), l04.z());
+
+			osg::Vec4d n4 = osg::Vec4(0, 1, 0, 0) * m;
+			osg::Vec3 n = osg::Vec3(n4.x(), n4.y(), n4.z());
+
+			osg::Vec4d p04 = osg::Vec4(0, 0, 0, 1) * m;
+			osg::Vec3 p0 = osg::Vec3(p04.x(), p04.y(), p04.z());
+
+
+			osg::Vec3 p = l0 + l * (((p0 - l0) * n) / (l * n));
+
+			osg::Vec4 pl = osg::Vec4(p.x(), p.y(), p.z(), 1) * mi;
+
+			setPercent(pl.x());
+			//_percent = pl.x(); // _lastHitPoint.x();
+			//_dirty = true;
 			//std::cerr << "<" << _lastHitPoint.x() << ", " << _lastHitPoint.y() << ", " << _lastHitPoint.z() << ">" << std::endl;
 			return onPercentChange();
 		}

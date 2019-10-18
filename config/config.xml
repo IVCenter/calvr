@@ -11,7 +11,7 @@
     <Far value="10000" />
     <CullingMode value="DEFAULT" /> <!-- CALVR | DEFAULT -->
     <MultiSample value="4" />
-    <UseFrameBuffer value="false" />
+    <UseFrameBuffer value="true" />
     <AllowSceneMenus value="true" />
 
     <ShowAxis value="off" />
@@ -101,9 +101,7 @@
         </JH>
         <Larry>
           <2012-01-17-series214 value="C:\Users\Glynn\Documents\DICOMS\Larry\2012-01-17-series214" />
-          <2016-10-26-series23 value="C:\Users\Glynn\Documents\DICOMS\Larry\2016-10-26-series23">
-            <Mask value="C:\Users\Glynn\Documents\DICOMS\Larry\mri_new_label_2016" />
-          </2016-10-26-series23>
+          <2016-10-26-series23 value="C:\Users\Glynn\Documents\DICOMS\Larry\2016-10-26-series23" />
           <2017-01-26-series24 value="C:\Users\Glynn\Documents\DICOMS\Larry\2017-01-26-series24" />
         </Larry>
       </Files>
@@ -128,7 +126,7 @@
    </MenuSystem>
 
 
-   <ViewerPosition x="0" y="0" z="0" />
+   <ViewerPosition x="0" y="-250" z="0" />
    <SceneSize value="10000" />
 
    <NumPipes value="1" />

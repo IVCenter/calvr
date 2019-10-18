@@ -16,8 +16,9 @@ osg::Vec3 UIUtil::multiplyComponents(osg::Vec3 lhs, osg::Vec3 rhs)
 osg::Geometry * UIUtil::makeQuad(float width, float height, osg::Vec4 color, osg::Vec3 pos)
 {
 	osg::Geometry * geo = new osg::Geometry();
-	//geo->setUseDisplayList(false);
+	geo->setUseDisplayList(false);
 	geo->setUseVertexBufferObjects(true);
+
 
 	osg::Vec3Array* verts = new osg::Vec3Array();
 	verts->push_back(pos + osg::Vec3(0, 0, 0));
@@ -29,18 +30,19 @@ osg::Geometry * UIUtil::makeQuad(float width, float height, osg::Vec4 color, osg
 
 	geo->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS, 0, 4));
 
-	osg::Vec4Array* colors = new osg::Vec4Array;
-	colors->push_back(color);
-	geo->setColorArray(colors);
-	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
-
 	osg::Vec2Array* texcoords = new osg::Vec2Array;
 	texcoords->push_back(osg::Vec2(0, 1));
 	texcoords->push_back(osg::Vec2(0, 0));
 	texcoords->push_back(osg::Vec2(1, 0));
 	texcoords->push_back(osg::Vec2(1, 1));
 
+	geo->setVertexAttribArray(1, texcoords, osg::Array::BIND_PER_VERTEX);
 	geo->setTexCoordArray(0, texcoords);
+
+	osg::Vec4Array* colors = new osg::Vec4Array;
+	colors->push_back(color);
+	geo->setColorArray(colors);
+	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 	return geo;
 }

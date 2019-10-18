@@ -22,6 +22,9 @@ namespace cvr
 
 		virtual bool onToggle() { return true; }
 
+		virtual bool isOn() { return _on; }
+		virtual bool toggle();
+
 	protected:
 		bool _on;
 	};

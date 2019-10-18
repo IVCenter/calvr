@@ -108,3 +108,8 @@ void UIText::setText(const std::string& text)
 		_dirty = true;
 	}
 }
+
+void UIText::setColor(osg::Vec4 color)
+{
+	_text->setColor(color);
+}
