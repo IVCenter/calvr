@@ -9,6 +9,7 @@
 #include <osg/Texture2D>
 #include <osgText/Text>
 
+#include <osgDB/ReadFile>
 
 namespace cvr
 {

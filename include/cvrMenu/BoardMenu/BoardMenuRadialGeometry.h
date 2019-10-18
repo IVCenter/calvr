@@ -29,18 +29,18 @@ class BoardMenuRadialGeometry : public BoardMenuGeometry
         virtual void createGeometry(MenuItem * item);
 		void generateRadial();
         virtual void updateGeometry();
-		virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd);
+	virtual void update(osg::Vec3 & pointerStart, osg::Vec3 & pointerEnd);
 
         virtual void processEvent(InteractionEvent * event);
     protected:
         osg::ref_ptr<osg::Group> _group;
 		osg::ref_ptr<osg::MatrixTransform> _selection;
 
-		std::vector<osg::ref_ptr<osg::Geometry>> _innerArcs;
-		std::vector<osg::ref_ptr<osg::MatrixTransform>> _outerArcs;
-		std::vector<osg::ref_ptr<osgText::Text>> _text;
-		std::vector<osg::ref_ptr<osg::Node>> _symbols;
-		std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>> _pats;
+		std::vector<osg::ref_ptr<osg::Geometry> > _innerArcs;
+		std::vector<osg::ref_ptr<osg::MatrixTransform> > _outerArcs;
+		std::vector<osg::ref_ptr<osgText::Text> > _text;
+		std::vector<osg::ref_ptr<osg::Node> > _symbols;
+		std::vector<osg::ref_ptr<osg::PositionAttitudeTransform> > _pats;
 
 		std::vector<std::string> _prevText;
 		std::vector<bool> _prevIsSymbol;
@@ -48,11 +48,11 @@ class BoardMenuRadialGeometry : public BoardMenuGeometry
 
         float _lastX;
         float _lastY;
-		float _center;
-		float _radius;
-		int _hoverIndex;
-		int _selectedIndex;
-		MenuRadial * _radial;
+	float _center;
+	float _radius;
+	int _hoverIndex;
+	int _selectedIndex;
+	MenuRadial * _radial;
 };
 
 /**

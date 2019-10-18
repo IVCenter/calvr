@@ -51,11 +51,11 @@ void BoardMenuRadialGeometry::createGeometry(MenuItem * item)
 
 
 
-	_outerArcs = std::vector<osg::ref_ptr<osg::MatrixTransform>>(labels.size());
-	_innerArcs = std::vector<osg::ref_ptr<osg::Geometry>>(labels.size());
-	_text = std::vector<osg::ref_ptr<osgText::Text>>(labels.size());
-	_symbols = std::vector<osg::ref_ptr<osg::Node>>(labels.size());
-	_pats = std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>>(labels.size());
+	_outerArcs = std::vector<osg::ref_ptr<osg::MatrixTransform> >(labels.size());
+	_innerArcs = std::vector<osg::ref_ptr<osg::Geometry> >(labels.size());
+	_text = std::vector<osg::ref_ptr<osgText::Text> >(labels.size());
+	_symbols = std::vector<osg::ref_ptr<osg::Node> >(labels.size());
+	_pats = std::vector<osg::ref_ptr<osg::PositionAttitudeTransform> >(labels.size());
 	generateRadial();
 }
 

@@ -12,6 +12,7 @@
 #include <osg/MatrixTransform>
 
 #include <vector>
+#include <memory>
 
 namespace cvr
 {
