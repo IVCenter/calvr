@@ -74,7 +74,7 @@ bool UIRadial::onButtonPress(UIRadialButton* b)
 			}
 		}
 	}
-	return false;
+	return true;
 }
 
 void UIRadial::setCurrent(int current)

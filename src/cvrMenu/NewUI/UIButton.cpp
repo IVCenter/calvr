@@ -48,6 +48,10 @@ bool UIButton::processEvent(InteractionEvent * event)
 			_buttonDown = false;
 			return onButtonPress(false);
 		}
+		else if (tie->getInteraction() == BUTTON_DRAG)
+		{
+			return true;
+		}
 	}
 	return false;
 }
