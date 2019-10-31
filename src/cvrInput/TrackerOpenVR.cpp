@@ -132,7 +132,7 @@ void TrackerOpenVR::update(std::map<int,std::list<InteractionEvent*> > & eventMa
 		osg::Vec3 pos = _device->position(); // m.getTrans();
 		osg::Quat rot = _device->orientation(); // m.getRotate();
 
-		std::cout << pos.x() << ", " << pos.y() << ", " << pos.z() << std::endl;
+		//std::cout << pos.x() << ", " << pos.y() << ", " << pos.z() << std::endl;
 
 		body->x = pos.x();
 		body->y = -pos.z();
