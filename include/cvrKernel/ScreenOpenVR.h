@@ -14,7 +14,7 @@
 #include <OpenThreads/Mutex>
 
 #include <openvr.h>
-#include <openvrdevice.h>
+#include <cvrKernel/OpenVRDevice.h>
 
 #include <list>
 
@@ -38,10 +38,18 @@ namespace cvr
 	};
 	*/
 
+
 	class SOVRSwapCallback : public osg::GraphicsContext::SwapCallback
 	{
 		public:
-			explicit SOVRSwapCallback(osg::ref_ptr<osg::FrameBufferObject> left_fbo, osg::ref_ptr<osg::FrameBufferObject> right_fbo, int width, int height, OpenVRMirrorTexture::BlitOptions blit)
+			enum BlitOptions
+			{
+				BOTH_EYES,
+				LEFT_EYE,
+				RIGHT_EYE
+			};
+
+			explicit SOVRSwapCallback(osg::ref_ptr<osg::FrameBufferObject> left_fbo, osg::ref_ptr<osg::FrameBufferObject> right_fbo, int width, int height, BlitOptions blit)
 				: m_left_fbo(left_fbo), m_right_fbo(right_fbo), m_blit(blit)
 			{
 				m_resolve_fbo = new osg::FrameBufferObject();
@@ -63,42 +71,7 @@ namespace cvr
 			osg::ref_ptr<osg::FrameBufferObject> m_right_fbo;
 			osg::ref_ptr<osg::FrameBufferObject> m_resolve_fbo;
 			int m_frameIndex;
-			OpenVRMirrorTexture::BlitOptions m_blit;
-	};
-
-	class SOVRInitialDrawCallback : public osg::Camera::DrawCallback
-	{
-	public:
-		SOVRInitialDrawCallback(OpenVRDevice* device, OpenVRDevice::Eye eye)
-			: m_device(device)
-			, m_eye(eye)
-			, textures_created(false)
-		{
-		}
-
-		virtual void operator()(osg::RenderInfo& renderInfo) const
-		{
-			/*
-			osg::GraphicsOperation* graphicsOperation = renderInfo.getCurrentCamera()->getRenderer();
-			osgViewer::Renderer* renderer = dynamic_cast<osgViewer::Renderer*>(graphicsOperation);
-			if (renderer != nullptr)
-			{
-				// Disable normal OSG FBO camera setup because it will undo the MSAA FBO configuration.
-				renderer->setCameraRequiresSetUp(false);
-			}
-			*/
-
-			if (!textures_created && m_eye == OpenVRDevice::Eye::LEFT) {
-				m_device->createRenderBuffers(renderInfo.getState());
-				textures_created = true;
-			}
-			renderInfo.getCurrentCamera()->setPreDrawCallback(new OpenVRPreDrawCallback(renderInfo.getCurrentCamera(), m_device->m_textureBuffer[m_eye]));
-			renderInfo.getCurrentCamera()->setPostDrawCallback(new OpenVRPostDrawCallback(renderInfo.getCurrentCamera(), m_device->m_textureBuffer[m_eye]));
-		}
-	protected:
-		OpenVRDevice* m_device;
-		OpenVRDevice::Eye m_eye;
-		mutable bool textures_created;
+			BlitOptions m_blit;
 	};
 
 	/**

@@ -8,9 +8,6 @@
 
 using namespace cvr;
 
-OpenVRDevice* TrackerOpenVR::_device;
-bool TrackerOpenVR::_init = false;
-
 TrackerOpenVR::TrackerOpenVR()
 {
 	_bodies = std::vector<TrackedBody>();
@@ -26,7 +23,14 @@ TrackerOpenVR::~TrackerOpenVR()
 
 bool TrackerOpenVR::init(std::string tag)
 {
-	_device = new OpenVRDevice(0.1f, 1000.0f, 1000.0f, 4);
+	if (!OpenVRDevice::instance())
+	{
+		_device = new OpenVRDevice(0.1f, 1000.0f, 1000.0f, 4);
+	}
+	else
+	{
+		_device = OpenVRDevice::instance();
+	}
 
 	if(!_device->hmdInitialized())
 	{
@@ -121,17 +125,18 @@ void TrackerOpenVR::update(std::map<int,std::list<InteractionEvent*> > & eventMa
 	{
 		TrackedBody* body = &(_bodies[0]);
 
-		osg::Matrix m = osg::Matrix();
-		m.makeRotate(_device->orientation());
-		m.postMultTranslate(_device->position());
-		m = osg::Matrix::inverse(m); //Need to invert view matrix
-		osg::Vec3 pos = m.getTrans();
-		osg::Quat rot = m.getRotate();
+		//osg::Matrix m = osg::Matrix();
+		//m.makeRotate(_device->orientation());
+		//m.postMultTranslate(_device->position());
+		//m = osg::Matrix::inverse(m); //Need to invert view matrix
+		osg::Vec3 pos = _device->position(); // m.getTrans();
+		osg::Quat rot = _device->orientation(); // m.getRotate();
+
+		std::cout << pos.x() << ", " << pos.y() << ", " << pos.z() << std::endl;
 
 		body->x = pos.x();
 		body->y = -pos.z();
 		body->z = pos.y();
-		//std::cout << body->x << ", " << body->y << ", " << body->z << std::endl;
 		body->qx = rot.x();
 		body->qy = -rot.z();
 		body->qz = rot.y();

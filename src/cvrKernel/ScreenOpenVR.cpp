@@ -7,7 +7,6 @@
 
 #include <cvrInput/TrackingManager.h>
 #include <cvrInput/TrackerBase.h>
-#include <cvrInput/TrackerOpenVR.h>
 
 #include <cvrConfig/ConfigManager.h>
 
@@ -41,9 +40,9 @@ void ScreenOpenVR::init(int mode)
 {
 	OSG_NOTICE << "Setting up OpenVR screen" << std::endl;
 	//Start up openvr - initialize system and compositor
-	if(TrackerOpenVR::isInit())
+	if(OpenVRDevice::instance() != nullptr)
 	{
-		vrDevice = TrackerOpenVR::getDevice();
+		vrDevice = OpenVRDevice::instance();
 		vrDevice->setNearClip(_near);
 		vrDevice->setFarClip(_far);
 		vrDevice->calculateProjectionMatrices();
@@ -230,7 +229,7 @@ void ScreenOpenVR::init(int mode)
 	}
 
 
-	_swapCallback = new SOVRSwapCallback(_leftFBO, _rightFBO, _myInfo->myChannel->width, _myInfo->myChannel->height, OpenVRMirrorTexture::BOTH_EYES);
+	_swapCallback = new SOVRSwapCallback(_leftFBO, _rightFBO, _myInfo->myChannel->width, _myInfo->myChannel->height, SOVRSwapCallback::BOTH_EYES);
 	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
 
 
@@ -284,6 +283,12 @@ void ScreenOpenVR::computeViewProj()
 	vrDevice->updatePose();
 }
 
+
+static osg::Vec3 changeOfAxis(osg::Vec3 v)
+{
+	return osg::Vec3(v.x(), -v.z(), v.y());
+}
+
 void ScreenOpenVR::updateCamera()
 {
 	if (!_init)
@@ -301,28 +306,24 @@ void ScreenOpenVR::updateCamera()
 
 	osg::Vec3 position = vrDevice->position();
 	osg::Quat orientation = vrDevice->orientation();
+	// change of axes
 	temp = orientation[2];
 	orientation[2] = orientation[1];
 	orientation[1] = -temp;
 
-	osg::Matrix leftView = vrDevice->viewMatrixLeft();
-	leftView.preMultRotate(orientation);
-	osg::Vec3d lv = leftView.getTrans() + position;
-	temp = lv[2];
-	lv[2] = lv[1];
-	lv[1] = -temp;
-	leftView.setTrans(lv);
+	osg::Matrix leftView;
+	leftView.makeTranslate(changeOfAxis(vrDevice->viewMatrixLeft().getTrans()));
+	leftView.preMultRotate(orientation.inverse());
+	leftView.preMultTranslate(changeOfAxis(-position));
+
+	osg::Matrix rightView;
+	rightView.makeTranslate(changeOfAxis(vrDevice->viewMatrixRight().getTrans()));
+	rightView.preMultRotate(orientation.inverse());
+	rightView.preMultTranslate(changeOfAxis(-position));
 
 
-	osg::Matrix rightView = vrDevice->viewMatrixRight();
-	rightView.preMultRotate(orientation);
-	osg::Vec3d rv = rightView.getTrans() + position;
-	temp = rv[2];
-	rv[2] = rv[1];
-	rv[1] = -temp;
-	rightView.setTrans(rv);
-
-
+	//leftView = osg::Matrix::inverse(leftView);
+	//rightView = osg::Matrix::inverse(rightView);
 
 	_leftCamera->setViewMatrix(leftView * _myInfo->transform);
 	_rightCamera->setViewMatrix(rightView * _myInfo->transform);
@@ -400,7 +401,7 @@ void SOVRSwapCallback::swapBuffersImplementation(osg::GraphicsContext* gc)
 
 	m_resolve_fbo->apply(*gc->getState(), osg::FrameBufferObject::DRAW_FRAMEBUFFER);
 
-	if (m_blit == OpenVRMirrorTexture::LEFT_EYE)
+	if (m_blit == SOVRSwapCallback::LEFT_EYE)
 	{
 		m_left_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
 		
@@ -408,7 +409,7 @@ void SOVRSwapCallback::swapBuffersImplementation(osg::GraphicsContext* gc)
 			0, 0, gc->getTraits()->width, gc->getTraits()->height,
 			GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
-	else if (m_blit == OpenVRMirrorTexture::RIGHT_EYE)
+	else if (m_blit == SOVRSwapCallback::RIGHT_EYE)
 	{
 		m_right_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
 
@@ -416,7 +417,7 @@ void SOVRSwapCallback::swapBuffersImplementation(osg::GraphicsContext* gc)
 			0, 0, gc->getTraits()->width, gc->getTraits()->height,
 			GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
-	else if (m_blit == OpenVRMirrorTexture::BOTH_EYES)
+	else if (m_blit == SOVRSwapCallback::BOTH_EYES)
 	{
 		m_left_fbo->apply(*gc->getState(), osg::FrameBufferObject::READ_FRAMEBUFFER);
 

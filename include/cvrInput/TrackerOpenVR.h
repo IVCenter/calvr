@@ -7,7 +7,7 @@
 #include <cvrInput/TrackerBase.h>
 #include <cvrKernel/ScreenOpenVR.h>
 #include <openvr.h>
-#include <openvrdevice.h>
+#include <cvrKernel/OpenVRDevice.h>
 
 
 namespace cvr
@@ -40,16 +40,6 @@ class TrackerOpenVR : public TrackerBase
         virtual void update(
                 std::map<int,std::list<InteractionEvent*> > & eventMap);
 
-		static OpenVRDevice* getDevice()
-		{
-			return _device;
-		}
-		
-		static bool isInit()
-		{
-			return _init;
-		}
-
     protected:
 
         std::vector<TrackedBody> _bodies;
@@ -63,9 +53,8 @@ class TrackerOpenVR : public TrackerBase
 		int _numVal; ///< number of valuators
 		int _numButtons; ///< number of buttons
 
-
-		static OpenVRDevice * _device;
-		static bool _init;
+		OpenVRDevice * _device;
+		bool _init;
 };
 
 /**
