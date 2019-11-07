@@ -1,8 +1,12 @@
 #include "cvrMenu/NewUI/UIUtil.h"
+#include "cvrKernel/CalVR.h"
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 using namespace cvr;
 
+osg::ref_ptr<osg::Program> UIUtil::_uiProgram;
 osg::ref_ptr<osgText::Font> UIUtil::_font;
 std::map<std::string, osg::observer_ptr<osg::Texture2D> > UIUtil::_imageCache;
 std::map<std::string, osg::observer_ptr<osg::Node> > UIUtil::_modelCache;
@@ -36,12 +40,16 @@ osg::Geometry * UIUtil::makeQuad(float width, float height, osg::Vec4 color, osg
 	texcoords->push_back(osg::Vec2(1, 1));
 
 	geo->setVertexAttribArray(1, texcoords, osg::Array::BIND_PER_VERTEX);
-	geo->setTexCoordArray(0, texcoords);
+	//geo->setTexCoordArray(0, texcoords);
 
 	osg::Vec4Array* colors = new osg::Vec4Array;
 	colors->push_back(color);
 	geo->setColorArray(colors);
-	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+	//geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+	geo->setVertexAttribArray(2, colors, osg::Array::BIND_OVERALL);
+
+	geo->getOrCreateStateSet()->setAttributeAndModes(getUIProgram(), osg::StateAttribute::ON);
+	geo->getOrCreateStateSet()->setDefine("USE_TEXTURE", false);
 
 	return geo;
 }
@@ -68,6 +76,37 @@ osg::Geometry * UIUtil::makeLine(osg::Vec3 p1, osg::Vec3 p2, osg::Vec4 color)
 	geo->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 	return geo;
+}
+
+osg::Program* UIUtil::getUIProgram()
+{
+	if (!_uiProgram.valid())
+	{
+		osg::Program* program = new osg::Program();
+		program->setName("UI");
+
+		std::string vertdir = CalVR::instance()->getResourceDir() + "/shaders/UI.vert";
+		std::ifstream vertfile(vertdir.c_str());
+
+		std::stringstream vert;
+		vert << vertfile.rdbuf();
+		program->addShader(new osg::Shader(osg::Shader::VERTEX, vert.str()));
+		vertfile.close();
+
+
+		std::string fragdir = CalVR::instance()->getResourceDir() + "/shaders/UI.frag";
+		std::ifstream fragfile(fragdir.c_str());
+
+		std::stringstream frag;
+		frag << fragfile.rdbuf();
+
+		fragfile.close();
+
+		program->addShader(new osg::Shader(osg::Shader::FRAGMENT, frag.str()));
+		_uiProgram = program;
+	}
+
+	return _uiProgram;
 }
 
 osg::ref_ptr<osg::Texture2D> UIUtil::loadImage(std::string path)

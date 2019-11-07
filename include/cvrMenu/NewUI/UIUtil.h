@@ -7,6 +7,8 @@
 #include <osg/Vec4>
 #include <osg/Vec3>
 #include <osg/Texture2D>
+#include <osg/Program>
+#include <osg/Shader>
 #include <osgText/Text>
 
 #include <osgDB/ReadFile>
@@ -21,6 +23,8 @@ namespace cvr
 		static osg::Geometry* makeQuad(float width, float height, osg::Vec4 color, osg::Vec3 pos);
 
 		static osg::Geometry* makeLine(osg::Vec3 p1, osg::Vec3 p2, osg::Vec4 color);
+
+		static osg::Program* getUIProgram();
 
 		static osg::ref_ptr<osg::Texture2D> loadImage(std::string name);
 
@@ -37,6 +41,7 @@ namespace cvr
 		static std::map<std::string, osg::observer_ptr<osg::Texture2D> > _imageCache;
 		static std::map<std::string, osg::observer_ptr<osg::Node> > _modelCache;
 		static osg::ref_ptr<osgText::Font> _font;
+		static osg::ref_ptr<osg::Program> _uiProgram;
 
 	};
 }

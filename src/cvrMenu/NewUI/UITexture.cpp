@@ -13,6 +13,7 @@ void UITexture::updateGeometry()
 	if (_texture.valid())
 	{
 		_geode->getDrawable(0)->getOrCreateStateSet()->setTextureAttributeAndModes(0, _texture, osg::StateAttribute::ON);
+		_geode->getDrawable(0)->getOrCreateStateSet()->setDefine("USE_TEXTURE", true);
 	}
 }
 

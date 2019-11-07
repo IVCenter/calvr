@@ -28,7 +28,7 @@ void UIQuadElement::updateGeometry()
 	osg::Vec4Array* colors = new osg::Vec4Array;
 	colors->push_back(_color);
 	((osg::Geometry*)_geode->getDrawable(0))->setColorArray(colors, osg::Array::BIND_OVERALL);
-
+	((osg::Geometry*)_geode->getDrawable(0))->setVertexAttribArray(2, colors, osg::Array::BIND_OVERALL);
 
 	osg::Matrix mat = osg::Matrix();
 	mat.makeScale(_actualSize);

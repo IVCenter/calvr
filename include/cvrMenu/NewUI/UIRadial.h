@@ -42,6 +42,14 @@ namespace cvr
 		virtual void onSelectionChange() {};
 		virtual void setCurrent(int current);
 		virtual int getCurrent() { return _current; }
+		virtual UIRadialButton* getCurrentButton()
+		{
+			if (_current >= _buttons.size() || _current < 0)
+			{
+				return nullptr;
+			}
+			return _buttons[_current];
+		}
 		virtual void allowNoneSelected(bool ns) { _allowNoneSelected = ns; }
 
 	protected:

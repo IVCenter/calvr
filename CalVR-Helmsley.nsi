@@ -226,6 +226,10 @@ Section "CalVR-Helmsley (required)"
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\shaders\"
   SetOutPath $INSTDIR\HelmsleyVolume\models
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\models\"
+  SetOutPath $INSTDIR\HelmsleyVolume\icons
+  File /r "..\calvr_plugins\calit2\HelmsleyVolume\icons\"
+  SetOutPath $INSTDIR\HelmsleyVolume\icons\temp
+  File /r "..\calvr_plugins\calit2\HelmsleyVolume\icons\temp\"
 
   SetOutPath $INSTDIR
 
