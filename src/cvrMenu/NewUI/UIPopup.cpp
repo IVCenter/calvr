@@ -16,6 +16,9 @@ UIPopup::UIPopup()
 	_menuRoot->setMatrix(osg::Matrix::identity());
 	_menuRoot->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
+	_menuPos = osg::Vec3(0, 0, 0);
+	_menuRot = osg::Quat(0, 0, 0, 1);
+
 	_rootElement = new UIEmptyElement();
 	_rootElement->setAbsoluteSize(osg::Vec3(1000, 1, 1000));
 	_menuRoot->addChild(_rootElement->getGroup());
@@ -35,7 +38,7 @@ bool UIPopup::init()
 
 void UIPopup::updateStart()
 {
-	//orientTowardsHead();
+	orientTowardsHead();
 	_rootElement->updateElement(osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 0));
 	_foundItem = false;
 }
@@ -146,17 +149,21 @@ void UIPopup::orientTowardsHead()
 	osg::Vec3 viewerDir = viewerPoint - menuPoint;
 	viewerDir.z() = 0.0;
 
-	osg::Matrix menuRot;
-	menuRot.makeRotate(osg::Vec3(0, 1, 0), viewerDir);
-	
+	osg::Matrix menu;
+	menu.makeRotate(osg::Vec3(0, -1, 0), viewerDir);
+	_menuRot = menu.getRotate();
+	std::cout << _menuRot.x() << ", " << _menuRot.y() << ", " << _menuRot.z() << ", " << _menuRot.w() << std::endl;
+	menu.postMultTranslate(_menuPos);
 
-	_menuRoot->setMatrix(menuRot);
+	_menuRoot->setMatrix(menu);
 }
 
 void UIPopup::setPosition(osg::Vec3 pos)
 {
-	osg::Matrix menuPos;
-	menuPos.makeTranslate(pos);
+	osg::Matrix menu;
+	menu.makeTranslate(pos);
+	_menuPos = pos;
+	menu.preMultRotate(_menuRot);
 
-	_menuRoot->setMatrix(menuPos);
+	_menuRoot->setMatrix(menu);
 }

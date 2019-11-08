@@ -31,6 +31,8 @@ namespace cvr
 			_childBoxes = std::map<UIElement*, std::pair<osg::Vec3, osg::Vec3> >();
 			_minSize = 0;
 			_maxSize = std::numeric_limits<float>::max();
+			_absoluteSpacing = 0;
+			_percentSpacing = 0;
 		}
 
 
@@ -47,12 +49,24 @@ namespace cvr
 		virtual void setMinSize(float size);
 		virtual void setMaxSize(float size);
 
+		//Set distance between consecutive elements in world units and as a percentage of the list length. 
+		//Total spacing = absolute + length * percent
+		virtual void setSpacing(float absoluteSpacing, float percentSpacing);
+
+		//Set distance between consecutive elements in world units
+		virtual void setAbsoluteSpacing(float absoluteSpacing);
+
+		//Set distance between consecutive elements as a percentage of the list length
+		virtual void setPercentSpacing(float percentSpacing);
+
 	protected:
 		//osg::ref_ptr<osg::MatrixTransform> _transform;
 		//osg::ref_ptr<osg::Geode> _geode;
 
 		float _minSize;
 		float _maxSize;
+		float _absoluteSpacing;
+		float _percentSpacing;
 
 		Direction _direction;
 		OverflowBehavior _behavior;
