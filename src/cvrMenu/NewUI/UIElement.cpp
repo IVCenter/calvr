@@ -24,7 +24,8 @@ UIElement::UIElement()
 	_group = new osg::Group();
 	_intersect = NULL;
 	_dirty = true;
-
+	_handle = false;
+	_lastHand = -1;
 }
 
 UIElement::~UIElement()
@@ -139,6 +140,7 @@ UIElement* UIElement::processIsect(IsectInfo & isect, int hand)
 	if (_intersect.valid() && isect.geode == _intersect.get())
 	{
 		_lastHitPoint = isect.localpoint;
+		_lastHand = hand;
 		return this;
 	}
 	else

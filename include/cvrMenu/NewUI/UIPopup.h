@@ -46,6 +46,8 @@ namespace cvr
 
 		virtual void orientTowardsHead();
 
+		virtual void processMovement(TrackedButtonInteractionEvent* tie);
+
 		osg::ref_ptr<osg::MatrixTransform> _menuRoot;
 		UIElement* _rootElement;
 		bool _menuActive;
@@ -53,6 +55,10 @@ namespace cvr
 		UIElement* _activeElement;
 		bool _foundItem; // Has the isect found anything this frame?
 		bool _interacting; // Is the last found active element being interacted with currently?
+		bool _grabbable;
+		int _grabButton = 1; // The button for moving menus around
+		std::map<int, osg::Vec3> _currentPoint; // The world space point each hand is currently intersecting with
+		float _moveDistance;
 
 		osg::Vec3 _menuPos;
 		osg::Quat _menuRot;

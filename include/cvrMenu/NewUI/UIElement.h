@@ -96,9 +96,11 @@ namespace cvr
 		virtual Alignment getAlign() { return _alignment; }
 
 
-		//Getter/setter for _handle property (determines if the item can be used to move the menu around
+		//Getter/setter for _handle property (determines if the item can be used to move the menu around)
 		virtual void setIsHandle(bool h) { _handle = h; }
 		virtual bool getIsHandle() { return _handle; }
+
+		virtual int getLastHand() { return _lastHand; }
 
 		virtual void addChild(UIElement* e);
 		virtual void removeChild(UIElement* e);
@@ -132,6 +134,7 @@ namespace cvr
 		bool _handle;
 
 		osg::Vec3 _lastHitPoint;
+		int _lastHand;
 	};
 }
 

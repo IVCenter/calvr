@@ -3,6 +3,7 @@
 #include "cvrKernel/SceneManager.h"
 #include "cvrMenu/MenuManager.h"
 #include "cvrInput/TrackingManager.h"
+#include "cvrUtil/OsgMath.h"
 
 using namespace cvr;
 
@@ -11,6 +12,7 @@ UIPopup::UIPopup()
 	_activeElement = NULL;
 	_interacting = false;
 	_foundItem = false;
+	_grabbable = false;
 
 	_menuRoot = new osg::MatrixTransform();
 	_menuRoot->setMatrix(osg::Matrix::identity());
@@ -22,6 +24,8 @@ UIPopup::UIPopup()
 	_rootElement = new UIEmptyElement();
 	_rootElement->setAbsoluteSize(osg::Vec3(1000, 1, 1000));
 	_menuRoot->addChild(_rootElement->getGroup());
+
+	_currentPoint = std::map<int, osg::Vec3>();
 
 	MenuManager::instance()->addMenuSystem(this);
 }
@@ -38,13 +42,42 @@ bool UIPopup::init()
 
 void UIPopup::updateStart()
 {
-	orientTowardsHead();
+	//orientTowardsHead();
 	_rootElement->updateElement(osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 0));
 	_foundItem = false;
 }
 
 bool UIPopup::processEvent(InteractionEvent * event)
 {
+	if (_grabbable)
+	{
+		TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+		if (tie && tie->getButton() == _grabButton)
+		{
+			if (tie->getInteraction() == BUTTON_DOWN)
+			{
+				osg::Vec3 ray;
+				ray = _currentPoint[tie->getHand()]
+					- tie->getTransform().getTrans();
+
+				if (!tie->asPointerEvent())
+				{
+					_moveDistance = ray.length();
+				}
+				else
+				{
+					_moveDistance = ray.y();
+				}
+
+			}
+			else if (tie->getInteraction() == BUTTON_DRAG)
+			{
+				processMovement(tie);
+			}
+			return true;
+		}
+	}
+
 	if (_activeElement)
 	{
 		_interacting = _activeElement->processEvent(event);
@@ -58,6 +91,11 @@ bool UIPopup::processEvent(InteractionEvent * event)
 bool UIPopup::processIsect(IsectInfo & isect, int hand)
 {
 	UIElement* e = _rootElement->processIsect(isect, hand);
+	if (e)
+	{
+		_grabbable = e->getIsHandle();
+		_currentPoint[hand] = isect.point;
+	}
 	if (_interacting)
 	{
 		if (e)
@@ -135,6 +173,48 @@ void UIPopup::setActive(bool active, bool attachToScene)
 bool UIPopup::isActive()
 {
 	return _menuActive;
+}
+
+void UIPopup::processMovement(TrackedButtonInteractionEvent* tie)
+{
+	if (!tie->asPointerEvent())
+	{
+		osg::Vec3 menuPoint = osg::Vec3(0, _moveDistance, 0);
+		//std::cerr << "move dist: " << _moveDistance << std::endl;
+		menuPoint = menuPoint * tie->getTransform();
+
+		//TODO: add hand/head mapping
+		osg::Vec3 viewerPoint =
+			TrackingManager::instance()->getHeadMat(0).getTrans();
+
+		osg::Vec3 viewerDir = viewerPoint - menuPoint;
+		viewerDir.z() = 0.0;
+
+		osg::Matrix menuRot;
+		menuRot.makeRotate(osg::Vec3(0, -1, 0), viewerDir);
+
+		_menuRoot->setMatrix(
+			osg::Matrix::translate(-_menuPos) * menuRot
+			* osg::Matrix::translate(menuPoint));
+	}
+	else
+	{
+		osg::Vec3 point1, point2(0, 1000, 0), planePoint, planeNormal(0, -1, 0),
+			intersect;
+		float w;
+		point1 = point1 * tie->getTransform();
+		point2 = point2 * tie->getTransform();
+		planePoint = osg::Vec3(0,
+			_moveDistance + tie->getTransform().getTrans().y(), 0);
+
+		if (linePlaneIntersectionRef(point1, point2, planePoint, planeNormal,
+			intersect, w))
+		{
+			_menuRoot->setMatrix(
+				osg::Matrix::translate(intersect - _menuPos));
+		}
+
+	}
 }
 
 void UIPopup::orientTowardsHead()
