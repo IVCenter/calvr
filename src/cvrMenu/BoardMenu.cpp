@@ -405,6 +405,10 @@ void BoardMenu::itemDelete(MenuItem * item)
 		if (it->second->getMenuItem() == item)
 		{
 			it = _intersectMap.erase(it);
+			if (it == _intersectMap.end())
+			{
+				break;
+			}
 		}
 	}
 

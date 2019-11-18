@@ -64,3 +64,9 @@ void UIQuadElement::setTransparent(bool transparent)
 		_geode->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::OFF);
 	}
 }
+
+void UIQuadElement::setRounding(float absRounding, float percentRounding)
+{
+	_absoluteRounding->set(absRounding);
+	_percentRounding->set(percentRounding);
+}

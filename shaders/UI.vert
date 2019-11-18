@@ -9,10 +9,19 @@ out vs_out {
     vec4 col;
 } o;
 
+flat out vec2 scale;
+
 uniform mat4 osg_ModelViewProjectionMatrix;
+uniform mat4 osg_ViewMatrixInverse;
+uniform mat4 osg_ModelViewMatrix;
 
 void main() {
     o.uv = uv;
     o.col = color;
+
+    mat4 world = osg_ViewMatrixInverse * osg_ModelViewMatrix;
+    scale.x = length(world * vec4(1.0, 0.0, 0.0, 0.0));
+    scale.y = length(world * vec4(0.0, 1.0, 0.0, 0.0));
+
     gl_Position = osg_ModelViewProjectionMatrix * vec4(vertex, 1.0);
 }
