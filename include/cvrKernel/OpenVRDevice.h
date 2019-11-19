@@ -29,6 +29,7 @@
 
 namespace cvr
 {
+
 	class CVRKERNEL_EXPORT OpenVRDevice : public osg::Referenced
 	{
 
@@ -131,6 +132,8 @@ namespace cvr
 
 		vr::IVRSystem* vrSystem() const { return m_vrSystem; }
 
+		osg::Geometry* GetOrLoadRenderModel(std::string name);
+
 	protected:
 		~OpenVRDevice(); // Since we inherit from osg::Referenced we must make destructor protected
 
@@ -156,6 +159,8 @@ namespace cvr
 		std::string GetDeviceProperty(vr::TrackedDeviceProperty prop);
 		OpenVRDevice(const OpenVRDevice&); // Do not allow copy
 		OpenVRDevice& operator=(const OpenVRDevice&); // Do not allow assignment operator.
+
+		std::map<std::string, osg::Geometry*> m_RenderModels;
 
 		static OpenVRDevice* _instance;
 	};

@@ -19,6 +19,7 @@ UISlider::UISlider(std::string emptytexture, std::string filledtexture, std::str
 	addChild(handle);
 	_button = 0;
 	_percent = 1e-9;
+	_held = false;
 }
 
 UISlider::UISlider(osg::Vec4 emptyColor, osg::Vec4 filledColor, osg::Vec4 handleColor)
@@ -33,6 +34,7 @@ UISlider::UISlider(osg::Vec4 emptyColor, osg::Vec4 filledColor, osg::Vec4 handle
 	addChild(handle);
 	_button = 0;
 	_percent = 1e-9;
+	_held = false;
 }
 
 void UISlider::updateElement(osg::Vec3 pos, osg::Vec3 size)
@@ -123,7 +125,12 @@ bool UISlider::processEvent(InteractionEvent* event)
 	TrackedButtonInteractionEvent* tie = event->asTrackedButtonEvent();
 	if (tie && tie->getButton() == _button)
 	{
-		if (tie->getInteraction() == BUTTON_DOWN || tie->getInteraction() == BUTTON_DRAG)
+		if (tie->getInteraction() == BUTTON_DOWN)
+		{
+			_held = true;
+			return true;
+		}
+		else if (tie->getInteraction() == BUTTON_DRAG && _held)
 		{
 			osg::MatrixList ltw = _intersect->getWorldMatrices();
 			osg::Matrix m = ltw[0];//osg::Matrix::identity();
@@ -155,6 +162,11 @@ bool UISlider::processEvent(InteractionEvent* event)
 			//_dirty = true;
 			//std::cerr << "<" << _lastHitPoint.x() << ", " << _lastHitPoint.y() << ", " << _lastHitPoint.z() << ">" << std::endl;
 			return onPercentChange();
+		}
+		else if (tie->getInteraction() == BUTTON_UP)
+		{
+			_held = false;
+			return false;
 		}
 	}
 

@@ -37,8 +37,8 @@ Function ReplaceConfig
 	Exch
 	; A sequence of replacements.
         ; the string to replace in is at the top of the stack
-	Push "{HelmsleyDir}" ; string to find
-	Push "$INSTDIR\HelmsleyVolume" ; string to replace it with
+	Push "{INSTDIR}" ; string to find
+	Push "$INSTDIR" ; string to replace it with
 	Call StrRep ; see elsewhere in NSIS Wiki
         ; the string to replace in is at the top of the stack again
 	Exch 

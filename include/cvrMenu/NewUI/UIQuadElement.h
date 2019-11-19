@@ -14,6 +14,11 @@ namespace cvr
 		{
 			_color = color;
 			_geode = new osg::Geode();
+			createGeometry();
+			_absoluteRounding = new osg::Uniform("absoluteRounding", 0.0f);
+			_percentRounding = new osg::Uniform("percentRounding", 0.0f);
+			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_absoluteRounding);
+			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_percentRounding);
 		}
 
 		virtual void createGeometry();
@@ -23,11 +28,15 @@ namespace cvr
 
 		virtual void setTransparent(bool transparent);
 
+		virtual void setRounding(float absRounding, float percentRounding);
+
 	protected:
 		osg::ref_ptr<osg::MatrixTransform> _transform;
 		osg::ref_ptr<osg::Geode> _geode;
 
 		osg::Vec4 _color;
+		osg::Uniform* _absoluteRounding;
+		osg::Uniform* _percentRounding;
 	};
 }
 

@@ -22,6 +22,15 @@
 	#define GL_TEXTURE_MAX_LEVEL 0x813D
 #endif
 
+void ThreadSleep(unsigned long nMilliseconds)
+{
+#if defined(_WIN32)
+	::Sleep(nMilliseconds);
+#elif defined(POSIX)
+	usleep(nMilliseconds * 1000);
+#endif
+}
+
 using namespace cvr;
 
 static const OSG_GLExtensions* getGLExtensions(const osg::State& state)
@@ -114,6 +123,8 @@ OpenVRDevice::OpenVRDevice(float nearClip, float farClip, const float worldUnits
 		return;
 	}
 
+	m_RenderModels = std::map<std::string, osg::Geometry*>();
+
 	std::string driverName = GetDeviceProperty(vr::Prop_TrackingSystemName_String);
 	std::string deviceSerialNumber = GetDeviceProperty(vr::Prop_SerialNumber_String);
 
@@ -134,6 +145,99 @@ std::string OpenVRDevice::GetDeviceProperty(vr::TrackedDeviceProperty prop)
 	std::string result = buffer;
 	delete [] buffer;
 	return result;
+}
+
+osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
+{
+	osg::Geometry* renderModel = NULL;
+
+	if (m_RenderModels.find(name) != m_RenderModels.end())
+	{
+		renderModel =  m_RenderModels[name];
+	}
+
+
+	vr::RenderModel_t* model;
+	vr::EVRRenderModelError error;
+	if (!renderModel)
+	{
+		while (1)
+		{
+			error = vr::VRRenderModels()->LoadRenderModel_Async(name.c_str(), &model);
+			if (error != vr::VRRenderModelError_Loading)
+			{
+				break;
+			}
+			ThreadSleep(1);
+		}
+
+		if (error != vr::VRRenderModelError_None)
+		{
+			printf("Unable to load render model %s - %s\n", name.c_str(), vr::VRRenderModels()->GetRenderModelErrorNameFromEnum(error));
+			return NULL;
+		}
+
+		vr::RenderModel_TextureMap_t *texture;
+		while (1)
+		{
+			error = vr::VRRenderModels()->LoadTexture_Async(model->diffuseTextureId, &texture);
+			if (error != vr::VRRenderModelError_Loading)
+				break;
+
+			ThreadSleep(1);
+		}
+
+		if (error != vr::VRRenderModelError_None)
+		{
+			printf("Unable to load render texture id:%d for render model %s\n", model->diffuseTextureId, name.c_str());
+			vr::VRRenderModels()->FreeRenderModel(model);
+			return NULL; // move on to the next tracked device
+		}
+
+		renderModel = new osg::Geometry();
+		//renderModel->setVertexArray()
+		osg::Vec3Array* vertices = new osg::Vec3Array();
+		osg::Vec3Array* normals = new osg::Vec3Array();
+		osg::Vec2Array* texcoords = new osg::Vec2Array();
+
+		for (int i = 0; i < model->unVertexCount; ++i)
+		{
+			vr::HmdVector3_t pos = model->rVertexData[i].vPosition;
+			vr::HmdVector3_t norm = model->rVertexData[i].vNormal;
+
+			//Change of axes y -> -z, z -> y
+			vertices->push_back(osg::Vec3(pos.v[0], -pos.v[2], pos.v[1]));
+			normals->push_back(osg::Vec3(norm.v[0], -norm.v[2], norm.v[1]));
+
+			texcoords->push_back(osg::Vec2(model->rVertexData[i].rfTextureCoord[0], model->rVertexData[i].rfTextureCoord[1]));
+		}
+
+		renderModel->setVertexArray(vertices);
+		renderModel->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
+		renderModel->setTexCoordArray(0, texcoords, osg::Array::BIND_PER_VERTEX);
+		
+		osg::Image* image = new osg::Image();
+		image->allocateImage(texture->unWidth, texture->unHeight, 1, GL_RGBA, GL_BYTE);
+		
+		const uint8_t* datasrc = texture->rubTextureMapData;
+		uint8_t* datadest = (uint8_t*)image->data();
+
+		//Copy the image from the vr texture to the osg image
+		memcpy(datadest, datasrc, image->s() * image->t() * image->r() * sizeof(uint8_t) * 4);
+		
+		//image->data
+		osg::Texture2D* tex = new osg::Texture2D(image);
+		tex->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP_TO_EDGE);
+		tex->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP_TO_EDGE);
+		tex->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
+		tex->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+		renderModel->getOrCreateStateSet()->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
+
+		vr::VRRenderModels()->FreeRenderModel(model);
+		vr::VRRenderModels()->FreeTexture(texture);
+	}
+
+	return renderModel;
 }
 
 void OpenVRDevice::init()
