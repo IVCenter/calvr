@@ -14,6 +14,8 @@
 #include <osg/Geometry>
 #include <osgViewer/Renderer>
 #include <osgViewer/GraphicsWindow>
+#include <osg/CullFace>
+#include <osg/PrimitiveSet>
 #include <iostream>
 
 #include <cvrKernel/OpenVRDevice.h>
@@ -125,23 +127,23 @@ OpenVRDevice::OpenVRDevice(float nearClip, float farClip, const float worldUnits
 
 	m_RenderModels = std::map<std::string, osg::Geometry*>();
 
-	std::string driverName = GetDeviceProperty(vr::Prop_TrackingSystemName_String);
-	std::string deviceSerialNumber = GetDeviceProperty(vr::Prop_SerialNumber_String);
+	std::string driverName = GetDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_TrackingSystemName_String);
+	std::string deviceSerialNumber = GetDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_SerialNumber_String);
 
 	osg::notify(osg::NOTICE) << "HMD driver name: "<< driverName << std::endl;
 	osg::notify(osg::NOTICE) << "HMD device serial number: " << deviceSerialNumber << std::endl;
 }
 
-std::string OpenVRDevice::GetDeviceProperty(vr::TrackedDeviceProperty prop)
+std::string OpenVRDevice::GetDeviceProperty(vr::TrackedDeviceIndex_t unDevice, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError* peError)
 {
-	uint32_t bufferLen = m_vrSystem->GetStringTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, prop, NULL, 0);
+	uint32_t bufferLen = m_vrSystem->GetStringTrackedDeviceProperty(unDevice, prop, NULL, 0, peError);
 	if (bufferLen == 0)
 	{
 		return "";
 	}
 
 	char* buffer = new char[bufferLen];
-	bufferLen = m_vrSystem->GetStringTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, prop, buffer, bufferLen);
+	bufferLen = m_vrSystem->GetStringTrackedDeviceProperty(unDevice, prop, buffer, bufferLen, peError);
 	std::string result = buffer;
 	delete [] buffer;
 	return result;
@@ -161,6 +163,8 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 	vr::EVRRenderModelError error;
 	if (!renderModel)
 	{
+		std::cerr << "Loading render model with name: " << name << std::endl;
+
 		while (1)
 		{
 			error = vr::VRRenderModels()->LoadRenderModel_Async(name.c_str(), &model);
@@ -199,6 +203,8 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 		osg::Vec3Array* vertices = new osg::Vec3Array();
 		osg::Vec3Array* normals = new osg::Vec3Array();
 		osg::Vec2Array* texcoords = new osg::Vec2Array();
+		//osg::UIntArray* indices = new osg::UIntArray();
+		osg::DrawElementsUInt* ebo = new osg::DrawElementsUInt(GL_TRIANGLES);
 
 		for (int i = 0; i < model->unVertexCount; ++i)
 		{
@@ -206,14 +212,32 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 			vr::HmdVector3_t norm = model->rVertexData[i].vNormal;
 
 			//Change of axes y -> -z, z -> y
-			vertices->push_back(osg::Vec3(pos.v[0], -pos.v[2], pos.v[1]));
+			vertices->push_back(osg::Vec3(pos.v[0], -pos.v[2], pos.v[1]) * 1000.0f); // scale up to mm as standard unit
 			normals->push_back(osg::Vec3(norm.v[0], -norm.v[2], norm.v[1]));
 
 			texcoords->push_back(osg::Vec2(model->rVertexData[i].rfTextureCoord[0], model->rVertexData[i].rfTextureCoord[1]));
 		}
 
+		for (int i = 0; i < model->unTriangleCount * 3; ++i)
+		{
+			//indices->push_back(model->rIndexData[i]);
+			ebo->addElement(model->rIndexData[i]);
+		}
+
+
+		std::cerr << "Loaded " << model->unVertexCount << " vertices and " << model->unTriangleCount << " triangles" << std::endl;
+
+
+
+
 		renderModel->setVertexArray(vertices);
+		renderModel->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+		renderModel->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 		renderModel->setNormalArray(normals, osg::Array::BIND_PER_VERTEX);
+		renderModel->addPrimitiveSet(ebo);
+		//osg::Vec4Array* colors = new osg::Vec4Array();
+		//colors->push_back(osg::Vec4(0.0, 1.0, 0.0, 1.0));
+		//renderModel->setColorArray(colors, osg::Array::BIND_OVERALL);
 		renderModel->setTexCoordArray(0, texcoords, osg::Array::BIND_PER_VERTEX);
 		
 		osg::Image* image = new osg::Image();
@@ -224,6 +248,8 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 
 		//Copy the image from the vr texture to the osg image
 		memcpy(datadest, datasrc, image->s() * image->t() * image->r() * sizeof(uint8_t) * 4);
+
+		std::cerr << "Loaded " << texture->unWidth << "x" << texture->unHeight << " pixel diffuse texture" << std::endl;
 		
 		//image->data
 		osg::Texture2D* tex = new osg::Texture2D(image);
@@ -235,6 +261,8 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 
 		vr::VRRenderModels()->FreeRenderModel(model);
 		vr::VRRenderModels()->FreeTexture(texture);
+
+		m_RenderModels[name] = renderModel;
 	}
 
 	return renderModel;
@@ -367,6 +395,14 @@ void OpenVRDevice::updatePose()
 			pC->rotation = poseTransform.getRotate();
 			//std::cout << "Controller: " << pC->position.x() << ", " << pC->position.y() << ", " << pC->position.z() << std::endl;
 		}
+
+		//update rendermodel
+		std::string sRenderModelName = GetDeviceProperty(pC->deviceID, vr::Prop_RenderModelName_String);
+		if (sRenderModelName != pC->renderModelName)
+		{
+			pC->renderModel = GetOrLoadRenderModel(sRenderModelName);
+			pC->renderModelName = sRenderModelName;
+		}
 	}
 
 	//Trackers update pose
@@ -492,7 +528,6 @@ void OpenVRDevice::updateControllerEvents()
 		{
 			case vr::VREvent_Quit:
 			case vr::VREvent_ProcessQuit:
-			case vr::VREvent_QuitAborted_UserPrompt:
 			case vr::VREvent_QuitAcknowledged:
 				std::cerr << "OpenVR has quit!" << std::endl;
 				break;

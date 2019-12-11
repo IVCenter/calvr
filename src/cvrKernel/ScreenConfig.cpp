@@ -556,6 +556,7 @@ bool ScreenConfig::makeWindows()
         traits->supportsResize = _windowInfoList[i]->supportsResize;
         traits->overrideRedirect = _windowInfoList[i]->overrideRedirect;
         traits->useCursor = _windowInfoList[i]->useCursor;
+		traits->glContextVersion = "4.0";
         if(ConfigManager::getBool("Stencil",false))
         {
             traits->stencil = 8;

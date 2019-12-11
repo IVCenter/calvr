@@ -76,6 +76,9 @@ namespace cvr
 			osg::Vec3 position;
 			osg::Quat rotation;
 
+			osg::Geometry* renderModel = nullptr;
+			std::string renderModelName = "";
+
 			bool isValid;
 		} ControllerData;
 
@@ -156,7 +159,7 @@ namespace cvr
 		vr::IVRRenderModels* m_vrRenderModels;
 		const float m_worldUnitsPerMetre;
 	private:
-		std::string GetDeviceProperty(vr::TrackedDeviceProperty prop);
+		std::string GetDeviceProperty(vr::TrackedDeviceIndex_t unDevice, vr::TrackedDeviceProperty prop, vr::TrackedPropertyError* peError = NULL);
 		OpenVRDevice(const OpenVRDevice&); // Do not allow copy
 		OpenVRDevice& operator=(const OpenVRDevice&); // Do not allow assignment operator.
 

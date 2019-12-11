@@ -765,6 +765,12 @@ const osg::BoundingBox & SceneObject::getOrComputeBoundingBox()
 {
     if(_boundsCalcMode == MANUAL)
     {
+		//Still want to compute bounds of child scene objects
+		for (int i = 0; i < _childrenObjects.size(); i++)
+		{
+			_childrenObjects[i]->getOrComputeBoundingBox();
+		}
+
         return _bb;
     }
     else
