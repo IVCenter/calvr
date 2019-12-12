@@ -852,13 +852,13 @@ void SceneObject::processMove(osg::Matrix & mat)
     {
         m = PluginHelper::getWorldToObjectTransform();
     }
-    _root->setMatrix(_lastobj2world * _lastHandInv * mat * m * _root2obj);
+    _root->setMatrix(getObjectToWorldMatrix() * _lastHandInv * mat * m * _root2obj);
 
     splitMatrix();
 
     _lastHandMat = mat;
     _lastHandInv = osg::Matrix::inverse(mat);
-    _lastobj2world = getObjectToWorldMatrix();
+    //_lastobj2world = getObjectToWorldMatrix();
 }
 ;
 

@@ -158,6 +158,11 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void setTransform(osg::Matrix m);
 
+		/**
+		 * @brief Get the root Matrix Transform of the object
+		 */
+		osg::MatrixTransform* getRoot() { return _root; }
+
         /**
          * @brief Get the scale from this object transform
          */
