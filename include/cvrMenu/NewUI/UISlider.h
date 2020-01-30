@@ -44,6 +44,10 @@ namespace cvr
 		float _percent;
 		unsigned int _button;
 		bool _held;
+
+	private:
+		float _emptywidth;
+		float _filledwidth;
 	};
 }
 
