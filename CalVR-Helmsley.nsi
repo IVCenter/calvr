@@ -126,6 +126,11 @@ Section "CalVR-Helmsley (required)"
   File "bin\tiffxx.dll"
   File "bin\zlib.dll"
 
+  File "bin\dcmdata.dll"
+  File "bin\dcmimgle.dll"
+  File "bin\ofstd.dll"
+  File "bin\oflog.dll"
+
 
 
   SetOutpath $INSTDIR\bin\osgPlugins-3.6.4

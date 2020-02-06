@@ -354,6 +354,8 @@ class CVRKERNEL_EXPORT SceneManager
         float _menuMaxDistance;
         int _menuDefaultOpenButton;
 		int _moveDefaultButton;
+		int _rotateHorizontalDefaultValuator;
+		int _pushDefaultValuator;
 
         WallType _wallType;
         osg::Matrix _wallTransform;

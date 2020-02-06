@@ -186,10 +186,19 @@ void TrackerOpenVR::update(std::map<int,std::list<InteractionEvent*> > & eventMa
 			bits.push_back(controller.gripPressed);
 			bits.push_back(controller.padPressed);
 			bits.push_back(controller.triggerPressed);
-
-			_valuators[i * 3] = controller.trigVal;
-			_valuators[i * 3 + 1] = controller.padX;
-			_valuators[i * 3 + 2] = controller.padY;
+			if (abs(controller.trigVal) <= 1.0f)
+			{
+				_valuators[i * 3] = controller.trigVal;
+			}
+			if (abs(controller.padX) <= 1.0f)
+			{
+				_valuators[i * 3 + 1] = controller.padX;
+			}
+			if (abs(controller.padY) <= 1.0f)
+			{
+				_valuators[i * 3 + 2] = controller.padY;
+			}
+			//std::cout << controller.padX << std::endl;
 		}
 
 		_buttonMask = 0;

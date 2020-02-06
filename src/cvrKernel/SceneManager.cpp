@@ -130,6 +130,10 @@ bool SceneManager::init()
             "ContextMenus.DefaultOpenButton",1);
 	_moveDefaultButton = ConfigManager::getInt("value",
 			"ContextMenus.DefaultMoveButton", 0);
+	_rotateHorizontalDefaultValuator = ConfigManager::getInt("value",
+			"ContextMenus.DefaultRotateHorizontalValuator", -1);
+	_pushDefaultValuator = ConfigManager::getInt("value",
+			"ContextMenus.DefaultPushValuator", -1);
 
     _wallWidth = _wallHeight = 2000.0;
 

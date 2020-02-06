@@ -63,6 +63,8 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
 
     _moveButton = SceneManager::instance()->_moveDefaultButton;
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
+	_horizontalRotateValuator = SceneManager::instance()->_rotateHorizontalDefaultValuator;
+	_pushValuator = SceneManager::instance()->_pushDefaultValuator;
 
     _activeHand = -2;
 }
@@ -711,6 +713,66 @@ bool SceneObject::processEvent(InteractionEvent * ie)
          }*/
         //return retValue;
     }
+
+	ValuatorInteractionEvent* vie = ie->asValuatorEvent();
+
+	if (vie && _moving)
+	{
+		if (vie->getValuator() == _horizontalRotateValuator)
+		{
+			
+			//std::cerr << "Horizontal Rotate: " << vie->getValue() << std::endl;
+			osg::Matrix m;
+			if (getNavigationOn())
+			{
+				m = PluginHelper::getWorldToObjectTransform();
+			}
+			//_root->setMatrix(getObjectToWorldMatrix() * r * m * _root2obj);
+			
+
+			//osg::Vec4 up = m * _root2obj * osg::Vec4(0, 0, 1, 0);
+			//osg::Vec3 up3 = osg::Vec3(up.x(), up.y(), up.z());
+			osg::Matrix r;
+			r.makeRotate(osg::DegreesToRadians(vie->getValue() * 1.0f), osg::Vec3(0,0,1));
+
+			osg::Vec3 trans, scale;
+			osg::Quat rot, so;
+
+			_root->getMatrix().decompose(trans, rot, scale, so);
+
+			_transMat = osg::Matrix::rotate(rot) * r * osg::Matrix::translate(trans);
+			_scaleMat = osg::Matrix::scale(scale);
+
+			updateMatrices();
+
+			return true;
+		}
+		else if (vie->getValuator() == _pushValuator)
+		{
+
+			osg::Matrix m;
+			if (getNavigationOn())
+			{
+				m = PluginHelper::getWorldToObjectTransform();
+			}
+
+
+			osg::Matrix hand = TrackingManager::instance()->getHandMat(vie->getHand());
+			
+			float moveAmount = 10.0f * vie->getValue();
+			osg::Vec4 move = osg::Vec4(0, moveAmount, 0, 0);
+			move = move * hand;
+
+			std::cerr << "Move: <" << move.x() << ", " << move.y() << ", " << move.z() << ">" << std::endl;
+
+			_root->setMatrix(getObjectToWorldMatrix() * osg::Matrix::translate(osg::Vec3(move.x(), move.y(), move.z())) * m * _root2obj);
+
+			splitMatrix();
+
+
+			return true;
+		}
+	}
 
     bool ret = eventCallback(ie);
     if(ret)
