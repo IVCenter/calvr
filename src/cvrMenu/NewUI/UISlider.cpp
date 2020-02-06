@@ -53,26 +53,27 @@ void UISlider::updateElement(osg::Vec3 pos, osg::Vec3 size)
 			_children[i]->setDirty(true);
 		}
 		_dirty = false;
+
+
+		_emptywidth = _actualSize.x() * (1.0f - _percent);
+		_filledwidth = _actualSize.x() * _percent;
 	}
 
 	for (int i = 0; i < _children.size(); ++i)
 	{
 		UIElement* child = _children[i].get();
 
-		float emptywidth = _actualSize.x() * (1.0f - _percent);
-		float filledwidth = _actualSize.x() * _percent;
-
 		if (child == filled)
 		{
-			filled->updateElement(_actualPos, osg::Vec3(filledwidth, _actualSize.y(), _actualSize.z()));
+			filled->updateElement(_actualPos, osg::Vec3(_filledwidth, _actualSize.y(), _actualSize.z()));
 		}
 		else if (child == empty)
 		{
-			empty->updateElement(_actualPos + osg::Vec3(filledwidth, 0, 0), osg::Vec3(emptywidth, _actualSize.y(), _actualSize.z()));
+			empty->updateElement(_actualPos + osg::Vec3(_filledwidth, 0, 0), osg::Vec3(_emptywidth, _actualSize.y(), _actualSize.z()));
 		}
 		else if (child == handle)
 		{
-			handle->updateElement(_actualPos + osg::Vec3(filledwidth, 0, 0), _actualSize);
+			handle->updateElement(_actualPos + osg::Vec3(_filledwidth, 0, 0), _actualSize);
 		}
 		else
 		{
