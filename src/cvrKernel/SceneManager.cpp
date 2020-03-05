@@ -34,6 +34,13 @@ struct PrioritySort
         bool operator()(const std::pair<float,SceneObject*>& first,
                 const std::pair<float,SceneObject*>& second)
         {
+			//If there is no way to interact with one of the scene objects, place it at the back of the queue
+			bool firstinteraction = first.second->getMovable() || first.second->getHasContextMenu();
+			bool secondinteraction = second.second->getMovable() || second.second->getHasContextMenu();
+			if (firstinteraction != secondinteraction)
+			{
+				return firstinteraction < secondinteraction;
+			}
             return first.first > second.first;
         }
 };

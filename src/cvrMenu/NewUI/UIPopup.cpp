@@ -81,6 +81,7 @@ bool UIPopup::processEvent(InteractionEvent * event)
 	if (_activeElement)
 	{
 		_interacting = _activeElement->processEvent(event);
+		std::cerr << "Interacting: " << _interacting << std::endl;
 		return _interacting;
 	}
 
@@ -98,6 +99,7 @@ bool UIPopup::processIsect(IsectInfo & isect, int hand)
 	}
 	if (_interacting)
 	{
+		return true;
 		if (e)
 		{
 			return true;

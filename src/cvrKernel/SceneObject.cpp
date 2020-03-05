@@ -763,7 +763,7 @@ bool SceneObject::processEvent(InteractionEvent * ie)
 			osg::Vec4 move = osg::Vec4(0, moveAmount, 0, 0);
 			move = move * hand;
 
-			std::cerr << "Move: <" << move.x() << ", " << move.y() << ", " << move.z() << ">" << std::endl;
+			//std::cerr << "Move: <" << move.x() << ", " << move.y() << ", " << move.z() << ">" << std::endl;
 
 			_root->setMatrix(getObjectToWorldMatrix() * osg::Matrix::translate(osg::Vec3(move.x(), move.y(), move.z())) * m * _root2obj);
 

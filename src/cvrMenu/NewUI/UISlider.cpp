@@ -162,7 +162,8 @@ bool UISlider::processEvent(InteractionEvent* event)
 			//_percent = pl.x(); // _lastHitPoint.x();
 			//_dirty = true;
 			//std::cerr << "<" << _lastHitPoint.x() << ", " << _lastHitPoint.y() << ", " << _lastHitPoint.z() << ">" << std::endl;
-			return onPercentChange();
+			onPercentChange();
+			return true;
 		}
 		else if (tie->getInteraction() == BUTTON_UP)
 		{
@@ -171,7 +172,7 @@ bool UISlider::processEvent(InteractionEvent* event)
 		}
 	}
 
-	return false;
+	return _held;
 }
 
 void UISlider::processHover(bool hover)
