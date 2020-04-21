@@ -30,6 +30,8 @@ namespace cvr
 
 		virtual void setPosition(osg::Vec3 pos);
 
+		virtual void setRotation(osg::Quat rot);
+
 	protected:
 
 		virtual bool init();

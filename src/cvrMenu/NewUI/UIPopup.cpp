@@ -81,7 +81,6 @@ bool UIPopup::processEvent(InteractionEvent * event)
 	if (_activeElement)
 	{
 		_interacting = _activeElement->processEvent(event);
-		std::cerr << "Interacting: " << _interacting << std::endl;
 		return _interacting;
 	}
 
@@ -248,4 +247,15 @@ void UIPopup::setPosition(osg::Vec3 pos)
 	menu.preMultRotate(_menuRot);
 
 	_menuRoot->setMatrix(menu);
+}
+
+void UIPopup::setRotation(osg::Quat rot)
+{
+	osg::Matrix menu;
+	menu.makeTranslate(_menuPos);
+	_menuRot = rot;
+	menu.preMultRotate(_menuRot);
+
+	_menuRoot->setMatrix(menu);
+
 }
