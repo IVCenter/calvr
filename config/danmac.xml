@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+
+   <Background g="0.0" a="0.0" />
+
+   <Stencil value="true" />
+   <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
+   <SyncToVBlank value="ON" />
+   <Near value="100"/>
+   <Far value="1000000" />
+   <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
+   <MultiSample value="4" />
+
+   <ShowAxis value="off" />
+
+   <ConfigDebug value="false" />
+
+   <Input>
+     <Threaded FPS="60.0" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="0" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+
+     <NumHeads value="0" />
+     <Head0Address system="0" body="0" />
+
+     <NumHands value="1" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0x0F" system1="0xFF" />
+       <Graphic value="NONE" />
+     </Hand0>
+     <Hand1>
+       <Address system="0" body="1" />
+       <ButtonMask system0="0xF0" system1="0x00" />
+       <Graphic value="NONE" />
+     </Hand1>
+   </Input>
+    
+   <Plugin>
+    <OssimPlanet value="off" />
+    <Sketch value="on" />
+    <CullingMultiGPURender value="off" >
+     <Width value="1024" />
+     <Height value="768" />
+     <NumberOfGPUs value="2" />
+     <GeometryShader value="on" />
+     <DepthBuffer value="16" />
+     <TextureCopy value="CUDA_COPY" />
+     <CudaCopy value="true" />
+     <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/CullingMultiGPURender/shaders" />
+    </CullingMultiGPURender>
+    <MultiGPURender value="off">
+     <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/MultiGPURender/shaders" />
+     <!--<Animation basePath="/home/aprudhom/vtkDyna/perColorNT/Frame" frames="1" colors="29" />-->
+     <!--<Animation basePath="/home/aprudhom/vtkDyna/smallPerColor/Frame" frames="22" colors="29" />-->
+     <Animation basePath="/home/aprudhom/vtkDyna/mediumPerColor/" baseName="Frame" infoFile="medium.ani" loadRatio="0.35" frames="5" colors="29" /> <!-- max 42 frames -->
+     <Width value="1024" />
+     <Height value="768" />
+     <NumberOfGPUs value="2" />
+     <GeometryShader value="off" />
+     <CudaCopy value="false" />
+     <DepthBuffer value="24" />
+     <PBOs value="off" />
+     <DrawLines value="false" />
+    </MultiGPURender>
+
+    <ArtifactVis value="on" />
+
+    <AndroidNavigator value="off" >
+     <TransMult value="1.0" />
+     <RotMult value="1.0" />
+    </AndroidNavigator>
+
+    <SpaceNavigator value="on" >
+     <TransMult value="1.0" />
+     <RotMult value="1.0" />
+    </SpaceNavigator>
+    <PluginUtil value="off" />
+
+    <CudaTest value="off" />
+
+    <PanoView360 value="on" />
+    <TourCave value="on" />
+
+    <PathRecorder value="on" >
+      <DataDir value="/home/aprudhom/data/PathRecorder/" />
+    </PathRecorder>
+
+    <StructView value="on">
+      <Layer0File value="/home/aprudhom/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+      <Layer1File value="/home/aprudhom/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+      <Layer2File value="/home/aprudhom/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+      <Layer3File value="/home/aprudhom/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+      <Layer4File value="/home/aprudhom/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+      <Layer5File value="/home/aprudhom/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+      <Layer6File value="/home/aprudhom/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+      <Layer7File value="/home/aprudhom/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+      <Layer8File value="/home/aprudhom/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+      <Layer9File value="/home/aprudhom/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+      <Layer10File value="/home/aprudhom/data/baybridge/T1Block13_FullConcrete.WRL" />
+      <Layer11File value="/home/aprudhom/data/baybridge/Tower-all.wrl" />
+    </StructView>
+
+        <ArtifactVis>
+          <Database value="/home/aprudhom/data/ArtifactVis/artifactslist.txt" />
+	  <TopoFile value="/home/aprudhom/data/kyle/3d-model/Ken3dv3.wrl" />
+	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
+	  <DCInfoFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/DCCategories.txt" />
+	  <LociFile value="/home/aprudhom/CalVR/plugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
+	  <ArtifactFileList value="/home/covise/data/3DArtifacts.txt" />
+	  <ArchInterfaceFolder value="/home/aprudhom/data/ArchInterface/" />
+          <MaxVisibleRange value="1000000000.0" />
+          <Offset>
+            <X value="-3396591.682" />
+            <Y value="-733458.55" />
+            <Z value="-49.44" />
+          </Offset>
+          <Site>
+            <Longitude value="35.491239" />
+            <Latitude value="30.628039" />
+            <!--Height value="0" /-->
+            <!--Scale value="1" /-->
+          </Site>
+          <Tessellation value=".2" />
+	  <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
+        </ArtifactVis>
+
+    <PluginTest value="off" />
+    <CollaborativePlugin value="on">
+      <Server value="127.0.0.1" />
+      <Port value="11050" />
+    </CollaborativePlugin>
+
+    <MVSim value="off">
+        <Head0 value="off" x="0" y="0" z="0" rotate="0" />
+        <Head1 value="on" x="0" y="-100" z="0" rotate="90" sim="0" />
+    </MVSim>
+
+    <OsgPathRecorder value="on">
+      <DataDir value="/home/aprudhom/data/OsgPathRecorder" />
+    </OsgPathRecorder>
+
+    <ModelLoader value="on" >
+      <ConfigDir value="/home/aprudhom/data/ModelLoader/" />
+      <Files>
+        <se_building path="/home/aprudhom/data/falko/se_building.obj" mask="1" />
+	<QaserAlBint path="/home/aprudhom/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
+      </Files>
+    </ModelLoader>
+
+    <OssimPlanet>
+     <ConfigFile value="/home/aprudhom/CalVR/plugins/calit2/OssimPlanet/kwl/nexcave.kwl" />
+    </OssimPlanet>
+
+    <TourCave>
+     <BackgroundAudio name="BGAudio" loop="true" />
+     <Mode0>
+      <PathID value="1" />
+      <Audio>
+       <File0 name="File0" time="1.0" loop="false" x="0" y="0" z="0" distance="1000" />
+       <File1 name="File1" time="5.0" loop="false" />
+      </Audio>
+     </Mode0>
+     <Mode1>
+      <PathID value="2" />
+      <Audio>
+       <File2 name="File2" time="3.0" loop="false" />
+       <File3 name="File3" time="7.0" loop="false" />
+      </Audio>
+     </Mode1>
+     <Mode2>
+      <PathID value="3" />
+      <Audio>
+       <File4 name="File4" time="6.0" loop="false" />
+       <File5 name="File5" time="10.0" loop="false" />
+      </Audio>
+     </Mode2>
+    </TourCave>
+
+   </Plugin>
+
+   <ContextMenus>
+     <Scale hand="1.0" mouse="0.5" />
+     <MinDistance hand="750" mouse="750" />
+     <MaxDistance hand="1000" mouse="1000" />
+     <DefaultOpenButton hand="1" mouse="2" />
+   </ContextMenus>
+
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <PrimaryHand value="0" />
+    <BoardMenu>
+     <!--<Position type="STATIC" alignment="FLAT" rotation="0" x="0" y="0" z="0" />-->
+     <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
+     <Position distance="3000" />
+     <Scale value="1.0" />
+     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Trigger value="DOUBLECLICK" />
+     <OpenThreshold value="0.5" />
+    </BoardMenu>
+   </MenuSystem>
+   <ViewerPosition x="0" y="-2957" z="0" />
+   <SceneSize value="1000" />
+
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+    <Pipe server="0" screen="0" name="0" />
+    <Pipe server="0" screen="1" name="1" />
+   </PipeConfig>
+
+   <ChannelConfig>
+    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" />
+    <Channel width="512" height="768" left="512" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="1" />
+   </ChannelConfig>
+   
+   <WindowConfig>
+    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" />
+    <Window width="1024" comment="FRONT" pipeIndex="1" height="768" left="00" bottom="0" name="1" decoration="true" />
+   </WindowConfig>
+
+   <ScreenConfig>
+   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
+   <Screen width="2000" comment="FRONT" h="180.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
+   </ScreenConfig>
+

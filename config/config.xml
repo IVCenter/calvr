@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+
+
+<Background g="0.0" a="0.0" />
+
+<Stencil value="false" />
+<MultiThreaded value="DrawThreadPerContext" />
+<PreSwapOperation value="FINISH" />
+<SyncToVBlank value="Off" />
+<Near value="10"/>
+<Far value="20000" />
+<CullingMode value="DEFAULT" />
+<!-- CALVR | DEFAULT -->
+<MultiSample value="4" />
+<UseFrameBuffer value="true" />
+<AllowSceneMenus value="true" />
+
+<ShowAxis value="off" />
+
+<ConfigDebug value="false" />
+<EventDebug value="false" />
+
+<Input>
+  <TrackingDebug value="false" />
+  <Threaded FPS="90.0" />
+  <TrackingSystem0 value="MOUSE">
+    <Offset x="0" y="0" z="0" />
+    <Orientation h="0" p="0" r="0" />
+
+    <NumBodies value="1" />
+    <NumButtons value="3" />
+    <NumValuators value="1" />
+
+    <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+    </Body0>
+  </TrackingSystem0>
+
+  <TrackingSystem1 value="OPENVR">
+    <Orientation h="0" p="0" r="0" />
+
+    <NumControllers value="2" />
+    <NumTrackers value="0" />
+
+    <NumBodies value="3" />
+    <NumButtons value="8" />
+    <NumValuators value="6" />
+
+    <TrackHead value="true" />
+
+    <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+    </Body0>
+  </TrackingSystem1>
+
+
+
+  <NumHeads value="1" />
+  <Head0Address system="1" body="0" />
+
+  <NumHands value="3" />
+  <Hand0>
+    <Address system="0" body="0" />
+    <ButtonMask system0="0xF"  />
+    <Valuator0 system="0" number="0" type="NON_ZERO" />
+  </Hand0>
+  <Hand1>
+    <Address system="1" body="1" />
+    <ButtonMask system1="0xFF0F" />
+    <Valuator0 system="1" number="1" type="CHANGE" />
+    <Valuator1 system="1" number="2" type="CHANGE" />
+    <ButtonMapping value="1,2,3,0" />
+  </Hand1>
+  <Hand2>
+    <Address system="1" body="2" />
+    <ButtonMask system1="0xFFF0" />
+    <Valuator0 system="1" number="4" type="CHANGE" />
+    <Valuator1 system="1" number="5" type="CHANGE" />
+    <ButtonMapping value="1,2,3,0" />
+  </Hand2>
+
+</Input>
+
+<Plugin>
+  <HelmsleyVolume value="on">
+    <ShaderDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\shaders\" />
+    <ModelDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\models\" />
+    <ImageDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\icons\temp\" />
+    <InteractButton value="0" />
+    <PictureLocation value="C:\Users\g3aguirre\Documents\CAL\DICOMS\Screenshots" />
+    <BaseFolder value="C:\Users\g3aguirre\Documents\CAL\DICOMS" />
+    <PresetsFolder value = "C:\Users\g3aguirre\Documents\CAL\DICOMS\Presets"  />
+    <Files>
+    </Files>
+  </HelmsleyVolume>
+</Plugin>
+
+<ContextMenus>
+  <Scale value="1.0" />
+  <MinDistance value="50" />
+  <MaxDistance value="1000" />
+  <DefaultOpenButton value="1" />
+  <DefaultMoveButton value="2" />
+</ContextMenus>
+
+<MenuSystem type="BOARDMENU">
+  <BoardMenu>
+    <Position distance="500" />
+    <Scale value="1.0" />
+    <Buttons select="0" open="1" />
+    <Trigger value="DOUBLECLICK" />
+  </BoardMenu>
+</MenuSystem>
+
+
+<ViewerPosition x="0" y="-1000" z="-2000" />
+<SceneSize value="10000" />
+
+<NumPipes value="1" />
+<NumWindows value="2" />
+<NumScreens value="2" />
+
+<PipeConfig>
+  <Pipe server="0" screen="0" name="0" />
+  <!-- <Pipe server="0" screen="1" name="1" /> -->
+</PipeConfig>
+
+<ChannelConfig>
+  <Channel width="1280" height="1440" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />
+  <!--<Channel width="1280" height="720" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />-->
+  <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" /> -->
+  <!-- <Channel width="2160" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="1"  name="1"  /> -->
+  <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1" /> -->
+</ChannelConfig>
+
+<WindowConfig>
+  <Window width="1280" comment="FRONT" pipeIndex="0" height="1440" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+  <!--<Window width="1280" comment="FRONT" pipeIndex="0" height="720" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />-->
+  <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" cudaDevice="1" /> -->
+  <!-- <Window width="2160" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="1" decoration="true" overrideRedirect="false" cudaDevice="0" /> -->
+  <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="1280" bottom="800" name="1" decoration="true" cudaDevice="1" /> -->
+</WindowConfig>
+
+<ScreenConfig>
+  <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" /> -->
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="1" /> -->
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" /> -->
+</ScreenConfig>

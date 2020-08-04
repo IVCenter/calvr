@@ -1,0 +1,48 @@
+ <?xml version="1.0"?>
+   <host>
+     <channel w="1920" h="1200" d="0.208" i="0" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="1" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="2" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="3" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="4" n="8" z="9.7" r="1.0"
+g="1.0" b="1.0" />
+     <channel w="1920" h="1200" d="0.208" i="5" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="6" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <channel w="1920" h="1200" d="0.208" i="7" n="8" z="9.7" r="0.0"
+g="0.0" b="0.0" />
+     <overlay w="1920" h="1200">
+       <frustum>
+         <corner name="BL" x="-1.768319" y="-1.134879" z="0.0" />
+         <corner name="BR" x=" 1.768319" y="-1.134879" z="0.0" />
+         <corner name="TL" x="-1.768319" y=" 1.134879" z="0.0" />
+       </frustum>
+     </overlay>
+     <node name="host/alioscopy-24-2x3-10.xml">
+       <server addr="10.1.1.1" port="2827" />
+       <window x="0" y="0" w="1920" h="1200" frame="0" />
+       <display index="0" type="lenticular" channels="8">
+         <viewport x="0" y="0" w="1920" h="1200" />
+         <frustum>
+           <corner name="BL" x="-2.684985" y="0.672908" z="0.0" />
+           <corner name="BR" x="-0.981679" y="0.672908" z="0.0" />
+           <corner name="TL" x="-2.684985" y="1.737474" z="0.0" />
+         </frustum>
+         <array pitch="446.862244" angle="18.435000" thick="0.027600"
+shift="0.007340" quality="0.5" />
+         <slice index="0" cycle="0.875" />
+         <slice index="1" cycle="0.875" />
+         <slice index="2" cycle="0.875" />
+         <slice index="3" cycle="0.875" />
+         <slice index="4" cycle="0.875" />
+         <slice index="5" cycle="0.875" />
+         <slice index="6" cycle="0.875" />
+         <slice index="7" cycle="0.875" />
+       </display>
+     </node>
+   </host>

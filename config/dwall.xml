@@ -1,0 +1,509 @@
+<?xml version="1.0"?>
+
+      <RenderOnMaster value="true" />
+      <Stencil value="true" />
+      <ShowAxis value="false" />
+
+
+      <Background r="0.0" g="0.0" b="0.0" /> 
+      <MultiThreaded value="CullDrawThreadPerContext" />
+      <!-- MultiThreaded value="SingleThreaded" / -->
+      <MultiSample value="0" />
+      <SyncToVBlank value="on" />
+      <Near value="100" />
+      <Far value="10000000000" />
+      <UseDepthPartition value="false" />
+      <CullingMode value="CALVR" />
+      <PreSwapOperation value="FINISH" />
+
+      <Plugin>
+        <ClipPlane value="off" />
+        <OsgMovie value="off" />
+        <OsgEarth value="off" >
+	    <Earth value="/home/calvr/Desktop/test.earth" />	
+	</OsgEarth>
+	<BorderWait value="off" />
+	<OsgPdf value="on" />
+	<OsgVnc value="on" />
+	<GreenLight value="off" />
+        <Volume value="off" />
+        <StructView value="off" />
+	<ImageViewer value="off" />
+	<Collaborative value="off">
+	  <Server value="127.0.0.1" />
+	  <Port value="11050" />
+	</Collaborative>
+        <Mugic value="off" >
+	    <Router value="67.58.41.6" />
+	</Mugic>
+	<ModelLoader value="off" />
+	<PanoView360 value="off" />
+        <PanoViewLOD value="off" />
+	<PluginTest value="off" />
+
+        <Hand2 value="off" />
+        <CaveCAD value="off" />  <!-- turn off when not testing -->
+	<CaveCAD>
+		<DataDir value="/home/calvr/data/CaveCAD" />
+                <ServerAddress value="137.110.118.239" />
+                <ServerPort value="8084" />
+
+	</CaveCAD>
+        <ArtifactVis value="off" />
+	<FuturePatient value="on" />
+        <Seismic value="off" /> <!-- under development -->
+
+        <PathRecorder value="off">
+         <DataDir value="/home/calvr/data/PathRecorder/" />
+        </PathRecorder>
+
+        <OsgPathRecorder value="off">
+          <DataDir value="/home/calvr/data/OsgPathRecorder" />
+        </OsgPathRecorder>
+
+    <ImageViewer>
+      <DefaultPaths value="/home/calvr/data/TomsStereo4Kimages1" />
+    </ImageViewer>
+
+    <OsgVnc>
+	<DefaultSize value="2048" />
+	<DefaultPlane value="-10.0" />
+	<ConfigDir value="/home/calvr/data/OsgVnc/" />
+	<BrowserQueryServer value="67.58.41.58" />
+	<Port value="32000" />
+	<Sessions>
+	    <Dwall value="67.58.41.39.vnc" />
+	    <Vroom value="67.58.41.6.vnc" />
+	</Sessions>
+    </OsgVnc>
+
+    <FuturePatient>
+      <Layout x="-210" z="-100" width="5700" height="1950"/>
+      <MasterPointScale value="0.08" />
+      <MasterLineScale value="0.015" />
+      <PDFDir value="/home/calvr/data/FuturePatient/PDF" />
+      <LayoutDir value="/home/calvr/data/FuturePatient/layouts" />
+      <DefaultPDFPos x="2100" y="-20" z="0" />
+      <StackedBarLineWidth value="7.0" />
+      <PointLineScale value="0.6" />
+    </FuturePatient>
+
+    <TourCave value="off">
+     <AudioBase value="/CalVR-OSSIMPlanet" />
+     <!--BackgroundAudio name="BGAudio" loop="true" /-->
+     <!--Mode4>
+      <PathID value="1"  speed="1.5" />
+     </Mode4=-->
+     <Mode0>
+      <PathID value="1" speed="1.0" />
+      <Audio>
+       <File0 name="/Ambient/Masjid" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File1 name="/Voice/TourCAVE" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode0>
+     <Mode1>
+      <PathID value="2" speed="1.0" />
+      <Audio>
+       <File2 name="/Ambient/Masjid" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File3 name="/Voice/Masjid" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode1>
+     <Mode2>
+      <PathID value="3" speed="1.0" />
+      <Audio>
+       <File4 name="/Ambient/Madain" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File5 name="/Voice/Madain" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode2>
+     <Mode3>
+      <PathID value="4" speed="1.0" />
+      <Audio>
+       <File4 name="/Ambient/AncientRoad" time="0.0" stopLocation="END" stopAction="STOP" />
+       <File5 name="/Voice/AncientRoad" time="0.0" stopLocation="END" stopAction="STOP" />
+       <File6 name="/Ambient/Khirbat" time="62.0" stopLocation="NEXT" stopAction="STOP" />
+      </Audio>
+     </Mode3>
+    </TourCave>
+
+	<ModelLoader>
+          <ConfigDir value="/home/calvr/data/ModelLoader/" />
+	  <Files>
+	    <Homestead path="/home/calvr/data/homestead/homestead.wrl" />
+	    <QaserAlBint path="/home/calvr/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" />
+	    <!--Calit2 path="/home/calvr/data/floorplan/calit2-study2.wrl" mask="1" /-->
+	  <!--  <hammerhead_edit path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_edit.obj" mask="1"/>
+	    <hammerhead_parts_transparent path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts_transparent.obj" mask="1"/> -->
+	    <!--hammerhead_full_color path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_color.obj" mask="1" lights="0" /-->
+	<!--    <hammerhead_parts path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
+	    <hammerhead_full path="/home/calvr/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
+	    <se_building path="/home/calvr/data/falko/se_building.obj" mask="1" />
+            <!--<Moebius path="/home/calvr/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
+            <ShowCase path="/home/calvr/Showcase.wrl" mask="1" />
+            <bearing_and_shearkeys path="/home/calvr/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
+            <cross_beam path="/home/calvr/data/caltrans/cross_beam.wrl" mask="1" />
+            <E2_pier path="/home/calvr/data/caltrans/E2_pier.wrl" mask="1" />
+            <east_saddles path="/home/calvr/data/caltrans/east_saddles.wrl" mask="1" />
+            <EB_OBG path="/home/calvr/data/caltrans/EB_OBG.wrl" mask="1" />
+            <WB_OBG path="/home/calvr/data/caltrans/WB_OBG.wrl" mask="1" />
+            <Sphere path="/home/calvr/sphere.obj" mask="1" />-->
+	  </Files>
+	</ModelLoader>
+
+        <PanoViewLOD>
+            <ShaderDir value="/home/calvr/data/PansLOD/glsl/" />
+            <FloorOffset value="1500.0" />
+            <ImageSearchPath value="/fastdata/PansLOD:/state/partition1/data/pan:/home/calvr/data/PansLOD" />
+            <DefaultConfigDir value="/home/calvr/data/PansLOD/config/" />
+            <CacheSize value="2048" />
+            <SpinScale value="0.15" />
+            <ZoomScale value="-1.0" />
+            <DiskCacheSize value="4096" />
+            <ReadThreads value="1" />
+            <CopyThreads value="6" />
+            <Pans>
+                <Luxor>
+                    <LuxorKarnakObelisks />
+                    <LuxorMedinetColumnsBlueCeiling />
+                    <LuxorMedinetHabuCourt />
+                    <LuxorMedinetHabuRoyalTreasure1 />
+                    <LuxorMedinetHabuRoyalTreasure2 />
+                    <LuxorMHoutback />
+                    <LuxorMHwall />
+                    <LuxorRamasseum />
+                    <LuxorSet />
+                    <LuxorTempleChapel />
+                    <LuxorTempleEntryNight />
+                    <LuxorTempleNight2 />
+                    <LuxorTempleOutsideColumn />
+                </Luxor>
+                <KAUST>
+                    <KAUSTmuseum1 />
+                    <KAUSTmuseum2 />
+                    <SaudiMar11 />
+                </KAUST>
+                <Wisconsin>
+                    <Taliesin-Path />
+                    <UPset />
+                    <UW-Madison-2 />
+                    <wiscoSet />
+                </Wisconsin>
+                <BluebonnetSet />
+                <BearPan />
+            </Pans>
+        </PanoViewLOD>
+
+	<PanoView360>
+          <FloorOffset value="1500.00" />
+          <RenderOnMaster value="true" />
+          <ScreenConfig value="/home/calvr/plugins/calit2/PanoView360-temp/xpol.xml" />
+          <Files>
+           <Madaen-Saleh>
+            <Madaen-Saleh-AlKhuraymat reye="/home/calvr/data/SpherePans/Pans/Bowl3/P1430157-Panorama-R.jpg" leye="/home/calvr/data/SpherePans/Pans/Bowl3/P1130157-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Madaen-Saleh-QasrAlBint-Tomb reye="/home/calvr/data/SpherePans/Pans/Tomb_Interior/P1420385-PanoramaB-R.jpg" leye="/home/calvr/data/SpherePans/Pans/Tomb_Interior/P1120385-PanoramaB-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Madaen-Saleh-QasrAlBint-Tomb2 reye="/home/calvr/data/SpherePans/Pans/Tomb_Interior/Second-Tomb-Interior-R.jpg" leye="/home/calvr/data/SpherePans/Pans/Tomb_Interior/Second-Tomb-Interior-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <Adaen-Saleh-Diwan reye="/home/calvr/data/SpherePans/Pans/Al-Diwan/P1420084-Panorama-R.jpg" leye="/home/calvr/data/SpherePans/Pans/Al-Diwan/P1120084-Panorama-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+           </Madaen-Saleh>
+            <!--Milwaukee1_8_4 reye="/home/calvr/dan/data/MilArtMus/MilwaukeeArtMuseum1R_8_4.jpg" leye="/home/calvr/dan/data/MilArtMus/MilwaukeeArtMuseum1L_8_4.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+	    <Milwaukee1_16_8 reye="/home/calvr/dan/data/MilArtMus/MilwaukeeArtMuseum1R_16_8.jpg" leye="/home/calvr/dan/data/MilArtMus/MilwaukeeArtMuseum1L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+            <Milwaukee3_16_8 reye="/home/calvr/data/Pans/MilwaukeeArtMuseum3R_16_8.jpg" leye="/home/calvr/data/Pans/MilwaukeeArtMuseum3L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-128.0" segments="30" tsize="4096" /> 
+	    <TomWI1_8_4 leye="/home/calvr/dan/data/MilArtMus/TomWI1R_8_4.jpg" reye="/home/calvr/dan/data/MilArtMus/TomWI1L_8_4.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
+            <TomWI1_16_8 leye="/home/calvr/dan/data/MilArtMus/TomWI1R_16_8.jpg" reye="/home/calvr/dan/data/MilArtMus/TomWI1L_16_8.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
+            <HOTR_16_4 reye="/home/calvr/dan/data/starCaveIM/HOTR_1_R_16_4.png" leye="/home/calvr/dan/data/starCaveIM/HOTR_1_L_16_4.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <HOTR_16_8 reye="/home/calvr/dan/data/starCaveIM/HOTR_1_R_16_8.png" leye="/home/calvr/dan/data/starCaveIM/HOTR_1_L_16_8.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <HOTR_32_8 reye="/home/calvr/data/dan/data/starCaveIM/HOTR_1_R_32_8.png" leye="/home/calvr/data/dan/data/starCaveIM/HOTR_1_L_32_8.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <GDSP_6_16_4 reye="/home/calvr/dan/data/starCaveIM/GDSP_6_R16K_4K.jpg" leye="/home/calvr/dan/data/starCaveIM/GDSP_6_L16K_4K.jpg" radius="9144" viewanglev="73.7" camHeight="3100.0" segments="30" tsize="4096" />
+            <GDSP_701_16_4 reye="/home/calvr/dan/data/ans360A/GDSP_701_16_4.png" leye="/home/calvr/dan/data/ans360A/GDSP_702_16_4.png" radius="9144" viewanglev="85" camHeight="0.0" segments="30" tsize="4096" />
+            <FLRT_702_16_4 reye="/home/calvr/dan/data/flrt/FLRT_702_R_16_4.png" leye="/home/calvr/dan/data/flrt/FLRT_703_L_16_4.png" radius="9144" viewanglev="85" camHeight="250.0" segments="30" tsize="4096" />
+            <FLRT_712_16_4 reye="/home/calvr/dan/data/flrt/FLRT_712_R_16_4.png" leye="/home/calvr/dan/data/flrt/FLRT_713_L_16_4.png" radius="9144" viewanglev="85" camHeight="2300.0" segments="30" tsize="4096" />
+            <McMurdo1_16_4 reye="/home/calvr/data/dan/data/MarsIm/McMurdo_L257F_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <McMurdo2_16_4 reye="/home/calvr/data/dan/data/MarsIm/McMurdo_L456atc_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <Duck_Bay1_16_4 reye="/home/calvr/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256atc_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Duck_Bay2_16_4 reye="/home/calvr/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256F_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Cape_Verdeana1_16_4 reye="/home/calvr/data/dan/data/MarsIm/Sol991B_Cape_Verdeana_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana2_16_4 reye="/home/calvr/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257atc_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana3_16_4 reye="/home/calvr/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257F_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" /-->
+            <OvertureHall_16_8 reye="/home/calvr/data/SpherePans/OvertureHall_360x180_16k_8k_R.jpg" leye="/home/calvr/data/SpherePans/OvertureHall_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <RockIsland_16_8 reye="/home/calvr/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_R.jpg" leye="/home/calvr/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_L.jpg" radius="9144" viewanglev="112" viewangleh="250" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <WI_Capitol_16_8 reye="/home/calvr/data/SpherePans/WI_Capitol_360x180_16k_8k_R.jpg" leye="/home/calvr/data/SpherePans/WI_Capitol_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <WI_Capitol_16_8_new reye="/home/calvr/data/SpherePans/Madison-State-Capitol-Dome-2-16k-8k-R.jpg" leye="/home/calvr/data/SpherePans/Madison-State-Capitol-Dome-2-16k-8k-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <Taliesen_garden_13 reye="/home/calvr/data/SpherePans/Taliesin-Garden-13-R16_8.tif" leye="/home/calvr/data/SpherePans/Taliesin-Garden-13-L16_8.tif" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <Madain_Abu2 reye="/home/calvr/data/SpherePans/MadainAbu2-R.jpg" leye="/home/calvr/data/SpherePans/MadainAbu2-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <SF-Ship reye="/home/calvr/data/SpherePans/SF-Ship-1-R.jpg" leye="/home/calvr/data/SpherePans/SF-Ship-1-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+	    <BearPan reye="/home/calvr/data/bearpan/BearPanRightFinal.jpg" leye="/home/calvr/data/bearpan/BearPanLeftFinal.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <!--TAL_235_16_8 reye="/home/calvr/data/SpherePans/TAL-235-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-235-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_238_16_8 reye="/home/calvr/data/SpherePans/TAL-238-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-238-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_242_16_8 reye="/home/calvr/data/SpherePans/TAL-242-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-242-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_243_16_8 reye="/home/calvr/data/SpherePans/TAL-243-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-243-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_244_16_8 reye="/home/calvr/data/SpherePans/TAL-244-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-244-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_245_16_8 reye="/home/calvr/data/SpherePans/TAL-245-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-245-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_246_16_8 reye="/home/calvr/data/SpherePans/TAL-246-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-246-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_247_16_8 reye="/home/calvr/data/SpherePans/TAL-247-R16_8.jpg" leye="/home/calvr/data/SpherePans/TAL-247-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  /-->
+          </Files>
+        </PanoView360>
+
+        <ArtifactVis>
+          <TopoFile value="/home/calvr/data/kyle/3d-model-reduced/Ken3dv3.wrl" />
+          <ArtifactsFile value="/home/calvr/data/kyle/artifact-databank/AreaM_Artifacts2006.txt" />
+          <DataBase value="/home/calvr/data/kyle/artifact-databank/artifactslist.txt" />
+          <ObjectFolder value="/home/calvr/data/kyle/3d-artifacts/" />
+        </ArtifactVis>
+        
+        <OssimPlanet>
+          <ConfigFile value="/home/calvr/data/ossimPlanet/ice.kwl" />
+        </OssimPlanet>
+
+   <GreenLight>
+    <Components textureDir="/home/calvr/data/GreenLight/maps/">
+      <!-- Texture files should contain both the front and back faces, front on top-->
+      <C1 startname="convey" height="2" minWattage="620" maxWattage="690" texture="unwrap_ConveyHC1.png" />
+      <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
+      <C3 startname="compute" height="1" minWattage="195" maxWattage="453" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+      <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
+      <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
+      <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
+      <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
+      <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
+      <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
+      <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
+      <Dc startname="DC" height ="12" minWattage="1" maxWattage="2" texture="unwrap_dcmeter.png" />
+    </Components>
+    <Demo value="on" />
+    <Hardware
+      local="/home/calvr/data/GreenLight/GreenLightAssets.fakejson"
+      download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
+    <ModelsDir value="/home/calvr/data/GreenLight/Models/" />
+    <Power
+      local="/home/calvr/data/GreenLight/GLpower.xml"
+      download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power&amp;method=live" />
+    <Shaders
+      fragment="/home/calvr/data/GreenLight/shaders/component.frag"
+      vertex="/home/calvr/data/GreenLight/shaders/component.vert" />
+  </GreenLight>
+        <VRMoleculeViewerPlugin>
+         <DataDir value="/home/jschulze/data/itt" />
+        </VRMoleculeViewerPlugin>
+
+        <DNAPlugin>
+         <DataDir value="/mnt/raid/cod/sandia/igrid/DNA Drawer/Data" />
+        </DNAPlugin>
+
+        <TetraTrace>
+         <BoxIncreaseFactor value="2" />
+        </TetraTrace>
+
+
+	<Volume>
+         <ConfigDir value="/home/calvr/data/volume" />
+         <Files>
+            <Liver-ax-tf value="/home/calvr/data/volume/liver-ax-ssfse-abd-tf.xvf" />
+            <!-- <Liver2 value="/home/calvr/data/volume/liver-ax-ssfse-abd.xvf" /> -->
+            <Liver-orig-tf value="/home/calvr/data/volume/liver-lava-orig-tf.xvf" />
+            <!-- <Liver4 value="/home/calvr/data/volume/liver-lava-orig.xvf" /> -->
+            <Larry_Colon value="/home/calvr/data/volume/mri-series14-color-fill.xvf" />
+          </Files>
+        </Volume>
+
+         <StructView>
+             <Layer0File value="/home/calvr/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+             <Layer1File value="/home/calvr/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+             <Layer2File value="/home/calvr/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+             <Layer3File value="/home/calvr/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+             <Layer4File value="/home/calvr/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+             <Layer5File value="/home/calvr/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+             <Layer6File value="/home/calvr/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+             <Layer7File value="/home/calvr/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+             <Layer8File value="/home/calvr/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+             <Layer9File value="/home/calvr/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+             <Layer10File value="/home/calvr/data/baybridge/T1Block13_FullConcrete.WRL" />
+             <Layer11File value="/home/calvr/data/baybridge/Tower-all.wrl" />
+          </StructView>
+    </Plugin>
+
+    <MultiPC>
+     <NumSlaves value="12" />   <!-- use 12 for all dwall machines -->
+     <MasterInterface value="67.58.41.39" port="11011" />
+     <CleanupScript value="tentakel killall -9 CalVR" />
+     <Startup value="ssh ${USER}@dwall-0-0 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="0" />
+     <Startup value="ssh ${USER}@dwall-0-1 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="1" />
+     <Startup value="ssh ${USER}@dwall-0-2 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="2" />
+     <Startup value="ssh ${USER}@dwall-0-3 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="3" />
+     <Startup value="ssh ${USER}@dwall-1-0 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="4" />
+     <Startup value="ssh ${USER}@dwall-1-1 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="5" />
+     <Startup value="ssh ${USER}@dwall-1-2 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="6" />
+     <Startup value="ssh ${USER}@dwall-1-3 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="7" />
+     <Startup value="ssh ${USER}@dwall-2-0 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="8" />
+     <Startup value="ssh ${USER}@dwall-2-1 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="9" />
+     <Startup value="ssh ${USER}@dwall-2-2 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="10" />
+     <Startup value="ssh ${USER}@dwall-2-3 if \( test -d `pwd` \) then cd `pwd` \;CalVR \>\&amp; /tmp/errors.log\; fi" name="11" />
+    </MultiPC>
+ 
+    <Input>
+     <Threaded FPS="60.0" />
+     <TrackingDebug value="true" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+
+     <TrackingSystem1 value="GYROMOUSE">
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+       <GyroMouse>
+         <WithWheel value="true" />
+	 <Server value="Device0@localhost:7701" />
+       </GyroMouse>
+    </TrackingSystem1>
+
+
+     <TrackingSystem2 value="SHMEM">
+       <Offset x="0" y="-2000" z="-800" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+
+       <Body0>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body0>
+       <Body1>
+        <Offset x="0" y="0" z="0" />
+        <Orientation h="0" p="0" r="0" />
+       </Body1>
+     </TrackingSystem2>
+
+     <TrackingSystem3 value="VRPN">
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+       <VRPN>
+         <Server value="Device0@dwall-1-1:7701" />
+       </VRPN>
+     </TrackingSystem3>
+
+     <TrackingSystem4 value="VRPN">
+         <Offset x="0" y="-1000" z="-400" />
+         <VRPN>
+            <Server value="gyro@67.58.41.59" />
+         </VRPN>
+         <NumBodies value="1" />
+     </TrackingSystem4>
+
+     <!-- <NumHeads value="1" /> -->
+     <NumHeads value="0" />
+     <Head0Address system="2" body="0" />
+
+     <!-- <NumHands value="3" /> -->
+     <NumHands value="2" />
+       <Hand0>
+          <Address system="0" body="0" />
+          <ButtonMask system0="0x0F"  />
+          <Graphic value="NONE" />
+       </Hand0>
+       <!--Hand1>
+         <Address system="2" body="1" /> 
+	 <ButtonMask system3="0x0F" />
+	 <Valuator0 system="3" number="0" />
+       </Hand1-->
+       <Hand1>
+          <Address system="1" body="0" />
+          <ButtonMask system1="0x0F" />
+          <Valuator0 system="1" number="0" />
+       </Hand1>
+       <Hand2>
+	  <Address system="4" body="0" />
+          <Graphic value="CONE" />
+          <ButtonMask system3="0x0F" />
+          <GenPositionEvents value="false" />
+       </Hand2>
+
+       <!--Hand1>
+          <Address system="1" body="2" />
+	  <Graphic value="CONE" />
+	  <ButtonMask system0="0xFF" system1="0x00" />
+	  <GenPositionEvents value="false" />
+       </Hand1>
+       <Hand2>
+          <Address system="1" body="1" />
+	  <Graphic value="CONE" />
+       </Hand2>
+       <Hand3>
+          <Address system="1" body="4" />
+          <Graphic value="CONE" />
+       </Hand3>
+       <Hand4>
+          <Address system="1" body="5" />
+          <Graphic value="CONE" />
+       </Hand4-->
+   </Input>
+
+   <ContextMenus>
+     <Scale value="0.6" />
+     <MinDistance value="750" />
+     <MaxDistance value="1500" />
+     <DefaultOpenButton value="1" />
+   </ContextMenus>
+ 
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <BoardMenu>
+        <Position distance="1500" />
+        <Scale value="0.8" />
+        <Buttons select="0" open="1" />
+        <Trigger value="DOUBLECLICK" />
+    </BoardMenu>
+
+    <BubbleMenu>
+        <!--Position distance="1000" height="50" /-->
+	<Position distance="100" height="1000" />
+	<AnimationSpeed value="0.75" />
+	<Scale value="1.0" />
+	<Buttons select="0" open="1" />
+	<Trigger value="DOUBLECLICK" />
+	<Spheres radius="70" tessellations="12" subradius="700" />
+	<SphereColor r="0.0" g="1.0" b="0.0" a="0.0" />
+	<TextSize value="60.0" />
+   </BubbleMenu>
+
+
+   </MenuSystem>
+
+    <SceneSize value="2000" />
+    <ViewerPosition x="0" y="-3000" z="0" />
+    <Freeze value="on" />
+    <EyeSeparation value="on" />
+
+ <LOCAL host="dwall.local" >
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+       <Pipe server="0" screen="0" name="0" />
+   </PipeConfig>
+
+   <ChannelConfig>
+       <Channel width="1920" height="716" left="0" bottom="0" comment="MAIN" channel="0" stereoMode="MONO"  windowIndex="0"  name="0"  />
+   </ChannelConfig>
+
+   <WindowConfig>
+       <Window width="1920" comment="FRONT" window="0" pipeIndex="0" height="716" left="0" bottom="0" name="0" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+       <Screen width="6154" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="2296" p="0.0" r="0.0" name="0" screen="0" />
+   </ScreenConfig>
+  </LOCAL>
+
+<INCLUDE>china-images.xml</INCLUDE>
+<INCLUDE>dwall-screens-1920.xml</INCLUDE>
+

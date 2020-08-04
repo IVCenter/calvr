@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+
+ <LOCAL host="vcalvr-00" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="0" y="-3000" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="0" y="-3000" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="-1536" originY="-1748" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="-512" originY="-1748" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="-1536" originY="-1748" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="-512" originY="-1748" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="vcalvr-10" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="0" y="-3000" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="MONO"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="0" y="-3000" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="512" originY="-1748" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="1536" originY="-1748" originZ="288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="512" originY="-1748" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="1536" originY="-1748" originZ="-288" width="1016" height="568" h="0.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="vsage-00" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="1536" originY="1748" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="512" originY="1748" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="1536" originY="1748" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="512" originY="1748" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="vsage-10" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="0" y="4748" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="-512" originY="1748" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="-1536" originY="1748" originZ="288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="-512" originY="1748" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="-1536" originY="1748" originZ="-288" width="1016" height="568" h="180.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="vcglx1-10" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="-5772" y="0" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="-2772" originY="512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="-2772" originY="-512" originZ="288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="-2772" originY="512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="-2772" originY="-512" originZ="-288" width="1016" height="568" h="-90.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="vcglx2-10" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="0" name="0" comment="LEFT">
+      <ViewerPosition x="5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="1" name="1" comment="LEFT">
+      <ViewerPosition x="5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="2" name="2" comment="LEFT">
+      <ViewerPosition x="5772" y="0" z="0" />
+    </Channel>
+    <Channel left="0" width="1360" bottom="0" height="768" stereoMode="FIXED_VIEWER"  windowIndex="3" name="3" comment="LEFT">
+      <ViewerPosition x="5772" y="0" z="0" />
+    </Channel>
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1360" comment="MAIN" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1360" comment="MAIN" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="2772" originY="-512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="0" comment="S0" />
+    <Screen originX="2772" originY="512" originZ="288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="1" comment="S0" />
+    <Screen originX="2772" originY="-512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="2" comment="S0" />
+    <Screen originX="2772" originY="512" originZ="-288" width="1016" height="568" h="90.0" p="0.0" r="0.0" name="3" comment="S0" />
+   </ScreenConfig>
+ </LOCAL>

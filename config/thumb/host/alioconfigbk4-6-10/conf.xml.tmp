@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<conf>
+
+  <!-- Host configuration -->
+
+  <option type="string" name="host_file">host/common.xml</option>
+  <option type="string" name="exec_dir">/home/dan/thumb/</option>
+  <option type="string" name="data_dir">/home/dan/thumb/data/</option>
+
+  <option type="string" name="input_mode">mouse</option>
+  <option type="string" name="wiimote">00:1B:7A:3E:45:7F</option>
+
+  <option type="int" name="loader_threads">2</option>
+  <option type="int" name="loader_buffers">32</option>
+
+  <option type="float" name="attract_delay">6000.0</option>
+  <option type="float" name="attract_speed">0.25</option>
+
+  <option type="int" name="atmo">1</option>
+  <option type="int" name="sync">1</option>
+  <option type="int" name="debug">0</option>
+
+  <option type="int" name="bench">0</option>
+  <option type="int" name="movie">0</option>
+
+  <option type="string" name="mipmap">best</option>
+  <option type="float"  name="texel_cutoff">0.5</option>
+
+  <!-- OpenGL context configuration -->
+
+  <option type="int" name="multisample_samples">0</option>
+  <option type="int" name="multisample_buffers">0</option>
+  <option type="int" name="max_anisotropy">4</option>
+
+  <!-- Terrain renderer configuration -->
+
+  <option type="int" name="patch_cache">256</option>
+  <option type="int" name="patch_depth">4</option>
+
+  <option type="int" name="image_cache_w">16</option>
+  <option type="int" name="image_cache_h">8</option>
+  <option type="int" name="height_cache_w">16</option>
+  <option type="int" name="height_cache_h">8</option>
+
+  <!-- Tracker configuration -->
+
+  <option type="int" name="tracker_key">4126</option>
+  <option type="int" name="control_key">4127</option>
+
+  <option type="int" name="tracker_head_sensor">1</option>
+  <option type="int" name="tracker_hand_sensor">0</option>
+  <option type="int" name="tracker_axis_A">0</option>
+  <option type="int" name="tracker_axis_T">1</option>
+  <option type="int" name="tracker_butn_fly">0</option>
+  <option type="int" name="tracker_butn_home">2</option>
+
+  <!-- Gamepad input configuration -->
+
+  <option type="int" name="gamepad_device">0</option>
+  <option type="int" name="gamepad_axis_X">0</option>
+  <option type="int" name="gamepad_axis_Y">1</option>
+  <option type="int" name="gamepad_axis_Z">3</option>
+  <option type="int" name="gamepad_axis_A">5</option>
+  <option type="int" name="gamepad_axis_T">6</option>
+
+  <option type="int" name="gamepad_butn_L">3</option>
+  <option type="int" name="gamepad_butn_R">1</option>
+  <option type="int" name="gamepad_butn_D">2</option>
+  <option type="int" name="gamepad_butn_U">5</option>
+  <option type="int" name="gamepad_butn_F">4</option>
+  <option type="int" name="gamepad_butn_B">0</option>
+
+  <!-- GUI options -->
+
+  <option type="string" name="sans_font">FreeSans.ttf</option>
+  <option type="string" name="mono_font">FreeMono.ttf</option>
+  <option type="int"    name="sans_size">12</option>
+  <option type="int"    name="mono_size">12</option>
+
+  <!-- Dvorak keyboard commands
+
+  <option type="int" name="key_move_L">97</option>
+  <option type="int" name="key_move_R">101</option>
+  <option type="int" name="key_move_D">39</option>
+  <option type="int" name="key_move_U">46</option>
+  <option type="int" name="key_move_F">44</option>
+  <option type="int" name="key_move_B">111</option>
+
+  <option type="int" name="key_axis_X">113</option>
+  <option type="int" name="key_axis_Y">102</option>
+  <option type="int" name="key_axis_Z">59</option>
+  <option type="int" name="key_position_mode">121</option>
+  <option type="int" name="key_rotation_mode">112</option>
+
+  <option type="int" name="key_undo">103</option>
+  <option type="int" name="key_redo">107</option>
+  <option type="int" name="key_make_body">120</option>
+  <option type="int" name="key_make_nonbody">98</option>
+  <option type="int" name="key_make_joint">104</option>
+
+  <option type="int" name="key_selection_delete">8</option>
+  <option type="int" name="key_selection_invert">99</option>
+  <option type="int" name="key_selection_extend">105</option>
+  <option type="int" name="key_selection_clone">106</option>
+ -->
+  <!-- Qwerty keyboard commands -->
+
+  <option type="int" name="key_move_L">97</option>            <!-- a -->
+  <option type="int" name="key_move_R">100</option>           <!-- d -->
+  <option type="int" name="key_move_D">113</option>           <!-- q -->
+  <option type="int" name="key_move_U">101</option>           <!-- e -->
+  <option type="int" name="key_move_F">119</option>           <!-- w -->
+  <option type="int" name="key_move_B">115</option>           <!-- s -->
+
+  <option type="int" name="key_axis_X">120</option>           <!-- x -->
+  <option type="int" name="key_axis_Y">121</option>           <!-- y -->
+  <option type="int" name="key_axis_Z">122</option>           <!-- z -->
+  <option type="int" name="key_position_mode">116</option>    <!-- t -->
+  <option type="int" name="key_rotation_mode">114</option>    <!-- r -->
+
+  <option type="int" name="key_undo">117</option>             <!-- u -->
+  <option type="int" name="key_redo">118</option>             <!-- v -->
+  <option type="int" name="key_make_body">98</option>         <!-- b -->
+  <option type="int" name="key_make_nonbody">110</option>     <!-- n -->
+  <option type="int" name="key_make_joint">106</option>       <!-- j -->
+
+  <option type="int" name="key_selection_invert">105</option> <!-- i -->
+  <option type="int" name="key_selection_extend">103</option> <!-- g -->
+  <option type="int" name="key_selection_clone">99</option>   <!-- c -->
+
+  <!-- Common keyboard commands -->
+
+  <option type="int" name="key_home">13</option>            <!-- Return    -->
+  <option type="int" name="key_selection_delete">8</option> <!-- Backspace -->
+  <option type="int" name="key_selection_clear">32</option> <!-- Spacebar  -->
+
+  <option type="int" name="key_exit">27</option>   <!-- ESC -->
+  <option type="int" name="key_info">282</option>  <!-- F1  -->
+  <option type="int" name="key_edit">283</option>  <!-- F2  -->
+  <option type="int" name="key_play">284</option>  <!-- F3  -->
+  <option type="int" name="key_init">291</option>  <!-- F10 -->
+  <option type="int" name="key_snap">290</option>  <!-- F9 -->
+
+  <!-- Scene renderer configuration -->
+
+  <option type="string" name="shadow_method">map</option>
+  <option type="int" name="shadow_map_splits">3</option>
+  <option type="int" name="shadow_map_resolution">1024</option>
+<!--
+  <option type="int" name="hdr_tonemap">1</option>
+  <option type="int" name="hdr_bloom">1</option>
+  <option type="int" name="texture_compression">1</option>
+-->
+
+  <option type="string" name="z_only">false</option>
+
+  <!-- Navigation options. -->
+
+  <option type="float" name="view_move_rate">1.000000</option>
+  <option type="float" name="view_turn_rate">2.00000</option>
+
+  <!-- Misc. options -->
+
+  <option type="string" name="screenshot_file">snap.png</option>
+  <option type="float" name="joint_size">0.250000</option>
+
+</conf>

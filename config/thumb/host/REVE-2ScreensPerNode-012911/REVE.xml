@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<host>
+  <channel w="1920" h="1080" x="0.0" y="0.0" z="9.7" r="0" g="1" b="0"/>
+
+  <overlay w="1920" h="1080">
+    <frustum>
+      <corner name="BL" x="-1.768319" y="-1.0213911" z="0.0"/>
+      <corner name="BR" x=" 1.768319" y="-1.0213911" z="0.0"/>
+      <corner name="TL" x="-1.768319" y=" 1.0213911" z="0.0"/>
+    </frustum>
+  </overlay>
+
+  <node name="host/REVE.xml" port="2827">
+
+    <client name="host/REVE-0-0-0.xml" addr="tile-0-0" disp=":0.0"/>
+    <client name="host/REVE-0-0-1.xml" addr="tile-0-0" disp=":0.1"/>
+    <client name="host/REVE-0-1-0.xml" addr="tile-0-1" disp=":0.0"/>
+    <client name="host/REVE-0-1-1.xml" addr="tile-0-1" disp=":0.1"/>
+    <client name="host/REVE-0-2-0.xml" addr="tile-0-2" disp=":0.0"/>
+    <client name="host/REVE-0-2-1.xml" addr="tile-0-2" disp=":0.1"/>
+    <client name="host/REVE-1-0-0.xml" addr="tile-1-0" disp=":0.0"/>
+    <client name="host/REVE-1-0-1.xml" addr="tile-1-0" disp=":0.1"/>
+    <client name="host/REVE-1-1-0.xml" addr="tile-1-1" disp=":0.0"/>
+    <client name="host/REVE-1-1-1.xml" addr="tile-1-1" disp=":0.1"/>
+    <client name="host/REVE-1-2-0.xml" addr="tile-1-2" disp=":0.0"/>
+    <client name="host/REVE-1-2-1.xml" addr="tile-1-2" disp=":0.1"/>
+    <client name="host/REVE-2-0-0.xml" addr="tile-2-0" disp=":0.0"/>
+    <client name="host/REVE-2-0-1.xml" addr="tile-2-0" disp=":0.1"/>
+    <client name="host/REVE-2-1-0.xml" addr="tile-2-1" disp=":0.0"/>
+    <client name="host/REVE-2-1-1.xml" addr="tile-2-1" disp=":0.1"/>
+    <client name="host/REVE-2-2-0.xml" addr="tile-2-2" disp=":0.0"/>
+    <client name="host/REVE-2-2-1.xml" addr="tile-2-2" disp=":0.1"/>
+<!--
+    <client name="host/alioscopy-24-2x3-20.xml" addr="tile-0-1" disp=":0.0"/>
+    <client name="host/alioscopy-24-2x3-21.xml" addr="tile-0-1" disp=":0.1"/>
+    <client name="host/alioscopy-24-2x3-30.xml" addr="tile-0-2" disp=":0.0"/>
+    <client name="host/alioscopy-24-2x3-31.xml" addr="tile-0-2" disp=":0.1"/>
+-->
+
+    <window x="0" y="0" w="960" h="600"/>
+    <display index="-1" type="normal">
+      <viewport x="0" y="0" w="960" h="600"/>
+      <frustum>
+        <corner name="BL" x="-1.768319" y="-1.134879" z="0.0"/>
+        <corner name="BR" x=" 1.768319" y="-1.134879" z="0.0"/>
+        <corner name="TL" x="-1.768319" y=" 1.134879" z="0.0"/>
+      </frustum>
+    </display>
+  </node>
+
+</host>

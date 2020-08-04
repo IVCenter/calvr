@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+  <USB entry="0" config="0" interface="0" altSetting="0" endpoint="0" printPacket="0" />
+  <Device vendorID="1133" productID="49684" />
+
+  <Buttons>
+    <ButtonGroup packetOffset="3" numButtons="8" />
+    <ButtonGroup packetOffset="4" numButtons="3" />
+  </Buttons>
+
+  <Valuators>
+    <Valuator packetOffset="0" zeroMin="125" zeroMax="130" min="0" max="255" signed="0" timeout="0.0" />
+    <Valuator packetOffset="1" zeroMin="125" zeroMax="130" min="0" max="255" signed="0" timeout="0.0" />
+  </Valuators>

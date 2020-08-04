@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+  <conf>
+    <!-- Host configuration -->
+   <!-- <option name="host_file">host/local-cluster.xml</option>-->
+    <option name="host_file">host/alioscopy-24dan.xml</option>
+    <!--<option name="host_file">host/common.xml</option>-->
+    <option name="exec_dir">/home/dan/thumb/</option>
+    <option name="data_dir">/home/dan/thumb/data/</option>
+    <option name="input_mode">mouse</option>
+    <option name="wiimote">00:1B:7A:3E:45:7F</option>
+    <option name="loader_threads">2</option>
+    <option name="loader_buffers">32</option>
+    <option name="attract_delay">6000.0</option>
+    <option name="attract_speed">0.25</option>
+    <option name="atmo">1</option>
+    <option name="sync">1</option>
+    <option name="debug">0</option>
+    <option name="bench">0</option>
+    <option name="movie">0</option>
+    <option name="mipmap">best</option>
+    <option name="texel_cutoff">0.5</option>
+    <!-- OpenGL context configuration -->
+    <option name="multisample_samples">0</option>
+    <option name="multisample_buffers">0</option>
+    <option name="max_anisotropy">4</option>
+    <!-- Terrain renderer configuration -->
+    <option name="patch_cache">256</option>
+    <option name="patch_depth">4</option>
+    <option name="image_cache_w">16</option>
+    <option name="image_cache_h">8</option>
+    <option name="height_cache_w">16</option>
+    <option name="height_cache_h">8</option>
+    <!-- Tracker configuration -->
+    <option name="tracker_key">4126</option>
+    <option name="control_key">4127</option>
+    <option name="tracker_head_sensor">1</option>
+    <option name="tracker_hand_sensor">0</option>
+    <option name="tracker_axis_A">0</option>
+    <option name="tracker_axis_T">1</option>
+    <option name="tracker_butn_fly">0</option>
+    <option name="tracker_butn_home">2</option>
+    <!-- Gamepad input configuration -->
+    <option name="gamepad_device">0</option>
+    <option name="gamepad_axis_X">0</option>
+    <option name="gamepad_axis_Y">1</option>
+    <option name="gamepad_axis_Z">2</option>
+    <option name="gamepad_axis_T">3</option>
+    <option name="gamepad_butn_L">13</option>
+    <option name="gamepad_butn_R">12</option>
+    <option name="gamepad_butn_D">8</option>
+    <option name="gamepad_butn_U">9</option>
+    <option name="gamepad_butn_F">14</option>
+    <option name="gamepad_butn_B">11</option>
+    <option name="gamepad_butn_H">4</option>
+    <!-- Gamepad fly mode configuration -->
+    <option name="gamepad_mode">fly</option>
+    <option name="fly_r_min">1800000</option>
+    <option name="fly_r_max">2500000</option>
+    <!-- Gamepad calibration -->
+    <option name="gamepad_axis_X_min">-32768</option>
+    <option name="gamepad_axis_X_max"> 32767</option>
+    <option name="gamepad_axis_Y_min">-32768</option>
+    <option name="gamepad_axis_Y_max"> 32767</option>
+    <!-- GUI options -->
+    <option name="sans_font">FreeSans.ttf</option>
+    <option name="mono_font">FreeMono.ttf</option>
+    <option name="sans_size">12</option>
+    <option name="mono_size">12</option>
+    <!-- Dvorak keyboard commands
+    <option name="key_move_L">97</option>
+    <option name="key_move_R">101</option>
+    <option name="key_move_D">39</option>
+    <option name="key_move_U">46</option>
+    <option name="key_move_F">44</option>
+    <option name="key_move_B">111</option>
+    <option name="key_axis_X">113</option>
+    <option name="key_axis_Y">102</option>
+    <option name="key_axis_Z">59</option>
+    <option name="key_position_mode">121</option>
+    <option name="key_rotation_mode">112</option>
+    <option name="key_undo">103</option>
+    <option name="key_redo">107</option>
+    <option name="key_make_body">120</option>
+    <option name="key_make_nonbody">98</option>
+    <option name="key_make_joint">104</option>
+    <option name="key_selection_delete">8</option>
+    <option name="key_selection_invert">99</option>
+    <option name="key_selection_extend">105</option>
+    <option name="key_selection_clone">106</option>-->
+    <!-- Qwerty keyboard command -->
+    <option name="key_move_L">97</option>
+    <option name="key_move_R">100</option>
+    <option name="key_move_D">113</option>
+    <option name="key_move_U">101</option>
+    <option name="key_move_F">119</option>
+    <option name="key_move_B">115</option>
+    <option name="key_axis_X">120</option>
+    <option name="key_axis_Y">121</option>
+    <option name="key_axis_Z">122</option>
+    <option name="key_position_mode">116</option>
+    <option name="key_rotation_mode">114</option>
+    <option name="key_undo">117</option>
+    <option name="key_redo">118</option>
+    <option name="key_make_body">98</option>
+    <option name="key_make_nonbody">110</option>
+    <option name="key_make_joint">106</option>
+    <option name="key_selection_invert">105</option>
+    <option name="key_selection_extend">103</option>
+    <option name="key_selection_clone">99</option>
+    <!-- Common keyboard commands -->
+    <option name="key_home">13</option>
+    <option name="key_selection_delete">8</option>
+    <option name="key_selection_clear">32</option>
+    <option name="key_exit">27</option>
+    <option name="key_info">282</option>
+    <option name="key_edit">283</option>
+    <option name="key_play">284</option>
+    <option name="key_init">291</option>
+    <option name="key_snap">290</option>
+    <!-- Scene renderer configuration -->
+    <option name="shadow_method">map</option>
+    <option name="shadow_map_splits">3</option>
+    <option name="shadow_map_resolution">1024</option>
+    <!--
+    <option name="hdr_tonemap">1</option>
+    <option name="hdr_bloom">1</option>
+    <option name="texture_compression">1</option>
+    -->
+    <option type="int" name="texture_subsample">2</option>
+    <option name="z_only">false</option>
+    <!-- Navigation options. -->
+<!--
+    <option name="view_move_rate">0.15000</option>
+    <option name="view_turn_rate">1.00000</option>
+-->
+    <option name="view_move_rate">1.00000</option>
+    <option name="view_turn_rate">2.00000</option>
+    <!-- Misc. options -->
+    <option name="screenshot_file">snap.png</option>
+    <option name="joint_size">0.250000</option>
+  </conf>

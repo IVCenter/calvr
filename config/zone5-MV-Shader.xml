@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<LOCAL host="z5-fe.z5.vis.kaust.edu.sa">
+  <WindowConfig>
+    <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+  </WindowConfig>
+  <ChannelConfig>
+    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MONO"  windowIndex="0" name="0" />
+  </ChannelConfig>
+  <ScreenConfig>
+    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
+  </ScreenConfig>
+</LOCAL>
+
+<LOCAL host="z5-fe.z5.vis.kaust.edu.sa,z5-0-0.z5.vis.kaust.edu.sa,z5-0-1.z5.vis.kaust.edu.sa,z5-0-2.z5.vis.kaust.edu.sa,z5-1-0.z5.vis.kaust.edu.sa,z5-1-1.z5.vis.kaust.edu.sa,z5-1-2.z5.vis.kaust.edu.sa,z5-2-0.z5.vis.kaust.edu.sa,z5-2-1.z5.vis.kaust.edu.sa,z5-2-2.z5.vis.kaust.edu.sa,z5-3-0.z5.vis.kaust.edu.sa,z5-3-1.z5.vis.kaust.edu.sa" >
+
+  <MultiViewerFunction a="-0.1823784" b="-0.095493" c="1.0" />
+
+  <Input>
+    <NumHands value="1" />
+    <NumHeads value="2" />
+
+    <HeadAddress value="2" />
+    <Head2Address value="1" />
+    <HandAddress value="0" />
+  </Input>
+
+  <ChannelConfig>
+    <Channel name="0" stereoMode="MULTI_VIEWER_AP_HORIZONTAL_INTERLACE" />
+    <Channel name="1" stereoMode="MULTI_VIEWER_AP_HORIZONTAL_INTERLACE" />
+  </ChannelConfig>
+</LOCAL>

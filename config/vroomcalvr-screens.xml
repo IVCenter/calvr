@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<PipeConfig>
+        <Pipe display="not needed any more" server="0" screen="0" name="0" />
+	    <Pipe display="n" server="0" screen="1" name="1" />
+		<Pipe display="n" server="0" screen="2" name="2" />
+		    <Pipe display="n" server="0" screen="3" name="3" />
+		          </PipeConfig>
+
+ <LOCAL host="tile-0-0.local" >
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT" />
+    <Channel channel="2" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT" />
+    <Channel channel="3" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT" />
+   </ChannelConfig>
+    
+   <WindowConfig>
+     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="-1539"  originY="0" originZ="-290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
+    <Screen originX="-513"   originY="0" originZ="-290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="S1" />
+    <Screen originX="-1539"  originY="0" originZ="290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="2" screen="2" comment="S2" />
+    <Screen originX="-513"   originY="0" originZ="290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="3" screen="3" comment="S3" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="tile-1-0.local" >
+
+    <NumPipes value="4" />
+    <NumScreens value="4" />
+    <NumWindows value="4" />
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="1" name="1" comment="LEFT" />
+    <Channel channel="2" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="2" name="2" comment="LEFT" />
+    <Channel channel="3" left="0"    width="1366" bottom="0" height="768" stereoMode="LEFT"  windowIndex="3" name="3" comment="LEFT" />
+   </ChannelConfig>
+
+   <WindowConfig>
+     <Window width="1366" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1366" comment="MAIN" window="1" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+     <Window width="1366" comment="MAIN" window="2" pipeIndex="2" height="768" left="0" bottom="0" name="2" decoration="false" />
+     <Window width="1366" comment="MAIN" window="3" pipeIndex="3" height="768" left="0" bottom="0" name="3" decoration="false" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen originX="513"  originY="0" originZ="-290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="S0" />
+    <Screen originX="1539"   originY="0" originZ="-290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="1" screen="1" comment="S1" />
+    <Screen originX="513"  originY="0" originZ="290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="2" screen="2" comment="S2" />
+    <Screen originX="1539"   originY="0" originZ="290" width="1016" height="574" h="0.0" p="0.0" r="0.0" name="3" screen="3" comment="S3" />
+   </ScreenConfig>
+ </LOCAL>

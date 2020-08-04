@@ -1,0 +1,48 @@
+ <?xml version="1.0"?>
+   <host>
+     <channel w="1920" h="1080" d="0.3733977" i="0" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="1" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="2" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="3" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="4" n="8" z="17.413258"
+r="1.0" g="1.0" b="1.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="5" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="6" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <channel w="1920" h="1080" d="0.3733977" i="7" n="8" z="17.413258"
+r="0.0" g="0.0" b="0.0" />
+     <overlay w="1920" h="1080">
+       <frustum>
+         <corner name="BL" x="-1.768319" y="-1.0213911" z="0.0" />
+         <corner name="BR" x=" 1.768319" y="-1.0213911" z="0.0" />
+         <corner name="TL" x="-1.768319" y=" 1.0213911" z="0.0" />
+       </frustum>
+     </overlay>
+     <node name="host/REVE-2-2-0.xml">
+       <server addr="10.1.0.100" port="2827" />
+       <window x="0" y="0" w="1920" h="1080" frame="0" />
+       <display index="4" type="lenticular" channels="8">
+         <viewport x="0" y="0" w="1920" h="1080" />
+         <frustum>
+           <corner name="BL" x="3.4662077" y="1.1322997" z="0.0" />
+           <corner name="BR" x="6.5239507" y="1.1322997" z="0.0" />
+           <corner name="TL" x="3.4662077" y="2.8522797" z="0.0" />
+         </frustum>
+         <array pitch="248.923190" angle="18.435000" thick="0.049547"
+shift="0.015759" quality="0.5" />
+         <slice index="0" cycle="0.875" />
+         <slice index="1" cycle="0.875" />
+         <slice index="2" cycle="0.875" />
+         <slice index="3" cycle="0.875" />
+         <slice index="4" cycle="0.875" />
+         <slice index="5" cycle="0.875" />
+         <slice index="6" cycle="0.875" />
+         <slice index="7" cycle="0.875" />
+       </display>
+     </node>
+   </host>

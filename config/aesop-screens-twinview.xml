@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+ <LOCAL host="kacst-0-0.local,kacst-0-1.local" >
+  <NumPipes value="1" />
+  <NumScreens value="2" />
+  <NumWindows value="1" />
+
+  <PipeConfig>
+    <Pipe server="0" screen="0" name="0" />
+    <Pipe server="0" screen="1" name="1" />
+  </PipeConfig>
+
+  <ChannelConfig>
+    <Channel width="1360" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+    <Channel width="1360" height="768" left="1360" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="1"  />
+  </ChannelConfig>
+
+  <WindowConfig>
+    <Window width="2720" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" overrideRedirect="true" />
+    <Window width="1360" pipeIndex="0" height="768" left="1360" bottom="0" name="1" decoration="false" overrideRedirect="true" />
+  </WindowConfig>
+ </LOCAL>
+
+ <LOCAL host="kacst-1-0.local,kacst-1-1.local" >
+  <NumPipes value="1" />
+  <NumScreens value="2" />
+  <NumWindows value="1" />
+
+  <PipeConfig>
+    <Pipe server="0" screen="0" name="0" />
+    <Pipe server="0" screen="1" name="1" />
+  </PipeConfig>
+
+  <ChannelConfig>
+    <Channel width="1366" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+    <Channel width="1366" height="768" left="1366" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="1"  />
+  </ChannelConfig>
+
+  <WindowConfig>
+    <Window width="2732" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" overrideRedirect="true" />
+    <Window width="1366" pipeIndex="0" height="768" left="1366" bottom="0" name="1" decoration="false" overrideRedirect="true" />
+  </WindowConfig>
+ </LOCAL>
+
+  <LOCAL host="kacst-0-0.local" >
+    <ScreenConfig>
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="-1547.75" originY="0" originZ="-293" height="576" p="0.0" r="0.0" name="0" />
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="-515.25" originY="0" originZ="-293" height="576" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>
+  
+  <LOCAL host="kacst-1-0.local" >
+    <ScreenConfig>
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="517.25" originY="0" originZ="-293" height="576" p="0.0" r="0.0" name="0" />
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="1549.75" originY="0" originZ="-293" height="576" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>
+  
+  <LOCAL host="kacst-0-1.local" >
+    <ScreenConfig>
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="-1547.75" originY="0" originZ="291" height="576" p="0.0" r="0.0" name="0" />
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="-515.25" originY="0" originZ="291" height="576" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>
+  
+  <LOCAL host="kacst-1-1.local" >
+    <ScreenConfig>
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="517.25" originY="0" originZ="291" height="576" p="0.0" r="0.0" name="0" />
+      <Screen width="1024.5" comment="FRONT" h="0.0" originX="1549.75" originY="0" originZ="291" height="576" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>
+  
+

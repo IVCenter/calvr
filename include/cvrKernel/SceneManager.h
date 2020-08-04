@@ -1,0 +1,373 @@
+/**
+ * @file SceneManager.h
+ */
+
+#ifndef CALVR_SCENE_MANAGER_H
+#define CALVR_SCENE_MANAGER_H
+
+#include <cvrKernel/Export.h>
+#include <cvrUtil/DepthPartitionNode.h>
+
+#include <osg/ClipNode>
+#include <osg/MatrixTransform>
+#include <osg/BoundingBox>
+
+#include <vector>
+#include <map>
+
+namespace cvr
+{
+
+class CVRViewer;
+class SceneObject;
+class CVRPlugin;
+class InteractionEvent;
+
+template<typename T> class VectorWithPosition : public std::vector<T>
+{
+    public:
+        void setPosition(int pos)
+        {
+            _position = pos;
+        }
+
+        int getPosition()
+        {
+            return _position;
+        }
+
+        int next()
+        {
+            ++_position;
+            return _position;
+        }
+
+        int prev()
+        {
+            --_position;
+            return _position;
+        }
+    protected:
+        int _position;
+};
+
+/**
+ * @addtogroup kernel
+ * @{
+ */
+
+/**
+ * @brief Creates and manages the main scenegraph
+ */
+class CVRKERNEL_EXPORT SceneManager
+{
+        friend class CVRViewer;
+        friend class CVRPlugin;
+        friend class SceneObject;
+    public:
+        virtual ~SceneManager();
+
+        /**
+         * @brief Types of graphics to use to represent a pointer
+         */
+        enum PointerGraphicType
+        {
+            CONE = 0, POINTER, NONE,
+        };
+
+        enum WallType
+        {
+            WT_UNKNOWN = 0, WT_PLANAR
+        };
+
+        /**
+         * @brief Get pointer to static class instance
+         */
+        static SceneManager * instance();
+
+        /**
+         * @brief Creates and sets up scene
+         */
+        bool init();
+
+        /**
+         * @brief Do per frame operations
+         */
+        void update();
+
+        /**
+         * @brief Second update called after the interaction events are processed
+         */
+        void postEventUpdate();
+
+        /**
+         * @brief Get root node of Scene (world space root)
+         */
+        osg::MatrixTransform * getScene();
+
+        /**
+         * @brief Get root of object space
+         */
+        osg::ClipNode * getObjectsRoot();
+
+        /**
+         * @brief Get object space translation/rotation transform
+         */
+        const osg::MatrixTransform * getObjectTransform();
+
+        /**
+         * @brief Set the matrix for object space orientation/position
+         */
+        void setObjectMatrix(osg::Matrixd & mat);
+
+        /**
+         * @brief Get object space scale
+         */
+        double getObjectScale();
+
+        /**
+         * @brief Set object space scale
+         */
+        void setObjectScale(double scale);
+
+        /**
+         * @brief Get the matrix transform from world space to object space
+         */
+        const osg::Matrixd & getWorldToObjectTransform();
+
+        /**
+         * @brief Get the matrix transform from object space to world space
+         */
+        const osg::Matrixd & getObjectToWorldTransform();
+
+        /**
+         * @brief Get the root node of menu space
+         */
+        osg::MatrixTransform * getMenuRoot();
+
+        /**
+         * @brief Set of debug axis should be shown on hand and head locations
+         */
+        void setAxis(bool on);
+
+        /**
+         * @brief Set if the hand pointer graphic should be hidden
+         */
+        void setHidePointer(bool b);
+
+        /**
+         * @brief Get if the hand pointer graphic is hidden
+         */
+        bool getHidePointer()
+        {
+            return _hidePointer;
+        }
+
+		/**
+		 * @brief Get the MatrixTransform for the given hand
+		 */
+		osg::MatrixTransform * getHandTransform(unsigned int hand)
+		{
+			if (hand >= _handTransforms.size())
+			{
+				return NULL;
+			}
+
+			return _handTransforms[hand];
+		}
+
+        /**
+         * @brief Get a pointer to the DepthPartitionNode for the left eye rendering
+         *
+         * This node is located above the sceen root but does nothing if not set to active
+         */
+        DepthPartitionNode * getDepthPartitionNodeLeft();
+
+        /**
+         * @brief Get a pointer to the DepthPartitionNode for the right eye rendering
+         *
+         * This node is located above the sceen root but does nothing if not set to active
+         */
+        DepthPartitionNode * getDepthPartitionNodeRight();
+
+        /**
+         * @brief Set if depth partitioning is used or not
+         */
+        void setDepthPartitionActive(bool active);
+
+        /**
+         * @brief Get if depth partitioning is being used
+         */
+        bool getDepthPartitionActive();
+
+        /**
+         * @brief Sets the scenegraph root for the viewer
+         */
+        void setViewerScene(CVRViewer * cvrviewer);
+
+        /**
+         * @brief Handle interaction events for SceneObjects
+         * @return return true if the event should be consumed from the pipeline
+         */
+        bool processEvent(InteractionEvent * ie);
+
+        /**
+         * @brief Register a SceneObject with the SceneManager
+         * @param object SceneObject to register
+         * @param plugin optional plugin name to associate with the object
+         *
+         * A SceneObject must be registered before it can be attached to the scene
+         */
+        void registerSceneObject(SceneObject * object, std::string plugin = "");
+
+        /**
+         * @brief Unregister a SceneObject with the SceneManager
+         */
+        void unregisterSceneObject(SceneObject * object);
+
+        std::vector<SceneObject*> getSceneObjects(void);
+
+        float getDefaultContextMenuScale()
+        {
+            return _menuScale;
+        }
+
+        float getDefaultContextMenuMinDistance()
+        {
+            return _menuMinDistance;
+        }
+
+        float getDefaultContextMenuMaxDistance()
+        {
+            return _menuMaxDistance;
+        }
+
+        /**
+         * @brief Set which SceneObject has the open context menu
+         */
+        void setMenuOpenObject(SceneObject * object);
+
+        /**
+         * @brief Get the SceneObject with the open context menu
+         * @return returns NULL if no menu is open
+         */
+        SceneObject * getMenuOpenObject();
+
+        /**
+         * @brief Close any active context menu
+         */
+        void closeOpenObjectMenu();
+
+        struct CameraCallbacks
+        {
+                osg::ref_ptr<osg::Camera::DrawCallback> initialDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> preDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> postDraw;
+                osg::ref_ptr<osg::Camera::DrawCallback> finalDraw;
+        };
+
+        CameraCallbacks * getCameraCallbacks(osg::Camera * cam);
+
+        bool getTiledWallValid()
+        {
+            return _wallValid;
+        }
+
+        WallType getTiledWallType()
+        {
+            return _wallType;
+        }
+
+        float getTiledWallWidth()
+        {
+            return _wallWidth;
+        }
+
+        float getTiledWallHeight()
+        {
+            return _wallHeight;
+        }
+
+        const osg::Matrix & getTiledWallTransform()
+        {
+            return _wallTransform;
+        }
+
+        bool getPointOnTiledWall(const osg::Matrix & mat,
+                osg::Vec3 & wallPoint);
+
+    protected:
+        SceneManager();
+
+        void initPointers();
+        void initLights();
+        void initSceneState();
+        void initAxis();
+
+        void detectWallBounds();
+        void getNodeWorldCorners(osg::BoundingBoxf& bound);
+
+        void updateActiveObject();
+        SceneObject * findChildActiveObject(SceneObject * object,
+                osg::Vec3 & start, osg::Vec3 & end,
+                VectorWithPosition<SceneObject*> & nodeList);
+        void removeNestedObject(SceneObject * object);
+        void removePluginObjects(CVRPlugin * plugin);
+
+        void preDraw();
+        void postDraw();
+
+        static SceneManager * _myPtr;   ///< static self pointer
+
+        bool _showAxis;     ///< should debug axis be shown
+        bool _hidePointer;
+
+        std::map<osg::Camera*,CameraCallbacks> _callbackMap;
+
+        osg::ref_ptr<osg::MatrixTransform> _sceneRoot; ///< root node of the scene
+        osg::ref_ptr<osg::Group> _actualRoot; ///< node assigned as viewer root
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionLeft; ///< partitions availible depth, good for large scenes, left eye
+        osg::ref_ptr<DepthPartitionNode> _depthPartitionRight; ///< partitions availible depth, good for large scenes, right eye
+        osg::ref_ptr<osg::MatrixTransform> _menuRoot; ///< root node for menu implementation
+        osg::ref_ptr<osg::ClipNode> _objectRoot;       ///< root of object space
+        osg::ref_ptr<osg::MatrixTransform> _objectTransform; ///< object space translation/rotation
+        osg::ref_ptr<osg::MatrixTransform> _objectScale; ///< object space scale transform
+        osg::ref_ptr<osg::Group> _axisNode;   ///< holds the debug axis geometry
+
+        osg::Matrixd _obj2world; ///< object to world space transform
+        osg::Matrixd _world2obj; ///< world to object space transform
+
+        std::vector<osg::ref_ptr<osg::MatrixTransform> > _headAxisTransforms; ///< head location debug axis transforms
+        std::vector<osg::ref_ptr<osg::MatrixTransform> > _handTransforms; ///< current hand transforms
+        float _scale;                         ///< current scale of object space
+
+        SceneObject * _menuOpenObject; ///< object with an open menu
+        std::map<int,SceneObject*> _activeObjects; ///< current active SceneObject for each hand
+        std::map<int,VectorWithPosition<SceneObject*> > _activeObjectNodeLists;
+        std::map<SceneObject*,int> _uniqueActiveObjects;
+        std::map<SceneObject*,bool> _uniqueBlacklistMap;
+        bool _uniqueMapInUse;
+        std::map<std::string,std::vector<SceneObject*> > _pluginObjectMap; ///< set of all registered SceneObjects grouped by plugin name
+
+        float _menuScale;
+        float _menuMinDistance;
+        float _menuMaxDistance;
+        int _menuDefaultOpenButton;
+		int _moveDefaultButton;
+		int _rotateHorizontalDefaultValuator;
+		int _pushDefaultValuator;
+
+        WallType _wallType;
+        osg::Matrix _wallTransform;
+        float _wallWidth;
+        float _wallHeight;
+        bool _wallValid;
+};
+
+/**
+ * @}
+ */
+
+}
+
+#endif

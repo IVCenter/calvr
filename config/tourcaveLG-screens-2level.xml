@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+   <Stereo separation="64.0" />
+
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <PipeConfig>
+     <Pipe server="0" screen="0" name="0" />
+     <Pipe server="0" screen="1" name="1" />
+   </PipeConfig>
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" cudaDevice="0" />
+     <Window width="1920" comment="MAIN" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" cudaDevice="1" />
+   </WindowConfig>
+
+   <!--ChannelConfig>
+     <Channel name="0" stereoMode="LEFT" />
+     <Channel name="1" stereoMode="LEFT" />
+   </ChannelConfig-->
+
+   <ChannelConfig>
+    <Channel left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel left="0"    width="1920" bottom="0" height="1080" stereoMode="VERTICAL_SPLIT"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+  <LOCAL host="tourcave-1.local" >
+   <ScreenConfig>
+    <Screen height="805" h="74.0" width="1432" p="0.0"   originX="-1949"  comment="S_A" originY="577"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="74.0" width="1432" p="0.0"   originX="-1997"  comment="S_A" originY="592"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-2.local" >
+   <ScreenConfig>
+    <Screen height="805" h="50.0" width="1432" p="0.0"   originX="-1489"  comment="S_A" originY="1236"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="50.0" width="1432" p="0.0"   originX="-1527"  comment="S_A" originY="1268"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-3.local" >
+   <ScreenConfig>
+    <Screen height="805" h="26.0" width="1432" p="0.0"   originX="-802"  comment="S_A" originY="1657"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="26.0" width="1432" p="0.0"   originX="-823"  comment="S_A" originY="1702"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-4.local" >
+   <ScreenConfig>
+    <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1750"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="0.0" width="1432" p="0.0"   originX="0"  comment="S_A" originY="1800"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-5.local" >
+   <ScreenConfig>
+    <Screen height="805" h="-26.0" width="1432" p="0.0"   originX="738"  comment="S_A" originY="1481"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="-26.0" width="1432" p="0.0"   originX="760"  comment="S_A" originY="1526"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-6.local" >
+   <ScreenConfig>
+    <Screen height="805" h="-55.0" width="1432" p="0.0"   originX="1276"  comment="S_A" originY="904"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="-55.0" width="1432" p="0.0"   originX="1317"  comment="S_A" originY="932"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="tourcave-7.local" >
+   <ScreenConfig>
+    <Screen height="805" h="-85.0" width="1432" p="0.0"   originX="1471"  comment="S_A" originY="135"  r="-90.0" name="0" originZ="0" />
+    <Screen height="805" h="-85.0" width="1432" p="0.0"   originX="1521"  comment="S_A" originY="139"  r="-90.0" name="1" originZ="1490" />
+   </ScreenConfig>
+  </LOCAL>

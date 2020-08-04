@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+
+   <Stencil value="true" />
+   <MultiThreaded value="CullDrawThreadPerContext" />
+   <SyncToVBlank value="On" />
+   <Near value="100"/>
+   <Far value="1000000" />
+
+   <ShowAxis value="off" />
+
+   <ConfigDebug value="false" />
+
+   <Input>
+     <Threaded FPS="60.0" />
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="0" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+     <TrackingSystem1 value="SHMEM">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="2" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+     </TrackingSystem1>
+
+     <NumHeads value="0" />
+     <Head0Address system="0" body="0" />
+
+     <NumHands value="2" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0x0F" system1="0xFF" />
+       <Graphic value="NONE" />
+     </Hand0>
+     <Hand1>
+       <Address system="1" body="0" />
+       <ButtonMask system0="0x00" system1="0x0F" />
+       <Graphic value="NONE" />
+     </Hand1>
+
+     <NumValuators value="0" />
+     <Valuator0 station="0" number="0" />
+   </Input>
+
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <PrimaryHand value="0" />
+    <BoardMenu>
+     <Position distance="3000" />
+     <Scale value="1.0" />
+     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Trigger value="DOUBLECLICK" />
+     <OpenThreshold value="0.5" />
+    </BoardMenu>
+   </MenuSystem>
+
+   <MultiPC>
+     <NumSlaves value="2" />
+     <MasterInterface value="67.58.41.16" />
+     <CleanupScript value="tentakel killall -9 CalVR" />
+     <Startup value="ssh 67.58.41.17 CalVR \>\&amp; /tmp/errors.log" name="0" />
+     <Startup value="ssh 67.58.41.18 CalVR \>\&amp; /tmp/errors.log" name="1" />
+   </MultiPC>
+
+   <ViewerPosition x="0" y="-2957" z="0" />
+   <SceneSize value="1000" />
+
+  <LOCAL host="v1head" >
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+    <Pipe server="0" screen="0" name="0" />
+   </PipeConfig>
+
+   <ChannelConfig>
+    <Channel width="1430" height="1000" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+   </ChannelConfig>
+   
+   <WindowConfig>
+    <Window width="1430" comment="FRONT" pipeIndex="0" height="1000" left="0" bottom="0" name="0" decoration="true" />
+   </WindowConfig>
+
+   <ScreenConfig>
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1400" p="0.0" r="0.0" name="0" />
+   </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="v1node1" >
+    <NumPipes value="2" />
+    <NumWindows value="2" />
+    <NumScreens value="2" />
+
+    <PipeConfig>
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
+    </PipeConfig>
+
+    <ChannelConfig>
+      <Channel width="1360" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1360" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
+    </ChannelConfig>
+             
+    <WindowConfig>
+      <Window width="1360" comment="FRONT" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1360" comment="FRONT" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+    </WindowConfig>
+
+    <ScreenConfig>
+      <Screen width="1016" comment="FRONT" h="0.0" originX="-512" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1016" comment="FRONT" h="0.0" originX="512" originY="0" originZ="-288" height="568" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>
+
+  <LOCAL host="v1node2" >
+    <NumPipes value="2" />
+    <NumWindows value="2" />
+    <NumScreens value="2" />
+
+    <PipeConfig>
+      <Pipe server="0" screen="0" name="0" />
+      <Pipe server="0" screen="1" name="1" />
+    </PipeConfig>
+
+    <ChannelConfig>
+      <Channel width="1366" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
+      <Channel width="1360" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1"  />
+    </ChannelConfig>
+
+    <WindowConfig>
+      <Window width="1366" comment="FRONT" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+      <Window width="1360" comment="FRONT" pipeIndex="1" height="768" left="0" bottom="0" name="1" decoration="false" />
+    </WindowConfig>
+
+    <ScreenConfig>
+      <Screen width="1016" comment="FRONT" h="0.0" originX="-512" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="0" />
+      <Screen width="1016" comment="FRONT" h="0.0" originX="512" originY="0" originZ="288" height="568" p="0.0" r="0.0" name="1" />
+    </ScreenConfig>
+  </LOCAL>

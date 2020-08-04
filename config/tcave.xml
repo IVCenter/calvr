@@ -1,0 +1,243 @@
+<?xml version="1.0"?>
+
+      <RenderOnMaster value="true" />
+      <Stencil value="true" />
+      <ShowAxis value="false" />
+      <PipeConfig>
+        <Pipe server="0" screen="0" name="0" />
+        <Pipe server="0" screen="1" name="1" />
+        <Pipe server="0" screen="2" name="2" />
+      </PipeConfig>
+
+      <ConfigDebug value="false" />
+
+      <Background r="0.0" g="0.0" b="0.0" /> 
+      <!-- <MultiThreaded value="CullDrawThreadPerContext" /> -->
+      <MultiThreaded value="SingleThreaded" />
+      <SyncToVBlank value="on" device="DFP-1" />
+      <FloorHeight value="-1663" />
+      <Near value="100" />
+      <Far value="10000000000" />
+      <UseDepthPartition value="true" />
+      <!--Near value="100" /-->
+      <!--Far value="1000000000" /-->
+
+      <Plugin>
+        <ClipPlane value="off" />
+        <OssimPlanet value="on" />
+        <Volume value="off" />
+        <StructView value="off" />
+	<Collaborative value="off">
+	  <Server value="127.0.0.1" />
+	  <Port value="11050" />
+	</Collaborative>
+	<ModelLoader value="off" />
+	<PanoView360 value="off" />
+        <CaveCAD value="off" />  <!-- turn off when not testing -->
+	<CaveCAD>
+		<DataDir value="/home/covise/data/CaveCAD" />
+                <ServerAddress value="137.110.118.239" />
+                <ServerPort value="8084" />
+
+	</CaveCAD>
+        <Seismic value="off" /> <!-- under development -->
+
+        <PathRecorder value="on">
+         <DataDir value="/home/covise/data/PathRecorder/" />
+        </PathRecorder>
+
+        <OsgPathRecorder value="on">
+          <DataDir value="/home/covise/data/OsgPathRecorder" />
+        </OsgPathRecorder>
+
+    <TourCave value="on">
+     <AudioBase value="/CalVR-OSSIMPlanet" />
+     <!--BackgroundAudio name="BGAudio" loop="true" /-->
+     <!--Mode4>
+      <PathID value="1"  speed="1.5" />
+     </Mode4=-->
+     <Mode0>
+      <PathID value="1" speed="1.0" />
+      <Audio>
+       <File0 name="/Ambient/Masjid" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File1 name="/Voice/TourCAVE" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode0>
+     <Mode1>
+      <PathID value="2" speed="1.0" />
+      <Audio>
+       <File2 name="/Ambient/Masjid" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File3 name="/Voice/Masjid" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode1>
+     <Mode2>
+      <PathID value="3" speed="1.0" />
+      <Audio>
+       <File4 name="/Ambient/Madain" time="0.0" stopLocation="NEXT" stopAction="PAUSE" />
+       <File5 name="/Voice/Madain" time="0.0" stopLocation="END" stopAction="STOP" />
+      </Audio>
+     </Mode2>
+     <Mode3>
+      <PathID value="4" speed="1.0" />
+      <Audio>
+       <File4 name="/Ambient/AncientRoad" time="0.0" stopLocation="END" stopAction="STOP" />
+       <File5 name="/Voice/AncientRoad" time="0.0" stopLocation="END" stopAction="STOP" />
+       <File6 name="/Ambient/Khirbat" time="62.0" stopLocation="NEXT" stopAction="STOP" />
+      </Audio>
+     </Mode3>
+    </TourCave>
+
+        <Maze>
+          <DataDir value="/home/covise/data/maze" />
+        </Maze> 
+
+	<ModelLoader>
+          <ConfigDir value="/home/covise/data/ModelLoader/" />
+	  <Files>
+	  <!--  <hammerhead_edit path="/home/covise/data/LarryFrank/hammerhead/hammerhead_edit.obj" mask="1"/>
+	    <hammerhead_parts_transparent path="/home/covise/data/LarryFrank/hammerhead/hammerhead_parts_transparent.obj" mask="1"/> -->
+	    <!--hammerhead_full_color path="/home/covise/data/LarryFrank/hammerhead/hammerhead_full_color.obj" mask="1" lights="0" /-->
+	<!--    <hammerhead_parts path="/home/covise/data/LarryFrank/hammerhead/hammerhead_parts.obj" mask="1"/>
+	    <hammerhead_full path="/home/covise/data/LarryFrank/hammerhead/hammerhead_full_length.obj" mask="1" /> -->
+	    <se_building path="/home/covise/data/falko/se_building.obj" mask="1" />
+            <!--<Moebius path="/home/covise/data/HMC/zach/090708_Cave_Mobius_Pristereo.wrl" mask="1" />
+            <ShowCase path="/home/covise/Showcase.wrl" mask="1" />
+            <bearing_and_shearkeys path="/home/covise/data/caltrans/bearing_and_shearkeys.wrl" mask="1" />
+            <cross_beam path="/home/covise/data/caltrans/cross_beam.wrl" mask="1" />
+            <E2_pier path="/home/covise/data/caltrans/E2_pier.wrl" mask="1" />
+            <east_saddles path="/home/covise/data/caltrans/east_saddles.wrl" mask="1" />
+            <EB_OBG path="/home/covise/data/caltrans/EB_OBG.wrl" mask="1" />
+            <WB_OBG path="/home/covise/data/caltrans/WB_OBG.wrl" mask="1" />
+            <Sphere path="/home/covise/sphere.obj" mask="1" />-->
+	  </Files>
+	</ModelLoader>
+
+	<PanoView360>
+          <FloorOffset value="1759.425" />
+          <ScreenConfig value="/home/covise/plugins/calit2/PanoView360-temp/xpol.xml" />
+          <Files>
+            <Milwaukee1_8_4 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_8_4.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_8_4.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+	    <Milwaukee1_16_8 reye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1R_16_8.jpg" leye="/home/covise/dan/data/MilArtMus/MilwaukeeArtMuseum1L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-1128.0" segments="30" tsize="4096" />
+            <Milwaukee3_16_8 reye="/home/covise/data/Pans/MilwaukeeArtMuseum3R_16_8.jpg" leye="/home/covise/data/Pans/MilwaukeeArtMuseum3L_16_8.jpg" radius="9144" viewanglev="110" camHeight="-128.0" segments="30" tsize="4096" /> 
+	    <TomWI1_8_4 leye="/home/covise/dan/data/MilArtMus/TomWI1R_8_4.jpg" reye="/home/covise/dan/data/MilArtMus/TomWI1L_8_4.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
+            <TomWI1_16_8 leye="/home/covise/dan/data/MilArtMus/TomWI1R_16_8.jpg" reye="/home/covise/dan/data/MilArtMus/TomWI1L_16_8.jpg" radius="9144" viewanglev="100" camHeight="0.0" segments="30" tsize="4096" />
+            <HOTR_16_4 reye="/home/covise/dan/data/starCaveIM/HOTR_1_R_16_4.png" leye="/home/covise/dan/data/starCaveIM/HOTR_1_L_16_4.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <HOTR_16_8 reye="/home/covise/dan/data/starCaveIM/HOTR_1_R_16_8.png" leye="/home/covise/dan/data/starCaveIM/HOTR_1_L_16_8.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <HOTR_32_8 reye="/home/covise/data/dan/data/starCaveIM/HOTR_1_R_32_8.png" leye="/home/covise/data/dan/data/starCaveIM/HOTR_1_L_32_8.png" radius="9144" viewanglev="100" camHeight="-1750.0" segments="30" tsize="4096" />
+            <GDSP_6_16_4 reye="/home/covise/dan/data/starCaveIM/GDSP_6_R16K_4K.jpg" leye="/home/covise/dan/data/starCaveIM/GDSP_6_L16K_4K.jpg" radius="9144" viewanglev="73.7" camHeight="3100.0" segments="30" tsize="4096" />
+            <GDSP_701_16_4 reye="/home/covise/dan/data/ans360A/GDSP_701_16_4.png" leye="/home/covise/dan/data/ans360A/GDSP_702_16_4.png" radius="9144" viewanglev="85" camHeight="0.0" segments="30" tsize="4096" />
+            <FLRT_702_16_4 reye="/home/covise/dan/data/flrt/FLRT_702_R_16_4.png" leye="/home/covise/dan/data/flrt/FLRT_703_L_16_4.png" radius="9144" viewanglev="85" camHeight="250.0" segments="30" tsize="4096" />
+            <FLRT_712_16_4 reye="/home/covise/dan/data/flrt/FLRT_712_R_16_4.png" leye="/home/covise/dan/data/flrt/FLRT_713_L_16_4.png" radius="9144" viewanglev="85" camHeight="2300.0" segments="30" tsize="4096" />
+            <McMurdo1_16_4 reye="/home/covise/data/dan/data/MarsIm/McMurdo_L257F_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <McMurdo2_16_4 reye="/home/covise/data/dan/data/MarsIm/McMurdo_L456atc_16_4.png" leye="" radius="9144" viewanglev="76" camHeight="1000.0" segments="30" tsize="4096" />
+            <Duck_Bay1_16_4 reye="/home/covise/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256atc_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Duck_Bay2_16_4 reye="/home/covise/data/dan/data/MarsIm/Sol953B_Duck_Bay_L256F_16_4.png" leye="" radius="9144" viewanglev="47" camHeight="-1000.0" segments="30" tsize="4096" />
+            <Cape_Verdeana1_16_4 reye="/home/covise/data/dan/data/MarsIm/Sol991B_Cape_Verdeana_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana2_16_4 reye="/home/covise/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257atc_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <Cape_Verdeana3_16_4 reye="/home/covise/data/dan/data/MarsIm/Sol991B_Cape_Verde_L257F_16_4.png" leye="" radius="9144" viewanglev="44" camHeight="-850.0" segments="30" tsize="4096" />
+            <OvertureHall_16_8 reye="/home/covise/data/SpherePans/OvertureHall_360x180_16k_8k_R.jpg" leye="/home/covise/data/SpherePans/OvertureHall_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <RockIsland_16_8 reye="/home/covise/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_R.jpg" leye="/home/covise/data/SpherePans/RockIsland_HDR3_250x112_16k_8k_L.jpg" radius="9144" viewanglev="112" viewangleh="250" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <WI_Capitol_16_8 reye="/home/covise/data/SpherePans/WI_Capitol_360x180_16k_8k_R.jpg" leye="/home/covise/data/SpherePans/WI_Capitol_360x180_16k_8k_L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <WI_Capitol_16_8_new reye="/home/covise/data/SpherePans/Madison-State-Capitol-Dome-2-16k-8k-R.jpg" leye="/home/covise/data/SpherePans/Madison-State-Capitol-Dome-2-16k-8k-L.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_235_16_8 reye="/home/covise/data/SpherePans/TAL-235-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-235-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_238_16_8 reye="/home/covise/data/SpherePans/TAL-238-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-238-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_242_16_8 reye="/home/covise/data/SpherePans/TAL-242-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-242-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_243_16_8 reye="/home/covise/data/SpherePans/TAL-243-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-243-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_244_16_8 reye="/home/covise/data/SpherePans/TAL-244-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-244-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_245_16_8 reye="/home/covise/data/SpherePans/TAL-245-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-245-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_246_16_8 reye="/home/covise/data/SpherePans/TAL-246-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-246-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+            <TAL_247_16_8 reye="/home/covise/data/SpherePans/TAL-247-R16_8.jpg" leye="/home/covise/data/SpherePans/TAL-247-L16_8.jpg" radius="9144" viewanglev="180" viewangleh="360" camHeight="-1128.0" segments="30" tsize="4096" sphere="1"  />
+          </Files>
+        </PanoView360>
+
+        <ArtifactVis>
+          <TopoFile value="/home/covise/data/kyle/3d-model-reduced/Ken3dv3.wrl" />
+          <ArtifactsFile value="/home/covise/data/kyle/artifact-databank/AreaM_Artifacts2006.txt" />
+          <DataBase value="/home/covise/data/kyle/artifact-databank/artifactslist.txt" />
+          <ObjectFolder value="/home/covise/data/kyle/3d-artifacts/" />
+        </ArtifactVis>
+        
+        <OssimPlanet>
+          <ConfigFile value="/home/covise/data/ossimPlanet/ice.kwl" />
+        </OssimPlanet>
+
+        <Volume>
+         <Files>
+            <MRIHead value="/home/covise/data/mri-head-8bit.xvf" />
+            <HeartR value="/home/covise/data/ramesh-heart/test-8bit-2.xvf" />
+            <HeartL value="/home/covise/data/larrys-heart/larry-heart.xvf" />
+            <KneeJ value="/home/covise/data/jerrys-knee/jerrys-knee.xvf" />
+            <Newton1 value="/home/covise/data/pnewton/set3.xvf" />
+            <Newton2 value="/home/covise/data/pnewton/coronal_cuts-8bit.xvf" />
+            <Ultrasound3d value="/home/covise/data/susan/time_all.xvf" />
+            <CTSkull value="/home/covise/data/vhd/fctskull.xvf" />
+            <CTBody value="/home/covise/data/vhd/fctbody-scaled.xvf" />
+            <fctbody-scaled value="/home/covise/data/vhd/fctbody-scaled.xvf" />
+            <fctfeet value="/home/covise/data/vhd/fctfeet256.xvf" />
+            <female-feet value="/home/covise/data/vhd/female-feet.xvf" />
+            <female value="/home/covise/data/vhd/female.xvf" />
+            <hand value="/home/covise/data/vhd/hand.xvf" />
+            <lungs16m value="/home/covise/data/vhd/lunge3.xvf" />
+            <ncttorso value="/home/covise/data/vhd/ncttorso-cl.xvf" />
+            <face value="/home/covise/data/vhd/face.xvf" />
+<!--
+            <Baby value="/home/covise/data/karen/baby-3d-8bit.xvf" />
+            <SonarScan value="/home/covise/data/graham/256x256x256-crop-flipz.rvf" />
+            <NCMIR-f value="/home/covise/data/ncmir/f0001.xvf" />
+            <NCMIR-rwt value="/home/covise/data/ncmir/rwt.xvf" />
+            <MonkeyMRI value="/home/covise/data/jacopo/monkey_mri-half.xvf" />
+            <GROEL value="/home/covise/data/kriegman/groel.xvf" />
+            <wt1g value="/home/covise/data/kristi/wt1g.rvf" />
+            <NCHC-Brain value="/home/covise/data/nchc/brain2-8-small-double.rvf" />
+            <NCHC-Dendridic_Spine value="/home/covise/data/nchc/osaka-8.rvf" />
+            <Fish value="/home/covise/data/LarryFrank/1704.xvf" />
+-->
+          </Files>
+        </Volume>
+
+         <StructView>
+             <Layer0File value="/home/covise/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
+             <Layer1File value="/home/covise/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
+             <Layer2File value="/home/covise/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
+             <Layer3File value="/home/covise/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
+             <Layer4File value="/home/covise/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
+             <Layer5File value="/home/covise/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
+             <Layer6File value="/home/covise/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
+             <Layer7File value="/home/covise/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
+             <Layer8File value="/home/covise/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
+             <Layer9File value="/home/covise/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
+             <Layer10File value="/home/covise/data/baybridge/T1Block13_FullConcrete.WRL" />
+             <Layer11File value="/home/covise/data/baybridge/Tower-all.wrl" />
+          </StructView>
+
+       </Plugin>
+
+    <MultiPC>
+     <NumSlaves value="0" />   <!-- use 5 for all Xpol machines -->
+     <MasterInterface value="10.1.1.1" />
+     <Startup value="ssh ${USER}@tile-0-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="0" />  
+     <Startup value="ssh ${USER}@tile-0-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="1" />
+     <Startup value="ssh ${USER}@tile-0-2 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="2" />
+     <Startup value="ssh ${USER}@tile-1-0 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="3" />
+     <Startup value="ssh ${USER}@tile-1-1 if \( \{ test -d `pwd` \} \) cd `pwd` \;CalVR \>\&amp; /tmp/errors.log" name="4" />
+    </MultiPC>
+ 
+   <MenuSystem type="BOARDMENU" useHints="false">
+    <PrimaryHand value="0" />
+    <BoardMenu>
+     <!--<Position type="STATIC" alignment="FLAT" rotation="0" x="0" y="0" z="0" />-->
+     <!-- <Position type="HEAD" alignment="CYLINDER" distance="2000" /> -->
+     <Position distance="1500" />
+     <Scale value="1.3" />
+     <Button primaryHand="0" primaryButton="0" secondaryHand="0" secondaryButton="1" primaryMouseButton="0" secondaryMouseButton="2" />
+     <Trigger value="DOUBLECLICK" />
+     <OpenThreshold value="0.5" />
+    </BoardMenu>
+   </MenuSystem>
+
+    <SceneSize value="2000" />
+    <ViewerPosition x="0" y="-500" z="0" />
+    <Freeze value="on" />
+    <EyeSeparation value="off" />
+
+<INCLUDE>tcave-screens.xml</INCLUDE>

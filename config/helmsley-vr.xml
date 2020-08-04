@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+
+
+   <Background g="0.0" a="0.0" />
+
+   <Stencil value="true" />
+   <MultiThreaded value="SingleThreaded" />
+   <PreSwapOperation value="FINISH" />
+   <SyncToVBlank value="Off" />
+   <Near value="10"/>
+   <Far value="10000" />
+   <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
+   <MultiSample value="0" />
+
+   <ShowAxis value="off" />
+
+   <ConfigDebug value="false" />
+   <EventDebug value="false" />
+
+   <Input>
+     <TrackingSystem0 value="MOUSE">
+       <Offset x="0" y="0" z="0" />
+       <Orientation h="0" p="0" r="0" />
+
+       <NumBodies value="1" />
+       <NumButtons value="3" />
+       <NumValuators value="1" />
+
+       <Body0>
+         <Offset x="0" y="0" z="0" />
+         <Orientation h="0" p="0" r="0" />
+       </Body0>
+     </TrackingSystem0>
+
+    <TrackingSystem1 value="OPENVR">
+      <Orientation h="0" p="0" r="0" />
+
+      <NumControllers value="1" />
+      <NumTrackers value="0" />
+
+      <NumBodies value="1" />
+      <NumButtons value="4" />
+      <NumValuators value="3" />
+
+      <TrackHead value="false" />
+
+      <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+      </Body0>
+    </TrackingSystem1>
+
+
+
+     <NumHeads value="0" />
+     <Head0Address system="0" body="0" />
+
+     <NumHands value="2" />
+     <Hand0>
+       <Address system="0" body="0" />
+       <ButtonMask system0="0xF"  />
+       <Valuator0 system="0" number="0" type="NON_ZERO" />
+     </Hand0>
+     <Hand1>
+       <Address system="1" body="0" />
+       <ButtonMask system1="0xFFFF" />
+       <Valuator0 system="1" number="1" type="CHANGE" />
+       <Valuator1 system="1" number="2" type="CHANGE" />
+       <ButtonMapping value="1,2,3,0" />
+    </Hand1>
+
+   </Input>
+    
+   <Plugin>
+    <ClipPlane value="off" />
+    <ShaderToyCVR value="off">
+        <ShaderDir value="C:\local\kubernetes\calvr\calvr_plugins\calit2\ShaderToyCVR\shaders\" />
+        <ResourceDir value="C:\local\kubernetes\calvr\calvr_plugins\calit2\ShaderToyCVR\resources\" />
+    </ShaderToyCVR>
+    <ModelLoader value="on">
+      <ConfigDir value="" />
+      <Files>
+        <AreaM path="C:\Users\Glynn\Documents\KENData\updated_Area_M_Decimated2.obj" />
+        <Airboat path="C:\Users\Glynn\Documents\KENData\airboat.obj" />
+      </Files>
+    </ModelLoader>
+    <ArtifactVis value="off">
+      <TopoFile value="C:\Users\Glynn\Documents\KENData\updated_Area_M_Decimated2_Transformed2.obj" />
+        <Database value="C:\Users\Glynn\Documents\ArtifactVis\artifactslist.txt" />
+        <PicFolder value="C:\Users\Glynn\Documents\ArtifactVis\kyle\pictures\AllPics\" />
+        <DCInfoFile value="C:\Users\Glynn\Documents\ArtifactVis\kyle\DCCategories.txt" />
+        <LociFile value="C:\Users\Glynn\Documents\ArtifactVis\kyle\AreaMLociDepth.kml" />
+            
+        <Offset>
+          <X value="-3396591.862" />
+          <Y value="-733458.55" />
+          <Z value="-49.44" />
+        </Offset>
+        <Site>
+          <Longitude value="35.491239" />
+          <Latitude value="30.628039" />
+        </Site>
+
+		  <Tessellation value=".2" />
+		  <ArtifactPanel x="-200" y="1000" z="100" scale="1.0" />
+	    <SelectionStatsPanel x="500" y="1000" />
+    </ArtifactVis>
+    <HelmsleyVolume value="on">
+      <ShaderDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\shaders\" />
+      <ModelDir value="C:\local\calvr_plugins\calit2\HelmsleyVolume\models\" />
+      <Files>
+        <MG>
+          <25 value = "C:\Users\Glynn\Documents\DICOMS\MG\2.5mm Stnd CHEST_Series0002\" />
+          <375 value = "C:\Users\Glynn\Documents\DICOMS\MG\3.75 Stnd ABD_PEL_Series0003\" />
+        </MG>
+        <JH>
+          <25 value = "C:\Users\Glynn\Documents\DICOMS\JH\2.5mm Stnd CHEST_Series0002\" />
+          <375 value = "C:\Users\Glynn\Documents\DICOMS\JH\3.75 Stnd ABD_PEL_Series0003" />
+        </JH>
+        <Larry>
+          <2017-01-26-series24 value="C:\Users\Glynn\Documents\DICOMS\Larry\2017-01-26-series24" />
+        </Larry>
+      </Files>
+    </HelmsleyVolume>
+   </Plugin>
+
+   <ContextMenus>
+     <Scale value="1.0" />
+     <MinDistance value="50" />
+     <MaxDistance value="1000" />
+     <DefaultOpenButton value="1" />
+   </ContextMenus>
+
+   <MenuSystem type="BOARDMENU">
+    <BoardMenu>
+     <Position distance="500" />
+     <Scale value="1.0" />
+     <Buttons select="0" open="1" />
+     <Trigger value="DOUBLECLICK" />
+    </BoardMenu>
+   </MenuSystem>
+
+
+   <ViewerPosition x="0" y="0" z="0" />
+   <SceneSize value="1000" />
+
+   <NumPipes value="1" />
+   <NumWindows value="1" />
+   <NumScreens value="1" />
+
+   <PipeConfig>
+    <!-- <Pipe server="0" screen="0" name="0" /> -->
+    <Pipe server="0" screen="0" name="0" />
+   </PipeConfig>
+
+   <ChannelConfig>
+    <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" /> -->
+    <Channel width="1080" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />
+   </ChannelConfig>
+   
+   <WindowConfig>
+    <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="1100" name="0" decoration="true" cudaDevice="0" /> -->
+    <Window width="1080" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+   </WindowConfig>
+
+
+   <ScreenConfig>
+    <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" /> -->
+    <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
+   </ScreenConfig>
+

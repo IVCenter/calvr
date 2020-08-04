@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+
+ <LOCAL host="z5-0-0.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="108.0" height="573" p="-20.0" originX="-1586"  comment="S_A" originY="-279"  r="0.0" name="0" originZ="-567" screen="0" />
+    <Screen width="1018" h="72.0" height="573" p="-20.0" originX="-1482"  comment="S_A" originY="604"  r="0.0" name="1" originZ="-567" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-0-1.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="108.0" height="573" p="0.0" originX="-1725"  comment="S_A" originY="-324"  r="0.0" name="0" originZ="0" screen="0" />
+    <Screen width="1018" h="72.0" height="573" p="0.0" originX="-1621"  comment="S_A" originY="650"  r="0.0" name="1" originZ="0" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-0-2.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="108.0" height="573" p="20.0" originX="-1673"  comment="S_A" originY="-308"  r="0.0" name="0" originZ="580" screen="0" />
+    <Screen width="1018" h="72.0" height="573" p="20.0" originX="-1569"  comment="S_A" originY="633"  r="0.0" name="1" originZ="580" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-1-0.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="36.0" height="573" p="-20.0" originX="-877"  comment="S_A" originY="1244"  r="0.0" name="0" originZ="-567" screen="0" />
+    <Screen width="1018" h="0.0" height="573" p="-20.0" originX="0"  comment="S_A" originY="1400"  r="0.0" name="1" originZ="-567" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-1-1.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="36.0" height="573" p="0.0"   originX="-963"  comment="S_A" originY="1363"  r="0.0" name="0" originZ="0"    screen="0" />
+    <Screen width="1018" h="0.0" height="573" p="0.0"   originX="0"  comment="S_A" originY="1547"  r="0.0" name="1" originZ="0"    screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-1-2.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="36.0" height="573" p="20.0"  originX="-931"  comment="S_A" originY="1319"  r="0.0" name="0" originZ="580"  screen="0" />
+    <Screen width="1018" h="0.0" height="573" p="20.0"  originX="0"  comment="S_A" originY="1492"  r="0.0" name="1" originZ="580"  screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-2-0.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="-36.0" height="573" p="-20.0" originX="877" comment="S_A" originY="1244"  r="0.0" name="0" originZ="-567" screen="0" />
+    <Screen width="1018" h="-72.0" height="573" p="-20.0" originX="1482"  comment="S_A" originY="604"  r="0.0" name="1" originZ="-567" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-2-1.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="-36.0" height="573" p="0.0" originX="963" comment="S_A" originY="1363"  r="0.0" name="0" originZ="0" screen="0" />
+    <Screen width="1018" h="-72.0" height="573" p="0.0" originX="1621"  comment="S_A" originY="650"  r="0.0" name="1" originZ="0" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-2-2.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="-36.0" height="573" p="20.0" originX="931"  comment="S_A" originY="1319"  r="0.0" name="0" originZ="580"  screen="0" />
+    <Screen width="1018" h="-72.0" height="573" p="20.0" originX="1569"  comment="S_A" originY="633"  r="0.0" name="1" originZ="580" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-3-0.z5.vis.kaust.edu.sa" >
+   <NumPipes value="2" />
+   <NumScreens value="2" />
+   <NumWindows value="2" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+     <Window width="1920" comment="MAIN" window="1" pipeIndex="1" height="1080" left="0" bottom="0" name="1" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+    <Channel channel="1" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="1" name="1" comment="RIGHT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="-108.0" height="573" p="-20.0" originX="1586"  comment="S_A" originY="-279"  r="0.0" name="0" originZ="-567" screen="0" />
+    <Screen width="1018" h="-108.0" height="573" p="0.0" originX="1725"  comment="S_A" originY="-324"  r="0.0" name="1" originZ="0" screen="1" />
+   </ScreenConfig>
+ </LOCAL>
+
+ <LOCAL host="z5-3-1.z5.vis.kaust.edu.sa" >
+   <NumPipes value="1" />
+   <NumScreens value="1" />
+   <NumWindows value="1" />
+
+   <WindowConfig>
+     <Window width="1920" comment="MAIN" window="0" pipeIndex="0" height="1080" left="0" bottom="0" name="0" decoration="false" />
+   </WindowConfig>
+
+   <ChannelConfig>
+    <Channel channel="0" left="0"    width="1920" bottom="0" height="1080" stereoMode="HORIZONTAL_INTERLACE"  windowIndex="0" name="0" comment="LEFT" />
+   </ChannelConfig>
+
+   <ScreenConfig>
+    <Screen width="1018" h="-108.0" height="573" p="20.0" originX="1673"  comment="S_A" originY="-308"  r="0.0" name="0" originZ="580"  screen="0" />
+   </ScreenConfig>
+ </LOCAL>

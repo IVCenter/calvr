@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<LOCAL host="z5-fe.z5.vis.kaust.edu.sa">
+  <WindowConfig>
+    <Window width="1280" comment="MAIN" window="0" pipeIndex="0" height="768" left="0" bottom="0" name="0" decoration="false" />
+  </WindowConfig>
+  <ChannelConfig>
+    <Channel channel="0" left="0"    width="1280" bottom="0" height="768" stereoMode="MULTI_VIEWER_2_LEFT"  windowIndex="0" name="0" />
+  </ChannelConfig>
+  <ScreenConfig>
+    <Screen originX="0" originY="1000" originZ="0" width="2134" height="1200" h="0.0" p="0.0" r="0.0" name="0" screen="0" comment="LEFT" />
+  </ScreenConfig>
+</LOCAL>
+
+<LOCAL host="z5-fe.z5.vis.kaust.edu.sa,z5-0-0.z5.vis.kaust.edu.sa,z5-0-1.z5.vis.kaust.edu.sa,z5-0-2.z5.vis.kaust.edu.sa,z5-1-0.z5.vis.kaust.edu.sa,z5-1-1.z5.vis.kaust.edu.sa,z5-1-2.z5.vis.kaust.edu.sa,z5-2-0.z5.vis.kaust.edu.sa,z5-2-1.z5.vis.kaust.edu.sa,z5-2-2.z5.vis.kaust.edu.sa,z5-3-0.z5.vis.kaust.edu.sa,z5-3-1.z5.vis.kaust.edu.sa" >
+
+  <MultiThreaded value="CullThreadPerCameraDrawThreadPerContext" />
+  <FrameRate target="25" offset="4" autoAdjust="off" />
+  <Zones maxRows="10" maxColumns="15" />
+  <Orientation3d value="on" />
+
+  <Plugin>
+    <SMV2Settings value="on" />
+    <MVSim value="on">
+      <Head0 value="off" x="0" y="0" z="0" rotate="0" />
+      <Head1 value="off" x="0" y="0" z="0" rotate="180" sim="0" />
+    </MVSim>
+  </Plugin>
+
+  <Input>
+    <NumHands value="1" />
+    <NumHeads value="2" />
+
+    <HeadAddress value="2" />
+    <Head2Address value="1" />
+    <HandAddress value="0" />
+  </Input>
+
+  <ChannelConfig>
+    <Channel name="0" stereoMode="MULTI_VIEWER_2_HORIZONTAL_INTERLACE" />
+    <Channel name="1" stereoMode="MULTI_VIEWER_2_HORIZONTAL_INTERLACE" />
+  </ChannelConfig>
+</LOCAL>
