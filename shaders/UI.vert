@@ -21,7 +21,7 @@ void main() {
 
     mat4 world = osg_ViewMatrixInverse * osg_ModelViewMatrix;
     scale.x = length(world * vec4(1.0, 0.0, 0.0, 0.0));
-    scale.y = length(world * vec4(0.0, 1.0, 0.0, 0.0));
+    scale.y = length(world * vec4(0.0, 0.0, 1.0, 0.0));
 
     gl_Position = osg_ModelViewProjectionMatrix * vec4(vertex, 1.0);
 }

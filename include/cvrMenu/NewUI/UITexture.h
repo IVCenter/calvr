@@ -35,7 +35,7 @@ namespace cvr
 
 		virtual void setTexture(osg::Texture2D* texture);
 		virtual void setTexture(std::string texturePath);
-
+		virtual osg::Texture2D* getTexture(){return _texture;}
 
 	protected:
 		osg::ref_ptr<osg::Texture2D> _texture;

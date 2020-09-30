@@ -46,7 +46,7 @@ float roundRect(vec2 coords, vec2 extents)
 void main() {
     vec4 color = i.col;
     vec2 uv = i.uv; 
-    if( uv.x > 1.0-borderSize || uv.x < borderSize || uv.y > 1.0-borderSize || uv.y < borderSize )
+    if( uv.x > 1.0-((borderSize)/(scale.x/scale.y)) || uv.x < ((borderSize)/(scale.x/scale.y)) || uv.y > 1.0-borderSize || uv.y < borderSize )
         color = borderColor;
     FragColor = color;
 

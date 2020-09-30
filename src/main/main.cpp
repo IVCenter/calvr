@@ -4,8 +4,14 @@
 
 #include <osg/ArgumentParser>
 
+
+
 int main(int argc, char **argv)
 {
+
+
+    int* test = new int(3);
+
     osg::ArgumentParser args(&argc,argv);
 
 	/*

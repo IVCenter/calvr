@@ -90,7 +90,7 @@
     <ImageDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\icons\temp\" />
     <InteractButton value="0" />
     <PictureLocation value="C:\Users\g3aguirre\Documents\CAL\DICOMS\Screenshots" />
-    <BaseFolder value="C:\Users\g3aguirre\Documents\CAL\DICOMS" />
+    <BaseFolder value="C:\Users\g3aguirre\Documents\CAL\DICOMSTest" />
     <PresetsFolder value = "C:\Users\g3aguirre\Documents\CAL\DICOMS\Presets"  />
     <Files>
     </Files>

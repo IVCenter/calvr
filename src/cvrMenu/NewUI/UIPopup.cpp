@@ -32,7 +32,7 @@ UIPopup::UIPopup()
 
 UIPopup::~UIPopup()
 {
-
+	
 }
 
 bool UIPopup::init()

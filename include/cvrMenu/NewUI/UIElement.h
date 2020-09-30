@@ -110,7 +110,8 @@ namespace cvr
 
 		virtual osg::Group* getGroup() { return _group; }
 
-
+		virtual void setActive(bool isActive) { _active = isActive; }
+		virtual bool getActive() { return _active; }
 		UIElement* _parent;
 
 	protected:
@@ -132,11 +133,14 @@ namespace cvr
 		osg::Vec3 _actualPos;
 		osg::Vec3 _actualSize;
 
+
+
 		std::vector<std::shared_ptr<UIElement> > _children;
 		
 
 		bool _dirty;
 		bool _handle;
+		bool _active;
 
 		osg::Vec3 _lastHitPoint;
 		int _lastHand;

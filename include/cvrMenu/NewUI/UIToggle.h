@@ -25,6 +25,9 @@ namespace cvr
 		virtual bool isOn() { return _on; }
 		virtual bool toggle();
 
+		virtual void turnOn() { _on = true; }
+		virtual void turnOff() { _on = false; }
+
 	protected:
 		bool _on;
 	};

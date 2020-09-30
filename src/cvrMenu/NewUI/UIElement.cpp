@@ -26,6 +26,8 @@ UIElement::UIElement()
 	_dirty = true;
 	_handle = false;
 	_lastHand = -1;
+
+	_active = true;
 }
 
 UIElement::~UIElement()
@@ -46,6 +48,7 @@ void UIElement::updateElement(osg::Vec3 pos, osg::Vec3 size)
 		updateGeometry();
 		for (int i = 0; i < _children.size(); ++i)
 		{
+			if(_children[i]->_active)
 			_children[i]->setDirty(true);
 		}
 		_dirty = false;
@@ -53,6 +56,7 @@ void UIElement::updateElement(osg::Vec3 pos, osg::Vec3 size)
 
 	for (int i = 0; i < _children.size(); ++i)
 	{
+		if (_children[i]->_active)
 		_children[i]->updateElement(_actualPos, _actualSize);
 	}
 }
@@ -137,6 +141,7 @@ void UIElement::updateGeometry()
 
 UIElement* UIElement::processIsect(IsectInfo & isect, int hand)
 {
+	
 	if (_intersect.valid() && isect.geode == _intersect.get())
 	{
 		_lastHitPoint = isect.localpoint;
@@ -147,11 +152,14 @@ UIElement* UIElement::processIsect(IsectInfo & isect, int hand)
 	{
 		for (int i = 0; i < _children.size(); ++i)
 		{
-			UIElement* e = _children[i]->processIsect(isect, hand);
-			if (e)
-			{
-				return e;
+			if (_children[i]->_active) {
+				UIElement* e = _children[i]->processIsect(isect, hand);
+				if (e)
+				{
+					return e;
+				}
 			}
+			
 		}
 	}
 	return NULL;
