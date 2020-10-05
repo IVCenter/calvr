@@ -1,0 +1,2607 @@
+{
+	"entries" : 
+	[
+		{
+			"name" : "BUILD_APPS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Build CalVR Applications"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CMAKE_BUILD_TYPE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel ..."
+				}
+			],
+			"type" : "STRING",
+			"value" : "RelWithDebInfo"
+		},
+		{
+			"name" : "CMAKE_CACHEFILE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "This is the directory where this CMakeCache.txt was created"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "c:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/build"
+		},
+		{
+			"name" : "CMAKE_CACHE_MAJOR_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Major version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3"
+		},
+		{
+			"name" : "CMAKE_CACHE_MINOR_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Minor version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "15"
+		},
+		{
+			"name" : "CMAKE_CACHE_PATCH_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Patch version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "19101501"
+		},
+		{
+			"name" : "CMAKE_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to CMake executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"
+		},
+		{
+			"name" : "CMAKE_CPACK_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to cpack program executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cpack.exe"
+		},
+		{
+			"name" : "CMAKE_CTEST_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to ctest program executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/ctest.exe"
+		},
+		{
+			"name" : "CMAKE_CXX_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/HostX64/x64/cl.exe"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O1 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O2 /Ob2 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /Zi /O2 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_STANDARD_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Libraries linked by default with all C++ applications."
+				}
+			],
+			"type" : "STRING",
+			"value" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib"
+		},
+		{
+			"name" : "CMAKE_C_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/HostX64/x64/cl.exe"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/DWIN32 /D_WINDOWS /W3"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O1 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O2 /Ob2 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /Zi /O2 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_STANDARD_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Libraries linked by default with all C applications."
+				}
+			],
+			"type" : "STRING",
+			"value" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib"
+		},
+		{
+			"name" : "CMAKE_EXECUTABLE_FORMAT",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Executable file format"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "Unknown"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_EXPORT_COMPILE_COMMANDS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Enable/Disable output of compile commands during generation."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CMAKE_EXTRA_GENERATOR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of external makefile project generator."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_GENERATOR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "Ninja"
+		},
+		{
+			"name" : "CMAKE_GENERATOR_INSTANCE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Generator instance identifier."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_GENERATOR_PLATFORM",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator platform."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_GENERATOR_TOOLSET",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator toolset."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_HAVE_PTHREAD_H",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Have include pthread.h"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_HOME_DIRECTORY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Source directory with the top level CMakeLists.txt file for this project"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr"
+		},
+		{
+			"name" : "CMAKE_INSTALL_PREFIX",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/install"
+		},
+		{
+			"name" : "CMAKE_LINKER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.24.28314/bin/Hostx64/x64/link.exe"
+		},
+		{
+			"name" : "CMAKE_MAKE_PROGRAM",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "make program"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_MT",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64/mt.exe"
+		},
+		{
+			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "number of local generators"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3"
+		},
+		{
+			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Platform information initialized"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "1"
+		},
+		{
+			"name" : "CMAKE_PROJECT_DESCRIPTION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_PROJECT_HOMEPAGE_URL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_PROJECT_NAME",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "CalVR"
+		},
+		{
+			"name" : "CMAKE_RC_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "RC compiler"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64/rc.exe"
+		},
+		{
+			"name" : "CMAKE_RC_COMPILER_WORKS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "1"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "-DWIN32"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "-D_DEBUG"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_ROOT",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to CMake installation."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.15"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_SKIP_INSTALL_RPATH",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If set, runtime paths are not added when installing shared libraries, but are added when building."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "NO"
+		},
+		{
+			"name" : "CMAKE_SKIP_RPATH",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If set, runtime paths are not added when using shared libraries."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "NO"
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_VERBOSE_MAKEFILE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If this value is on, makefiles will be generated without the .SILENT directive, and all commands will be echoed to the console during the make.  This is useful for debugging only. With Visual Studio IDE projects all commands are done without /nologo."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "FALSE"
+		},
+		{
+			"name" : "CalVRAll_LIB_DEPENDS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Dependencies for the target"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/GLEW/lib/Release/x64/glew32.lib;general;C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;general;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib;"
+		},
+		{
+			"name" : "CalVR_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/build"
+		},
+		{
+			"name" : "CalVR_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr"
+		},
+		{
+			"name" : "DYNAMIC_LINKING",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to ON to build CalVR for dynamic linking.  Use OFF for static."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "True"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenSceneGraph",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenSceneGraph"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib;C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][YES][TRUE][v3.6.5()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenThreads",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenThreads"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenVR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenVR"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/headers][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Threads",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding Threads"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[TRUE][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgAnimation",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgAnimation"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgDB",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgDB"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgFX",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgFX"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgGA",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgGA"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgManipulator",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgManipulator"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgParticle",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgParticle"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgPresentation",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgPresentation"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgShadow",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgShadow"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgSim",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgSim"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgTerrain",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgTerrain"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgText",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgText"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgUtil",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgUtil"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgViewer",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgViewer"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgVolume",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgVolume"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgWidget",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgWidget"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib][C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include][v()]"
+		},
+		{
+			"name" : "GLEW_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/GLEW/include"
+		},
+		{
+			"name" : "GLEW_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/GLEW/lib/Release/x64/glew32.lib"
+		},
+		{
+			"name" : "INTERLEAVER_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "INTERLEAVER_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "INTERLEAVER_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "INTERLEAVER_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "LIBRK_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "LIBRK_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "LIBRK_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "LIBRK_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "MAKE_DOCUMENTATION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Create Doxygen documentation"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "MSVC_DEBUG_INCREMENTAL_LINK",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to OFF to build without incremental linking in debug (release is off by default)"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "MSVC_VERSIONED_DLL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to ON to build with versioned dll names"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "MXML_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12"
+		},
+		{
+			"name" : "MXML_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib"
+		},
+		{
+			"name" : "OMICRON_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "OMICRON_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "OPENSCENEGRAPH_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The version of OSG which was detected"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3.6.5"
+		},
+		{
+			"name" : "OPENTHREADS_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "OPENTHREADS_LIBRARY_DEBUG-NOTFOUND"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/OpenThreads.lib"
+		},
+		{
+			"name" : "OPENVR_HEADERS_ROOT_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/headers"
+		},
+		{
+			"name" : "OPENVR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/headers"
+		},
+		{
+			"name" : "OPENVR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib"
+		},
+		{
+			"name" : "OPENVR_ROOT_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17"
+		},
+		{
+			"name" : "OSGANIMATION_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib"
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgAnimation.lib"
+		},
+		{
+			"name" : "OSGDB_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGDB_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib"
+		},
+		{
+			"name" : "OSGDB_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib"
+		},
+		{
+			"name" : "OSGDB_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgDB.lib"
+		},
+		{
+			"name" : "OSGFX_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGFX_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib"
+		},
+		{
+			"name" : "OSGFX_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib"
+		},
+		{
+			"name" : "OSGFX_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgFX.lib"
+		},
+		{
+			"name" : "OSGGA_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGGA_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib"
+		},
+		{
+			"name" : "OSGGA_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGGA_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgGA.lib"
+		},
+		{
+			"name" : "OSGMANIPULATOR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib"
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgManipulator.lib"
+		},
+		{
+			"name" : "OSGPARTICLE_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib"
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgParticle.lib"
+		},
+		{
+			"name" : "OSGPRESENTATION_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib"
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgPresentation.lib"
+		},
+		{
+			"name" : "OSGSHADOW_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib"
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgShadow.lib"
+		},
+		{
+			"name" : "OSGSIM_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGSIM_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib"
+		},
+		{
+			"name" : "OSGSIM_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGSIM_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgSim.lib"
+		},
+		{
+			"name" : "OSGTERRAIN_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib"
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgTerrain.lib"
+		},
+		{
+			"name" : "OSGTEXT_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib"
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgText.lib"
+		},
+		{
+			"name" : "OSGUTIL_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib"
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgUtil.lib"
+		},
+		{
+			"name" : "OSGVIEWER_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib"
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgViewer.lib"
+		},
+		{
+			"name" : "OSGVOLUME_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib"
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgVolume.lib"
+		},
+		{
+			"name" : "OSGWIDGET_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib"
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib/osgWidget.lib"
+		},
+		{
+			"name" : "OSG_HOME",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph"
+		},
+		{
+			"name" : "OSG_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/include"
+		},
+		{
+			"name" : "OSG_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OpenSceneGraph/build/lib"
+		},
+		{
+			"name" : "OVR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "PATH",
+			"value" : ""
+		},
+		{
+			"name" : "OVR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "No help, variable specified on the command line."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : ""
+		},
+		{
+			"name" : "VRPN_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "VRPN_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "VRPN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "VRPN_LIBRARY-NOTFOUND"
+		}
+	],
+	"kind" : "cache",
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

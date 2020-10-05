@@ -229,7 +229,7 @@ void ScreenOpenVR::init(int mode)
 	}
 
 
-	_swapCallback = new SOVRSwapCallback(_leftFBO, _rightFBO, _myInfo->myChannel->width, _myInfo->myChannel->height, SOVRSwapCallback::BOTH_EYES);
+	_swapCallback = new SOVRSwapCallback(_leftFBO, _rightFBO, _myInfo->myChannel->width, _myInfo->myChannel->height, SOVRSwapCallback::RIGHT_EYE);
 	_myInfo->myChannel->myWindow->gc->setSwapCallback(_swapCallback);
 
 

@@ -1,6 +1,6 @@
 #version 460
 
-#pragma import_defines ( USE_TEXTURE )
+#pragma import_defines ( USE_TEXTURE, GRAYSCALE )
 
 out vec4 FragColor;
 
@@ -14,6 +14,9 @@ flat in vec2 scale;
 uniform sampler2D Texture;
 uniform float percentRounding;
 uniform float absoluteRounding;
+uniform vec4 borderColor;
+uniform float borderSize;
+uniform bool borderOnly;
 
 float roundRect(vec2 coords, vec2 extents)
 {
@@ -41,12 +44,27 @@ float roundRect(vec2 coords, vec2 extents)
 }
 
 void main() {
+    vec4 color = i.col;
+    vec2 uv = i.uv; 
+    if( uv.x > 1.0-((borderSize)/(scale.x/scale.y)) || uv.x < ((borderSize)/(scale.x/scale.y)) || uv.y > 1.0-borderSize || uv.y < borderSize )
+        color = borderColor;
+    FragColor = color;
+
 #ifdef USE_TEXTURE
     vec4 texCol = texture2D(Texture, i.uv);
-
-	FragColor = texCol * i.col;
-#else
-    FragColor = i.col;
+	FragColor = texCol * color;
 #endif
+
+#ifdef GRAYSCALE
+    texCol.b = texCol.r;
+    texCol.g = texCol.r;
+	FragColor = texCol;
+ #endif
+    
+   
+    
     FragColor.a *= roundRect(i.uv * scale, scale);
+    if(color != borderColor && borderOnly){
+        FragColor.a = 0.0f;
+    }
 }

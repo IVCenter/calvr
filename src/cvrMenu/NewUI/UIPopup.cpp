@@ -32,7 +32,7 @@ UIPopup::UIPopup()
 
 UIPopup::~UIPopup()
 {
-
+	
 }
 
 bool UIPopup::init()
@@ -47,11 +47,11 @@ void UIPopup::updateStart()
 	_foundItem = false;
 }
 
-bool UIPopup::processEvent(InteractionEvent * event)
+bool UIPopup::processEvent(InteractionEvent* event)
 {
 	if (_grabbable)
 	{
-		TrackedButtonInteractionEvent * tie = event->asTrackedButtonEvent();
+		TrackedButtonInteractionEvent* tie = event->asTrackedButtonEvent();
 		if (tie && tie->getButton() == _grabButton)
 		{
 			if (tie->getInteraction() == BUTTON_DOWN)
@@ -88,7 +88,7 @@ bool UIPopup::processEvent(InteractionEvent * event)
 	return false;
 }
 
-bool UIPopup::processIsect(IsectInfo & isect, int hand)
+bool UIPopup::processIsect(IsectInfo& isect, int hand)
 {
 	UIElement* e = _rootElement->processIsect(isect, hand);
 	if (e)
@@ -138,7 +138,7 @@ void UIPopup::updateEnd()
 	}
 }
 
-void UIPopup::itemDelete(MenuItem * item)
+void UIPopup::itemDelete(MenuItem* item)
 {
 
 }

@@ -25,9 +25,9 @@
 #include <cvrKernel/ScreenLenticular.h>
 #endif
 
-#ifdef WITH_OVR
-#include <cvrKernel/ScreenOculus.h>
-#endif
+//#ifdef WITH_OVR
+//#include <cvrKernel/ScreenOculus.h>
+//#endif
 
 #ifdef WITH_OPENVR
 #include <cvrKernel/ScreenOpenVR.h>
@@ -799,14 +799,14 @@ bool ScreenConfig::makeScreens()
             screen->init();
         }
 #endif
-#ifdef WITH_OVR
-		else if(_screenInfoList[i]->myChannel->stereoMode == "OCULUS")
-        {
-            screen = new ScreenOculus();
-            screen->_myInfo = _screenInfoList[i];
-            screen->init(-1);
-        }
-#endif
+//#ifdef WITH_OVR
+//		else if(_screenInfoList[i]->myChannel->stereoMode == "OCULUS")
+//        {
+//            screen = new ScreenOculus();
+//            screen->_myInfo = _screenInfoList[i];
+//            screen->init(-1);
+//        }
+//#endif
 #ifdef WITH_OPENVR
         else if(_screenInfoList[i]->myChannel->stereoMode == "OPENVR")
         {

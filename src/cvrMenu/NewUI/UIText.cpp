@@ -97,13 +97,15 @@ void UIText::setFont(osgText::Font* font)
 
 const std::string& UIText::getText()
 {
-	return _text->getText().createUTF8EncodedString();
+	return _string;
 }
 
 void UIText::setText(const std::string& text)
 {
+	
 	if (getText().compare(text) != 0)
 	{
+		_string = text;
 		_text->setText(text);
 		_dirty = true;
 	}

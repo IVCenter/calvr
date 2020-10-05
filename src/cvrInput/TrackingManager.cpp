@@ -30,9 +30,9 @@
 #include <sys/time.h>
 #endif
 
-#ifdef WITH_OVR
-#include <cvrInput/TrackerOculus.h>
-#endif
+//#ifdef WITH_OVR
+//#include <cvrInput/TrackerOculus.h>
+//#endif
 
 #ifdef WITH_OPENVR
 #include <cvrInput/TrackerOpenVR.h>
@@ -181,12 +181,12 @@ bool TrackingManager::init()
                 tracker = new TrackerGyroMouse();
             }
 #endif
-#ifdef WITH_OVR
-			else if(systemName == "OCULUS")
-			{
-				tracker = new TrackerOculus();
-			}
-#endif
+//#ifdef WITH_OVR
+//			else if(systemName == "OCULUS")
+//			{
+//				tracker = new TrackerOculus();
+//			}
+//#endif
 #ifdef WITH_OPENVR
 			else if (systemName == "OPENVR")
 			{

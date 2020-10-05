@@ -1,0 +1,392 @@
+﻿{
+  "configurations": [
+    {
+      "name": "RelWithDebInfo",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\build",
+      "installRoot": "${projectDir}\\install",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "OVR_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OVR_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSG_HOME",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENVR_ROOT_DIR",
+          "value": "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENVR_HEADERS_ROOT_DIR",
+          "value": "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/headers",
+          "type": "PATH"
+        },
+        {
+          "name": "MXML_LIBRARY",
+          "value": "C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "MXML_INCLUDE_DIR",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\mxml-2.12\\mxml-2.12",
+          "type": "PATH"
+        },
+        {
+          "name": "GLEW_INCLUDE_DIR",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\GLEW\\include",
+          "type": "PATH"
+        },
+        {
+          "name": "GLEW_LIBRARY",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\GLEW\\lib\\Release\\x64\\glew32.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "DYNAMIC_LINKING",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "OSG_INCLUDE_DIR",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\include",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGANIMATION_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGDB_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGFX_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGGA_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGMANIPULATOR_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGPARTICLE_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGPRESENTATION_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGSHADOW_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGSIM_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGTERRAIN_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGTEXT_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGUTIL_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGVIEWER_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGVOLUME_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OSGWIDGET_INCLUDE_DIR",
+          "value": "",
+          "type": "PATH"
+        },
+        {
+          "name": "OPENTHREADS_INCLUDE_DIR",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OpenSceneGraph\\include",
+          "type": "PATH"
+        },
+        {
+          "name": "OSG_LIBRARY",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGANIMATION_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGANIMATION_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGDB_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGDB_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGFX_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGFX_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGGA_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGGA_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGMANIPULATOR_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGMANIPULATOR_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPARTICLE_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPARTICLE_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPRESENTATION_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPRESENTATION_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSHADOW_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSHADOW_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSIM_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSIM_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTERRAIN_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTERRAIN_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTEXT_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTEXT_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGUTIL_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGUTIL_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVIEWER_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVIEWER_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVOLUME_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVOLUME_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGWIDGET_LIBRARY_DEBUG",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGWIDGET_LIBRARY_RELEASE",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGANIMATION_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGGA_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGDB_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGFX_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGMANIPULATOR_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPARTICLE_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGPRESENTATION_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSHADOW_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGSIM_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTERRAIN_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGTEXT_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGUTIL_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVIEWER_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGVOLUME_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OSGWIDGET_LIBRARY",
+          "value": "",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OPENTHREADS_LIBRARY",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OpenSceneGraph\\build\\lib\\OpenThreads.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "OPENTHREADS_LIBRARY_RELEASE",
+          "value": "C:\\Users\\g3aguirre\\Documents\\CAL\\OpenSceneGraph\\build\\lib\\OpenThreads.lib",
+          "type": "FILEPATH"
+        }
+      ]
+    }
+  ]
+}

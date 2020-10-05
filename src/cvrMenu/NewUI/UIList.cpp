@@ -100,7 +100,7 @@ void UIList::updateElement(osg::Vec3 pos, osg::Vec3 size)
 			}
 			osg::Vec3 posvec = _actualPos + stepvec * pos + linevec * line;
 			_childBoxes[_children[i].get()] = { posvec, sizevec };
-
+			_children[i]->setDirty(true);
 			++pos;
 		}
 
@@ -121,6 +121,7 @@ void UIList::addChild(UIElement* e)
 {
 	_childBoxes[e] = std::make_pair<osg::Vec3f, osg::Vec3f>(osg::Vec3(0, 0, 0), osg::Vec3(0, 0, 0));
 	UIElement::addChild(e);
+	this->setDirty(true);
 }
 
 void UIList::removeChild(UIElement* e)
@@ -130,6 +131,7 @@ void UIList::removeChild(UIElement* e)
 		_childBoxes.erase(e);
 	}
 	UIElement::removeChild(e);
+	this->setDirty(true);
 }
 
 void UIList::setDirection(UIList::Direction direction)

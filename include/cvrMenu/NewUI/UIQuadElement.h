@@ -17,8 +17,13 @@ namespace cvr
 			createGeometry();
 			_absoluteRounding = new osg::Uniform("absoluteRounding", 0.0f);
 			_percentRounding = new osg::Uniform("percentRounding", 0.0f);
+			_borderColorUniform = new osg::Uniform("borderColor", color);
+			_borderSizeUniform = new osg::Uniform("borderSize", 0.0f);
+			_borderOnlyUniform = new osg::Uniform("borderOnly", false);
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_absoluteRounding);
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_percentRounding);
+			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_borderSizeUniform);
+			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_borderOnlyUniform);
 		}
 
 		virtual void createGeometry();
@@ -29,14 +34,27 @@ namespace cvr
 		virtual void setTransparent(bool transparent);
 
 		virtual void setRounding(float absRounding, float percentRounding);
+		virtual void setBorderSize(float size);
+		
+		void borderOnly(bool borderOnly);
 
+		void setBorderColor(osg::Vec4 borderColor) {
+			_borderColor = borderColor;
+
+		}
+		
+		osg::ref_ptr<osg::Geode> _geode;
 	protected:
 		osg::ref_ptr<osg::MatrixTransform> _transform;
-		osg::ref_ptr<osg::Geode> _geode;
+		
 
 		osg::Vec4 _color;
+		osg::Vec4 _borderColor;
 		osg::Uniform* _absoluteRounding;
 		osg::Uniform* _percentRounding;
+		osg::Uniform* _borderColorUniform;
+		osg::Uniform* _borderSizeUniform;
+		osg::Uniform* _borderOnlyUniform;
 	};
 }
 

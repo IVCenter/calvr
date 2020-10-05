@@ -6,7 +6,11 @@
 Name "CalVR-Helmsley"
 
 ; The file to write
+<<<<<<< HEAD
 OutFile "CalVR-Helmsley-installer.exe"
+=======
+OutFile "C:\Users\g3aguirre\Documents\CAL\CalVR-Helmsley-installer.exe"
+>>>>>>> 8e3072fd28c9c6aef85a4cae0b9332a943cd5752
 
 ; The default installation directory
 InstallDir $PROGRAMFILES\CalVR
@@ -99,7 +103,11 @@ Section "CalVR-Helmsley (required)"
   ; Put file there
   File "bin\CalVR.exe"
   File "bin\CalVRAll.dll"
+<<<<<<< HEAD
   File "bin\freetype.dll"
+=======
+  ;File "bin\freetype.dll"
+>>>>>>> 8e3072fd28c9c6aef85a4cae0b9332a943cd5752
   File "bin\libcurl.dll"
   File "bin\libpng16.dll"
   File "bin\mxml1.dll"
@@ -125,7 +133,11 @@ Section "CalVR-Helmsley (required)"
   File "bin\tiff.dll"
   File "bin\tiffxx.dll"
   File "bin\zlib.dll"
+<<<<<<< HEAD
 
+=======
+  File "bin\glew32.dll"
+>>>>>>> 8e3072fd28c9c6aef85a4cae0b9332a943cd5752
   File "bin\dcmdata.dll"
   File "bin\dcmimgle.dll"
   File "bin\ofstd.dll"
@@ -133,6 +145,7 @@ Section "CalVR-Helmsley (required)"
 
 
 
+<<<<<<< HEAD
   SetOutpath $INSTDIR\bin\osgPlugins-3.6.4
 
   File "bin\osgPlugins-3.6.4\osgdb_3dc.dll"
@@ -213,6 +226,88 @@ Section "CalVR-Helmsley (required)"
   File "bin\osgPlugins-3.6.4\osgdb_vtf.dll"
   File "bin\osgPlugins-3.6.4\osgdb_x.dll"
   File "bin\osgPlugins-3.6.4\osgdb_zip.dll"
+=======
+  SetOutpath $INSTDIR\bin\osgPlugins-3.6.5
+
+  File "bin\osgPlugins-3.6.5\osgdb_3dc.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_3ds.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_ac.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_bmp.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_bsp.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_bvh.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_cfg.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_curl.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_dds.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_dot.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_dxf.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_fbx.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_freetype.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_gdal.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_gif.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_gles.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_glsl.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_gz.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_hdr.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_ive.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_jpeg.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_ktx.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_logo.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_lua.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_lwo.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_lws.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_md2.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_mdl.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_normals.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_obj.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_ogr.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_openflight.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osc.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osg.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osga.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osgjs.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osgshadow.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osgterrain.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osgtgz.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_osgviewer.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_p3d.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_pic.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_ply.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_png.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_pnm.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_pov.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_pvr.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_revisions.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_rgb.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_rot.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_scale.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osg.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osganimation.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgfx.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgga.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgmanipulator.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgparticle.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgshadow.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgsim.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgterrain.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgtext.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgui.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgutil.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgviewer.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_serializers_osgvolume.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_shp.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_stl.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_tf.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_tga.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_tgz.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_tiff.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_trans.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_trk.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_txf.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_txp.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_vtf.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_x.dll"
+  File "bin\osgPlugins-3.6.5\osgdb_zip.dll"
+>>>>>>> 8e3072fd28c9c6aef85a4cae0b9332a943cd5752
 
 
   SetOutPath $INSTDIR\bin\calvr-plugins
@@ -228,6 +323,7 @@ Section "CalVR-Helmsley (required)"
   Call ReplaceInFile
 
   SetOutPath $INSTDIR\HelmsleyVolume\shaders
+<<<<<<< HEAD
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\shaders\"
   SetOutPath $INSTDIR\HelmsleyVolume\models
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\models\"
@@ -235,6 +331,15 @@ Section "CalVR-Helmsley (required)"
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\icons\"
   SetOutPath $INSTDIR\HelmsleyVolume\icons\temp
   File /r "..\calvr_plugins\calit2\HelmsleyVolume\icons\temp\"
+=======
+  File /r "C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\shaders\"
+  SetOutPath $INSTDIR\HelmsleyVolume\models
+  File /r "C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\models\"
+  SetOutPath $INSTDIR\HelmsleyVolume\icons
+  File /r "C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\icons\"
+  SetOutPath $INSTDIR\HelmsleyVolume\icons\temp
+  File /r "C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\icons\temp\"
+>>>>>>> 8e3072fd28c9c6aef85a4cae0b9332a943cd5752
 
   SetOutPath $INSTDIR
 

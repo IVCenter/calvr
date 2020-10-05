@@ -200,8 +200,8 @@ osg::Geometry* OpenVRDevice::GetOrLoadRenderModel(std::string name)
 
 		renderModel = new osg::Geometry();
 		//renderModel->setVertexArray()
-		osg::Vec3Array* vertices = new osg::Vec3Array();
-		osg::Vec3Array* normals = new osg::Vec3Array();
+		osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array();
+		osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array();
 		osg::Vec2Array* texcoords = new osg::Vec2Array();
 		//osg::UIntArray* indices = new osg::UIntArray();
 		osg::DrawElementsUInt* ebo = new osg::DrawElementsUInt(GL_TRIANGLES);
@@ -631,6 +631,17 @@ void OpenVRDevice::calculateEyeAdjustment()
 	// Display IPD
 	float ipd = (m_leftEyeAdjust - m_rightEyeAdjust).length();
 	osg::notify(osg::ALWAYS) << "Interpupillary Distance (IPD): " << ipd * 1000.0f << " mm" << std::endl;
+
+
+
+
+
+
+
+
+
+
+
 
 	// Scale to world units
 	m_leftEyeAdjust *= m_worldUnitsPerMetre;

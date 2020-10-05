@@ -17,6 +17,7 @@ namespace cvr
 			: UIElement()
 		{
 			_text = UIUtil::makeText(text, size, osg::Vec3(0, 0, 0), osg::Vec4(1, 1, 1, 1), align, font);
+			_string = text;
 		}
 
 		virtual void createGeometry() override;
@@ -34,11 +35,13 @@ namespace cvr
 		osgText::Text* getTextObject() { return _text; }
 
 		virtual void setColor(osg::Vec4 color = osg::Vec4(1, 1, 1, 1));
+		osg::ref_ptr<osg::Geode> _geode;
 
 	protected:
 		osg::ref_ptr<osg::MatrixTransform> _transform;
-		osg::ref_ptr<osg::Geode> _geode;
+		
 		osg::ref_ptr<osgText::Text> _text;
+		std::string _string;
 
 	};
 }

@@ -24,11 +24,14 @@ namespace cvr
 
 		virtual UIElement* getRootElement() { return _rootElement; }
 
+		osg::Vec3 getPos() { return _menuPos; }
+
 		virtual void setActive(bool active = true, bool attachToScene = true);
 
 		virtual bool isActive();
 
 		virtual void setPosition(osg::Vec3 pos);
+
 
 		virtual void setRotation(osg::Quat rot);
 
@@ -38,13 +41,13 @@ namespace cvr
 
 		virtual void updateStart();
 
-		virtual bool processEvent(InteractionEvent * event);
+		virtual bool processEvent(InteractionEvent* event);
 
-		virtual bool processIsect(IsectInfo & isect, int hand);
+		virtual bool processIsect(IsectInfo& isect, int hand);
 
 		virtual void updateEnd();
 
-		virtual void itemDelete(MenuItem * item);
+		virtual void itemDelete(MenuItem* item);
 
 		virtual void orientTowardsHead();
 

@@ -70,3 +70,10 @@ void UIQuadElement::setRounding(float absRounding, float percentRounding)
 	_absoluteRounding->set(absRounding);
 	_percentRounding->set(percentRounding);
 }
+void UIQuadElement::setBorderSize(float size) {	// 0 = no border, .5 is half the quad
+	_borderSizeUniform->set(size);
+}
+
+void UIQuadElement::borderOnly(bool borderOnly) {
+	_borderOnlyUniform->set(borderOnly);
+}

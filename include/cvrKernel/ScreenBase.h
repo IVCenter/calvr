@@ -164,7 +164,7 @@ class CVRKERNEL_EXPORT ScreenBase
 		/**
 		 * @brief adds the given camera and buffer to the framebuffer map
 		 */
-		static void addBuffer(osg::Camera* c, osg::FrameBufferObject* fbo)
+		static void addBuffer(osg::ref_ptr<osg::Camera> c, osg::FrameBufferObject* fbo)
 		{
 			framebuffers[c] = fbo;
 		}
