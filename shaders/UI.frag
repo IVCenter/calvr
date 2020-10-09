@@ -61,10 +61,9 @@ void main() {
 	FragColor = texCol;
  #endif
     
-   
-    
+
     FragColor.a *= roundRect(i.uv * scale, scale);
-    if(color != borderColor && borderOnly){
-        FragColor.a = 0.0f;
-    }
+//    if(color != borderColor && borderOnly){
+//        FragColor.a = 0.0f;
+//    }
 }
