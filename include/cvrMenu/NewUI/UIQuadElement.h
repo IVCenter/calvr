@@ -20,10 +20,12 @@ namespace cvr
 			_borderColorUniform = new osg::Uniform("borderColor", color);
 			_borderSizeUniform = new osg::Uniform("borderSize", 0.0f);
 			_borderOnlyUniform = new osg::Uniform("borderOnly", false);
+			_borderColorUniform = new osg::Uniform("borderColor", osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_absoluteRounding);
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_percentRounding);
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_borderSizeUniform);
 			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_borderOnlyUniform);
+			(_geode->getDrawable(0))->getOrCreateStateSet()->addUniform(_borderColorUniform);
 		}
 
 		virtual void createGeometry();
@@ -38,16 +40,18 @@ namespace cvr
 		
 		void borderOnly(bool borderOnly);
 
-		void setBorderColor(osg::Vec4 borderColor) {
-			_borderColor = borderColor;
+		void setBorderColor(osg::Vec4 borderColor);
 
-		}
+		void setRot(osg::Quat rot) { _rotQuat = rot; }
+
+		osg::ref_ptr<osg::MatrixTransform> getTransform() { return _transform; }
+
 		
 		osg::ref_ptr<osg::Geode> _geode;
 	protected:
 		osg::ref_ptr<osg::MatrixTransform> _transform;
 		
-
+		osg::Quat rotQuat;
 		osg::Vec4 _color;
 		osg::Vec4 _borderColor;
 		osg::Uniform* _absoluteRounding;
@@ -55,6 +59,7 @@ namespace cvr
 		osg::Uniform* _borderColorUniform;
 		osg::Uniform* _borderSizeUniform;
 		osg::Uniform* _borderOnlyUniform;
+		 
 	};
 }
 

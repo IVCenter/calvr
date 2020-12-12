@@ -89,6 +89,10 @@ namespace cvr
 			setAbsoluteSize(absoluteSize);
 		}
 
+		virtual void setRot(osg::Quat rot) {
+			_rotQuat = rot;
+		}
+
 		virtual void setAspect(osg::Vec3 aspect, bool useAspect = true);
 		virtual osg::Vec3 getAspect() { return _aspect; }
 
@@ -132,6 +136,7 @@ namespace cvr
 
 		osg::Vec3 _actualPos;
 		osg::Vec3 _actualSize;
+		osg::Quat _rotQuat;
 
 
 
