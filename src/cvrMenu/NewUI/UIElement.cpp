@@ -17,6 +17,7 @@ UIElement::UIElement()
 
 	_actualPos = osg::Vec3(0, 0, 0);
 	_actualSize = osg::Vec3(0, 0, 0);
+	_rotQuat = osg::Quat(0.0, 0.0, 0.0, 1.0);
 
 	_children = std::vector<std::shared_ptr<UIElement> >();
 	_parent = nullptr;

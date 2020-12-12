@@ -40,7 +40,8 @@ float roundRect(vec2 coords, vec2 extents)
         spher.y = 1.0 + (coords.y - extents.y) / roundAmount.y;
     }
 
-    return dot(spher, spher) > 1.0 ? 0.0 : 1.0;
+    //return dot(spher, spher) > 1.0 ? 0.0 : 1.0;
+    return dot(spher, spher);
 }
 
 void main() {
@@ -53,16 +54,24 @@ void main() {
 #ifdef USE_TEXTURE
     vec4 texCol = texture2D(Texture, i.uv);
 	FragColor = texCol * color;
-#endif
 
-#ifdef GRAYSCALE
+    
+    #ifdef GRAYSCALE    
     texCol.b = texCol.r;
     texCol.g = texCol.r;
 	FragColor = texCol;
- #endif
-    
+    #endif
 
-    FragColor.a *= roundRect(i.uv * scale, scale);
+#endif
+
+
+    
+    float dotp = roundRect(i.uv * scale, scale);
+    if(dotp > (1.0-borderSize) && dotp < 1.0)
+        FragColor = borderColor;
+
+    //FragColor.a *= roundRect(i.uv * scale, scale);
+    FragColor.a *= dotp > 1.0 ? 0.0 : 1.0;
 //    if(color != borderColor && borderOnly){
 //        FragColor.a = 0.0f;
 //    }

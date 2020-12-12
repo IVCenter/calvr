@@ -30,10 +30,13 @@ void UIQuadElement::updateGeometry()
 	((osg::Geometry*)_geode->getDrawable(0))->setColorArray(colors, osg::Array::BIND_OVERALL);
 	((osg::Geometry*)_geode->getDrawable(0))->setVertexAttribArray(2, colors, osg::Array::BIND_OVERALL);
 
-	osg::Matrix mat = osg::Matrix();
-	mat.makeScale(_actualSize);
-	mat.postMultTranslate(_actualPos);
+ 	osg::Matrix mat = osg::Matrix();
+	
+ 	mat.makeScale(_actualSize);
+ 	mat.postMultTranslate(_actualPos);
+	
 	_transform->setMatrix(mat);
+ 
 }
 
 void UIQuadElement::setColor(osg::Vec4 color)
@@ -76,4 +79,8 @@ void UIQuadElement::setBorderSize(float size) {	// 0 = no border, .5 is half the
 
 void UIQuadElement::borderOnly(bool borderOnly) {
 	_borderOnlyUniform->set(borderOnly);
+}
+
+void UIQuadElement::setBorderColor(osg::Vec4 borderColor) {
+	_borderColorUniform->set(borderColor);
 }

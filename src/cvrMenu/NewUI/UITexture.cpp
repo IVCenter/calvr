@@ -8,8 +8,13 @@ void UITexture::updateGeometry()
 {
 	UIQuadElement::updateGeometry();
 	//_transform->setNodeMask(~cvr::INTERSECT_MASK);
+	
+	osg::Matrix mat = _transform->getMatrix();
+	mat.preMultRotate(_rotQuat);
+	mat.preMultTranslate(osg::Vec3(-.5, 0, .5));
+	mat.postMultTranslate(osg::Vec3(mat.getScale().x() * .5, 0, mat.getScale().z() *-.5));
 
-
+	_transform->setMatrix(mat);
 	if (_texture.valid())
 	{
 		_geode->getDrawable(0)->getOrCreateStateSet()->setTextureAttributeAndModes(0, _texture, osg::StateAttribute::ON);

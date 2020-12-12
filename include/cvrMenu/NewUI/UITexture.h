@@ -23,6 +23,7 @@ namespace cvr
 			: UIQuadElement(osg::Vec4(1, 1, 1, 1))
 		{
 			_texture = UIUtil::loadImage(texturePath);
+			
 		}
 
 		UITexture(osg::Vec4 color = osg::Vec4(1, 1, 1, 1))
@@ -39,6 +40,7 @@ namespace cvr
 
 	protected:
 		osg::ref_ptr<osg::Texture2D> _texture;
+	
 	};
 }
 

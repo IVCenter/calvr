@@ -1298,6 +1298,31 @@ void SceneObject::updateBoundsGeometry()
     _boundsTransform->setMatrix(s * t);
 }
 
+void SceneObject::updateBBActiveColor(osg::Vec4 color)
+{
+    osg::Geometry* geo = (osg::Geometry*)(_boundsGeodeActive->getDrawable(0));
+
+    geo->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0] = color;
+    geo->setColorArray(colors);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+}
+
+void SceneObject::updateBBPassiveColor(osg::Vec4 color)
+{
+    osg::Geometry* geo = (osg::Geometry*)(_boundsGeode->getDrawable(0));
+
+    geo->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0] = color;
+    geo->setColorArray(colors);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+}
+
 void SceneObject::updateMatrices()
 {
     _root->setMatrix(_scaleMat * _transMat);

@@ -404,6 +404,16 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void closeMenu();
 
+        /**
+        * @brief updates Active BB color
+        */
+        void updateBBActiveColor(osg::Vec4 color);
+
+        /**
+        * @brief updates Active BB color
+        */
+        void updateBBPassiveColor(osg::Vec4 color);
+
     protected:
         bool getRegistered()
         {
@@ -434,6 +444,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 
         void createBoundsGeometry();
         void updateBoundsGeometry();
+       
         void updateMatrices();
         void splitMatrix();
 
