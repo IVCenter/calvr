@@ -1362,19 +1362,23 @@ void SceneObject::splitMatrix()
 void SceneObject::interactionCountInc()
 {
     _interactionCount++;
-    if(_interactionCount == 1)
-    {
-        _boundsTransform->removeChild(_boundsGeode);
-        _boundsTransform->addChild(_boundsGeodeActive);
+    if (!_disableBB) {
+        if (_interactionCount == 1)
+        {
+            _boundsTransform->removeChild(_boundsGeode);
+            _boundsTransform->addChild(_boundsGeodeActive);
+        }
     }
 }
 
 void SceneObject::interactionCountDec()
 {
     _interactionCount--;
-    if(!_interactionCount)
-    {
-        _boundsTransform->removeChild(_boundsGeodeActive);
-        _boundsTransform->addChild(_boundsGeode);
+    if (!_disableBB) {
+        if (!_interactionCount)
+        {
+            _boundsTransform->removeChild(_boundsGeodeActive);
+            _boundsTransform->addChild(_boundsGeode);
+        }
     }
 }

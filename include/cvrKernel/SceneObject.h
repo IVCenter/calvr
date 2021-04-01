@@ -414,6 +414,8 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         */
         void updateBBPassiveColor(osg::Vec4 color);
 
+        void setDisableBB(bool disable) { _disableBB = disable; }
+
     protected:
         bool getRegistered()
         {
@@ -472,6 +474,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         bool _clip;
         bool _contextMenu;
         bool _showBounds;
+        bool _disableBB;
         bool _registered;
         bool _attached;
         bool _eventActive;
@@ -484,6 +487,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         int _activeHand;
         int _activeButton;
         bool _moving;
+
         osg::Matrix _lastHandMat;
         osg::Matrix _lastHandInv;
         osg::Matrix _lastobj2world;
