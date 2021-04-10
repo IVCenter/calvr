@@ -269,65 +269,18 @@ bool CalVR::init(osg::ArgumentParser & args, std::string home)
 
     return true;
 }
-class TestSupportOperation : public osg::GraphicsOperation
-{
-public:
-    TestSupportOperation()
-        : osg::Referenced(true)
-        , osg::GraphicsOperation("TestSupportOperation", false)
-        , m_supported(true)
-        , m_errorMsg()
-        , m_version(0.0)
-    {}
 
-    virtual void operator() (osg::GraphicsContext* gc)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(m_mutex);
-        osg::GLExtensions* gl2ext = gc->getState()->get<osg::GLExtensions>();
-
-        if (gl2ext) {
-
-            if (!gl2ext->isGlslSupported)
-            {
-                m_supported = false;
-                m_errorMsg = "ERROR: GLSL not supported by OpenGL driver.";
-            }
-            else
-                m_version = gl2ext->glVersion;
-        }
-        else {
-            m_supported = false;
-            m_errorMsg = "ERROR: GLSL not supported.";
-        }
-    }
-
-    OpenThreads::Mutex  m_mutex;
-    bool                m_supported;
-    std::string         m_errorMsg;
-    float               m_version;
-};
 void CalVR::run()
 {
     if(!_viewer->isRealized())
     {
-
-
-      
-       // std::cout << osg::GraphicsContext::Traits::glContextVersion << std::endl;
-        osg::ref_ptr<TestSupportOperation> tester = new TestSupportOperation;
-    
-        _viewer->setRealizeOperation(tester.get());
         _viewer->realize();
-        if (tester->m_supported)
-            std::cout << "GLVersion=" << tester->m_version << std::endl;
-        else
-            std::cout << tester->m_errorMsg << std::endl;
     }
 
     _screens->syncMasterScreens();
 
     int frameNum = 0;
-    
+
     while(!_viewer->done())
     {
         //std::cerr << "Frame " << frameNum << std::endl;

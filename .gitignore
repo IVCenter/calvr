@@ -23,3 +23,5 @@ bin
 .cproject
 .settings
 tags
+/build
+/config
