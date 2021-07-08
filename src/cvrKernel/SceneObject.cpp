@@ -61,8 +61,10 @@ SceneObject::SceneObject(std::string name, bool navigation, bool movable,
         _root->addChild(_boundsTransform);
     }
 
-    _moveButton = 0;
+    _moveButton = SceneManager::instance()->_moveDefaultButton;
     _menuButton = SceneManager::instance()->_menuDefaultOpenButton;
+	_horizontalRotateValuator = SceneManager::instance()->_rotateHorizontalDefaultValuator;
+	_pushValuator = SceneManager::instance()->_pushDefaultValuator;
 
     _activeHand = -2;
 }
@@ -712,6 +714,66 @@ bool SceneObject::processEvent(InteractionEvent * ie)
         //return retValue;
     }
 
+	ValuatorInteractionEvent* vie = ie->asValuatorEvent();
+
+	if (vie && _moving)
+	{
+		if (vie->getValuator() == _horizontalRotateValuator)
+		{
+			
+			//std::cerr << "Horizontal Rotate: " << vie->getValue() << std::endl;
+			osg::Matrix m;
+			if (getNavigationOn())
+			{
+				m = PluginHelper::getWorldToObjectTransform();
+			}
+			//_root->setMatrix(getObjectToWorldMatrix() * r * m * _root2obj);
+			
+
+			//osg::Vec4 up = m * _root2obj * osg::Vec4(0, 0, 1, 0);
+			//osg::Vec3 up3 = osg::Vec3(up.x(), up.y(), up.z());
+			osg::Matrix r;
+			r.makeRotate(osg::DegreesToRadians(vie->getValue() * 1.0f), osg::Vec3(0,0,1));
+
+			osg::Vec3 trans, scale;
+			osg::Quat rot, so;
+
+			_root->getMatrix().decompose(trans, rot, scale, so);
+
+			_transMat = osg::Matrix::rotate(rot) * r * osg::Matrix::translate(trans);
+			_scaleMat = osg::Matrix::scale(scale);
+
+			updateMatrices();
+
+			return true;
+		}
+		else if (vie->getValuator() == _pushValuator)
+		{
+
+			osg::Matrix m;
+			if (getNavigationOn())
+			{
+				m = PluginHelper::getWorldToObjectTransform();
+			}
+
+
+			osg::Matrix hand = TrackingManager::instance()->getHandMat(vie->getHand());
+			
+			float moveAmount = 10.0f * vie->getValue();
+			osg::Vec4 move = osg::Vec4(0, moveAmount, 0, 0);
+			move = move * hand;
+
+			//std::cerr << "Move: <" << move.x() << ", " << move.y() << ", " << move.z() << ">" << std::endl;
+
+			_root->setMatrix(getObjectToWorldMatrix() * osg::Matrix::translate(osg::Vec3(move.x(), move.y(), move.z())) * m * _root2obj);
+
+			splitMatrix();
+
+
+			return true;
+		}
+	}
+
     bool ret = eventCallback(ie);
     if(ret)
     {
@@ -765,6 +827,12 @@ const osg::BoundingBox & SceneObject::getOrComputeBoundingBox()
 {
     if(_boundsCalcMode == MANUAL)
     {
+		//Still want to compute bounds of child scene objects
+		for (int i = 0; i < _childrenObjects.size(); i++)
+		{
+			_childrenObjects[i]->getOrComputeBoundingBox();
+		}
+
         return _bb;
     }
     else
@@ -846,13 +914,13 @@ void SceneObject::processMove(osg::Matrix & mat)
     {
         m = PluginHelper::getWorldToObjectTransform();
     }
-    _root->setMatrix(_lastobj2world * _lastHandInv * mat * m * _root2obj);
+    _root->setMatrix(getObjectToWorldMatrix() * _lastHandInv * mat * m * _root2obj);
 
     splitMatrix();
 
     _lastHandMat = mat;
     _lastHandInv = osg::Matrix::inverse(mat);
-    _lastobj2world = getObjectToWorldMatrix();
+    //_lastobj2world = getObjectToWorldMatrix();
 }
 ;
 
@@ -1230,6 +1298,31 @@ void SceneObject::updateBoundsGeometry()
     _boundsTransform->setMatrix(s * t);
 }
 
+void SceneObject::updateBBActiveColor(osg::Vec4 color)
+{
+    osg::Geometry* geo = (osg::Geometry*)(_boundsGeodeActive->getDrawable(0));
+
+    geo->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0] = color;
+    geo->setColorArray(colors);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+}
+
+void SceneObject::updateBBPassiveColor(osg::Vec4 color)
+{
+    osg::Geometry* geo = (osg::Geometry*)(_boundsGeode->getDrawable(0));
+
+    geo->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    (*colors)[0] = color;
+    geo->setColorArray(colors);
+    geo->setColorBinding(osg::Geometry::BIND_OVERALL);
+}
+
 void SceneObject::updateMatrices()
 {
     _root->setMatrix(_scaleMat * _transMat);
@@ -1269,19 +1362,23 @@ void SceneObject::splitMatrix()
 void SceneObject::interactionCountInc()
 {
     _interactionCount++;
-    if(_interactionCount == 1)
-    {
-        _boundsTransform->removeChild(_boundsGeode);
-        _boundsTransform->addChild(_boundsGeodeActive);
+    if (!_disableBB) {
+        if (_interactionCount == 1)
+        {
+            _boundsTransform->removeChild(_boundsGeode);
+            _boundsTransform->addChild(_boundsGeodeActive);
+        }
     }
 }
 
 void SceneObject::interactionCountDec()
 {
     _interactionCount--;
-    if(!_interactionCount)
-    {
-        _boundsTransform->removeChild(_boundsGeodeActive);
-        _boundsTransform->addChild(_boundsGeode);
+    if (!_disableBB) {
+        if (!_interactionCount)
+        {
+            _boundsTransform->removeChild(_boundsGeodeActive);
+            _boundsTransform->addChild(_boundsGeode);
+        }
     }
 }

@@ -124,6 +124,7 @@ bool ConfigManager::init()
         if(cfr)
         {
             cfr->setDebugOutput(true);
+			std::cout << "test: " << fileList[i] << std::endl;
             if(cfr->loadFile(fileList[i]))
             {
                 _configFileList.push_back(cfr);

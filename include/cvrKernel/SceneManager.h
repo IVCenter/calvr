@@ -163,6 +163,19 @@ class CVRKERNEL_EXPORT SceneManager
             return _hidePointer;
         }
 
+		/**
+		 * @brief Get the MatrixTransform for the given hand
+		 */
+		osg::MatrixTransform * getHandTransform(unsigned int hand)
+		{
+			if (hand >= _handTransforms.size())
+			{
+				return NULL;
+			}
+
+			return _handTransforms[hand];
+		}
+
         /**
          * @brief Get a pointer to the DepthPartitionNode for the left eye rendering
          *
@@ -340,6 +353,9 @@ class CVRKERNEL_EXPORT SceneManager
         float _menuMinDistance;
         float _menuMaxDistance;
         int _menuDefaultOpenButton;
+		int _moveDefaultButton;
+		int _rotateHorizontalDefaultValuator;
+		int _pushDefaultValuator;
 
         WallType _wallType;
         osg::Matrix _wallTransform;

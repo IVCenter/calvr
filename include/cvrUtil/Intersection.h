@@ -22,6 +22,7 @@ class IsectInfo
     public:
         bool found;              ///< false: no intersection found
         osg::Vec3 point;              ///< intersection point
+		osg::Vec3 localpoint;			///< intersection point in local space
         osg::Vec3 normal;             ///< intersection normal
         osg::Geode *geode;              ///< intersected Geode
 };

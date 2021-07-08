@@ -105,6 +105,9 @@ class BoardMenuGeometry
     protected:
         static osg::Geometry * makeQuad(float width, float height,
                 osg::Vec4 color, osg::Vec3 pos = osg::Vec3(0,0,0));
+        static osg::Geometry * makeArc(float startRatio, float endRatio, float width, float height, 
+                float startTheta, float endTheta, int numSteps,
+                osg::Vec4 color, osg::Vec3 pos = osg::Vec3(0,0,0));
         static osg::Geometry * makeLine(osg::Vec3 p1, osg::Vec3 p2,
                 osg::Vec4 color);
         osg::Texture2D * loadIcon(std::string name);

@@ -4,6 +4,8 @@ cmake_install.cmake
 cmake_uninstall.cmake
 install_manifest.txt
 CMakeCache.txt
+.vs
+.vscode
 *vcxproj*
 *~
 .*.swp
@@ -21,3 +23,5 @@ bin
 .cproject
 .settings
 tags
+/build
+/config

@@ -6,8 +6,13 @@
 
 int main(int argc, char **argv)
 {
+
+
+
+
     osg::ArgumentParser args(&argc,argv);
 
+	/*
     args.getApplicationUsage()->setApplicationName(args.getApplicationName());
     args.getApplicationUsage()->setDescription(
             args.getApplicationName()
@@ -18,6 +23,7 @@ int main(int argc, char **argv)
             "String used to identify this host in config files, etc. default: gethostname()");
     args.getApplicationUsage()->addCommandLineOption("-h or --help",
             "Display command line parameters");
+			*/
 
     if(args.read("-h") || args.read("--help"))
     {

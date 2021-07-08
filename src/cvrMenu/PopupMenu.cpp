@@ -7,7 +7,7 @@
 
 using namespace cvr;
 
-PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
+PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable, bool displayTitle)
 {
     _title = title;
     _configName = configTag;
@@ -15,7 +15,7 @@ PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
     //TODO: get from somewhere
     _type = BOARDMENU;
 
-    _menu = new BoardPopupMenu();
+	_menu = new BoardPopupMenu();
 
     if(closable)
     {
@@ -24,7 +24,7 @@ PopupMenu::PopupMenu(std::string title, std::string configTag, bool closable)
     }
     else
     {
-        _rootMenu = new SubMenu(_title,_title);
+        _rootMenu = new SubMenu(_title,_title, displayTitle);
     }
     _menu->setMenu(_rootMenu);
 
@@ -110,6 +110,21 @@ float PopupMenu::getScale()
     return _menu->getScale();
 }
 
+void PopupMenu::setMovable(bool m)
+{
+	_menu->setMovable(m);
+}
+
+osg::MatrixTransform* PopupMenu::getRootObject()
+{
+	return _menu->getRoot();
+}
+
+SubMenu* PopupMenu::getRootSubMenu()
+{
+	return _rootMenu;
+}
+
 void PopupMenu::setVisible(bool b)
 {
     _menu->setVisible(b);
@@ -118,6 +133,11 @@ void PopupMenu::setVisible(bool b)
 bool PopupMenu::isVisible()
 {
     return _menu->isVisible();
+}
+
+void PopupMenu::setTitle(std::string title)
+{
+	_rootMenu->setTitle(title);
 }
 
 bool PopupMenu::init()

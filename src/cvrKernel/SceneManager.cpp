@@ -34,6 +34,13 @@ struct PrioritySort
         bool operator()(const std::pair<float,SceneObject*>& first,
                 const std::pair<float,SceneObject*>& second)
         {
+			//If there is no way to interact with one of the scene objects, place it at the back of the queue
+			bool firstinteraction = first.second->getMovable() || first.second->getHasContextMenu();
+			bool secondinteraction = second.second->getMovable() || second.second->getHasContextMenu();
+			if (firstinteraction != secondinteraction)
+			{
+				return firstinteraction < secondinteraction;
+			}
             return first.first > second.first;
         }
 };
@@ -52,6 +59,7 @@ SceneManager::SceneManager()
     _scale = 1.0;
     _menuOpenObject = NULL;
     _menuDefaultOpenButton = 1;
+	_moveDefaultButton = 0;
     _menuMaxDistance = 1500.0;
     _menuMinDistance = 750.0;
     _menuScale = 1.0;
@@ -127,6 +135,12 @@ bool SceneManager::init()
             "ContextMenus.MaxDistance",1500.0);
     _menuDefaultOpenButton = ConfigManager::getInt("value",
             "ContextMenus.DefaultOpenButton",1);
+	_moveDefaultButton = ConfigManager::getInt("value",
+			"ContextMenus.DefaultMoveButton", 0);
+	_rotateHorizontalDefaultValuator = ConfigManager::getInt("value",
+			"ContextMenus.DefaultRotateHorizontalValuator", -1);
+	_pushDefaultValuator = ConfigManager::getInt("value",
+			"ContextMenus.DefaultPushValuator", -1);
 
     _wallWidth = _wallHeight = 2000.0;
 

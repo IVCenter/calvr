@@ -1201,18 +1201,18 @@ void ScreenMVShader::PreDrawCallback::operator()(osg::RenderInfo & ri) const
     glMatrixMode(GL_TEXTURE);
 
     glActiveTexture(GL_TEXTURE4);
-    glLoadMatrix((GLdouble *)_screen->_viewer0View[_index].ptr());
+    glLoadMatrixd((GLdouble *)_screen->_viewer0View[_index].ptr());
 
     glActiveTexture(GL_TEXTURE5);
-    glLoadMatrix((GLdouble *)_screen->_viewer0Proj[_index].ptr());
+    glLoadMatrixd((GLdouble *)_screen->_viewer0Proj[_index].ptr());
 
     //if(TrackingManager::instance()->getNumHeads() >= 2)
     //{
     glActiveTexture(GL_TEXTURE6);
-    glLoadMatrix((GLdouble *)_screen->_viewer1View[_index].ptr());
+    glLoadMatrixd((GLdouble *)_screen->_viewer1View[_index].ptr());
 
     glActiveTexture(GL_TEXTURE7);
-    glLoadMatrix((GLdouble *)_screen->_viewer1Proj[_index].ptr());
+    glLoadMatrixd((GLdouble *)_screen->_viewer1Proj[_index].ptr());
     /*}
      else
      {

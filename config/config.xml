@@ -1,347 +1,151 @@
 <?xml version="1.0"?>
 
 
-   <Background g="0.0" a="0.0" />
+<Background g="0.0" a="0.0" />
 
-   <Stencil value="true" />
-   <MultiThreaded value="CullDrawThreadPerContext" />
-   <PreSwapOperation value="FINISH" />
-   <SyncToVBlank value="On" />
-   <Near value="100"/>
-   <Far value="100000000" />
-   <CullingMode value="CALVR" /> <!-- CALVR | DEFAULT -->
-   <MultiSample value="4" />
+<Stencil value="false" />
+<MultiThreaded value="DrawThreadPerContext" />
+<PreSwapOperation value="FINISH" />
+<SyncToVBlank value="Off" />
+<Near value="10"/>
+<Far value="20000" />
+<CullingMode value="DEFAULT" />
+<!-- CALVR | DEFAULT -->
+<MultiSample value="4" />
+<UseFrameBuffer value="true" />
+<AllowSceneMenus value="true" />
 
-   <ShowAxis value="off" />
+<ShowAxis value="off" />
 
-   <ConfigDebug value="false" />
-   <EventDebug value="false" />
+<ConfigDebug value="false" />
+<EventDebug value="false" />
 
-   <Input>
-     <TrackingDebug value="false" />
-     <TrackingSystem0 value="MOUSE">
-       <Offset x="0" y="0" z="0" />
-       <Orientation h="0" p="0" r="0" />
+<Input>
+  <TrackingDebug value="false" />
+  <Threaded FPS="90.0" />
+  <TrackingSystem0 value="MOUSE">
+    <Offset x="0" y="0" z="0" />
+    <Orientation h="0" p="0" r="0" />
 
-       <NumBodies value="1" />
-       <NumButtons value="3" />
-       <NumValuators value="1" />
+    <NumBodies value="1" />
+    <NumButtons value="3" />
+    <NumValuators value="1" />
 
-       <Body0>
-         <Offset x="0" y="0" z="0" />
-         <Orientation h="0" p="0" r="0" />
-       </Body0>
-     </TrackingSystem0>
+    <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+    </Body0>
+  </TrackingSystem0>
 
-     <NumHeads value="0" />
-     <Head0Address system="0" body="0" />
+  <TrackingSystem1 value="OPENVR">
+    <Orientation h="0" p="0" r="0" />
 
-     <NumHands value="1" />
-     <Hand0>
-       <Address system="0" body="0" />
-       <ButtonMask system0="0xF"  />
-       <Valuator0 system="0" number="0" type="NON_ZERO" />
-     </Hand0>
-   </Input>
-    
-   <Plugin>
-    <ParticleDreams value="off">
-      <DataDir value="/home/aprudhom/data/ParticleDreams" />
-    </ParticleDreams>
-    <AlgebraInMotion value="on">
-      <DataDir value="/home/aprudhom/data/ParticleDreams" />
-    </AlgebraInMotion>
-    <Sketch value="off" />
-    <GreenLight value="off" />
-    <OsgPdf value="on" />
-    <CullingMultiGPURender value="off" >
-     <Width value="1024" />
-     <Height value="768" />
-     <NumberOfGPUs value="2" />
-     <GeometryShader value="on" />
-     <DepthBuffer value="16" />
-     <TextureCopy value="CUDA_COPY" />
-     <CudaCopy value="true" />
-     <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/CullingMultiGPURender/shaders" />
-    </CullingMultiGPURender>
-    <MultiGPURender value="off">
-     <ShaderDir value="/home/aprudhom/CalVR/plugins/calit2/MultiGPURender/shaders" />
-     <!--<Animation basePath="/home/aprudhom/vtkDyna/perColorNT/Frame" frames="1" colors="29" />-->
-     <!--<Animation basePath="/home/aprudhom/vtkDyna/smallPerColor/Frame" frames="22" colors="29" />-->
-     <Animation basePath="/home/aprudhom/vtkDyna/mediumPerColor/" baseName="Frame" infoFile="medium.ani" loadRatio="0.35" frames="5" colors="29" /> <!-- max 42 frames -->
-     <Width value="1024" />
-     <Height value="768" />
-     <NumberOfGPUs value="2" />
-     <GeometryShader value="off" />
-     <CudaCopy value="false" />
-     <DepthBuffer value="24" />
-     <PBOs value="off" />
-     <DrawLines value="false" />
-    </MultiGPURender>
+    <NumControllers value="2" />
+    <NumTrackers value="0" />
 
-    <Points value="on" >
-      <ShaderPath value="/home/aprudhom/CVRPlugins/calit2/Points/shaders" />
-    </Points>
+    <NumBodies value="3" />
+    <NumButtons value="8" />
+    <NumValuators value="6" />
 
-    <PointsWithPans value="on">
-      <Sets>
-        <GalleryTest file="/home/aprudhom/trishPans/gal12NdrfFilterFilt-r8.xyb" scale="1000" x="0" y="0" z="0" moveTime="4.0" fadeTime="5.0" sphereRadius="250.0" selectDistance="2500.0" >
-	  <KGallery1 x="0" y="0" z="0" name="KGallery1" sphereRadius="250.0" selectDistance="2500.0" />
-	  <KGallery2 x="0" y="1" z="0" name="KGallery2" textureFile="/home/aprudhom/Desktop/Nuzzi-A.jpg" />
-	</GalleryTest>
-	<GalleryDrone file="/home/aprudhom/Desktop/GalleryDronePans/GalbCombined.xyz" scale="1000">
-	  <Gallery1 x="0" y="0" z="0" name="Gallery-Drone-1" />
-	  <Gallery2 x="0" y="1" z="0" name="Gallery-Drone-2" />
-	  <Gallery3 x="0" y="2" z="0" name="Gallery-Drone-3" />
-	</GalleryDrone>
-	<ply0 file="/home/aprudhom/Desktop/MosqueRed2/Mosque.0.ply" pointSize="0.2" />
-      </Sets>
-    </PointsWithPans>
+    <TrackHead value="true" />
 
-    <PanoViewLOD value="on">
-     <FloorOffset value="1500" />
-     <PrintValues value="false" />
-     <ShaderDir value="/home/aprudhom/data/Pans/PansLOD/glsl/" />
-     <ImageSearchPath value="/home/aprudhom/data/Pans/PansLOD" />
-     <ImageSearchPath value="/home/aprudhom/Desktop/GalleryDronePans" />
-     <DefaultConfigDir value="/home/aprudhom/data/Pans/PansLOD/config/:/home/aprudhom/Desktop/GalleryDronePans/config/" />
-     <!--CacheSize value="128" /-->
-     <Pans>
-                <Gallery>
-		    <KGallery1 />
-		    <KGallery2 />
-		    <Gallery-Drone-1 />
-		    <Gallery-Drone-2 />
-		    <Gallery-Drone-3 />
-		</Gallery>
-                <Luxor>
-                    <LuxorKarnakObelisks />
-                    <LuxorMedinetColumnsBlueCeiling />
-                    <LuxorMedinetHabuCourt />
-                    <LuxorMedinetHabuRoyalTreasure1 />
-                    <LuxorMedinetHabuRoyalTreasure2 />
-                    <LuxorMHoutback />
-                    <LuxorMHwall />
-                    <LuxorRamasseum />
-                    <LuxorSet />
-                    <LuxorTempleChapel />
-                    <LuxorTempleEntryNight />
-                    <LuxorTempleNight2 />
-                    <LuxorTempleOutsideColumn />
-                </Luxor>
-                <KAUST>
-                    <KAUSTmuseum1 />
-                    <KAUSTmuseum2 />
-                    <SaudiMar11 />
-                </KAUST>
-                <Wisconsin>
-                    <Taliesin-Path />
-                    <UPset />
-                    <UW-Madison-2 />
-                    <wiscoSet />
-                </Wisconsin>
-                <BluebonnetSet transitionType="ZOOM" transition0FileL="/home/aprudhom/Desktop/GalleryDronePans/GalleryZoomTransitionInfo" />
-                <CineGrid />
-                <KACST-Indoor2 />
-                <KACST-Outdoor1 />
-                <Dr-Seuss />
-		<TTF_Petrol />
-     </Pans>
-    </PanoViewLOD>
-
-    <ArtifactVis value="off" />
-
-    <FuturePatient value="on">
-      <PDFDir value="/home/aprudhom/data/FuturePatient/PDF" />
-      <LayoutDir value="/home/aprudhom/data/FuturePatient/layouts" />
-      <PointLineScale value="0.4" />
-      <DesktopMode value="true" />
-    </FuturePatient>
-
-    <SpaceNavigator value="off" >
-     <TransMult value="7.0" />
-     <RotMult value="0.8" />
-    </SpaceNavigator>
-    <PluginUtil value="off" />
-
-    <PanoView360 value="off" />
-    <TourCave value="off" />
-
-    <PathRecorder value="off" >
-      <DataDir value="/home/aprudhom/data/PathRecorder/" />
-    </PathRecorder>
-
-    <GreenLight>
-      <Components textureDir="/home/aprudhom/data/GreenLight/maps/">
-          <!-- Texture files should contain both the front and back faces, front on top-->
-          <C1 startname="convey" height="2" minWattage="620" maxWattage="690" texture="unwrap_ConveyHC1.png" />
-          <C2 startname="gpu" height="4" minWattage="233" maxWattage="493" texture="unwrap_gpuKOInVidia.png" />
-          <C3 startname="compute" height="1" minWattage="195" maxWattage="453"     texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
-          <C4 startname="headnode" height="1" minWattage="198" maxWattage="289" texture="unwrap_pcIntelDualXeonQC5430n5440.png" />
-          <C5 startname="bbextreme" height="1" minWattage="68" maxWattage="102" texture="switch_unwrap.png" />
-          <C6 startname="thumper" height="4" minWattage="404" maxWattage="642" texture="unwrap_thumperSunFireX4540.png" />
-          <C7 startname="int-nehalem" height="2" minWattage="104" maxWattage="281" texture="unwrap_IntelSR2600URLXNehalem.png" />
-          <C8 startname="sun-nehalem" height="2" minWattage="60" maxWattage="350" />
-          <C9 startname="greenstar" height="2" minWattage="10000" maxWattage="10001" />
-          <Ca startname="vm" height="1" minWattage="1" maxWattage="2" />
-          <Dc startname="DC" height ="12" minWattage="1" maxWattage="2" texture="unwrap_dcmeter.png" />
-        </Components>
-        <Demo value="on" />
-        <Hardware
-          local="/home/aprudhom/data/GreenLight/GreenLightAssets.fakejson"
-          download="http://glimpse.calit2.net/beta/json-assets.php?facility=GreenLight" />
-        <ModelsDir value="/home/aprudhom/data/GreenLight/Models/" />
-        <Power
-          local="/home/aprudhom/data/GreenLight/GLpower.xml"
-          download="http://glimpse.calit2.net/beta/jmangan/bbreport.php?facility=GreenLight&amp;type=power" />
-        <Shaders
-          fragment="/home/aprudhom/data/GreenLight/shaders/component.frag"
-          vertex="/home/aprudhom/data/GreenLight/shaders/component.vert" />
-    </GreenLight>
-
-    <StructView value="on">
-      <Layer0File value="/home/aprudhom/data/baybridge/T1_Block_01A_One_Quarter_wPiles_StructSteel01.WRL" />
-      <Layer1File value="/home/aprudhom/data/baybridge/T1Block01B_One_Quarter_Struct_Steel.WRL" />
-      <Layer2File value="/home/aprudhom/data/baybridge/T1Block02_OneQuarter_TopSlabRebar.wrl" />
-      <Layer3File value="/home/aprudhom/data/baybridge/T1Block03_OneQuarter_BotSlabRebar.wrl" />
-      <Layer4File value="/home/aprudhom/data/baybridge/T1Block04_One_Quarter_CutOutRebar.wrl" />
-      <Layer5File value="/home/aprudhom/data/baybridge/T1Block05_OneQuarter_Walls.WRL" />
-      <Layer6File value="/home/aprudhom/data/baybridge/T1Block06_One_Quarter_FendersRebars.WRL" />
-      <Layer7File value="/home/aprudhom/data/baybridge/T1Block07_OneQuarter_SkirtRebar.wrl" />
-      <Layer8File value="/home/aprudhom/data/baybridge/T1Block08_One_Quarter_SkirtABLayout.WRL" />
-      <Layer9File value="/home/aprudhom/data/baybridge/T1Block11_One_Quarter_Drainage.WRL" />
-      <Layer10File value="/home/aprudhom/data/baybridge/T1Block13_FullConcrete.WRL" />
-      <Layer11File value="/home/aprudhom/data/baybridge/Tower-all.wrl" />
-    </StructView>
-
-        <ArtifactVis>
-          <Database value="/home/aprudhom/data/ArtifactVis/artifactslist.txt" />
-	  <TopoFile value="/home/aprudhom/data/kyle/3d-model/Ken3dv3.wrl" />
-	  <PicFolder value="/home/covise/data/kyle/pictures/AllPics/" />
-	  <DCInfoFile value="/home/aprudhom/CVRPlugins/calit2/ArtifactVis/DCCategories.txt" />
-	  <LociFile value="/home/aprudhom/CVRPlugins/calit2/ArtifactVis/AreaMLociDepth.kml" />
-          <MaxVisibleRange value="1000000000.0" />
-          <Offset>
-            <X value="-3396591.682" />
-            <Y value="-733458.55" />
-            <Z value="-49.44" />
-          </Offset>
-          <Site>
-            <Longitude value="35.491239" />
-            <Latitude value="30.628039" />
-          </Site>
-          <Tessellation value=".2" />
-	  <ArtifactPanel x="-200" y="25" z="100" scale="1.0" />
-        </ArtifactVis>
-
-    <PluginTest value="off" />
-    <CollaborativePlugin value="off">
-      <Server value="127.0.0.1" />
-      <Port value="11050" />
-    </CollaborativePlugin>
-
-    <MVSim value="off">
-        <Head0 value="off" x="0" y="0" z="0" rotate="0" />
-        <Head1 value="on" x="0" y="-100" z="0" rotate="90" sim="0" />
-    </MVSim>
-
-    <OsgPathRecorder value="off">
-      <DataDir value="/home/aprudhom/data/OsgPathRecorder" />
-    </OsgPathRecorder>
-
-    <ModelLoader value="on" >
-      <ConfigDir value="/home/aprudhom/data/ModelLoader/" />
-      <Files>
-        <se_building path="/home/aprudhom/data/falko/se_building.obj" mask="1" />
-	<QaserAlBint path="/home/aprudhom/data/QaserAlBint_VRML/Qaser_Albent.wrl" mask="1" scale="1000.0" z="0.6" />
-      </Files>
-    </ModelLoader>
-
-    <ImageViewer value="on" >
-      <DefaultPaths value="/home/aprudhom/data/TomsStereo4Kimages1" />
-      <Files>
-        <BeijingCraftShop fileLeft="BeijingCraftShopLeft_4096_4096.jpg" fileRight="BeijingCraftShopRight_4096_4096.jpg" />
-	<Test>
-	  <YuHuan fileLeft="YuHuanLeft_4096_4096.jpg" fileRight="YuHuanRight_4096_4096.jpg" />
-	  <Test2>
-	    <TerraCottaPit fileLeft="TerraCottaPitLeft_4096_4096.jpg" fileRight="TerraCottaPitRight_4096_4096.jpg" />
-	  </Test2>
-	</Test>
-	<Test3>
-	  <TianjinVases fileLeft="TianjinVasesLeft_4096_4096.jpg" fileRight="TianjinVasesRight_4096_4096.jpg" />
-	</Test3>
-      </Files>
-    </ImageViewer>
-
-    <TourCave>
-     <BackgroundAudio name="BGAudio" loop="true" />
-     <Mode0>
-      <PathID value="1" />
-      <Audio>
-       <File0 name="File0" time="1.0" loop="false" x="0" y="0" z="0" distance="1000" />
-       <File1 name="File1" time="5.0" loop="false" />
-      </Audio>
-     </Mode0>
-     <Mode1>
-      <PathID value="2" />
-      <Audio>
-       <File2 name="File2" time="3.0" loop="false" />
-       <File3 name="File3" time="7.0" loop="false" />
-      </Audio>
-     </Mode1>
-     <Mode2>
-      <PathID value="3" />
-      <Audio>
-       <File4 name="File4" time="6.0" loop="false" />
-       <File5 name="File5" time="10.0" loop="false" />
-      </Audio>
-     </Mode2>
-    </TourCave>
-
-   </Plugin>
-
-   <ContextMenus>
-     <Scale value="0.4" />
-     <MinDistance value="750" />
-     <MaxDistance value="1500" />
-     <DefaultOpenButton value="1" />
-   </ContextMenus>
-
-   <MenuSystem type="BOARDMENU">
-    <BoardMenu>
-     <Position distance="3000" />
-     <Scale value="1.0" />
-     <Buttons select="0" open="1" />
-     <Trigger value="DOUBLECLICK" />
-    </BoardMenu>
-   </MenuSystem>
+    <Body0>
+      <Offset x="0" y="0" z="0" />
+      <Orientation h="0" p="0" r="0" />
+    </Body0>
+  </TrackingSystem1>
 
 
-   <ViewerPosition x="0" y="-2957" z="0" />
-   <SceneSize value="1000" />
 
-   <NumPipes value="1" />
-   <NumWindows value="1" />
-   <NumScreens value="1" />
+  <NumHeads value="1" />
+  <Head0Address system="1" body="0" />
 
-   <PipeConfig>
-    <Pipe server="0" screen="0" name="0" />
-    <Pipe server="0" screen="1" name="1" />
-   </PipeConfig>
+  <NumHands value="3" />
+  <Hand0>
+    <Address system="0" body="0" />
+    <ButtonMask system0="0xF"  />
+    <Valuator0 system="0" number="0" type="NON_ZERO" />
+  </Hand0>
+  <Hand1>
+    <Address system="1" body="1" />
+    <ButtonMask system1="0xFF0F" />
+    <Valuator0 system="1" number="1" type="CHANGE" />
+    <Valuator1 system="1" number="2" type="CHANGE" />
+    <ButtonMapping value="1,2,3,0" />
+  </Hand1>
+  <Hand2>
+    <Address system="1" body="2" />
+    <ButtonMask system1="0xFFF0" />
+    <Valuator0 system="1" number="4" type="CHANGE" />
+    <Valuator1 system="1" number="5" type="CHANGE" />
+    <ButtonMapping value="1,2,3,0" />
+  </Hand2>
 
-   <ChannelConfig>
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0"  />
-    <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1" />
-   </ChannelConfig>
-   
-   <WindowConfig>
-    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
-    <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="1100" name="1" decoration="true" cudaDevice="0" />
-   </WindowConfig>
+</Input>
+
+<Plugin>
+  <HelmsleyVolume value="on">
+    <ShaderDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\shaders\" />
+    <ModelDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\models\" />
+    <ImageDir value="C:\Users\g3aguirre\Documents\CAL\calvr_plugins\calit2\HelmsleyVolume\icons\temp\" />
+    <InteractButton value="0" />
+    <PictureLocation value="C:\Users\g3aguirre\Documents\CAL\DICOMS\Screenshots" />
+    <BaseFolder value="C:\Users\g3aguirre\Documents\CAL\DICOMSdebug" /> 
+     <PresetsFolder value = "C:\Users\g3aguirre\Documents\CAL\DICOMS\Presets"  />
+    <Files>
+    </Files>
+  </HelmsleyVolume>
+</Plugin>
+
+<ContextMenus>
+  <Scale value="1.0" />
+  <MinDistance value="50" />
+  <MaxDistance value="1000" />
+  <DefaultOpenButton value="1" />
+  <DefaultMoveButton value="2" />
+</ContextMenus>
+
+<MenuSystem type="BOARDMENU">
+  <BoardMenu>
+    <Position distance="500" />
+    <Scale value="1.0" />
+    <Buttons select="0" open="1" />
+    <Trigger value="DOUBLECLICK" />
+  </BoardMenu>
+</MenuSystem>
 
 
-   <ScreenConfig>
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" />
-   <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" />
-   </ScreenConfig>
+<ViewerPosition x="0" y="-1000" z="-2000" />
+<SceneSize value="10000" />
 
+<NumPipes value="1" />
+<NumWindows value="2" />
+<NumScreens value="2" />
+
+<PipeConfig>
+  <Pipe server="0" screen="0" name="0" />
+  <!-- <Pipe server="0" screen="1" name="1" /> -->
+</PipeConfig>
+
+<ChannelConfig>
+  <Channel width="1280" height="1440" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />
+  <!--<Channel width="1280" height="720" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="0"  name="0"  />-->
+  <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="0"  name="0" /> -->
+  <!-- <Channel width="2160" height="1200" left="0" bottom="0" comment="MAIN" stereoMode="OPENVR"  windowIndex="1"  name="1"  /> -->
+  <!-- <Channel width="1024" height="768" left="0" bottom="0" comment="MAIN" stereoMode="MONO"  windowIndex="1"  name="1" /> -->
+</ChannelConfig>
+
+<WindowConfig>
+  <Window width="1280" comment="FRONT" pipeIndex="0" height="1440" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />
+  <!--<Window width="1280" comment="FRONT" pipeIndex="0" height="720" left="50" bottom="50" name="0" decoration="true" overrideRedirect="false" cudaDevice="0" />-->
+  <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="50" bottom="50" name="0" decoration="true" cudaDevice="1" /> -->
+  <!-- <Window width="2160" comment="FRONT" pipeIndex="0" height="1200" left="50" bottom="50" name="1" decoration="true" overrideRedirect="false" cudaDevice="0" /> -->
+  <!-- <Window width="1024" comment="FRONT" pipeIndex="0" height="768" left="1280" bottom="800" name="1" decoration="true" cudaDevice="1" /> -->
+</WindowConfig>
+
+<ScreenConfig>
+  <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="0" />
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="0" /> -->
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="-90.0" r="0.0" name="1" /> -->
+  <!-- <Screen width="2000" comment="FRONT" h="0.0" originX="0" originY="0" originZ="0" height="1500" p="0.0" r="0.0" name="1" /> -->
+</ScreenConfig>

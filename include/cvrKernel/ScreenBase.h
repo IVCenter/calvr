@@ -9,26 +9,27 @@
 #include <cvrKernel/ScreenConfig.h>
 
 #include <osgViewer/Viewer>
+#include <osg/FrameBufferObject>
 
 #include <map>
 
 namespace cvr
 {
 
-/**
- * @addtogroup kernel
- * @{
- */
-/**
- * @addtogroup screens Screens
- * @{
- */
+    /**
+     * @addtogroup kernel
+     * @{
+     */
+     /**
+      * @addtogroup screens Screens
+      * @{
+      */
 
-/**
- * @brief Virtual base class for all screen implementations
- */
-class CVRKERNEL_EXPORT ScreenBase
-{
+      /**
+       * @brief Virtual base class for all screen implementations
+       */
+    class CVRKERNEL_EXPORT ScreenBase
+    {
         friend class ScreenConfig;
     public:
         ScreenBase();
@@ -62,7 +63,7 @@ class CVRKERNEL_EXPORT ScreenBase
         /**
          * @brief Get the screen params used to create this screen
          */
-        ScreenInfo * getScreenInfo()
+        ScreenInfo* getScreenInfo()
         {
             return _myInfo;
         }
@@ -71,7 +72,7 @@ class CVRKERNEL_EXPORT ScreenBase
          * @brief See if a given osg::Camera was created by this screen
          * @return returns NULL if not found
          */
-        virtual ScreenInfo * findScreenInfo(osg::Camera * c) = 0;
+        virtual ScreenInfo* findScreenInfo(osg::Camera* c) = 0;
 
         /**
          * @brief Allows screens a chance to modify the viewport coords
@@ -79,13 +80,13 @@ class CVRKERNEL_EXPORT ScreenBase
          * @param x x coord in range 0 to width
          * @param y y coord in range 0 to height
          */
-        virtual void adjustViewportCoords(int & x, int & y)
+        virtual void adjustViewportCoords(int& x, int& y)
         {
             return;
         }
 
         /**
-         * @brief Called on a master node screen if the viewport has been 
+         * @brief Called on a master node screen if the viewport has been
          * resized
          * @param left new viewport left value
          * @param bottom new viewport bottom value
@@ -93,7 +94,7 @@ class CVRKERNEL_EXPORT ScreenBase
          * @param height new viewport height value
          */
         virtual void viewportResized(int left, int bottom, int width,
-                int height)
+            int height)
         {
             _myInfo->myChannel->left = (float)left;
             _myInfo->myChannel->bottom = (float)bottom;
@@ -113,7 +114,7 @@ class CVRKERNEL_EXPORT ScreenBase
         /**
          * @brief Set near plane value for all screens
          */
-		static void setNear(double near);
+        static void setNear(double near);
 
         /**
          * @brief Get far plane value for all screens
@@ -126,7 +127,7 @@ class CVRKERNEL_EXPORT ScreenBase
         /**
          * @brief Set far plane value for all screens
          */
-		static void setFar(double far);
+        static void setFar(double far);
 
         /**
          * @brief Get the eye separation
@@ -161,16 +162,36 @@ class CVRKERNEL_EXPORT ScreenBase
         }
 
         /**
+         * @brief adds the given camera and buffer to the framebuffer map
+         */
+        static void addBuffer(osg::ref_ptr<osg::Camera> c, osg::FrameBufferObject* fbo)
+        {
+            framebuffers[c] = fbo;
+        }
+
+        /**
+         * @brief if it exists, resolves the buffer for camera c into resolve_fbo
+         */
+        static bool resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state,
+            GLbitfield buffers = GL_COLOR_BUFFER_BIT);
+
+        /**
          * @brief Applies some default settings to the camera
          *
          * Sets up viewport, sets culling mode/masks, etc
          */
-        void defaultCameraInit(osg::Camera * cam);
+        void defaultCameraInit(osg::Camera* cam);
+
+        /**
+         * @brief Turns on and sets up using frame buffer for camera
+         *
+         */
+        void frameBufferInit(osg::Camera* cam, int bufferWidth, int bufferHeight);
 
         /**
          * @brief Get the head orientation matrix for a given head id
          */
-        osg::Matrix & getCurrentHeadMatrix(int head = 0);
+        osg::Matrix& getCurrentHeadMatrix(int head = 0);
 
         /**
          * @brief Get the left eye position for a given user
@@ -187,8 +208,37 @@ class CVRKERNEL_EXPORT ScreenBase
          *
          * Uses information in the screen info to do the typical calculation
          */
-        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix & view,
-                osg::Matrix & proj);
+        void computeDefaultViewProj(osg::Vec3d eyePos, osg::Matrix& view,
+            osg::Matrix& proj);
+
+        /*
+        virtual void resolveBuffers(osg::Camera* c, osg::FrameBufferObject* resolve_fbo, osg::State* state, GLbitfield buffers = GL_COLOR_BUFFER_BIT)
+        {
+            if (!_fbo)
+            {
+                return;
+            }
+            const osg::GLExtensions* fbo_ext = state->get<osg::GLExtensions>();
+            //Save current framebuffer state
+            GLint drawFBO = 0, readFBO = 0;
+            glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &drawFBO);
+            glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING_EXT, &readFBO);
+
+            const osg::Texture* src = _fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+            const osg::Texture* tgt = resolve_fbo->getAttachment(osg::Camera::COLOR_BUFFER0).getTexture();
+
+            //Blit framebuffer to resolve_fbo
+            resolve_fbo->apply(*state, osg::FrameBufferObject::DRAW_FRAMEBUFFER);
+            _fbo->apply(*state, osg::FrameBufferObject::READ_FRAMEBUFFER);
+            fbo_ext->glBlitFramebuffer(0, 0, src->getTextureWidth(), src->getTextureHeight(),
+                0, 0, tgt->getTextureWidth(), tgt->getTextureHeight(),
+                buffers, GL_NEAREST);
+
+            //Restore prev framebuffer state
+            fbo_ext->glBindFramebuffer(GL_DRAW_FRAMEBUFFER_EXT, drawFBO);
+            fbo_ext->glBindFramebuffer(GL_READ_FRAMEBUFFER_EXT, readFBO);
+        };
+        */
 
     protected:
         static double _separation; ///< eye separation
@@ -198,15 +248,46 @@ class CVRKERNEL_EXPORT ScreenBase
 
         static bool _omniStereo; ///< is omni stereo mode active
 
-        ScreenInfo * _myInfo; ///< config information for this screen
-};
+        ScreenInfo* _myInfo; ///< config information for this screen
 
-/**
- * @}
- */
-/**
- * @}
- */
+        osg::ref_ptr<osg::FrameBufferObject> _fbo;
+
+        static std::map<osg::Camera*, osg::FrameBufferObject*> framebuffers;
+    };
+
+    class RTTPreDrawCallback : public osg::Camera::DrawCallback
+    {
+    public:
+        RTTPreDrawCallback(osg::FrameBufferObject* fbo) : m_fbo(fbo) {}
+        virtual void operator () (osg::RenderInfo& renderInfo) const
+        {
+            m_fbo->apply(*renderInfo.getState());
+        }
+
+    private:
+        osg::ref_ptr<osg::FrameBufferObject> m_fbo;
+    };
+
+    class RTTSwapCallback : public osg::GraphicsContext::SwapCallback
+    {
+    public:
+        explicit RTTSwapCallback(osg::FrameBufferObject* fbo, int width, int height) :
+            m_fbo(fbo), m_width(width), m_height(height), m_frameIndex(0) {}
+        void swapBuffersImplementation(osg::GraphicsContext* gc);
+        int frameIndex() const { return m_frameIndex; }
+    private:
+        osg::ref_ptr<osg::FrameBufferObject> m_fbo;
+        int m_frameIndex;
+        int m_width;
+        int m_height;
+    };
+
+    /**
+     * @}
+     */
+     /**
+      * @}
+      */
 
 }
 

@@ -34,7 +34,7 @@ class CVRMENU_EXPORT SubMenu : public MenuCollection
          *
          * title value is set to name if empty
          */
-        SubMenu(std::string name, std::string title = "");
+        SubMenu(std::string name, std::string title = "", bool displayTitle = true);
         virtual ~SubMenu();
 
         /**
@@ -58,14 +58,26 @@ class CVRMENU_EXPORT SubMenu : public MenuCollection
          */
         std::string getName();
 
+		void setName(std::string const& name);
+
         /**
          * @brief Get the menu title
          */
         std::string getTitle();
 
+		void setTitle(std::string const& title);
+
+		/**
+		 * @brief Get whether the submenu is displaying the title
+		 */
+		bool getDisplayTitle();
+
+		void setDisplayTitle(bool d = true);
+
     protected:
         std::string _name; ///< menu name
         std::string _title; ///< menu title
+		bool _displayTitle; ///< whether the submenu should display the title
 };
 
 /**

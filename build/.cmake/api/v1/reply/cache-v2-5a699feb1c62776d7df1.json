@@ -1,0 +1,2547 @@
+{
+	"entries" : 
+	[
+		{
+			"name" : "BUILD_APPS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Build CalVR Applications"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CMAKE_CACHEFILE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "This is the directory where this CMakeCache.txt was created"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "c:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/build"
+		},
+		{
+			"name" : "CMAKE_CACHE_MAJOR_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Major version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3"
+		},
+		{
+			"name" : "CMAKE_CACHE_MINOR_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Minor version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "15"
+		},
+		{
+			"name" : "CMAKE_CACHE_PATCH_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Patch version of cmake used to create the current loaded cache"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "0"
+		},
+		{
+			"name" : "CMAKE_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to CMake executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Downloads/cmake-3.15.0-rc2-win64-x64/cmake-3.15.0-rc2-win64-x64/bin/cmake.exe"
+		},
+		{
+			"name" : "CMAKE_CONFIGURATION_TYPES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Semicolon separated list of supported configuration types, only supports Debug, Release, MinSizeRel, and RelWithDebInfo, anything else will be ignored."
+				}
+			],
+			"type" : "STRING",
+			"value" : "Debug;Release;MinSizeRel;RelWithDebInfo"
+		},
+		{
+			"name" : "CMAKE_CPACK_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to cpack program executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Downloads/cmake-3.15.0-rc2-win64-x64/cmake-3.15.0-rc2-win64-x64/bin/cpack.exe"
+		},
+		{
+			"name" : "CMAKE_CTEST_COMMAND",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to ctest program executable."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Downloads/cmake-3.15.0-rc2-win64-x64/cmake-3.15.0-rc2-win64-x64/bin/ctest.exe"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O1 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O2 /Ob2 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the CXX compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /Zi /O2 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_CXX_STANDARD_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Libraries linked by default with all C++ applications."
+				}
+			],
+			"type" : "STRING",
+			"value" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/DWIN32 /D_WINDOWS /W3"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MDd /Zi /Ob0 /Od /RTC1"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O1 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /O2 /Ob2 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the C compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/MD /Zi /O2 /Ob1 /DNDEBUG"
+		},
+		{
+			"name" : "CMAKE_C_STANDARD_LIBRARIES",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Libraries linked by default with all C applications."
+				}
+			],
+			"type" : "STRING",
+			"value" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib"
+		},
+		{
+			"name" : "CMAKE_EXECUTABLE_FORMAT",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Executable file format"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "Unknown"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_EXTRA_GENERATOR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of external makefile project generator."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_GENERATOR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "Visual Studio 16 2019"
+		},
+		{
+			"name" : "CMAKE_GENERATOR_INSTANCE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Generator instance identifier."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community"
+		},
+		{
+			"name" : "CMAKE_GENERATOR_PLATFORM",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator platform."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_GENERATOR_TOOLSET",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Name of generator toolset."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_HAVE_PTHREAD_H",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Have include pthread.h"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_HOME_DIRECTORY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Source directory with the top level CMakeLists.txt file for this project"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr"
+		},
+		{
+			"name" : "CMAKE_INSTALL_PREFIX",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Install path prefix, prepended onto install directories."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Program Files (x86)/CalVR"
+		},
+		{
+			"name" : "CMAKE_LINKER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29910/bin/Hostx64/x64/link.exe"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of modules during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_MT",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a program."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "CMAKE_MT-NOTFOUND"
+		},
+		{
+			"name" : "CMAKE_NUMBER_OF_MAKEFILES",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "number of local generators"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3"
+		},
+		{
+			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Platform information initialized"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "1"
+		},
+		{
+			"name" : "CMAKE_PROJECT_DESCRIPTION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_PROJECT_HOMEPAGE_URL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_PROJECT_NAME",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "CalVR"
+		},
+		{
+			"name" : "CMAKE_RC_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "RC compiler"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "rc"
+		},
+		{
+			"name" : "CMAKE_RC_COMPILER_WORKS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : ""
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "1"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "-DWIN32"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "-D_DEBUG"
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_RC_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags for Windows Resource Compiler during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_ROOT",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to CMake installation."
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "C:/Users/g3aguirre/Downloads/cmake-3.15.0-rc2-win64-x64/cmake-3.15.0-rc2-win64-x64/share/cmake-3.15"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/INCREMENTAL:NO"
+		},
+		{
+			"name" : "CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of shared libraries during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/debug /INCREMENTAL"
+		},
+		{
+			"name" : "CMAKE_SKIP_INSTALL_RPATH",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If set, runtime paths are not added when installing shared libraries, but are added when building."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CMAKE_SKIP_RPATH",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If set, runtime paths are not added when using shared libraries."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during all build types."
+				}
+			],
+			"type" : "STRING",
+			"value" : "/machine:x64"
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during DEBUG builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during MINSIZEREL builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during RELEASE builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Flags used by the linker during the creation of static libraries during RELWITHDEBINFO builds."
+				}
+			],
+			"type" : "STRING",
+			"value" : ""
+		},
+		{
+			"name" : "CMAKE_VERBOSE_MAKEFILE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "If this value is on, makefiles will be generated without the .SILENT directive, and all commands will be echoed to the console during the make.  This is useful for debugging only. With Visual Studio IDE projects all commands are done without /nologo."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "CalVRAll_LIB_DEPENDS",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Dependencies for the target"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;general;C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;general;C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;general;C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;general;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib;general;C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib;"
+		},
+		{
+			"name" : "CalVR_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/build"
+		},
+		{
+			"name" : "CalVR_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr"
+		},
+		{
+			"name" : "DYNAMIC_LINKING",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to ON to build CalVR for dynamic linking.  Use OFF for static."
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenSceneGraph",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenSceneGraph"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib;optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][TRUE][YES][TRUE][v3.6.5()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenThreads",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenThreads"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_OpenVR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding OpenVR"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17\\headers][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_Threads",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding Threads"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[TRUE][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgAnimation",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgAnimation"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgDB",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgDB"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgFX",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgFX"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgGA",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgGA"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgManipulator",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgManipulator"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgParticle",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgParticle"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgPresentation",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgPresentation"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgShadow",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgShadow"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgSim",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgSim"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgTerrain",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgTerrain"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgText",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgText"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgUtil",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgUtil"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgViewer",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgViewer"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgVolume",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgVolume"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "FIND_PACKAGE_MESSAGE_DETAILS_osgWidget",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Details about finding osgWidget"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "[optimized;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib;debug;C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib][C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include][v()]"
+		},
+		{
+			"name" : "GLEW_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "GLEW_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "GLEW_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "GLEW_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "INTERLEAVER_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "INTERLEAVER_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "INTERLEAVER_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "INTERLEAVER_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "LIBRK_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "LIBRK_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "LIBRK_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "LIBRK_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "MAKE_DOCUMENTATION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Create Doxygen documentation"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "OFF"
+		},
+		{
+			"name" : "MSVC_DEBUG_INCREMENTAL_LINK",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to OFF to build without incremental linking in debug (release is off by default)"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "MSVC_VERSIONED_DLL",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Set to ON to build with versioned dll names"
+				}
+			],
+			"type" : "BOOL",
+			"value" : "ON"
+		},
+		{
+			"name" : "MXML_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:\\Users\\g3aguirre\\Documents\\CAL\\mxml-2.12\\mxml-2.12"
+		},
+		{
+			"name" : "MXML_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12/vcnet/Release/x64/mxml1.lib"
+		},
+		{
+			"name" : "OMICRON_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "OMICRON_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "OPENSCENEGRAPH_VERSION",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The version of OSG which was detected"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : "3.6.5"
+		},
+		{
+			"name" : "OPENTHREADS_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreadsd.lib"
+		},
+		{
+			"name" : "OPENTHREADS_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/OpenThreads.lib"
+		},
+		{
+			"name" : "OPENVR_HEADERS_ROOT_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Directory to search for private OpenVR headers"
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17\\headers"
+		},
+		{
+			"name" : "OPENVR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17\\headers"
+		},
+		{
+			"name" : "OPENVR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/lib/win64/openvr_api.lib"
+		},
+		{
+			"name" : "OPENVR_ROOT_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Directory to search for OpenVR SDK"
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17"
+		},
+		{
+			"name" : "OSGANIMATION_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimationd.lib"
+		},
+		{
+			"name" : "OSGANIMATION_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgAnimation.lib"
+		},
+		{
+			"name" : "OSGDB_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGDB_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGDB_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDBd.lib"
+		},
+		{
+			"name" : "OSGDB_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgDB.lib"
+		},
+		{
+			"name" : "OSGFX_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGFX_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGFX_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFXd.lib"
+		},
+		{
+			"name" : "OSGFX_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgFX.lib"
+		},
+		{
+			"name" : "OSGGA_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGGA_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGGA_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGAd.lib"
+		},
+		{
+			"name" : "OSGGA_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgGA.lib"
+		},
+		{
+			"name" : "OSGMANIPULATOR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulatord.lib"
+		},
+		{
+			"name" : "OSGMANIPULATOR_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgManipulator.lib"
+		},
+		{
+			"name" : "OSGPARTICLE_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticled.lib"
+		},
+		{
+			"name" : "OSGPARTICLE_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgParticle.lib"
+		},
+		{
+			"name" : "OSGPRESENTATION_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentationd.lib"
+		},
+		{
+			"name" : "OSGPRESENTATION_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgPresentation.lib"
+		},
+		{
+			"name" : "OSGSHADOW_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadowd.lib"
+		},
+		{
+			"name" : "OSGSHADOW_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgShadow.lib"
+		},
+		{
+			"name" : "OSGSIM_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGSIM_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGSIM_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSimd.lib"
+		},
+		{
+			"name" : "OSGSIM_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgSim.lib"
+		},
+		{
+			"name" : "OSGTERRAIN_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerraind.lib"
+		},
+		{
+			"name" : "OSGTERRAIN_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTerrain.lib"
+		},
+		{
+			"name" : "OSGTEXT_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgTextd.lib"
+		},
+		{
+			"name" : "OSGTEXT_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgText.lib"
+		},
+		{
+			"name" : "OSGUTIL_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtild.lib"
+		},
+		{
+			"name" : "OSGUTIL_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgUtil.lib"
+		},
+		{
+			"name" : "OSGVIEWER_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewerd.lib"
+		},
+		{
+			"name" : "OSGVIEWER_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgViewer.lib"
+		},
+		{
+			"name" : "OSGVOLUME_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolumed.lib"
+		},
+		{
+			"name" : "OSGVOLUME_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgVolume.lib"
+		},
+		{
+			"name" : "OSGWIDGET_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY_DEBUG",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidgetd.lib"
+		},
+		{
+			"name" : "OSGWIDGET_LIBRARY_RELEASE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osgWidget.lib"
+		},
+		{
+			"name" : "OSG_HOME",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5"
+		},
+		{
+			"name" : "OSG_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+		},
+		{
+			"name" : "OSG_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/lib/osg.lib"
+		},
+		{
+			"name" : "OVR_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "OVR_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "OVR_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "OVR_LIBRARY-NOTFOUND"
+		},
+		{
+			"name" : "VRPN_INCLUDE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a file."
+				}
+			],
+			"type" : "PATH",
+			"value" : "VRPN_INCLUDE_DIR-NOTFOUND"
+		},
+		{
+			"name" : "VRPN_LIBRARY",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "VRPN_LIBRARY-NOTFOUND"
+		}
+	],
+	"kind" : "cache",
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

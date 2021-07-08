@@ -35,6 +35,7 @@ enum MenuItemType
     IMAGE,
     LIST,
     BAR,
+    RADIAL,
     OTHER
 };
 
@@ -53,6 +54,7 @@ class CVRMENU_EXPORT MenuItem
             _hoverText = "";
             _extraData = 0;
             _parent = 0;
+			_textScale = 1;
         }
 
         virtual ~MenuItem();
@@ -143,11 +145,22 @@ class CVRMENU_EXPORT MenuItem
             _parent = parent;
         }
 
+		void setTextScale(float textScale)
+		{
+			_textScale = textScale;
+		}
+
+		float getTextScale()
+		{
+			return _textScale;
+		}
+
     protected:
         MenuCallback * _callback; ///< Pointer to class object to receive update callbacks from this item
         void* _extraData; ///< Extra data pointer supplied by the user for decision making in callbacks
         bool _dirty; ///< Has this item changed
         std::string _hoverText;
+		float _textScale;
         const MenuItem* _parent;
 };
 

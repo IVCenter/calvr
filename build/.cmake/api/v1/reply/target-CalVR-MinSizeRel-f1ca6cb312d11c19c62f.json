@@ -1,0 +1,229 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "bin//CalVR.exe"
+		},
+		{
+			"path" : "bin//CalVR.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"ADD_EXECUTABLE",
+			"INSTALL",
+			"TARGET_LINK_LIBRARIES",
+			"INCLUDE_DIRECTORIES",
+			"SETUP_MAIN_LIBRARY"
+		],
+		"files" : 
+		[
+			"src/main/CMakeLists.txt",
+			"CMakeLists.txt",
+			"CMakeModules/CVRMacros.cmake",
+			"src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 14,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 18,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 9,
+				"parent" : 4
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 54,
+				"parent" : 4
+			},
+			{
+				"file" : 3
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 31,
+				"parent" : 7
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 39,
+				"parent" : 8
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 10,
+				"parent" : 4
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc -std=c++11 /MD /O1 /Ob1 /DNDEBUG   /W3 /D_CRT_SECURE_NO_WARNINGS /wd4018 /wd4251 /wd4250"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "CVRCOLLAB_LIBRARY"
+				},
+				{
+					"define" : "CVRCONFIG_LIBRARY"
+				},
+				{
+					"define" : "CVRINPUT_LIBRARY"
+				},
+				{
+					"define" : "CVRKERNEL_LIBRARY"
+				},
+				{
+					"define" : "CVRMENU_LIBRARY"
+				},
+				{
+					"define" : "CVRUTIL_LIBRARY"
+				},
+				{
+					"define" : "WITH_OPENVR"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "C:/Users/g3aguirre/Documents/CAL/calvr-openvr/calvr-openvr/include"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/g3aguirre/Documents/CAL/mxml-2.12/mxml-2.12"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/g3aguirre/Documents/CAL/OSG_3.6.5/include"
+				},
+				{
+					"backtrace" : 9,
+					"path" : "C:/Users/g3aguirre/Documents/CAL/openvr-1.5.17/openvr-1.5.17/headers"
+				},
+				{
+					"backtrace" : 10,
+					"isSystem" : true,
+					"path" : "/usr/lib/x86_64-redhat-linux6E/include"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "CalVRAll::@145eef247bfb46b6828c"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "CalVR::@5f1512723eddbe79ddaa",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 2,
+				"path" : "bin"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Program Files (x86)/CalVR"
+		}
+	},
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc -std=c++11 /MD /O1 /Ob1 /DNDEBUG",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-LIBPATH:C:\\Users\\g3aguirre\\Documents\\CAL\\calvr-openvr\\calvr-openvr\\build\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"fragment" : "..\\..\\lib\\CalVRAll.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgAnimation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgFX.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgManipulator.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgParticle.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgPresentation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgShadow.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgSim.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgTerrain.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgText.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgViewer.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgVolume.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgWidget.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgDB.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgGA.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgUtil.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgWidget.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgVolume.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgViewer.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgUtil.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgText.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgTerrain.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgSim.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgShadow.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgPresentation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgParticle.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgManipulator.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgGA.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgFX.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgDB.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgAnimation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\OpenThreads.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osg.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\OpenThreads.lib C:\\Users\\g3aguirre\\Documents\\CAL\\mxml-2.12\\mxml-2.12\\vcnet\\Release\\x64\\mxml1.lib C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17\\lib\\win64\\openvr_api.lib C:\\Users\\g3aguirre\\Documents\\CAL\\mxml-2.12\\mxml-2.12\\vcnet\\Release\\x64\\mxml1.lib C:\\Users\\g3aguirre\\Documents\\CAL\\openvr-1.5.17\\openvr-1.5.17\\lib\\win64\\openvr_api.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgAnimation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgFX.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgManipulator.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgParticle.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgPresentation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgShadow.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgSim.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgTerrain.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgText.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgViewer.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgVolume.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgWidget.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgDB.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgGA.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgUtil.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgAnimation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgFX.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgManipulator.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgParticle.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgPresentation.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgShadow.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgSim.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgTerrain.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgText.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgViewer.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgVolume.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgWidget.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgDB.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgGA.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osgUtil.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\OpenThreads.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osg.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\OpenThreads.lib C:\\Users\\g3aguirre\\Documents\\CAL\\OSG_3.6.5\\lib\\osg.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "CalVR",
+	"nameOnDisk" : "/CalVR.exe",
+	"paths" : 
+	{
+		"build" : "src/main",
+		"source" : "src/main"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/main/main.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

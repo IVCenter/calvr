@@ -158,6 +158,11 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void setTransform(osg::Matrix m);
 
+		/**
+		 * @brief Get the root Matrix Transform of the object
+		 */
+		osg::MatrixTransform* getRoot() { return _root; }
+
         /**
          * @brief Get the scale from this object transform
          */
@@ -399,6 +404,18 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
          */
         void closeMenu();
 
+        /**
+        * @brief updates Active BB color
+        */
+        void updateBBActiveColor(osg::Vec4 color);
+
+        /**
+        * @brief updates Active BB color
+        */
+        void updateBBPassiveColor(osg::Vec4 color);
+
+        void setDisableBB(bool disable) { _disableBB = disable; }
+
     protected:
         bool getRegistered()
         {
@@ -429,6 +446,7 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
 
         void createBoundsGeometry();
         void updateBoundsGeometry();
+       
         void updateMatrices();
         void splitMatrix();
 
@@ -456,16 +474,20 @@ class CVRKERNEL_EXPORT SceneObject : public MenuCallback
         bool _clip;
         bool _contextMenu;
         bool _showBounds;
+        bool _disableBB;
         bool _registered;
         bool _attached;
         bool _eventActive;
 
         int _moveButton;
         int _menuButton;
+		int _horizontalRotateValuator;
+		int _pushValuator;
 
         int _activeHand;
         int _activeButton;
         bool _moving;
+
         osg::Matrix _lastHandMat;
         osg::Matrix _lastHandInv;
         osg::Matrix _lastobj2world;

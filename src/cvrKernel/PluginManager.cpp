@@ -393,6 +393,7 @@ bool PluginManager::loadPlugin(std::string plugin)
     if(!libHandle)
     {
         std::cerr << "Error: Unable to open DLL: " << libPath << std::endl;
+		std::cerr << "Error Code " << GetLastError() << std::endl;
         return false;
     }
 
