@@ -20,7 +20,7 @@ CVRMulticastSocket::CVRMulticastSocket(MCSocketType st,
     _port = port;
 
     _socket = (int)socket(AF_INET,SOCK_DGRAM,0);
-    if(socket < 0)
+    if(_socket < 0)
     {
         std::cerr << "CVRMulticastSocket: error creating socket." << std::endl;
         return;
